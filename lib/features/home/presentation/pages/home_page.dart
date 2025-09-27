@@ -8,7 +8,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(top: 16.0),
       child: Column(
         children: [
           const WalletCard(),

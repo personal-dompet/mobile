@@ -17,7 +17,7 @@ class AccountEmptyList extends ConsumerWidget {
     return ItemListEmptyWidget<AccountType>(
       title: 'No accounts yet',
       message: 'Start organizing your finances by creating your first account',
-      icon: Icons.account_balance_wallet_outlined,
+      icon: Icons.credit_card_rounded,
       form: form,
       keywordValue: () => form.keywordValue,
       typeValue: () => form.typeValue,

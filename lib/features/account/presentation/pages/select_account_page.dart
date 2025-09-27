@@ -25,7 +25,7 @@ class SelectAccountPage extends ConsumerWidget {
         ),
       ),
       body: RefreshWrapper(
-        onRefresh: () => ref.read(allAccountsProvider.notifier).refresh(),
+        onRefresh: () async => ref.invalidate(allAccountsProvider),
         child: accountsAsync.when(
           data: (data) {
             if (data == null || data.isEmpty) {
