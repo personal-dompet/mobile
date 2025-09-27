@@ -4,7 +4,7 @@ class ItemCard<T> extends StatefulWidget {
   final T item;
   final int Function(T) id;
   final String Function(T) name;
-  final int Function(T) balance;
+  final String Function(T) balance;
   final Color? Function(T)? color;
   final IconData? Function(T)? icon;
   final String Function(T) displayName;
@@ -167,7 +167,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
         const SizedBox(height: 4),
         // Balance information with enhanced styling
         Text(
-          'Rp ${widget.balance(widget.item).toString()}',
+          widget.balance(widget.item),
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w800,
             color: theme.colorScheme.onSurface,
@@ -199,23 +199,6 @@ class _ItemCardState<T> extends State<ItemCard<T>>
             ),
           ),
         ),
-        // if (widget.isSelected) ...[
-        //   const SizedBox(height: 8),
-        //   Container(
-        //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        //     decoration: BoxDecoration(
-        //       color: color,
-        //       borderRadius: BorderRadius.circular(12),
-        //     ),
-        //     child: Text(
-        //       'Selected',
-        //       style: theme.textTheme.labelSmall?.copyWith(
-        //         color: Colors.white,
-        //         fontWeight: FontWeight.w600,
-        //       ),
-        //     ),
-        //   ),
-        // ],
       ],
     );
   }

@@ -20,7 +20,7 @@ class AccountCardItem extends StatelessWidget {
       item: account,
       id: (item) => item.id,
       name: (item) => item.name,
-      balance: (item) => item.balance,
+      balance: (item) => item.formattedBalance,
       color: (item) => item.color,
       icon: (item) => item.type.icon,
       displayName: (item) => item.type.displayName,

@@ -13,7 +13,7 @@ class PocketCardItem extends StatelessWidget {
       item: pocket,
       id: (item) => item.id,
       name: (item) => item.name,
-      balance: (item) => item.balance,
+      balance: (item) => item.formattedBalance,
       color: (item) => item.color,
       icon: (item) => item.icon?.icon ?? Icons.wallet_outlined,
       displayName: (item) => item.type.displayName,

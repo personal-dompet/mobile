@@ -1,0 +1,5 @@
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+
+# Add FlutterFire CLI to PATH
+export PATH="$PATH:/c/Users/lutfi/AppData/Local/Pub/Cache/bin"
