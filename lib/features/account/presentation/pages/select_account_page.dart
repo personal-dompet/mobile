@@ -1,3 +1,5 @@
+import 'package:dompet/features/account/domain/enum/account_type.dart';
+import 'package:dompet/features/account/domain/forms/account_create_form.dart';
 import 'package:dompet/features/account/domain/model/simple_account_model.dart';
 import 'package:dompet/features/account/domain/provider/account_provider.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
@@ -5,6 +7,7 @@ import 'package:dompet/features/account/presentation/widgets/account_card_item.d
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class SelectAccountPage extends ConsumerWidget {
   const SelectAccountPage({super.key});
@@ -26,22 +29,46 @@ class SelectAccountPage extends ConsumerWidget {
         child: accountsAsync.when(
           data: (data) {
             if (data == null || data.isEmpty) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.account_balance_wallet_outlined,
                       size: 64,
                       color: Colors.grey,
                     ),
-                    SizedBox(height: 16),
-                    Text(
+                    const SizedBox(height: 16),
+                    const Text(
                       'No accounts available',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
                       ),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        // Navigate to account creation page
+                        final result = await context.push<AccountType?>('/accounts/types');
+                        if (result != null && context.mounted) {
+                          final formProvider = ref.read(accountCreateFormProvider);
+                          final typeControl = formProvider.typeControl;
+                          typeControl.value = result;
+                          final resultData = await context.push<AccountCreateForm>('/accounts/create');
+                          if (resultData == null) return;
+
+                          await ref.read(accountProvider.notifier).create(resultData);
+                          
+                          // After creating an account, pop back to this page to update the list
+                          if (context.mounted) {
+                            // Reload accounts after creation
+                            ref.invalidate(accountProvider);
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('Create Account'),
                     ),
                   ],
                 ),
