@@ -50,6 +50,23 @@ class AccountProvider extends AsyncNotifier<List<SimpleAccountModel>?> {
   }
 }
 
+class AllAccountsProvider extends AsyncNotifier<List<SimpleAccountModel>?> {
+  @override
+  Future<List<SimpleAccountModel>?> build() async {
+    // Create a filter form with "all" type to bypass filtering
+    final filterForm = AccountFilterForm();
+    filterForm.type.value = AccountType.all;
+    filterForm.keyword.value = null;
+    return await ref.read(accountRepositoryProvider).getAccounts(filterForm);
+  }
+
+  Future<void> refresh() async {
+    ref.invalidateSelf();
+  }
+}
+
 final accountProvider =
-    AsyncNotifierProvider<AccountProvider, List<SimpleAccountModel>?>(
-        AccountProvider.new);
+    AsyncNotifierProvider<AccountProvider, List<SimpleAccountModel>?>(AccountProvider.new);
+
+final allAccountsProvider =
+    AsyncNotifierProvider<AllAccountsProvider, List<SimpleAccountModel>?>(AllAccountsProvider.new);

@@ -14,7 +14,7 @@ class SelectAccountPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final accountsAsync = ref.watch(accountProvider);
+    final accountsAsync = ref.watch(allAccountsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -25,7 +25,7 @@ class SelectAccountPage extends ConsumerWidget {
         ),
       ),
       body: RefreshWrapper(
-        onRefresh: () => ref.read(accountProvider.notifier).refresh(),
+        onRefresh: () => ref.read(allAccountsProvider.notifier).refresh(),
         child: accountsAsync.when(
           data: (data) {
             if (data == null || data.isEmpty) {
@@ -63,7 +63,7 @@ class SelectAccountPage extends ConsumerWidget {
                           // After creating an account, pop back to this page to update the list
                           if (context.mounted) {
                             // Reload accounts after creation
-                            ref.invalidate(accountProvider);
+                            ref.invalidate(allAccountsProvider);
                           }
                         }
                       },
