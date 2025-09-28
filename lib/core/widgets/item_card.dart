@@ -127,8 +127,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
           height: 56,
           width: 56,
           decoration: BoxDecoration(
-            // color: color.withValues(alpha: 0.15),
-            color: widget.isSelected ? color : Colors.black,
+            color: widget.isSelected ? color.withValues(alpha: 0.2) : color.withValues(alpha: 0.15),
             shape: BoxShape.circle,
             border: Border.all(
               color: color.withValues(alpha: 0.3),
@@ -145,7 +144,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
           child: Center(
             child: Icon(
               icon,
-              color: widget.isSelected ? Colors.black : color,
+              color: color,
               size: 36,
             ),
           ),

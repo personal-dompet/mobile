@@ -4,8 +4,15 @@ import 'package:flutter/material.dart';
 
 class PocketCardItem extends StatelessWidget {
   final SimplePocketModel pocket;
+  final bool isSelected;
+  final VoidCallback? onTap;
 
-  const PocketCardItem({super.key, required this.pocket});
+  const PocketCardItem({
+    super.key,
+    required this.pocket,
+    this.isSelected = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +24,8 @@ class PocketCardItem extends StatelessWidget {
       color: (item) => item.color,
       icon: (item) => item.icon?.icon ?? Icons.wallet_outlined,
       displayName: (item) => item.type.displayName,
+      isSelected: isSelected,
+      onTap: onTap,
     );
   }
 }

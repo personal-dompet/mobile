@@ -6,6 +6,7 @@ import 'package:dompet/features/home/presentation/pages/home_page.dart';
 import 'package:dompet/features/home/presentation/widgets/header.dart';
 import 'package:dompet/features/pocket/presentation/pages/create_pocket_page.dart';
 import 'package:dompet/features/pocket/presentation/pages/pocket_page.dart';
+import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_type_page.dart';
 import 'package:dompet/features/transaction/presentation/pages/top_up_page.dart';
 import 'package:dompet/features/transfer/presentation/pages/transfer_page.dart';
@@ -31,8 +32,8 @@ final router = GoRouter(
           routeName = 'Pocket';
         } else if (path.startsWith('/accounts')) {
           routeName = 'Account';
-        } else if (path.startsWith('/transfers')) {
-          routeName = 'Transfer';
+        } else if (path.startsWith('/analytics')) {
+          routeName = 'Analytic';
         }
 
         return Scaffold(
@@ -57,8 +58,8 @@ final router = GoRouter(
                 label: 'Account',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.swap_vert_rounded),
-                label: 'Transfer',
+                icon: Icon(Icons.stacked_line_chart_rounded),
+                label: 'Analytic',
               ),
             ],
             onTap: (index) {
@@ -70,7 +71,7 @@ final router = GoRouter(
                   context.go('/accounts');
                   break;
                 case 3:
-                  context.go('/transfers');
+                  context.go('/analytics');
                   break;
                 default:
                   context.go('/');
@@ -100,10 +101,10 @@ final router = GoRouter(
           name: 'Account',
         ),
         GoRoute(
-          path: '/transfers',
+          path: '/analytics',
           pageBuilder: (context, state) => _buildPageWithNoTransition(
               context: context, state: state, child: TransferPage()),
-          name: 'Transfer',
+          name: 'Analytic',
         ),
       ],
     ),
@@ -142,6 +143,17 @@ final router = GoRouter(
       name: 'CreatePocket',
     ),
     GoRoute(
+      path: '/pockets/select',
+      pageBuilder: (context, state) {
+        return _buildPageWithNoTransition(
+          context: context,
+          state: state,
+          child: const SelectPocketPage(),
+        );
+      },
+      name: 'SelectPocket',
+    ),
+    GoRoute(
       path: '/accounts/types',
       pageBuilder: (context, state) {
         return _buildPageWithNoTransition(
@@ -170,7 +182,7 @@ int _calculateIndex(GoRouterState state) {
   final path = state.uri.toString();
   if (path.startsWith('/pockets')) return 1;
   if (path.startsWith('/accounts')) return 2;
-  if (path.startsWith('/transfers')) return 3;
+  if (path.startsWith('/analytics')) return 3;
   return 0;
 }
 
