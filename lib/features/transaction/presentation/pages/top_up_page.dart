@@ -1,14 +1,13 @@
 import 'package:dompet/core/utils/helpers/format_currency.dart';
-import 'package:dompet/core/utils/value_accessors/simple_account_value_accessor.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/account/domain/model/simple_account_model.dart';
-import 'package:dompet/features/account/presentation/pages/select_account_page.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -36,11 +35,8 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
     super.dispose();
   }
 
-  final form = TopUpForm();
-
   void _submit(BuildContext context) async {
-    // final walletNotifier =
-    //     ProviderScope.containerOf(context).read(walletProvider.notifier);
+    final form = ProviderScope.containerOf(context).read(topUpFormProvider);
     if (form.valid) {
       // Show loading or disable button here if needed
 
@@ -65,15 +61,13 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
+    final form = ref.watch(topUpFormProvider);
 
     final walletAsync = ref.watch(walletProvider);
 
     if (walletAsync.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-
-    final wallet = walletAsync.value;
-    final balance = wallet?.formattedBalance ?? '0';
 
     return Scaffold(
       appBar: AppBar(
@@ -109,34 +103,82 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
 
               CardInput(
                 label: 'Account',
-                child: ReactiveTextField<SimpleAccountModel>(
-                  readOnly: true,
-                  formControl: form.accountControl,
-                  decoration: InputDecoration(
-                    hintText: 'Select account',
-                    suffixIcon: Icon(Icons.chevron_right_rounded),
-                  ),
-                  valueAccessor: SimpleAccountValueAccessor(),
-                  onTap: (control) async {
-                    final selectedAccount = await Navigator.of(context)
-                        .push<SimpleAccountModel>(
-                      MaterialPageRoute(
-                        builder: (context) => SelectAccountPage(),
-                        settings: RouteSettings(arguments: form),
-                      ),
-                    );
+                child: GestureDetector(
+                  onTap: () async {
+                    final selectedAccount = await context.push<
+                            SimpleAccountModel?>(
+                        '/accounts/select/${form.accountControl.value?.id}');
                     if (selectedAccount != null && mounted) {
                       form.accountControl.value = selectedAccount;
                     }
                   },
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: form.account?.color?.withValues(alpha: 0.2) ??
+                              Colors.black,
+                        ),
+                        child: Icon(
+                          form.account?.type.icon,
+                          color: form.account?.color ?? Colors.white,
+                          size: 36,
+                        ),
+                      ),
+                      Expanded(
+                        child: ReactiveFormConsumer(
+                            builder: (context, consumerForm, _) {
+                          final form = consumerForm as TopUpForm;
+                          final account = form.account;
+                          final amount = form.amount;
+
+                          final newBalance = (account?.balance ?? 0) + amount;
+                          final formattedNewBalance =
+                              FormatCurrency.formatRupiah(newBalance);
+                          return Text.rich(
+                            overflow: TextOverflow.ellipsis,
+                            TextSpan(
+                                text: account?.name ?? 'Select account',
+                                style: const TextStyle(fontSize: 16),
+                                children: [
+                                  TextSpan(
+                                    text: '\n${account?.formattedBalance}',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    children: newBalance == account?.balance
+                                        ? []
+                                        : [
+                                            TextSpan(
+                                              text: '  →  ',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: formattedNewBalance,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                  )
+                                ]),
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-
-              const SizedBox(height: 16),
 
               // Amount input
               CardInput(
@@ -154,7 +196,6 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
 
               // Description input
               CardInput(
@@ -170,69 +211,6 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // Balance information
-              ReactiveFormConsumer(
-                builder: (context, formGroup, child) {
-                  final amount = formGroup.control('amount').value ?? 0;
-                  final expectedBalance =
-                      FormatCurrency.format((amount + (wallet?.balance ?? 0)));
-
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Balance Information',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Current Balance:'),
-                              Text(balance),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Top Up Amount:'),
-                              Text(amount > 0
-                                  ? FormatCurrency.format(amount)
-                                  : '0'),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          const Divider(),
-                          const SizedBox(height: 4),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Expected Balance:',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                expectedBalance,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
               ),
               const SizedBox(height: 24),
 

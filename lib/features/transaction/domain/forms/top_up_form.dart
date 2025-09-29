@@ -1,4 +1,5 @@
 import 'package:dompet/features/account/domain/model/simple_account_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class TopUpForm extends FormGroup {
@@ -21,7 +22,7 @@ class TopUpForm extends FormGroup {
       control('description') as FormControl<String?>;
 
   SimpleAccountModel? get account => control('account').value;
-  int get amount => control('amount').value;
+  int get amount => control('amount').value ?? 0;
   String? get description => control('description').value;
 
   Map<String, dynamic> toJson() {
@@ -32,3 +33,5 @@ class TopUpForm extends FormGroup {
     };
   }
 }
+
+final topUpFormProvider = Provider<TopUpForm>((ref) => TopUpForm());
