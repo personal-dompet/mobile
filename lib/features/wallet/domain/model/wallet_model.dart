@@ -1,29 +1,32 @@
 import 'package:dompet/core/utils/helpers/format_currency.dart';
+import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
+import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
 
-class WalletModel {
-  final int id;
+class WalletModel extends SimplePocketModel {
   final String userId;
   final int availableBalance;
-  final int balance;
   final int createdAt;
   final int updatedAt;
 
   WalletModel({
-    required this.id,
+    required super.id,
+    required super.name,
+    required super.type,
+    required super.balance,
     required this.userId,
     required this.availableBalance,
-    required this.balance,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  String get formattedBalance => FormatCurrency.formatRupiah(balance);
   String get formattedAvailableBalance =>
       FormatCurrency.formatRupiah(availableBalance);
 
   static WalletModel fromJson(Map<String, dynamic> json) {
     return WalletModel(
       id: json['id'],
+      name: json['name'],
+      type: PocketType.wallet,
       userId: json['userId'],
       availableBalance: json['availableBalance'],
       balance: json['balance'],
@@ -35,6 +38,8 @@ class WalletModel {
   WalletModel copyWith({int? balance, int? availableBalance}) {
     return WalletModel(
       id: id,
+      name: name,
+      type: type,
       userId: userId,
       availableBalance: availableBalance ?? this.availableBalance,
       balance: balance ?? this.balance,

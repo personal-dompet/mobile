@@ -1,8 +1,11 @@
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/features/account/domain/model/simple_account_model.dart';
 import 'package:dompet/features/account/presentation/provider/account_provider.dart';
+import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
+import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
+import 'package:dompet/features/transfer/domain/forms/transfer_form.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,7 +69,7 @@ class WalletCard extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     final selectedAccount = await context
-                        .push<SimpleAccountModel?>('/accounts/select/0');
+                        .push<SimpleAccountModel?>('/accounts/select');
 
                     if (selectedAccount == null || !context.mounted) return;
 
@@ -175,8 +178,26 @@ class WalletCard extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: ElevatedButton.icon(
-                              onPressed: () {
-                                context.push('/transfers');
+                              onPressed: () async {
+                                final pocket =
+                                    await context.pushNamed<SimplePocketModel>(
+                                  'SelectPocket',
+                                  queryParameters: {
+                                    'title':
+                                        SelectPocketTitle.destination.value,
+                                  },
+                                );
+                                if (pocket == null || !context.mounted) return;
+                                final transferForm =
+                                    ref.read(transferFormProvider);
+                                transferForm.fromPocketControl.value = wallet;
+                                transferForm.toPocketControl.value = pocket;
+
+                                final form = await context
+                                    .pushNamed<TransferForm>('CreateTransfer');
+                                if (form == null) return;
+                                // transferForm.fromPocketControl.value =
+                                // context.push('/transfers');
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
