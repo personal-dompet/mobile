@@ -10,6 +10,7 @@ import 'package:dompet/features/pocket/presentation/pages/pocket_page.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_type_page.dart';
 import 'package:dompet/features/transaction/presentation/pages/top_up_page.dart';
+import 'package:dompet/features/transfer/presentation/pages/create_transfer_page.dart';
 import 'package:dompet/features/transfer/presentation/pages/transfer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -146,19 +147,27 @@ final router = GoRouter(
     GoRoute(
       path: '/pockets/select',
       pageBuilder: (context, state) {
+        final selectedAccountId =
+            int.tryParse(state.uri.queryParameters['selectedAccountId'] ?? '');
+        final title = SelectPocketTitle.fromValue(
+            state.uri.queryParameters['title'] ??
+                SelectPocketTitle.general.value);
         return _buildPageWithNoTransition(
           context: context,
           state: state,
-          child: const SelectPocketPage(),
+          child: SelectPocketPage(
+            selectedPocketId: selectedAccountId,
+            title: title ?? SelectPocketTitle.general,
+          ),
         );
       },
       name: 'SelectPocket',
     ),
     GoRoute(
-      path: '/accounts/select/:selectedAccountId',
+      path: '/accounts/select',
       pageBuilder: (context, state) {
         final selectedAccountId =
-            int.tryParse(state.pathParameters['selectedAccountId'] ?? '');
+            int.tryParse(state.uri.queryParameters['selectedAccountId'] ?? '');
         return _buildPageWithNoTransition(
           context: context,
           state: state,
@@ -188,6 +197,17 @@ final router = GoRouter(
         );
       },
       name: 'CreateAccount',
+    ),
+    GoRoute(
+      path: '/transfers/create',
+      pageBuilder: (context, state) {
+        return _buildPageWithNoTransition(
+          context: context,
+          state: state,
+          child: CreateTransferPage(),
+        );
+      },
+      name: 'CreateTransfer',
     ),
   ],
 );
