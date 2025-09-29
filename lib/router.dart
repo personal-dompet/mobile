@@ -1,5 +1,6 @@
 import 'package:dompet/features/account/presentation/pages/account_page.dart';
 import 'package:dompet/features/account/presentation/pages/create_account_page.dart';
+import 'package:dompet/features/account/presentation/pages/select_account_page.dart';
 import 'package:dompet/features/account/presentation/pages/select_account_type_page.dart';
 import 'package:dompet/features/auth/presentation/widgets/auth_guard.dart';
 import 'package:dompet/features/home/presentation/pages/home_page.dart';
@@ -152,6 +153,19 @@ final router = GoRouter(
         );
       },
       name: 'SelectPocket',
+    ),
+    GoRoute(
+      path: '/accounts/select/:selectedAccountId',
+      pageBuilder: (context, state) {
+        final selectedAccountId =
+            int.tryParse(state.pathParameters['selectedAccountId'] ?? '');
+        return _buildPageWithNoTransition(
+          context: context,
+          state: state,
+          child: SelectAccountPage(selectedAccountId: selectedAccountId),
+        );
+      },
+      name: 'SelectAccount',
     ),
     GoRoute(
       path: '/accounts/types',
