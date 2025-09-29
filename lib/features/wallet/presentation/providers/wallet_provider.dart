@@ -1,4 +1,4 @@
-import 'package:dompet/features/account/domain/provider/account_provider.dart';
+import 'package:dompet/features/account/presentation/provider/account_provider.dart';
 import 'package:dompet/features/pocket/domain/provider/pocket_provider.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/wallet/data/repositories/wallet_repository.dart';

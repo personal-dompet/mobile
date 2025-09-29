@@ -1,6 +1,6 @@
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
-import 'package:dompet/features/account/domain/provider/account_provider.dart';
+import 'package:dompet/features/account/presentation/provider/account_provider.dart';
 import 'package:dompet/core/widgets/item_type_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
