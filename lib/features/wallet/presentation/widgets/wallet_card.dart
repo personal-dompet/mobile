@@ -1,7 +1,9 @@
+import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
+import 'package:dompet/features/account/domain/model/simple_account_model.dart';
+import 'package:dompet/features/account/presentation/provider/account_provider.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
-import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -63,13 +65,24 @@ class WalletCard extends ConsumerWidget {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () async {
-                    final form = await context.push<TopUpForm?>('/top-up');
-                    if (form == null) return;
+                    final selectedAccount = await context
+                        .push<SimpleAccountModel?>('/accounts/select/0');
 
-                    await ref.read(walletProvider.notifier).topUp(form);
+                    if (selectedAccount == null || !context.mounted) return;
+
+                    final form = ref.read(topUpFormProvider);
+                    form.accountControl.value = selectedAccount;
+
+                    final topUpForm = await context.push<TopUpForm?>('/top-up');
+
+                    if (topUpForm == null) return;
+
+                    await ref.read(walletProvider.notifier).topUp(topUpForm);
 
                     if (!context.mounted) return;
                     ref.invalidate(recentTransactionProvider);
+                    ref.invalidate(allAccountsProvider);
+                    ref.invalidate(accountProvider);
                     context.showSuccessSnackbar('Top-up successful!');
                     form.reset();
                   },
