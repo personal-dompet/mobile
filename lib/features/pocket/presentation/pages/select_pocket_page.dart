@@ -1,14 +1,18 @@
 import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
 import 'package:dompet/features/pocket/domain/provider/pocket_provider.dart';
-import 'package:dompet/features/transfer/domain/forms/transfer_form.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_card_item.dart';
+import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class SelectPocketPage extends ConsumerWidget {
-  const SelectPocketPage({super.key});
+  final int? selectedPocketId;
+  final SelectPocketTitle title;
+  const SelectPocketPage(
+      {super.key,
+      this.selectedPocketId,
+      this.title = SelectPocketTitle.general});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,7 +20,7 @@ class SelectPocketPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Pocket'),
+        title: Text(title.label),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -50,7 +54,8 @@ class SelectPocketPage extends ConsumerWidget {
                         // Navigate to pocket creation page
                         final result = await context.push('/pockets/types');
                         if (result != null && context.mounted) {
-                          final resultData = await context.push('/pockets/create');
+                          final resultData =
+                              await context.push('/pockets/create');
                           if (resultData == null) return;
 
                           // After creating a pocket, pop back to this page to update the list
@@ -73,33 +78,12 @@ class SelectPocketPage extends ConsumerWidget {
               child: Column(
                 children: [
                   Expanded(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 16,
-                        crossAxisSpacing: 16,
-                        childAspectRatio: 1,
-                      ),
-                      itemCount: data.length,
-                      itemBuilder: (context, index) {
-                        final pocket = data[index];
-                        // Check if this pocket is currently selected in the form
-                        final currentForm = ModalRoute.of(context)
-                            ?.settings
-                            .arguments as TransferForm?;
-                        final isSelected =
-                            currentForm?.fromPocket?.id == pocket.id;
-
-                        return PocketCardItem(
-                          pocket: pocket,
-                          isSelected: isSelected,
-                          onTap: () {
-                            // Navigate back with the selected pocket
-                            Navigator.of(context)
-                                .pop<SimplePocketModel>(pocket);
-                          },
-                        );
+                    child: PocketGrid(
+                      data: data,
+                      selectedPocketId: selectedPocketId,
+                      onTap: (pocket) {
+                        // Navigate back with the selected pocket
+                        Navigator.of(context).pop<SimplePocketModel>(pocket);
                       },
                     ),
                   ),
@@ -114,5 +98,26 @@ class SelectPocketPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+enum SelectPocketTitle {
+  destination('destination', 'Select Destination Pocket'),
+  origin('origin', 'Select Origin Pocket'),
+  general('general', 'Select Pocket');
+
+  final String value;
+  final String label;
+
+  const SelectPocketTitle(this.value, this.label);
+
+  static SelectPocketTitle? fromValue(String value) {
+    try {
+      return SelectPocketTitle.values.firstWhere(
+        (status) => status.value.toLowerCase() == value.toLowerCase(),
+      );
+    } catch (e) {
+      return null;
+    }
   }
 }
