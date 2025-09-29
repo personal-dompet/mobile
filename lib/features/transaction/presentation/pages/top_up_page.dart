@@ -110,7 +110,7 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                   onTap: () async {
                     final selectedAccount = await context.push<
                             SimpleAccountModel?>(
-                        '/accounts/select/${form.accountControl.value?.id}');
+                        '/accounts/select?selectedAccountId=${form.accountControl.value?.id}');
                     if (selectedAccount != null && mounted) {
                       form.accountControl.value = selectedAccount;
                     }
