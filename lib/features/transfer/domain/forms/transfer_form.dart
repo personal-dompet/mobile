@@ -1,4 +1,5 @@
 import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class TransferForm {
@@ -49,3 +50,7 @@ class TransferForm {
   int? get amount => _amountControl.value;
   String? get description => _descriptionControl.value;
 }
+
+final transferFormProvider = Provider<TransferForm>((ref) {
+  return TransferForm();
+});
