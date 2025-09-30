@@ -1,14 +1,12 @@
 import 'package:dompet/features/account/presentation/pages/account_page.dart';
 import 'package:dompet/features/account/presentation/pages/create_account_page.dart';
 import 'package:dompet/features/account/presentation/pages/select_account_page.dart';
-import 'package:dompet/features/account/presentation/pages/select_account_type_page.dart';
 import 'package:dompet/features/auth/presentation/widgets/auth_guard.dart';
 import 'package:dompet/features/home/presentation/pages/home_page.dart';
 import 'package:dompet/features/home/presentation/widgets/header.dart';
 import 'package:dompet/features/pocket/presentation/pages/create_pocket_page.dart';
 import 'package:dompet/features/pocket/presentation/pages/pocket_page.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
-import 'package:dompet/features/pocket/presentation/pages/select_pocket_type_page.dart';
 import 'package:dompet/features/transaction/presentation/pages/top_up_page.dart';
 import 'package:dompet/features/transfer/presentation/pages/create_transfer_page.dart';
 import 'package:dompet/features/transfer/presentation/pages/transfer_page.dart';
@@ -122,17 +120,7 @@ final router = GoRouter(
       },
       name: 'TopUp',
     ),
-    GoRoute(
-      path: '/pockets/types',
-      pageBuilder: (context, state) {
-        return _buildPageWithNoTransition(
-          context: context,
-          state: state,
-          child: SelectPocketTypePage(),
-        );
-      },
-      name: 'SelectPocketType',
-    ),
+
     GoRoute(
       path: '/pockets/create',
       pageBuilder: (context, state) {
@@ -176,17 +164,7 @@ final router = GoRouter(
       },
       name: 'SelectAccount',
     ),
-    GoRoute(
-      path: '/accounts/types',
-      pageBuilder: (context, state) {
-        return _buildPageWithNoTransition(
-          context: context,
-          state: state,
-          child: SelectAccountTypePage(),
-        );
-      },
-      name: 'SelectAccountType',
-    ),
+
     GoRoute(
       path: '/accounts/create',
       pageBuilder: (context, state) {
