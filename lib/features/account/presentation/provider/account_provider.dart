@@ -5,11 +5,11 @@ import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
 import 'package:dompet/features/account/domain/model/simple_account_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AccountProvider extends AsyncNotifier<List<SimpleAccountModel>?> {
+class AccountProvider
+    extends FamilyAsyncNotifier<List<SimpleAccountModel>?, AccountFilterForm> {
   @override
-  Future<List<SimpleAccountModel>?> build() async {
-    final form = ref.watch(accountFilterFormProvider);
-    return await ref.read(accountRepositoryProvider).getAccounts(form);
+  Future<List<SimpleAccountModel>?> build(AccountFilterForm filter) async {
+    return await ref.read(accountRepositoryProvider).getAccounts(filter);
   }
 
   Future<void> refresh() async {
@@ -37,27 +37,31 @@ class AccountProvider extends AsyncNotifier<List<SimpleAccountModel>?> {
 
     try {
       final result = await ref.read(accountRepositoryProvider).create(form);
+      
+      // Check if the provider is still mounted after the async operation
+      if (!ref.mounted) return;
+      
+      List<SimpleAccountModel> newState = [];
       if (filterType == result.type || filterType == AccountType.all) {
-        state = AsyncData([result]);
+        newState = [result];
       }
+      
+      // Check again if still mounted before final state update
+      if (!ref.mounted) return;
+      
       state = AsyncData([
-        ...state.value ?? [],
-        ...previousState ?? [],
+        ...newState,
+        ...(previousState?.where((account) => account.id != result.id).toList() ?? []),
       ]);
     } catch (e) {
-      state = AsyncData(previousState);
+      // Check if still mounted before reverting to previous state
+      if (ref.mounted) {
+        state = AsyncData(previousState);
+      }
     }
   }
 }
 
-
-final allAccountsProvider = FutureProvider<List<SimpleAccountModel>?>((ref) async {
-  final repository = ref.read(accountRepositoryProvider);
-  final filterForm = AccountFilterForm();
-  filterForm.type.value = AccountType.all;
-  filterForm.keyword.value = null;
-  return await repository.getAccounts(filterForm);
-});
-
-final accountProvider =
-    AsyncNotifierProvider<AccountProvider, List<SimpleAccountModel>?>(AccountProvider.new);
+final accountProvider = AsyncNotifierProvider.autoDispose
+    .family<AccountProvider, List<SimpleAccountModel>?, AccountFilterForm>(
+        AccountProvider.new);

@@ -1,4 +1,5 @@
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
+import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
 import 'package:dompet/features/account/presentation/provider/account_provider.dart';
 import 'package:dompet/features/account/presentation/widgets/account_empty_list.dart';
 import 'package:dompet/features/account/presentation/widgets/account_grid.dart';
@@ -11,10 +12,11 @@ class AccountPage extends ConsumerWidget {
   const AccountPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final accountsAsync = ref.watch(accountProvider);
+    final filter = ref.watch(accountFilterFormProvider);
+    final accountsAsync = ref.watch(accountProvider(filter));
     return Scaffold(
       body: RefreshWrapper(
-        onRefresh: () => ref.read(accountProvider.notifier).refresh(),
+        onRefresh: () => ref.read(accountProvider(filter).notifier).refresh(),
         child: accountsAsync.when(
           data: (data) {
             return Padding(
