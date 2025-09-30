@@ -1,5 +1,6 @@
+import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
 import 'package:dompet/features/account/presentation/provider/account_provider.dart';
-import 'package:dompet/features/pocket/domain/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/wallet/data/repositories/wallet_repository.dart';
 import 'package:dompet/features/wallet/domain/model/wallet_model.dart';
@@ -23,7 +24,8 @@ class WalletProvider extends AsyncNotifier<WalletModel?> {
       }
       final wallet = await ref.read(walletRepositoryProvider).topUp(form);
       state = AsyncValue.data(wallet);
-      ref.invalidate(accountProvider);
+      ref.invalidate(accountProvider(AccountFilterForm()));
+
       ref.invalidate(pocketProvider);
     } catch (e) {
       state = AsyncValue.data(previousState);

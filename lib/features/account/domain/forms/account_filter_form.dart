@@ -29,4 +29,4 @@ class AccountFilterForm extends FormGroup {
 }
 
 final accountFilterFormProvider =
-    Provider.autoDispose<AccountFilterForm>((ref) => AccountFilterForm());
+    Provider<AccountFilterForm>((ref) => AccountFilterForm());

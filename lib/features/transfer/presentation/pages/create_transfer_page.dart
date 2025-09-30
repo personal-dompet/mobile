@@ -27,13 +27,11 @@ class CreateTransferPage extends ConsumerWidget {
                 label: 'From Pocket',
                 placeholder: 'Select source pocket',
               ),
-              const SizedBox(height: 16),
               SelectPocketCard(
                 formControlName: 'toPocket',
                 label: 'To Pocket',
                 placeholder: 'Select destination pocket',
               ),
-              const SizedBox(height: 16),
               ReactiveTextField(
                 formControlName: 'amount',
                 decoration: const InputDecoration(
@@ -47,7 +45,6 @@ class CreateTransferPage extends ConsumerWidget {
                       'Amount must be greater than 0',
                 },
               ),
-              const SizedBox(height: 16),
               ReactiveTextField(
                 formControlName: 'description',
                 decoration: const InputDecoration(
@@ -56,7 +53,6 @@ class CreateTransferPage extends ConsumerWidget {
                 ),
                 maxLines: 3,
               ),
-              const SizedBox(height: 24),
               const SizedBox(height: 24),
               ReactiveFormConsumer(
                 builder: (context, formGroup, child) {

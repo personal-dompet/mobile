@@ -5,11 +5,11 @@ import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
 import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PocketProvider extends AsyncNotifier<List<SimplePocketModel>?> {
+class PocketProvider
+    extends FamilyAsyncNotifier<List<SimplePocketModel>?, PocketFilterForm> {
   @override
-  Future<List<SimplePocketModel>?> build() async {
-    final form = ref.watch(pocketFilterFormProvider);
-    return await ref.read(pocketRepositoryProvider).getPockets(form);
+  Future<List<SimplePocketModel>?> build(PocketFilterForm filter) async {
+    return await ref.read(pocketRepositoryProvider).getPockets(filter);
   }
 
   Future<void> refresh() async {
@@ -39,19 +39,32 @@ class PocketProvider extends AsyncNotifier<List<SimplePocketModel>?> {
 
     try {
       final result = await ref.read(pocketRepositoryProvider).create(form);
+
+      // Check if the provider is still mounted after the async operation
+      if (!ref.mounted) return;
+
+      List<SimplePocketModel> newState = [];
       if (filterType == result.type || filterType == PocketType.all) {
-        state = AsyncData([result]);
+        newState = [result];
       }
+
+      // Check again if still mounted before final state update
+      if (!ref.mounted) return;
+
       state = AsyncData([
-        ...state.value ?? [],
-        ...previousState ?? [],
+        ...newState,
+        ...(previousState?.where((pocket) => pocket.id != result.id).toList() ??
+            []),
       ]);
     } catch (e) {
-      state = AsyncData(previousState);
+      // Check if still mounted before reverting to previous state
+      if (ref.mounted) {
+        state = AsyncData(previousState);
+      }
     }
   }
 }
 
-final pocketProvider =
-    AsyncNotifierProvider<PocketProvider, List<SimplePocketModel>?>(
+final pocketProvider = AsyncNotifierProvider.autoDispose
+    .family<PocketProvider, List<SimplePocketModel>?, PocketFilterForm>(
         PocketProvider.new);
