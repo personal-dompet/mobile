@@ -91,7 +91,6 @@ class _CreateSpendingPocketPageState
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
 
               // Description input
               Card(
@@ -123,7 +122,6 @@ class _CreateSpendingPocketPageState
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
 
               // Initial Balance input
               Card(
@@ -163,7 +161,6 @@ class _CreateSpendingPocketPageState
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
 
               // Low Balance Settings
               Card(

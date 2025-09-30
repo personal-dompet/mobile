@@ -1,7 +1,11 @@
-import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
-import 'package:dompet/features/pocket/domain/provider/pocket_provider.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
+import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
+import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
+import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
+import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
+import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,14 +13,16 @@ import 'package:go_router/go_router.dart';
 class SelectPocketPage extends ConsumerWidget {
   final int? selectedPocketId;
   final SelectPocketTitle title;
-  const SelectPocketPage(
+  SelectPocketPage(
       {super.key,
       this.selectedPocketId,
       this.title = SelectPocketTitle.general});
 
+  final _filter = PocketFilterForm();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pocketsAsync = ref.watch(pocketProvider);
+    final pocketsAsync = ref.watch(pocketProvider(_filter));
 
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +33,10 @@ class SelectPocketPage extends ConsumerWidget {
         ),
       ),
       body: RefreshWrapper(
-        onRefresh: () async => ref.invalidate(pocketProvider),
+        onRefresh: () async {
+          // For allPocketProvider, we just invalidate it directly
+          ref.invalidate(pocketProvider(_filter));
+        },
         child: pocketsAsync.when(
           data: (data) {
             if (data == null || data.isEmpty) {
@@ -51,17 +60,32 @@ class SelectPocketPage extends ConsumerWidget {
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: () async {
-                        // Navigate to pocket creation page
-                        final result = await context.push('/pockets/types');
+                        // Show pocket type selection bottom sheet
+                        final result = await showModalBottomSheet<PocketType>(
+                          context: context,
+                          isScrollControlled: true,
+                          useRootNavigator: true,
+                          builder: (context) =>
+                              const PocketTypeSelectorBottomSheet(),
+                        );
                         if (result != null && context.mounted) {
-                          final resultData =
-                              await context.push('/pockets/create');
+                          final form = ref.read(pocketCreateFormProvider);
+                          form.typeControl.value = result;
+
+                          final resultData = await context
+                              .push<PocketCreateForm>('/pockets/create');
                           if (resultData == null) return;
+
+                          // Use a filter form to call create method
+                          final filterForm = _filter;
+                          await ref
+                              .read(pocketProvider(filterForm).notifier)
+                              .create(resultData);
 
                           // After creating a pocket, pop back to this page to update the list
                           if (context.mounted) {
                             // Reload pockets after creation
-                            ref.invalidate(pocketProvider);
+                            ref.invalidate(pocketProvider(filterForm));
                           }
                         }
                       },

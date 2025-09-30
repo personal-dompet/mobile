@@ -1,9 +1,11 @@
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
+import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
 import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
-import 'package:dompet/features/pocket/domain/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/add_pocket_card_item.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_card_item.dart';
+import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -23,34 +25,35 @@ class PocketGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GridView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
         childAspectRatio: 1,
       ),
-      itemCount:
-          data.length + 1, // Add 1 for the "Add Pocket" card
+      itemCount: data.length + 1, // Add 1 for the "Add Pocket" card
       itemBuilder: (context, index) {
         // If this is the last item, show the "Add Pocket" card
         if (index == data.length) {
           return AddPocketCardItem(
             onTap: () async {
-              final result = await context
-                  .push<PocketType?>('/pockets/types');
+              final result = await showModalBottomSheet<PocketType>(
+                context: context,
+                isScrollControlled: true,
+                useRootNavigator: true,
+                builder: (context) => const PocketTypeSelectorBottomSheet(),
+              );
               if (result != null && context.mounted) {
-                final form =
-                    ref.read(pocketCreateFormProvider);
+                final form = ref.read(pocketCreateFormProvider);
                 final typeControl = form.typeControl;
                 typeControl.value = result;
                 final resultData =
-                    await context.push<PocketCreateForm>(
-                        '/pockets/create');
+                    await context.push<PocketCreateForm>('/pockets/create');
                 if (resultData == null) return;
 
+                // Get the current filter form and use it for the provider call
                 ref
-                    .read(pocketProvider.notifier)
+                    .read(pocketProvider(PocketFilterForm()).notifier)
                     .create(resultData);
               }
             },

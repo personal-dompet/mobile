@@ -2,7 +2,8 @@ import 'package:dompet/core/widgets/item_list_empty_widget.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
-import 'package:dompet/features/pocket/domain/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +29,12 @@ class PocketEmptyList extends ConsumerWidget {
         // Update type if needed
       },
       onAddPressed: () async {
-        final result = await context.push<PocketType?>('/pockets/types');
+        final result = await showModalBottomSheet<PocketType>(
+          context: context,
+          isScrollControlled: true,
+          useRootNavigator: true,
+          builder: (context) => const PocketTypeSelectorBottomSheet(),
+        );
         if (result != null && context.mounted) {
           final formProvider = ref.read(pocketCreateFormProvider);
           final typeControl = formProvider.typeControl;
@@ -37,7 +43,7 @@ class PocketEmptyList extends ConsumerWidget {
               await context.push<PocketCreateForm>('/pockets/create');
           if (resultData == null) return;
 
-          ref.read(pocketProvider.notifier).create(resultData);
+          ref.read(pocketProvider(form).notifier).create(resultData);
         }
       },
     );

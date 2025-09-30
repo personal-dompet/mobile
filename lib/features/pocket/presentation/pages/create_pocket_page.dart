@@ -5,11 +5,11 @@ import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
 import 'package:dompet/features/pocket/presentation/widgets/color_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/icon_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_icon.dart';
+import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class CreatePocketPage extends ConsumerWidget {
@@ -72,8 +72,12 @@ class CreatePocketPage extends ConsumerWidget {
                       color: _getPocketTypeColor(context, type),
                     ),
                     onPressed: () async {
-                      final result =
-                          await context.push<PocketType?>('/pockets/types');
+                      final result = await showModalBottomSheet<PocketType>(
+                        context: context,
+                        isScrollControlled: true,
+                        useRootNavigator: true,
+                        builder: (context) => const PocketTypeSelectorBottomSheet(),
+                      );
                       if (result != null && context.mounted) {
                         final typeControl = pocketCreateForm.typeControl;
                         typeControl.value = result;
@@ -99,7 +103,6 @@ class CreatePocketPage extends ConsumerWidget {
                         form: form,
                       ),
                     ),
-                    const SizedBox(height: 16),
                     CardInput(
                       label: 'Name',
                       child: ReactiveTextField<String>(
@@ -113,7 +116,6 @@ class CreatePocketPage extends ConsumerWidget {
                         textInputAction: TextInputAction.next,
                       ),
                     ),
-                    const SizedBox(height: 16),
                     CardInput(
                       label: 'Color',
                       child: ColorPicker(form: form),
