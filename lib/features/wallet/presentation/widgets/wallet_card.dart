@@ -1,5 +1,4 @@
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
-import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
 import 'package:dompet/features/account/domain/model/simple_account_model.dart';
 import 'package:dompet/features/account/presentation/provider/account_provider.dart';
 import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
@@ -85,7 +84,8 @@ class WalletCard extends ConsumerWidget {
 
                     if (!context.mounted) return;
                     ref.invalidate(recentTransactionProvider);
-                    ref.invalidate(accountProvider(AccountFilterForm()));
+                    ref.invalidate(accountListProvider);
+                    ref.invalidate(filteredAccountProvider);
                     context.showSuccessSnackbar('Top-up successful!');
                     form.reset();
                   },
