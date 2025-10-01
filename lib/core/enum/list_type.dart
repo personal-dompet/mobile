@@ -1,0 +1,4 @@
+enum ListType {
+  filtered,
+  all,
+}
