@@ -1,7 +1,6 @@
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
-import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
 import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
@@ -13,16 +12,14 @@ import 'package:go_router/go_router.dart';
 class SelectPocketPage extends ConsumerWidget {
   final int? selectedPocketId;
   final SelectPocketTitle title;
-  SelectPocketPage(
+  const SelectPocketPage(
       {super.key,
       this.selectedPocketId,
       this.title = SelectPocketTitle.general});
 
-  final _filter = PocketFilterForm();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pocketsAsync = ref.watch(pocketProvider(_filter));
+    final pocketsAsync = ref.watch(pocketListProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -34,8 +31,8 @@ class SelectPocketPage extends ConsumerWidget {
       ),
       body: RefreshWrapper(
         onRefresh: () async {
-          // For allPocketProvider, we just invalidate it directly
-          ref.invalidate(pocketProvider(_filter));
+          // Refresh the provider data
+          ref.invalidate(pocketListProvider);
         },
         child: pocketsAsync.when(
           data: (data) {
@@ -77,15 +74,14 @@ class SelectPocketPage extends ConsumerWidget {
                           if (resultData == null) return;
 
                           // Use a filter form to call create method
-                          final filterForm = _filter;
                           await ref
-                              .read(pocketProvider(filterForm).notifier)
+                              .read(pocketListProvider.notifier)
                               .create(resultData);
 
                           // After creating a pocket, pop back to this page to update the list
                           if (context.mounted) {
                             // Reload pockets after creation
-                            ref.invalidate(pocketProvider(filterForm));
+                            ref.invalidate(pocketListProvider);
                           }
                         }
                       },

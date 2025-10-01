@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/item_list_empty_widget.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/account_create_form.dart';
@@ -9,7 +10,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class AccountEmptyList extends ConsumerWidget {
-  const AccountEmptyList({super.key});
+  final ListType listType;
+
+  const AccountEmptyList({
+    super.key,
+    this.listType = ListType.filtered,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,7 +49,11 @@ class AccountEmptyList extends ConsumerWidget {
               await context.push<AccountCreateForm>('/accounts/create');
           if (resultData == null) return;
 
-          ref.read(accountProvider(form).notifier).create(resultData);
+          if (listType == ListType.filtered) {
+            ref.read(filteredAccountProvider.notifier).create(resultData);
+          } else {
+            ref.read(accountListProvider.notifier).create(resultData);
+          }
         }
       },
     );

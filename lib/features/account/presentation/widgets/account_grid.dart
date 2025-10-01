@@ -1,6 +1,6 @@
+import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/account_create_form.dart';
-import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
 import 'package:dompet/features/account/domain/model/simple_account_model.dart';
 import 'package:dompet/features/account/presentation/provider/account_provider.dart';
 import 'package:dompet/features/account/presentation/widgets/account_card_item.dart';
@@ -14,11 +14,14 @@ class AccountGrid extends ConsumerWidget {
   final List<SimpleAccountModel> data;
   final int? selectedAccountId;
   final void Function(SimpleAccountModel) onTap;
+  final ListType listType;
+
   const AccountGrid({
     super.key,
     this.data = const [],
     this.selectedAccountId,
     required this.onTap,
+    this.listType = ListType.filtered,
   });
 
   @override
@@ -50,9 +53,12 @@ class AccountGrid extends ConsumerWidget {
                 final resultData =
                     await context.push<AccountCreateForm>('/accounts/create');
                 if (resultData == null) return;
-                ref
-                    .read(accountProvider(AccountFilterForm()).notifier)
-                    .create(resultData);
+
+                if (listType == ListType.filtered) {
+                  ref.read(filteredAccountProvider.notifier).create(resultData);
+                } else {
+                  ref.read(accountListProvider.notifier).create(resultData);
+                }
               }
             },
           );

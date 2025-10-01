@@ -25,7 +25,7 @@ class PocketTypeSelector extends ConsumerWidget {
       color: (type) => type.color,
       icon: (type) => type.icon,
       onTypeChanged: (type) {
-        ref.invalidate(pocketProvider);
+        ref.invalidate(filteredPocketProvider);
       },
     );
   }

@@ -7,8 +7,8 @@ class PocketTypeSelectorBottomSheet extends ConsumerWidget {
 
   static final List<PocketType> _pocketTypes = [
     PocketType.spending,
-    PocketType.saving,
     PocketType.recurring,
+    PocketType.saving,
   ];
 
   @override

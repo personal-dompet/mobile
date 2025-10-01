@@ -15,7 +15,7 @@ class AccountSearchField extends ConsumerWidget {
       form: form,
       formControl: form.keyword,
       onSearch: () {
-        ref.invalidate(accountProvider(form));
+        ref.invalidate(filteredAccountProvider);
       },
     );
   }

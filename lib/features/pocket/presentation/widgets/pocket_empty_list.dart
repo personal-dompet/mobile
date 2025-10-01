@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/item_list_empty_widget.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
@@ -9,7 +10,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class PocketEmptyList extends ConsumerWidget {
-  const PocketEmptyList({super.key});
+  final ListType listType;
+
+  const PocketEmptyList({
+    super.key,
+    this.listType = ListType.filtered,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,7 +49,11 @@ class PocketEmptyList extends ConsumerWidget {
               await context.push<PocketCreateForm>('/pockets/create');
           if (resultData == null) return;
 
-          ref.read(pocketProvider(form).notifier).create(resultData);
+          if (listType == ListType.filtered) {
+            ref.read(filteredPocketProvider.notifier).create(resultData);
+          } else {
+            ref.read(pocketListProvider.notifier).create(resultData);
+          }
         }
       },
     );

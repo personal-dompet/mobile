@@ -29,4 +29,4 @@ class PocketFilterForm extends FormGroup {
 }
 
 final pocketFilterFormProvider =
-    Provider.autoDispose<PocketFilterForm>((ref) => PocketFilterForm());
+    Provider<PocketFilterForm>((ref) => PocketFilterForm());

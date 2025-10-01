@@ -1,6 +1,6 @@
+import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
-import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
 import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/add_pocket_card_item.dart';
@@ -14,11 +14,14 @@ class PocketGrid extends ConsumerWidget {
   final List<SimplePocketModel> data;
   final int? selectedPocketId;
   final void Function(SimplePocketModel) onTap;
+  final ListType listType;
+
   const PocketGrid({
     super.key,
     this.data = const [],
     this.selectedPocketId,
     required this.onTap,
+    this.listType = ListType.filtered,
   });
 
   @override
@@ -51,10 +54,11 @@ class PocketGrid extends ConsumerWidget {
                     await context.push<PocketCreateForm>('/pockets/create');
                 if (resultData == null) return;
 
-                // Get the current filter form and use it for the provider call
-                ref
-                    .read(pocketProvider(PocketFilterForm()).notifier)
-                    .create(resultData);
+                if (listType == ListType.filtered) {
+                  ref.read(filteredPocketProvider.notifier).create(resultData);
+                } else {
+                  ref.read(pocketListProvider.notifier).create(resultData);
+                }
               }
             },
           );

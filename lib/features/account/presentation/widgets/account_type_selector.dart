@@ -25,7 +25,7 @@ class AccountTypeSelector extends ConsumerWidget {
       color: (type) => type.color,
       icon: (type) => type.icon,
       onTypeChanged: (type) {
-        ref.invalidate(accountProvider(form));
+        ref.invalidate(filteredAccountProvider);
       },
     );
   }

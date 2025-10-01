@@ -15,7 +15,7 @@ class PocketSearchField extends ConsumerWidget {
       form: form,
       formControl: form.keyword,
       onSearch: () {
-        ref.invalidate(pocketProvider);
+        ref.invalidate(filteredPocketProvider);
       },
     );
   }

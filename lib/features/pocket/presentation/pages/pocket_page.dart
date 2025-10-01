@@ -1,10 +1,10 @@
-import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
+import 'package:dompet/core/enum/list_type.dart';
+import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_empty_list.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_search_field.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector.dart';
-import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,11 +12,13 @@ class PocketPage extends ConsumerWidget {
   const PocketPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filter = ref.watch(pocketFilterFormProvider);
-    final pocketsAsync = ref.watch(pocketProvider(filter));
+    final pocketsAsync = ref.watch(filteredPocketProvider);
     return Scaffold(
       body: RefreshWrapper(
-        onRefresh: () => ref.read(pocketProvider(filter).notifier).refresh(),
+        onRefresh: () async {
+          // Using invalidate instead of refresh method for non-autoDispose provider
+          ref.invalidate(filteredPocketProvider);
+        },
         child: pocketsAsync.when(
           data: (data) {
             return Padding(
@@ -34,12 +36,16 @@ class PocketPage extends ConsumerWidget {
                     Expanded(
                       child: PocketGrid(
                         data: data,
+                        listType: ListType.filtered,
                         onTap: (pocket) {},
                       ),
                     ),
                   if (data == null || data.isEmpty)
                     Expanded(
-                      child: SingleChildScrollView(child: PocketEmptyList()),
+                      child: SingleChildScrollView(
+                          child: PocketEmptyList(
+                        listType: ListType.filtered,
+                      )),
                     ),
                 ],
               ),
