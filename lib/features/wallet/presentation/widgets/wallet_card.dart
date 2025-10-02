@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/features/account/domain/model/simple_account_model.dart';
 import 'package:dompet/features/account/presentation/provider/account_provider.dart';
@@ -5,7 +6,8 @@ import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
-import 'package:dompet/features/transfer/domain/forms/transfer_form.dart';
+import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
+import 'package:dompet/features/transfer/presentation/providers/transfer_provider.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,7 +59,7 @@ class WalletCard extends ConsumerWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                wallet?.formattedBalance ?? '-',
+                wallet?.formattedTotalBalance ?? '-',
                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                       fontWeight: FontWeight.bold,
@@ -101,9 +103,9 @@ class WalletCard extends ConsumerWidget {
                   label: const Text('Top Up'),
                 ),
               ),
-              if (wallet != null && wallet.availableBalance != 0)
+              if (wallet != null && wallet.balance != 0)
                 const SizedBox(height: 20),
-              if (wallet != null && wallet.availableBalance != 0)
+              if (wallet != null && wallet.balance != 0)
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -164,7 +166,7 @@ class WalletCard extends ConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        wallet.formattedAvailableBalance,
+                        wallet.formattedBalance,
                         style: Theme.of(context)
                             .textTheme
                             .headlineSmall
@@ -189,13 +191,21 @@ class WalletCard extends ConsumerWidget {
                                 );
                                 if (pocket == null || !context.mounted) return;
                                 final transferForm =
-                                    ref.read(transferFormProvider);
+                                    ref.read(pocketTransferFormProvider);
                                 transferForm.fromPocketControl.value = wallet;
                                 transferForm.toPocketControl.value = pocket;
 
                                 final form = await context
-                                    .pushNamed<TransferForm>('CreateTransfer');
+                                    .pushNamed<PocketTransferForm>(
+                                        'CreateTransfer',
+                                        queryParameters: {
+                                      'static':
+                                          TransferStaticSubject.source.name,
+                                    });
                                 if (form == null) return;
+                                await ref
+                                    .read(transferProvider.notifier)
+                                    .pocketTransfer(form);
                                 // transferForm.fromPocketControl.value =
                                 // context.push('/transfers');
                               },

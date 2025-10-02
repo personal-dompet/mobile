@@ -4,7 +4,7 @@ import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
 
 class WalletModel extends SimplePocketModel {
   final String userId;
-  final int availableBalance;
+  final int totalBalance;
   final int createdAt;
   final int updatedAt;
 
@@ -14,13 +14,12 @@ class WalletModel extends SimplePocketModel {
     required super.type,
     required super.balance,
     required this.userId,
-    required this.availableBalance,
+    required this.totalBalance,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  String get formattedAvailableBalance =>
-      FormatCurrency.formatRupiah(availableBalance);
+  String get formattedTotalBalance => FormatCurrency.formatRupiah(totalBalance);
 
   static WalletModel fromJson(Map<String, dynamic> json) {
     return WalletModel(
@@ -28,20 +27,20 @@ class WalletModel extends SimplePocketModel {
       name: json['name'],
       type: PocketType.wallet,
       userId: json['userId'],
-      availableBalance: json['availableBalance'],
+      totalBalance: json['totalBalance'],
       balance: json['balance'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
     );
   }
 
-  WalletModel copyWith({int? balance, int? availableBalance}) {
+  WalletModel copyWith({int? balance, int? totalBalance}) {
     return WalletModel(
       id: id,
       name: name,
       type: type,
       userId: userId,
-      availableBalance: availableBalance ?? this.availableBalance,
+      totalBalance: totalBalance ?? this.totalBalance,
       balance: balance ?? this.balance,
       createdAt: createdAt,
       updatedAt: updatedAt,
