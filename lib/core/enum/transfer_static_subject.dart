@@ -1,0 +1,4 @@
+enum TransferStaticSubject {
+  source,
+  destination,
+}

@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/features/account/presentation/pages/account_page.dart';
 import 'package:dompet/features/account/presentation/pages/create_account_page.dart';
 import 'package:dompet/features/account/presentation/pages/select_account_page.dart';
@@ -179,10 +180,18 @@ final router = GoRouter(
     GoRoute(
       path: '/transfers/create',
       pageBuilder: (context, state) {
+        final staticQuery = state.uri.queryParameters['static'];
+        TransferStaticSubject? subject;
+        if (staticQuery != null) {
+          subject = TransferStaticSubject.values.firstWhere(
+            (element) => element.name == staticQuery,
+            orElse: () => TransferStaticSubject.source,
+          );
+        }
         return _buildPageWithNoTransition(
           context: context,
           state: state,
-          child: CreateTransferPage(),
+          child: CreateTransferPage(subject: subject),
         );
       },
       name: 'CreateTransfer',
