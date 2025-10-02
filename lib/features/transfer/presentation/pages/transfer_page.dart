@@ -1,6 +1,6 @@
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/presentation/widgets/select_pocket_card.dart';
-import 'package:dompet/features/transfer/domain/forms/transfer_form.dart';
+import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -10,14 +10,14 @@ class TransferPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final form = TransferForm();
+    final form = PocketTransferForm();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transfer Funds'),
       ),
       body: ReactiveForm(
-        formGroup: form.formGroup,
+        formGroup: form,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
