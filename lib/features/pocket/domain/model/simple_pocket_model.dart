@@ -35,4 +35,16 @@ class SimplePocketModel {
       priority: json['priority'],
     );
   }
+
+  factory SimplePocketModel.empty() {
+    return SimplePocketModel(
+      id: 0,
+      name: '',
+      type: PocketType.all,
+      balance: 0,
+      color: null,
+      icon: null,
+      priority: 0,
+    );
+  }
 }

@@ -42,6 +42,20 @@ class PocketModel {
     );
   }
 
+  factory PocketModel.empty() {
+    return PocketModel(
+      id: '',
+      name: '',
+      type: '',
+      balance: 0.0,
+      targetAmount: 0.0,
+      icon: '',
+      isActive: true,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+  }
+
   // Convert PocketModel to JSON
   Map<String, dynamic> toJson() {
     return {
