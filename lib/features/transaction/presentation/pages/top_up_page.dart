@@ -1,6 +1,8 @@
 import 'package:dompet/core/utils/helpers/format_currency.dart';
+import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
+import 'package:dompet/core/widgets/reactive_date_picker.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/account/domain/model/simple_account_model.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
@@ -106,77 +108,37 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
 
               CardInput(
                 label: 'Account',
-                child: GestureDetector(
-                  onTap: () async {
-                    final selectedAccount = await context.push<
-                            SimpleAccountModel?>(
-                        '/accounts/select?selectedAccountId=${form.accountControl.value?.id}');
-                    if (selectedAccount != null && mounted) {
-                      form.accountControl.value = selectedAccount;
-                    }
-                  },
-                  child: Row(
-                    spacing: 8,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: form.account?.color?.withValues(alpha: 0.2) ??
-                              Colors.black,
-                        ),
-                        child: Icon(
-                          form.account?.type.icon,
-                          color: form.account?.color ?? Colors.white,
-                          size: 36,
-                        ),
-                      ),
-                      Expanded(
-                        child: ReactiveFormConsumer(
-                            builder: (context, consumerForm, _) {
-                          final form = consumerForm as TopUpForm;
-                          final account = form.account;
-                          final amount = form.amount;
+                child: ReactiveFormConsumer(
+                  builder: (context, consumerForm, _) {
+                    final form = consumerForm as TopUpForm;
+                    final account = form.account;
+                    final amount = form.amount;
 
-                          final newBalance = (account?.balance ?? 0) + amount;
-                          final formattedNewBalance =
-                              FormatCurrency.formatRupiah(newBalance);
-                          return Text.rich(
-                            overflow: TextOverflow.ellipsis,
-                            TextSpan(
-                                text: account?.name ?? 'Select account',
-                                style: const TextStyle(fontSize: 16),
-                                children: [
-                                  TextSpan(
-                                    text: '\n${account?.formattedBalance}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    children: newBalance == account?.balance
-                                        ? []
-                                        : [
-                                            TextSpan(
-                                              text: '  →  ',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: formattedNewBalance,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                  )
-                                ]),
-                          );
-                        }),
-                      ),
-                    ],
-                  ),
+                    final newBalance = (account?.balance ?? 0) + amount;
+                    final formattedNewBalance =
+                        FormatCurrency.formatRupiah(newBalance);
+
+                    return AccountPocketSelector(
+                      label: 'Account',
+                      placeholder: 'Select account',
+                      color: account?.color,
+                      icon: account?.type.icon,
+                      name: account?.name,
+                      balance: account?.formattedBalance,
+                      formattedNewBalance: newBalance == account?.balance
+                          ? null
+                          : formattedNewBalance,
+                      showBalanceChange: newBalance != account?.balance,
+                      onTap: () async {
+                        final selectedAccount = await context.push<
+                                SimpleAccountModel?>(
+                            '/accounts/select?selectedAccountId=${form.accountControl.value?.id}');
+                        if (selectedAccount != null && mounted) {
+                          form.accountControl.value = selectedAccount;
+                        }
+                      },
+                    );
+                  },
                 ),
               ),
 
@@ -194,6 +156,16 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                     hintText: 'Enter amount',
                     border: OutlineInputBorder(),
                   ),
+                ),
+              ),
+
+              CardInput(
+                label: 'Top Up Date',
+                child: DompetReactiveDatePicker(
+                  formControl: form.dateControl,
+                  hintText: 'Select date',
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime(2101),
                 ),
               ),
 
