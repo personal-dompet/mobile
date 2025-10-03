@@ -1,8 +1,9 @@
 import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
-import 'package:dompet/features/account/domain/model/simple_account_model.dart';
-import 'package:dompet/features/account/presentation/provider/account_provider.dart';
-import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
+import 'package:dompet/features/account/domain/model/account_model.dart';
+import 'package:dompet/features/account/presentation/provider/all_account_provider.dart';
+import 'package:dompet/features/account/presentation/provider/filtered_account_provider.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
@@ -70,8 +71,8 @@ class WalletCard extends ConsumerWidget {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () async {
-                    final selectedAccount = await context
-                        .push<SimpleAccountModel?>('/accounts/select');
+                    final selectedAccount =
+                        await context.push<AccountModel?>('/accounts/select');
 
                     if (selectedAccount == null || !context.mounted) return;
 
@@ -86,7 +87,7 @@ class WalletCard extends ConsumerWidget {
 
                     if (!context.mounted) return;
                     ref.invalidate(recentTransactionProvider);
-                    ref.invalidate(accountListProvider);
+                    ref.invalidate(allAccountProvider);
                     ref.invalidate(filteredAccountProvider);
                     context.showSuccessSnackbar('Top-up successful!');
                     form.reset();
@@ -182,7 +183,7 @@ class WalletCard extends ConsumerWidget {
                             child: ElevatedButton.icon(
                               onPressed: () async {
                                 final pocket =
-                                    await context.pushNamed<SimplePocketModel>(
+                                    await context.pushNamed<PocketModel>(
                                   'SelectPocket',
                                   queryParameters: {
                                     'title':
