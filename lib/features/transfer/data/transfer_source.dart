@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dompet/core/services/api/api_client.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TransferSource {
@@ -20,7 +19,6 @@ class TransferSource {
 
   Future<Map<String, dynamic>> pocketTransfer(
       PocketTransferForm request) async {
-    debugPrint('request: ${request.toJson()}');
     final response = await _dio.post<Map<String, dynamic>>('$_prefix/pockets',
         data: request.toJson());
     return response.data ?? {};

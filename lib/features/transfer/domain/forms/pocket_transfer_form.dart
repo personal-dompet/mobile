@@ -1,22 +1,22 @@
 import 'package:dompet/core/validators/amount_pocket_balance_validator.dart';
 import 'package:dompet/core/validators/not_equal_validator.dart';
-import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class PocketTransferForm extends FormGroup {
   PocketTransferForm({
-    SimplePocketModel? fromPocket,
-    SimplePocketModel? toPocket,
+    PocketModel? fromPocket,
+    PocketModel? toPocket,
     int? amount,
     String? description,
   }) : super(
           {
-            'fromPocket': FormControl<SimplePocketModel>(
+            'fromPocket': FormControl<PocketModel>(
               value: fromPocket,
               validators: [Validators.required],
             ),
-            'toPocket': FormControl<SimplePocketModel>(
+            'toPocket': FormControl<PocketModel>(
               value: toPocket,
               validators: [Validators.required],
             ),
@@ -33,16 +33,16 @@ class PocketTransferForm extends FormGroup {
           ],
         );
 
-  FormControl<SimplePocketModel> get fromPocketControl =>
-      control('fromPocket') as FormControl<SimplePocketModel>;
-  FormControl<SimplePocketModel> get toPocketControl =>
-      control('toPocket') as FormControl<SimplePocketModel>;
+  FormControl<PocketModel> get fromPocketControl =>
+      control('fromPocket') as FormControl<PocketModel>;
+  FormControl<PocketModel> get toPocketControl =>
+      control('toPocket') as FormControl<PocketModel>;
   FormControl<int> get amountControl => control('amount') as FormControl<int>;
   FormControl<String?> get descriptionControl =>
       control('description') as FormControl<String?>;
 
-  SimplePocketModel? get fromPocket => control('fromPocket').value;
-  SimplePocketModel? get toPocket => control('toPocket').value;
+  PocketModel? get fromPocket => control('fromPocket').value;
+  PocketModel? get toPocket => control('toPocket').value;
   int get amount => control('amount').value ?? 0;
   String? get description => control('description').value;
 

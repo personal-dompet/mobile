@@ -4,7 +4,7 @@ import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
-import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -133,9 +133,13 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
                       isDisabled:
                           widget.subject == TransferStaticSubject.source,
                       onTap: () async {
-                        final selectedPocket = await context.push<
-                                SimplePocketModel?>(
-                            '/pockets/select?selectedPocketId=${form.fromPocketControl.value?.id}&title=origin');
+                        final selectedPocket = await context
+                            .pushNamed<PocketModel>('SelectPocket',
+                                queryParameters: {
+                              'selectedPocketId':
+                                  form.fromPocketControl.value?.id.toString(),
+                              'title': 'origin',
+                            });
                         if (selectedPocket != null && mounted) {
                           form.fromPocketControl.value = selectedPocket;
                         }
@@ -171,9 +175,13 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
                           : formattedNewBalance,
                       showBalanceChange: newBalance != toPocket?.balance,
                       onTap: () async {
-                        final selectedPocket = await context.push<
-                                SimplePocketModel?>(
-                            '/pockets/select?selectedPocketId=${form.toPocketControl.value?.id}&title=destination');
+                        final selectedPocket = await context
+                            .pushNamed<PocketModel>('SelectPocket',
+                                queryParameters: {
+                              'selectedPocketId':
+                                  form.toPocketControl.value?.id.toString(),
+                              'title': 'destination',
+                            });
                         if (selectedPocket != null && mounted) {
                           form.toPocketControl.value = selectedPocket;
                         }
@@ -206,10 +214,6 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
                         amountControl.hasError('min')) {
                       errorText = 'Amount must be at least 1';
                     }
-
-                    debugPrint('errorText: $errorText');
-                    debugPrint(
-                        'amountControl.invalid: ${amountControl.invalid}');
 
                     return MaskedAmountInput(
                       formControlName: 'amount',
