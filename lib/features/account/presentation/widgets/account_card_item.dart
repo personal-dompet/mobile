@@ -1,14 +1,14 @@
-import 'package:dompet/features/account/domain/model/simple_account_model.dart';
+import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/core/widgets/item_card.dart';
 import 'package:flutter/material.dart';
 
 class AccountCardItem extends StatelessWidget {
-  final SimpleAccountModel account;
+  final AccountModel account;
   final bool isSelected;
   final VoidCallback? onTap;
 
   const AccountCardItem({
-    super.key, 
+    super.key,
     required this.account,
     this.isSelected = false,
     this.onTap,
@@ -16,7 +16,7 @@ class AccountCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ItemCard<SimpleAccountModel>(
+    return ItemCard<AccountModel>(
       item: account,
       id: (item) => item.id,
       name: (item) => item.name,

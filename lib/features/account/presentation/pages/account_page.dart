@@ -1,6 +1,6 @@
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
-import 'package:dompet/features/account/presentation/provider/account_provider.dart';
+import 'package:dompet/features/account/presentation/provider/filtered_account_provider.dart';
 import 'package:dompet/features/account/presentation/widgets/account_empty_list.dart';
 import 'package:dompet/features/account/presentation/widgets/account_grid.dart';
 import 'package:dompet/features/account/presentation/widgets/account_search_field.dart';

@@ -1,8 +1,8 @@
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/account_create_form.dart';
-import 'package:dompet/features/account/domain/model/simple_account_model.dart';
-import 'package:dompet/features/account/presentation/provider/account_provider.dart';
+import 'package:dompet/features/account/domain/model/account_model.dart';
+import 'package:dompet/features/account/presentation/provider/all_account_provider.dart';
 import 'package:dompet/features/account/presentation/widgets/account_grid.dart';
 import 'package:dompet/features/account/presentation/widgets/account_type_selector_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class SelectAccountPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final accountsAsync = ref.watch(accountListProvider);
+    final accountsAsync = ref.watch(allAccountProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -26,7 +26,7 @@ class SelectAccountPage extends ConsumerWidget {
         ),
       ),
       body: RefreshWrapper(
-        onRefresh: () async => ref.invalidate(accountListProvider),
+        onRefresh: () async => ref.invalidate(allAccountProvider),
         child: accountsAsync.when(
           data: (data) {
             if (data == null || data.isEmpty) {
@@ -68,13 +68,13 @@ class SelectAccountPage extends ConsumerWidget {
                           if (resultData == null) return;
 
                           await ref
-                              .read(accountListProvider.notifier)
+                              .read(allAccountProvider.notifier)
                               .create(resultData);
 
                           // After creating an account, pop back to this page to update the list
                           if (context.mounted) {
                             // Reload accounts after creation
-                            ref.invalidate(accountListProvider);
+                            ref.invalidate(allAccountProvider);
                           }
                         }
                       },
@@ -95,8 +95,7 @@ class SelectAccountPage extends ConsumerWidget {
                         data: data,
                         selectedAccountId: selectedAccountId,
                         onTap: (account) {
-                          Navigator.of(context)
-                              .pop<SimpleAccountModel>(account);
+                          Navigator.of(context).pop<AccountModel>(account);
                         }),
                   ),
                 ],
