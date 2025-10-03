@@ -1,19 +1,14 @@
 import 'package:dompet/core/enum/list_type.dart';
-import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
-import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
-import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
-import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/widgets/add_pocket_card_item.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_card_item.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class PocketGrid extends ConsumerWidget {
-  final List<SimplePocketModel> data;
+  final List<PocketModel> data;
   final int? selectedPocketId;
-  final void Function(SimplePocketModel) onTap;
+  final void Function(PocketModel) onTap;
   final ListType listType;
 
   const PocketGrid({
@@ -39,28 +34,7 @@ class PocketGrid extends ConsumerWidget {
         // If this is the last item, show the "Add Pocket" card
         if (index == data.length) {
           return AddPocketCardItem(
-            onTap: () async {
-              final result = await showModalBottomSheet<PocketType>(
-                context: context,
-                isScrollControlled: true,
-                useRootNavigator: true,
-                builder: (context) => const PocketTypeSelectorBottomSheet(),
-              );
-              if (result != null && context.mounted) {
-                final form = ref.read(pocketCreateFormProvider);
-                final typeControl = form.typeControl;
-                typeControl.value = result;
-                final resultData =
-                    await context.push<PocketCreateForm>('/pockets/create');
-                if (resultData == null) return;
-
-                if (listType == ListType.filtered) {
-                  ref.read(filteredPocketProvider.notifier).create(resultData);
-                } else {
-                  ref.read(pocketListProvider.notifier).create(resultData);
-                }
-              }
-            },
+            listType: listType,
           );
         }
         // Otherwise, show the regular pocket card

@@ -1,8 +1,8 @@
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
-import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
-import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
+import 'package:dompet/features/pocket/presentation/provider/all_pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class SelectPocketPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pocketsAsync = ref.watch(pocketListProvider);
+    final pocketsAsync = ref.watch(allPocketProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -32,11 +32,11 @@ class SelectPocketPage extends ConsumerWidget {
       body: RefreshWrapper(
         onRefresh: () async {
           // Refresh the provider data
-          ref.invalidate(pocketListProvider);
+          ref.invalidate(allPocketProvider);
         },
         child: pocketsAsync.when(
           data: (data) {
-            if (data == null || data.isEmpty) {
+            if (data.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -75,13 +75,13 @@ class SelectPocketPage extends ConsumerWidget {
 
                           // Use a filter form to call create method
                           await ref
-                              .read(pocketListProvider.notifier)
+                              .read(allPocketProvider.notifier)
                               .create(resultData);
 
                           // After creating a pocket, pop back to this page to update the list
                           if (context.mounted) {
                             // Reload pockets after creation
-                            ref.invalidate(pocketListProvider);
+                            ref.invalidate(allPocketProvider);
                           }
                         }
                       },
@@ -103,7 +103,7 @@ class SelectPocketPage extends ConsumerWidget {
                       selectedPocketId: selectedPocketId,
                       onTap: (pocket) {
                         // Navigate back with the selected pocket
-                        Navigator.of(context).pop<SimplePocketModel>(pocket);
+                        Navigator.of(context).pop<PocketModel>(pocket);
                       },
                     ),
                   ),

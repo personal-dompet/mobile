@@ -1,9 +1,9 @@
 import 'package:dompet/core/widgets/item_card.dart';
-import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:flutter/material.dart';
 
 class PocketCardItem extends StatelessWidget {
-  final SimplePocketModel pocket;
+  final PocketModel pocket;
   final bool isSelected;
   final VoidCallback? onTap;
 
@@ -16,7 +16,7 @@ class PocketCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ItemCard<SimplePocketModel>(
+    return ItemCard<PocketModel>(
       item: pocket,
       id: (item) => item.id,
       name: (item) => item.name,

@@ -1,96 +1,87 @@
-class PocketModel {
-  final String id;
+import 'package:dompet/core/constants/pocket_color.dart';
+import 'package:dompet/core/enum/category.dart';
+import 'package:dompet/core/models/timestamp_model.dart';
+import 'package:dompet/core/utils/helpers/format_currency.dart';
+import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
+
+class PocketModel extends TimestampModel {
+  final int id;
   final String name;
-  final String type;
-  final double balance;
-  final double targetAmount;
-  final String icon;
-  final bool isActive;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final PocketColor? color;
+  final int balance;
+  final Category? icon;
+  final int priority;
+  final PocketType type;
 
   PocketModel({
     required this.id,
     required this.name,
-    required this.type,
+    required this.color,
     required this.balance,
-    required this.targetAmount,
     required this.icon,
-    required this.isActive,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.priority,
+    required this.type,
+    required super.createdAt,
+    required super.updatedAt,
   });
 
-  // Calculate progress percentage for saving pockets
-  double get progressPercentage {
-    if (targetAmount <= 0) return 0.0;
-    return (balance / targetAmount) * 100;
-  }
-
-  // Factory constructor to create a PocketModel from JSON
   factory PocketModel.fromJson(Map<String, dynamic> json) {
+    final timestamp = TimestampModel.fromJson(json);
     return PocketModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      type: json['type'] as String,
-      balance: (json['balance'] as num).toDouble(),
-      targetAmount: (json['target_amount'] as num?)?.toDouble() ?? 0.0,
-      icon: json['icon'] as String? ?? '',
-      isActive: json['is_active'] as bool? ?? true,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      id: json['id'],
+      name: json['name'],
+      color: json['color'] != null ? PocketColor.parse(json['color']) : null,
+      balance: json['balance'],
+      icon: json['icon'] != null ? Category.fromValue(json['icon']) : null,
+      priority: json['priority'],
+      type: PocketType.fromValue(json['type']),
+      createdAt: timestamp.createdAt,
+      updatedAt: timestamp.updatedAt,
     );
   }
 
-  factory PocketModel.empty() {
+  factory PocketModel.placeholder({
+    String? name,
+    PocketColor? color,
+    int? balance,
+    Category? icon,
+    int? priority,
+    PocketType? type,
+  }) {
     return PocketModel(
-      id: '',
-      name: '',
-      type: '',
-      balance: 0.0,
-      targetAmount: 0.0,
-      icon: '',
-      isActive: true,
+      id: -1,
+      name: name ?? '',
+      color: color,
+      balance: balance ?? 0,
+      icon: icon,
+      priority: priority ?? 0,
+      type: type ?? PocketType.all,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
   }
 
-  // Convert PocketModel to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'type': type,
-      'balance': balance,
-      'target_amount': targetAmount,
-      'icon': icon,
-      'is_active': isActive,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-    };
-  }
+  String get formattedBalance => FormatCurrency.formatRupiah(balance);
 
-  // Copy with method for updating properties
   PocketModel copyWith({
-    String? id,
+    int? id,
     String? name,
-    String? type,
-    double? balance,
-    double? targetAmount,
-    String? icon,
-    bool? isActive,
+    PocketColor? color,
+    int? balance,
+    Category? icon,
+    int? priority,
+    PocketType? type,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
     return PocketModel(
       id: id ?? this.id,
       name: name ?? this.name,
-      type: type ?? this.type,
+      color: color ?? this.color,
       balance: balance ?? this.balance,
-      targetAmount: targetAmount ?? this.targetAmount,
       icon: icon ?? this.icon,
-      isActive: isActive ?? this.isActive,
+      priority: priority ?? this.priority,
+      type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

@@ -17,7 +17,6 @@ class CreatePocketPage extends ConsumerWidget {
 
   // Get color based on pocket type
   Color _getPocketTypeColor(BuildContext context, PocketType type) {
-    debugPrint(type.toString());
     final colorScheme = Theme.of(context).colorScheme;
 
     switch (type) {

@@ -1,6 +1,6 @@
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
-import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/filtered_pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_empty_list.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_search_field.dart';
@@ -32,7 +32,7 @@ class PocketPage extends ConsumerWidget {
                   const SizedBox(height: 16),
                   PocketTypeSelector(),
                   const SizedBox(height: 16),
-                  if (data != null && data.isNotEmpty)
+                  if (data.isNotEmpty)
                     Expanded(
                       child: PocketGrid(
                         data: data,
@@ -40,7 +40,7 @@ class PocketPage extends ConsumerWidget {
                         onTap: (pocket) {},
                       ),
                     ),
-                  if (data == null || data.isEmpty)
+                  if (data.isEmpty)
                     Expanded(
                       child: SingleChildScrollView(
                           child: PocketEmptyList(
