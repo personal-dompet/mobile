@@ -1,5 +1,4 @@
-import 'package:dompet/core/enum/category.dart';
-import 'package:dompet/features/transaction/domain/models/recent_transaction_model.dart';
+import 'package:dompet/features/transaction/domain/models/transaction_detail_model.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,7 +46,7 @@ class RecentTransactionsList extends ConsumerWidget {
 }
 
 class _RecentTransactionItem extends StatelessWidget {
-  final RecentTransactionModel transaction;
+  final TransactionDetailModel transaction;
 
   const _RecentTransactionItem({required this.transaction});
 
@@ -62,48 +61,66 @@ class _RecentTransactionItem extends StatelessWidget {
           radius: 20,
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           child: Icon(
-            _getCategoryIcon(transaction.category),
+            transaction.category.icon,
             color: Theme.of(context).colorScheme.onPrimaryContainer,
             size: 20,
           ),
         ),
         title: Text(
-          transaction.description ?? transaction.category,
+          transaction.description ?? transaction.category.displayName,
           style: const TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 14,
           ),
         ),
-        subtitle: Text(
-          transaction.formattedDate,
-          style: const TextStyle(
-            fontSize: 12,
-          ),
+        subtitle: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            Text(
+              transaction.account.name,
+              style: TextStyle(fontSize: 12, color: transaction.account.color),
+            ),
+            Text(
+              '|',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.withValues(alpha: 0.7),
+              ),
+            ),
+            Text(
+              transaction.pocket.name,
+              style: TextStyle(
+                fontSize: 12,
+                color: transaction.pocket.color ??
+                    Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ],
         ),
-        trailing: Text(
-          transaction.formattedAmount,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: transaction.isIncome
-                ? Theme.of(context).colorScheme.tertiary
-                : Theme.of(context).colorScheme.error,
-          ),
+        trailing: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              transaction.formattedAmount,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: transaction.isIncome
+                    ? Theme.of(context).colorScheme.tertiary
+                    : Theme.of(context).colorScheme.error,
+              ),
+            ),
+            Text(
+              transaction.realtiveFormattedDate,
+              style: const TextStyle(
+                fontSize: 12,
+              ),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  IconData _getCategoryIcon(String category) {
-    try {
-      // Try to find the matching enum value
-      final categoryEnum = Category.values.firstWhere((e) {
-        return e.displayName.toLowerCase() == category.toLowerCase();
-      });
-      return categoryEnum.icon;
-    } catch (e) {
-      // If not found, return a default icon
-      return Icons.payment_outlined;
-    }
   }
 }

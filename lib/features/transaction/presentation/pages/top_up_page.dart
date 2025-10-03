@@ -4,7 +4,7 @@ import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/reactive_date_picker.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
-import 'package:dompet/features/account/domain/model/simple_account_model.dart';
+import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +131,7 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                       showBalanceChange: newBalance != account?.balance,
                       onTap: () async {
                         final selectedAccount = await context.push<
-                                SimpleAccountModel?>(
+                                AccountModel?>(
                             '/accounts/select?selectedAccountId=${form.accountControl.value?.id}');
                         if (selectedAccount != null && mounted) {
                           form.accountControl.value = selectedAccount;
