@@ -1,4 +1,4 @@
-import 'package:dompet/features/pocket/domain/model/simple_pocket_model.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 /// A validator that checks if the amount does not exceed the from pocket balance
@@ -21,13 +21,12 @@ class AmountPocketBalanceValidator extends Validator<dynamic> {
 
     // Ensure both values are of the expected types
     if (amountControl.value is! int ||
-        fromPocketControl.value is! SimplePocketModel) {
+        fromPocketControl.value is! PocketModel) {
       return null;
     }
 
     final int amount = amountControl.value as int;
-    final SimplePocketModel fromPocket =
-        fromPocketControl.value as SimplePocketModel;
+    final PocketModel fromPocket = fromPocketControl.value as PocketModel;
 
     // Check if amount exceeds pocket balance
     if (amount > fromPocket.balance) {

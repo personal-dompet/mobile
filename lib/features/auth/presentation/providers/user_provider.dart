@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dompet/features/auth/data/repositories/auth_repository.dart';
+import 'package:dompet/features/auth/data/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

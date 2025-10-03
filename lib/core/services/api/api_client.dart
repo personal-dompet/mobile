@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,7 +12,6 @@ final apiClientProvider = Provider<Dio>((ref) {
   dio.options.headers['Content-Type'] = 'application/json';
 
   dio.interceptors.add(AuthInterceptor());
-  debugPrint(dio.options.toString());
   return dio;
 });
 

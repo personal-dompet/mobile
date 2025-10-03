@@ -75,8 +75,6 @@ class _ItemCardState<T> extends State<ItemCard<T>>
     final color = widget.color?.call(widget.item) ?? theme.colorScheme.primary;
     final icon = widget.icon?.call(widget.item) ?? Icons.question_mark;
 
-    debugPrint('isSelected: ${widget.isSelected}');
-
     // If item.id equals -1, wrap with animated container
     if (widget.id(widget.item) == -1) {
       return AnimatedBuilder(

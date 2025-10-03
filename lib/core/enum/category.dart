@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
 
 enum Category {
   bills('Bills', Icons.receipt_outlined, 'bills'),
@@ -102,9 +103,15 @@ enum Category {
 
   const Category(this.displayName, this.icon, this.iconKey);
 
-  static Category fromString(String value) {
+  static Category fromValue(String value) {
     for (final category in Category.values) {
       if (category.iconKey == value) {
+        return category;
+      }
+    }
+
+    for (final category in Category.values) {
+      if (category.displayName == value) {
         return category;
       }
     }
