@@ -16,9 +16,9 @@ class CreateAccountPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final accountCreateForm = ref.watch(accountCreateFormProvider);
 
-    final colorControl = accountCreateForm.colorControl;
+    final colorControl = accountCreateForm.color;
 
-    final type = accountCreateForm.typeControl.value;
+    final type = accountCreateForm.type.value;
 
     if (colorControl.value == null) {
       colorControl.value = PocketColor.randomColor;
@@ -42,14 +42,14 @@ class CreateAccountPage extends ConsumerWidget {
                     final form = formGroup as AccountCreateForm;
                     return Container(
                       decoration: BoxDecoration(
-                        color: (form.type?.color ?? Colors.grey)
+                        color: (form.typeValue?.color ?? Colors.grey)
                             .withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
                         icon: Icon(
-                          form.type?.icon ?? Icons.question_mark,
-                          color: form.type?.color ?? Colors.grey,
+                          form.typeValue?.icon ?? Icons.question_mark,
+                          color: form.typeValue?.color ?? Colors.grey,
                         ),
                         onPressed: () async {
                           final result =
@@ -61,7 +61,7 @@ class CreateAccountPage extends ConsumerWidget {
                                 const AccountTypeSelectorBottomSheet(),
                           );
                           if (result != null && context.mounted) {
-                            final typeControl = accountCreateForm.typeControl;
+                            final typeControl = accountCreateForm.type;
                             typeControl.value = result;
                           }
                         },
@@ -84,13 +84,13 @@ class CreateAccountPage extends ConsumerWidget {
                         height: 96,
                         width: 96,
                         decoration: BoxDecoration(
-                          color: form.color?.withValues(alpha: 0.25),
+                          color: form.colorValue?.withValues(alpha: 0.25),
                           shape: BoxShape.circle,
                         ),
                         child: Center(
                           child: Icon(
-                            form.type?.icon ?? Icons.question_mark,
-                            color: form.color,
+                            form.typeValue?.icon ?? Icons.question_mark,
+                            color: form.colorValue,
                             size: 48,
                           ),
                         ),
@@ -99,7 +99,7 @@ class CreateAccountPage extends ConsumerWidget {
                     CardInput(
                       label: 'Name',
                       child: ReactiveTextField<String>(
-                        formControl: form.nameControl,
+                        formControl: form.name,
                         decoration: const InputDecoration(
                           hintText: 'Enter account name',
                           border: OutlineInputBorder(),

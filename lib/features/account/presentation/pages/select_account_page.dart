@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/account_create_form.dart';
@@ -61,7 +62,7 @@ class SelectAccountPage extends ConsumerWidget {
                         if (result != null && context.mounted) {
                           final formProvider =
                               ref.read(accountCreateFormProvider);
-                          final typeControl = formProvider.typeControl;
+                          final typeControl = formProvider.type;
                           typeControl.value = result;
                           final resultData = await CreateAccountRoute()
                               .push<AccountCreateForm>(context);
@@ -94,6 +95,7 @@ class SelectAccountPage extends ConsumerWidget {
                     child: AccountGrid(
                         data: data,
                         selectedAccountId: selectedAccountId,
+                        listType: ListType.all,
                         onTap: (account) {
                           Navigator.of(context).pop<AccountModel>(account);
                         }),

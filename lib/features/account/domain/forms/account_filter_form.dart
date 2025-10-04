@@ -16,7 +16,7 @@ class AccountFilterForm extends FormGroup {
   String? get keywordValue => keyword.value;
   AccountType? get typeValue => type.value;
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> get json {
     return Map.fromEntries(
       {
         'keyword': keywordValue,

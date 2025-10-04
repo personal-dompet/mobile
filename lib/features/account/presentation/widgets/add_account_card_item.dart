@@ -33,7 +33,12 @@ class AddAccountCardItem extends ConsumerWidget {
   Future<AccountType?> _determineAccountType(BuildContext context) async {
     // If viewing all accounts, use all type
     if (listType == ListType.all) {
-      return AccountType.all;
+      return await showModalBottomSheet<AccountType>(
+        context: context,
+        isScrollControlled: true,
+        useRootNavigator: true,
+        builder: (context) => const AccountTypeSelectorBottomSheet(),
+      );
     }
 
     // Get current filter
@@ -58,7 +63,7 @@ class AddAccountCardItem extends ConsumerWidget {
       BuildContext context, AccountType type) async {
     final form =
         ProviderScope.containerOf(context).read(accountCreateFormProvider);
-    form.typeControl.value = type;
+    form.type.value = type;
 
     return await CreateAccountRoute().push<AccountCreateForm>(context);
   }

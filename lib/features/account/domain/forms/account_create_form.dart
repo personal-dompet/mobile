@@ -13,21 +13,21 @@ class AccountCreateForm extends FormGroup {
           'type': FormControl<AccountType>(),
         });
 
-  FormControl<String> get nameControl => control('name') as FormControl<String>;
-  FormControl<PocketColor> get colorControl =>
+  FormControl<String> get name => control('name') as FormControl<String>;
+  FormControl<PocketColor> get color =>
       control('color') as FormControl<PocketColor>;
-  FormControl<AccountType> get typeControl =>
+  FormControl<AccountType> get type =>
       control('type') as FormControl<AccountType>;
 
-  String get name => nameControl.value ?? '';
-  PocketColor? get color => colorControl.value;
-  AccountType? get type => typeControl.value;
+  String get nameValue => name.value ?? '';
+  PocketColor? get colorValue => color.value;
+  AccountType? get typeValue => type.value;
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'color': color?.toHex(),
-        'type': type?.value,
-      };
+  Map<String, dynamic> get json => Map.fromEntries({
+        'name': nameValue,
+        'color': colorValue?.toHex(),
+        'type': typeValue?.value,
+      }.entries);
 }
 
 final accountCreateFormProvider = Provider<AccountCreateForm>((ref) {

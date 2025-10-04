@@ -61,7 +61,7 @@ class AccountEmptyList extends ConsumerWidget {
       BuildContext context, AccountType type) async {
     final form =
         ProviderScope.containerOf(context).read(accountCreateFormProvider);
-    form.typeControl.value = type;
+    form.type.value = type;
 
     return await CreateAccountRoute().push<AccountCreateForm>(context);
   }

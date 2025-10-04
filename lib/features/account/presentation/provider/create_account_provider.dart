@@ -20,12 +20,12 @@ class CreateAccountProvider {
     List<AccountModel> newState = previousState ?? [];
 
     if (previousState != null &&
-        (filterType == form.type || filterType == AccountType.all)) {
+        (filterType == form.typeValue || filterType == AccountType.all)) {
       newState = [
         AccountModel.placeholder(
-          name: form.name,
-          type: form.type!,
-          color: form.color!,
+          name: form.nameValue,
+          type: form.typeValue!,
+          color: form.colorValue!,
         ),
         ...previousState,
       ];
