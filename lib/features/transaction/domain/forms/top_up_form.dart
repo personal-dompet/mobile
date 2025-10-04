@@ -18,25 +18,24 @@ class TopUpForm extends FormGroup {
           ),
         });
 
-  FormControl<AccountModel> get accountControl =>
+  FormControl<AccountModel> get account =>
       control('account') as FormControl<AccountModel>;
-  FormControl<int> get amountControl => control('amount') as FormControl<int>;
-  FormControl<String?> get descriptionControl =>
+  FormControl<int> get amount => control('amount') as FormControl<int>;
+  FormControl<String?> get description =>
       control('description') as FormControl<String?>;
-  FormControl<DateTime> get dateControl =>
-      control('date') as FormControl<DateTime>;
+  FormControl<DateTime> get date => control('date') as FormControl<DateTime>;
 
-  AccountModel? get account => control('account').value;
-  int get amount => control('amount').value ?? 0;
-  String? get description => control('description').value;
-  DateTime get date => control('date').value ?? DateTime.now();
+  AccountModel? get accountValue => control('account').value;
+  int get amountValue => control('amount').value ?? 0;
+  String? get descriptionValue => control('description').value;
+  DateTime get dateValue => control('date').value ?? DateTime.now();
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> get json {
     return {
-      'accountId': account?.id,
-      'amount': amount,
-      'description': description,
-      'date': (date.millisecondsSinceEpoch / 1000).toInt(),
+      'accountId': accountValue?.id,
+      'amount': amountValue,
+      'description': descriptionValue,
+      'date': (dateValue.millisecondsSinceEpoch / 1000).toInt(),
     };
   }
 }

@@ -61,22 +61,22 @@ class TransactionModel extends TimestampModel {
   String get formattedAmount => FormatCurrency.formatRupiah(amount);
   bool get isIncome => type == TransactionType.income;
 
-  String get realtiveFormattedDate {
+  String get relativeFormattedDate {
     final now = DateTime.now();
 
     final difference = now.difference(date).inDays;
+    final hour = date.hour.toString().padLeft(2, '0');
+    final minute = date.minute.toString().padLeft(2, '0');
 
     if (difference == 0) {
       // Today
-      final hour = date.hour.toString().padLeft(2, '0');
-      final minute = date.minute.toString().padLeft(2, '0');
-      return 'Today $hour:$minute';
+      return 'Today at $hour:$minute';
     } else if (difference == 1) {
       // Yesterday
-      return 'Yesterday';
+      return 'Yesterday at $hour:$minute';
     } else if (difference < 7) {
       // Within a week
-      return '$difference days ago';
+      return '$difference days ago at $hour:$minute';
     } else {
       // More than a week
       final formatter = DateFormat('dd MMMM yyyy HH:mm');

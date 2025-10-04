@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dompet/core/services/api/api_client.dart';
+import 'package:dompet/features/transaction/domain/forms/transaction_filter_form.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TransactionSource {
@@ -9,13 +10,15 @@ class TransactionSource {
 
   TransactionSource(this._dio);
 
-  Future<Map<String, dynamic>> getTransactions() async {
-    final response = await _dio.get<Map<String, dynamic>>(_prefix);
-    return response.data ?? {};
+  Future<List<dynamic>> getTransactions(TransactionFilterForm form) async {
+    final response =
+        await _dio.get<List<dynamic>>(_prefix, queryParameters: form.json);
+    return response.data ?? [];
   }
 
-  Future<List<dynamic>> recentTransactions() async {
-    final response = await _dio.get('$_prefix/recents');
+  Future<List<dynamic>> recentTransactions(TransactionFilterForm form) async {
+    final response =
+        await _dio.get('$_prefix/recents', queryParameters: form.json);
     if (response.data is List) {
       return response.data as List<dynamic>;
     }

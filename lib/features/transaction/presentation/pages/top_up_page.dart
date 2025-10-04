@@ -65,7 +65,7 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
     final now = DateTime.now();
     final form = ref.watch(topUpFormProvider);
 
-    form.dateControl.value = now;
+    form.date.value = now;
 
     final walletAsync = ref.watch(walletProvider);
 
@@ -113,8 +113,8 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                 child: ReactiveFormConsumer(
                   builder: (context, consumerForm, _) {
                     final form = consumerForm as TopUpForm;
-                    final account = form.account;
-                    final amount = form.amount;
+                    final account = form.accountValue;
+                    final amount = form.amountValue;
 
                     final newBalance = (account?.balance ?? 0) + amount;
                     final formattedNewBalance =
@@ -133,10 +133,10 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                       showBalanceChange: newBalance != account?.balance,
                       onTap: () async {
                         final selectedAccount = await SelectAccountRoute(
-                          selectedAccountId: form.accountControl.value?.id,
+                          selectedAccountId: form.account.value?.id,
                         ).push<AccountModel>(context);
                         if (selectedAccount != null && mounted) {
-                          form.accountControl.value = selectedAccount;
+                          form.account.value = selectedAccount;
                         }
                       },
                     );
@@ -164,7 +164,7 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
               CardInput(
                 label: 'Top Up Date',
                 child: DompetReactiveDateTimePicker(
-                  formControl: form.dateControl,
+                  formControl: form.date,
                   hintText: 'Select date',
                   firstDate: DateTime(1900),
                   lastDate: DateTime.now(),
