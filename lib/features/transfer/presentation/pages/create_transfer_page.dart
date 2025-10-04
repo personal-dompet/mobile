@@ -112,8 +112,8 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
                 child: ReactiveFormConsumer(
                   builder: (context, consumerForm, _) {
                     final form = consumerForm as PocketTransferForm;
-                    final fromPocket = form.fromPocket;
-                    final amount = form.amount;
+                    final fromPocket = form.fromPocketValue;
+                    final amount = form.amountValue;
 
                     final newBalance = (fromPocket?.balance ?? 0) - amount;
                     final formattedNewBalance =
@@ -137,11 +137,11 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
                             .pushNamed<PocketModel>('SelectPocket',
                                 queryParameters: {
                               'selectedPocketId':
-                                  form.fromPocketControl.value?.id.toString(),
+                                  form.fromPocket.value?.id.toString(),
                               'title': 'origin',
                             });
                         if (selectedPocket != null && mounted) {
-                          form.fromPocketControl.value = selectedPocket;
+                          form.fromPocket.value = selectedPocket;
                         }
                       },
                     );
@@ -154,8 +154,8 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
                 child: ReactiveFormConsumer(
                   builder: (context, consumerForm, _) {
                     final form = consumerForm as PocketTransferForm;
-                    final toPocket = form.toPocket;
-                    final amount = form.amount;
+                    final toPocket = form.toPocketValue;
+                    final amount = form.amountValue;
 
                     final newBalance = (toPocket?.balance ?? 0) + amount;
                     final formattedNewBalance =
@@ -179,11 +179,11 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
                             .pushNamed<PocketModel>('SelectPocket',
                                 queryParameters: {
                               'selectedPocketId':
-                                  form.toPocketControl.value?.id.toString(),
+                                  form.toPocket.value?.id.toString(),
                               'title': 'destination',
                             });
                         if (selectedPocket != null && mounted) {
-                          form.toPocketControl.value = selectedPocket;
+                          form.toPocket.value = selectedPocket;
                         }
                       },
                     );
@@ -197,8 +197,8 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
                 child: ReactiveFormConsumer(
                   builder: (context, form, child) {
                     final formGroup = form as PocketTransferForm;
-                    final amountControl = formGroup.amountControl;
-                    final fromPocketControl = formGroup.fromPocketControl;
+                    final amountControl = formGroup.amount;
+                    final fromPocketControl = formGroup.fromPocket;
 
                     String? errorText;
                     if (_hasValidated &&

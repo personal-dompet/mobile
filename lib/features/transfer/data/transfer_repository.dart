@@ -1,4 +1,5 @@
 import 'package:dompet/features/transfer/data/transfer_source.dart';
+import 'package:dompet/features/transfer/domain/forms/pocket_transfer_filter_form.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:dompet/features/transfer/domain/models/pocket_transfer_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,9 +9,10 @@ class TransferRepository {
 
   TransferRepository(this._source);
 
-  Future<List<PocketTransferModel>> pocketTransfers() async {
-    final data = await _source.pocketTransfers();
-    return data.map(PocketTransferModel.fromJson).toList();
+  Future<List<PocketTransferModel>> pocketTransfers(
+      PocketTransferFilterForm form) async {
+    final data = await _source.pocketTransfers(form);
+    return PocketTransferModel.fromJsonList(data);
   }
 
   Future<PocketTransferModel> pocketTransfer(PocketTransferForm request) async {

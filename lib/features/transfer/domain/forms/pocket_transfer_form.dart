@@ -33,25 +33,25 @@ class PocketTransferForm extends FormGroup {
           ],
         );
 
-  FormControl<PocketModel> get fromPocketControl =>
+  FormControl<PocketModel> get fromPocket =>
       control('fromPocket') as FormControl<PocketModel>;
-  FormControl<PocketModel> get toPocketControl =>
+  FormControl<PocketModel> get toPocket =>
       control('toPocket') as FormControl<PocketModel>;
-  FormControl<int> get amountControl => control('amount') as FormControl<int>;
-  FormControl<String?> get descriptionControl =>
+  FormControl<int> get amount => control('amount') as FormControl<int>;
+  FormControl<String?> get description =>
       control('description') as FormControl<String?>;
 
-  PocketModel? get fromPocket => control('fromPocket').value;
-  PocketModel? get toPocket => control('toPocket').value;
-  int get amount => control('amount').value ?? 0;
-  String? get description => control('description').value;
+  PocketModel? get fromPocketValue => control('fromPocket').value;
+  PocketModel? get toPocketValue => control('toPocket').value;
+  int get amountValue => control('amount').value ?? 0;
+  String? get descriptionValue => control('description').value;
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> get json {
     return {
-      'sourcePocketId': fromPocket?.id,
-      'destinationPocketId': toPocket?.id,
-      'amount': amount,
-      'description': description,
+      'sourcePocketId': fromPocketValue?.id,
+      'destinationPocketId': toPocketValue?.id,
+      'amount': amountValue,
+      'description': descriptionValue,
     };
   }
 }

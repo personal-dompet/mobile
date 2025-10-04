@@ -17,10 +17,10 @@ class CreateTransferProvider {
     // Optimistically add the transfer to the state
     newState = [
       PocketTransferModel.placeholder(
-        sourcePocket: form.fromPocket,
-        destinationPocket: form.toPocket,
-        amount: form.amount,
-        description: form.description,
+        sourcePocket: form.fromPocketValue,
+        destinationPocket: form.toPocketValue,
+        amount: form.amountValue,
+        description: form.descriptionValue,
       ),
       ...previousState ?? [],
     ];

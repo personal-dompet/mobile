@@ -44,4 +44,8 @@ class PocketTransferModel extends TransferModel {
       description: description ?? '',
     );
   }
+
+  static List<PocketTransferModel> fromJsonList(List<dynamic> jsonList) {
+    return jsonList.map((json) => PocketTransferModel.fromJson(json)).toList();
+  }
 }
