@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
@@ -67,7 +68,7 @@ class SelectPocketPage extends ConsumerWidget {
                         );
                         if (result != null && context.mounted) {
                           final form = ref.read(pocketCreateFormProvider);
-                          form.typeControl.value = result;
+                          form.type.value = result;
 
                           final resultData = await CreatePocketRoute()
                               .push<PocketCreateForm>(context);
@@ -101,6 +102,7 @@ class SelectPocketPage extends ConsumerWidget {
                     child: PocketGrid(
                       data: data,
                       selectedPocketId: selectedPocketId,
+                      listType: ListType.all,
                       onTap: (pocket) {
                         // Navigate back with the selected pocket
                         Navigator.of(context).pop<PocketModel>(pocket);

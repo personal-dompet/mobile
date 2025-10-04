@@ -8,8 +8,8 @@ class PocketIcon extends StatelessWidget {
   final bool hideEditIcon;
   const PocketIcon({super.key, required this.form, this.hideEditIcon = false});
 
-  PocketColor? get color => form.color;
-  Category? get icon => form.icon;
+  PocketColor? get color => form.colorValue;
+  Category? get icon => form.iconValue;
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ class IconPicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedIcon = form.iconControl.value;
+    final selectedIcon = form.icon.value;
     final uniqueCategories = Category.getUniqueCategoriesByIcon();
 
     return SizedBox(
@@ -27,11 +27,11 @@ class IconPicker extends ConsumerWidget {
           final category = uniqueCategories[index];
           final isSelected = selectedIcon?.iconKey == category.iconKey;
 
-          final color = form.colorControl.value;
+          final color = form.color.value;
 
           return GestureDetector(
             onTap: () {
-              form.iconControl.value = category;
+              form.icon.value = category;
             },
             child: Container(
               decoration: BoxDecoration(

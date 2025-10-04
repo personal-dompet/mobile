@@ -10,7 +10,7 @@ class ColorPicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedColor = form.colorControl.value;
+    final selectedColor = form.color.value;
 
     return GridView.builder(
       shrinkWrap: true,
@@ -27,7 +27,7 @@ class ColorPicker extends ConsumerWidget {
 
         return GestureDetector(
           onTap: () {
-            form.colorControl.value = color;
+            form.color.value = color;
           },
           child: Container(
             decoration: BoxDecoration(

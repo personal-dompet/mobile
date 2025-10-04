@@ -33,7 +33,12 @@ class AddPocketCardItem extends ConsumerWidget {
   Future<PocketType?> _determinePocketType(BuildContext context) async {
     // If viewing all pockets, use all type
     if (listType == ListType.all) {
-      return PocketType.all;
+      return await showModalBottomSheet<PocketType>(
+        context: context,
+        isScrollControlled: true,
+        useRootNavigator: true,
+        builder: (context) => const PocketTypeSelectorBottomSheet(),
+      );
     }
 
     // Get current filter
@@ -58,7 +63,7 @@ class AddPocketCardItem extends ConsumerWidget {
       BuildContext context, PocketType type) async {
     final form =
         ProviderScope.containerOf(context).read(pocketCreateFormProvider);
-    form.typeControl.value = type;
+    form.type.value = type;
 
     return await CreatePocketRoute().push<PocketCreateForm>(context);
   }

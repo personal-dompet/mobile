@@ -16,7 +16,7 @@ class PocketFilterForm extends FormGroup {
   String? get keywordValue => keyword.value;
   PocketType? get typeValue => type.value;
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> get json {
     return Map.fromEntries(
       {
         'keyword': keywordValue,

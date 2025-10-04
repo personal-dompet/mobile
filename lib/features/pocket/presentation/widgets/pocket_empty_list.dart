@@ -62,7 +62,7 @@ class PocketEmptyList extends ConsumerWidget {
       BuildContext context, PocketType type) async {
     final form =
         ProviderScope.containerOf(context).read(pocketCreateFormProvider);
-    form.typeControl.value = type;
+    form.type.value = type;
 
     return await CreatePocketRoute().push<PocketCreateForm>(context);
   }

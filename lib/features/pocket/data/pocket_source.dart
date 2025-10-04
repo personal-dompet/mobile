@@ -12,12 +12,12 @@ class PocketSource {
   PocketSource(this._dio);
 
   Future<List<dynamic>> getPockets(PocketFilterForm form) async {
-    final response = await _dio.get(_prefix, queryParameters: form.toJson());
+    final response = await _dio.get(_prefix, queryParameters: form.json);
     return response.data ?? [];
   }
 
   Future<Map<String, dynamic>> create(PocketCreateForm form) async {
-    final response = await _dio.post(_prefix, data: form.toJson());
+    final response = await _dio.post(_prefix, data: form.json);
     return response.data ?? {};
   }
 }

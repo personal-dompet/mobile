@@ -20,14 +20,14 @@ class CreatePocketProvider {
     List<PocketModel> newState = previousState ?? [];
 
     if (previousState != null &&
-        (filterType == form.type || filterType == PocketType.all)) {
+        (filterType == form.typeValue || filterType == PocketType.all)) {
       newState = [
         PocketModel.placeholder(
           balance: 0,
-          name: form.name,
-          type: form.type!,
-          color: form.color!,
-          icon: form.icon,
+          name: form.nameValue,
+          type: form.typeValue!,
+          color: form.colorValue!,
+          icon: form.iconValue,
           priority: 0,
         ),
         ...previousState,

@@ -35,10 +35,10 @@ class CreatePocketPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pocketCreateForm = ref.watch(pocketCreateFormProvider);
 
-    final iconControl = pocketCreateForm.iconControl;
-    final colorControl = pocketCreateForm.colorControl;
+    final iconControl = pocketCreateForm.icon;
+    final colorControl = pocketCreateForm.color;
 
-    final type = pocketCreateForm.typeControl.value;
+    final type = pocketCreateForm.type.value;
 
     if (iconControl.value == null) {
       iconControl.value = Category.getRandomCategory();
@@ -75,10 +75,11 @@ class CreatePocketPage extends ConsumerWidget {
                         context: context,
                         isScrollControlled: true,
                         useRootNavigator: true,
-                        builder: (context) => const PocketTypeSelectorBottomSheet(),
+                        builder: (context) =>
+                            const PocketTypeSelectorBottomSheet(),
                       );
                       if (result != null && context.mounted) {
-                        final typeControl = pocketCreateForm.typeControl;
+                        final typeControl = pocketCreateForm.type;
                         typeControl.value = result;
                       }
                     },
@@ -105,7 +106,7 @@ class CreatePocketPage extends ConsumerWidget {
                     CardInput(
                       label: 'Name',
                       child: ReactiveTextField<String>(
-                        formControl: form.nameControl,
+                        formControl: form.name,
                         decoration: const InputDecoration(
                           hintText: 'Enter pocket name',
                           border: OutlineInputBorder(),

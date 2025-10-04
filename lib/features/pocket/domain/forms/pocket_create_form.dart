@@ -15,25 +15,24 @@ class PocketCreateForm extends FormGroup {
           'type': FormControl<PocketType>(),
         });
 
-  FormControl<String> get nameControl => control('name') as FormControl<String>;
-  FormControl<PocketColor> get colorControl =>
+  FormControl<String> get name => control('name') as FormControl<String>;
+  FormControl<PocketColor> get color =>
       control('color') as FormControl<PocketColor>;
-  FormControl<Category?> get iconControl =>
-      control('icon') as FormControl<Category?>;
-  FormControl<PocketType> get typeControl =>
+  FormControl<Category?> get icon => control('icon') as FormControl<Category?>;
+  FormControl<PocketType> get type =>
       control('type') as FormControl<PocketType>;
 
-  String get name => nameControl.value ?? '';
-  PocketColor? get color => colorControl.value;
-  Category? get icon => iconControl.value;
-  PocketType? get type => typeControl.value;
+  String get nameValue => name.value ?? '';
+  PocketColor? get colorValue => color.value;
+  Category? get iconValue => icon.value;
+  PocketType? get typeValue => type.value;
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'color': color?.toHex(),
-        'icon': icon?.iconKey,
-        'type': type?.value,
-      };
+  Map<String, dynamic> get json => Map.fromEntries({
+        'name': nameValue,
+        'color': colorValue?.toHex(),
+        'icon': iconValue?.iconKey,
+        'type': typeValue?.value,
+      }.entries);
 }
 
 final pocketCreateFormProvider = Provider<PocketCreateForm>((ref) {
