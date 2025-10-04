@@ -15,8 +15,8 @@ class WalletProvider extends AsyncNotifier<WalletModel?> {
     try {
       if (previousState != null) {
         state = AsyncValue.data(previousState.copyWith(
-          balance: previousState.balance + form.amount,
-          totalBalance: previousState.totalBalance + form.amount,
+          balance: previousState.balance + form.amountValue,
+          totalBalance: previousState.totalBalance + form.amountValue,
         ));
       }
       final wallet = await ref.read(walletRepositoryProvider).topUp(form);

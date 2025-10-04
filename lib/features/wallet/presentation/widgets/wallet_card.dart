@@ -77,7 +77,7 @@ class WalletCard extends ConsumerWidget {
                     if (selectedAccount == null || !context.mounted) return;
 
                     final form = ref.read(topUpFormProvider);
-                    form.accountControl.value = selectedAccount;
+                    form.account.value = selectedAccount;
 
                     final topUpForm =
                         await TopUpRoute().push<TopUpForm>(context);
@@ -189,8 +189,8 @@ class WalletCard extends ConsumerWidget {
                                 if (pocket == null || !context.mounted) return;
                                 final transferForm =
                                     ref.read(pocketTransferFormProvider);
-                                transferForm.fromPocketControl.value = wallet;
-                                transferForm.toPocketControl.value = pocket;
+                                transferForm.fromPocket.value = wallet;
+                                transferForm.toPocket.value = pocket;
 
                                 final form = await CreateTransferRoute(
                                   subject: TransferStaticSubject.source,

@@ -18,7 +18,7 @@ class WalletSource {
   Future<Map<String, dynamic>?> topUp(TopUpForm form) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '$_prefix/top-up',
-      data: form.toJson(),
+      data: form.json,
     );
     return response.data;
   }
