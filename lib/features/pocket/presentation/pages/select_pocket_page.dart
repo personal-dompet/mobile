@@ -5,6 +5,7 @@ import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/all_pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -69,8 +70,8 @@ class SelectPocketPage extends ConsumerWidget {
                           final form = ref.read(pocketCreateFormProvider);
                           form.typeControl.value = result;
 
-                          final resultData = await context
-                              .push<PocketCreateForm>('/pockets/create');
+                          final resultData = await CreatePocketRoute()
+                              .push<PocketCreateForm>(context);
                           if (resultData == null) return;
 
                           // Use a filter form to call create method

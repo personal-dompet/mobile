@@ -10,6 +10,7 @@ import 'package:dompet/features/transaction/presentation/providers/recent_transa
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:dompet/features/transfer/presentation/providers/transfer_provider.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -72,14 +73,15 @@ class WalletCard extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     final selectedAccount =
-                        await context.push<AccountModel?>('/accounts/select');
+                        await SelectAccountRoute().push<AccountModel>(context);
 
                     if (selectedAccount == null || !context.mounted) return;
 
                     final form = ref.read(topUpFormProvider);
                     form.accountControl.value = selectedAccount;
 
-                    final topUpForm = await context.push<TopUpForm?>('/top-up');
+                    final topUpForm =
+                        await TopUpRoute().push<TopUpForm>(context);
 
                     if (topUpForm == null) return;
 
@@ -182,27 +184,18 @@ class WalletCard extends ConsumerWidget {
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                final pocket =
-                                    await context.pushNamed<PocketModel>(
-                                  'SelectPocket',
-                                  queryParameters: {
-                                    'title':
-                                        SelectPocketTitle.destination.value,
-                                  },
-                                );
+                                final pocket = await SelectPocketRoute(
+                                  title: SelectPocketTitle.destination,
+                                ).push<PocketModel>(context);
                                 if (pocket == null || !context.mounted) return;
                                 final transferForm =
                                     ref.read(pocketTransferFormProvider);
                                 transferForm.fromPocketControl.value = wallet;
                                 transferForm.toPocketControl.value = pocket;
 
-                                final form = await context
-                                    .pushNamed<PocketTransferForm>(
-                                        'CreateTransfer',
-                                        queryParameters: {
-                                      'static':
-                                          TransferStaticSubject.source.name,
-                                    });
+                                final form = await CreateTransferRoute(
+                                  subject: TransferStaticSubject.source,
+                                ).push<PocketTransferForm>(context);
                                 if (form == null) return;
                                 await ref
                                     .read(transferProvider.notifier)

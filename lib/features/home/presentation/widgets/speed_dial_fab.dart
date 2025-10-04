@@ -1,5 +1,5 @@
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class SpeedDialFab extends StatefulWidget {
   const SpeedDialFab({super.key});
@@ -56,7 +56,7 @@ class _SpeedDialFabState extends State<SpeedDialFab>
           icon: Icons.call_made_rounded,
           color: Theme.of(context).colorScheme.primary,
           onPressed: () {
-            context.push('/transfers');
+            CreateTransferRoute().push(context);
             _toggle();
           },
           isOpen: _isOpen,

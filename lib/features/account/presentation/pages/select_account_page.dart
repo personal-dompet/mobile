@@ -5,9 +5,9 @@ import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/account/presentation/provider/all_account_provider.dart';
 import 'package:dompet/features/account/presentation/widgets/account_grid.dart';
 import 'package:dompet/features/account/presentation/widgets/account_type_selector_bottom_sheet.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class SelectAccountPage extends ConsumerWidget {
   final int? selectedAccountId;
@@ -29,7 +29,7 @@ class SelectAccountPage extends ConsumerWidget {
         onRefresh: () async => ref.invalidate(allAccountProvider),
         child: accountsAsync.when(
           data: (data) {
-            if (data == null || data.isEmpty) {
+            if (data.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -63,8 +63,8 @@ class SelectAccountPage extends ConsumerWidget {
                               ref.read(accountCreateFormProvider);
                           final typeControl = formProvider.typeControl;
                           typeControl.value = result;
-                          final resultData = await context
-                              .push<AccountCreateForm>('/accounts/create');
+                          final resultData = await CreateAccountRoute()
+                              .push<AccountCreateForm>(context);
                           if (resultData == null) return;
 
                           await ref

@@ -6,6 +6,7 @@ import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
 import 'package:dompet/features/pocket/presentation/provider/all_pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/provider/filtered_pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -64,7 +65,7 @@ class PocketEmptyList extends ConsumerWidget {
         ProviderScope.containerOf(context).read(pocketCreateFormProvider);
     form.typeControl.value = type;
 
-    return await context.push<PocketCreateForm>('/pockets/create');
+    return await CreatePocketRoute().push<PocketCreateForm>(context);
   }
 
   void _saveCreatedPocket(BuildContext context, PocketCreateForm resultData) {

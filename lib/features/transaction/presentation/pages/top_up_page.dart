@@ -7,6 +7,7 @@ import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -130,9 +131,9 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                           : formattedNewBalance,
                       showBalanceChange: newBalance != account?.balance,
                       onTap: () async {
-                        final selectedAccount = await context.push<
-                                AccountModel?>(
-                            '/accounts/select?selectedAccountId=${form.accountControl.value?.id}');
+                        final selectedAccount = await SelectAccountRoute(
+                          selectedAccountId: form.accountControl.value?.id,
+                        ).push<AccountModel>(context);
                         if (selectedAccount != null && mounted) {
                           form.accountControl.value = selectedAccount;
                         }

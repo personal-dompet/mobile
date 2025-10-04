@@ -6,9 +6,9 @@ import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
 import 'package:dompet/features/account/presentation/provider/all_account_provider.dart';
 import 'package:dompet/features/account/presentation/provider/filtered_account_provider.dart';
 import 'package:dompet/features/account/presentation/widgets/account_type_selector_bottom_sheet.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class AccountEmptyList extends ConsumerWidget {
   final ListType listType;
@@ -63,7 +63,7 @@ class AccountEmptyList extends ConsumerWidget {
         ProviderScope.containerOf(context).read(accountCreateFormProvider);
     form.typeControl.value = type;
 
-    return await context.push<AccountCreateForm>('/accounts/create');
+    return await CreateAccountRoute().push<AccountCreateForm>(context);
   }
 
   void _saveCreatedAccount(BuildContext context, AccountCreateForm resultData) {
