@@ -13,7 +13,6 @@ import 'package:dompet/features/wallet/presentation/providers/wallet_provider.da
 import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class WalletCard extends ConsumerWidget {
   const WalletCard({super.key});

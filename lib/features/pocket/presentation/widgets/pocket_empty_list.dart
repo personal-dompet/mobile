@@ -9,7 +9,6 @@ import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector
 import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class PocketEmptyList extends ConsumerWidget {
   final ListType listType;
