@@ -13,22 +13,24 @@ class ItemCreateForm extends FormGroup {
           'type': typeControl,
         });
 
-  FormControl<String> get nameControl => control('name') as FormControl<String>;
-  FormControl<PocketColor?> get colorControl => control('color') as FormControl<PocketColor?>;
-  FormControl<dynamic> get typeControl => control('type') as FormControl<dynamic>;
+  FormControl<String> get name => control('name') as FormControl<String>;
+  FormControl<PocketColor?> get color =>
+      control('color') as FormControl<PocketColor?>;
+  FormControl<dynamic> get type => control('type') as FormControl<dynamic>;
 
-  String get name => nameControl.value ?? '';
-  PocketColor? get color => colorControl.value;
-  dynamic get type => typeControl.value;
+  String get nameValue => name.value ?? '';
+  PocketColor? get colorValue => color.value;
+  dynamic get typeValue => type.value;
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'color': color?.toHex(),
-        'type': type?.value,
-      };
+  Map<String, dynamic> get json => Map.fromEntries({
+        'name': nameValue,
+        'color': colorValue?.toHex(),
+        'type': typeValue?.value,
+      }.entries);
 }
 
-final itemCreateFormProvider = Provider.autoDispose.family<ItemCreateForm, dynamic>(
+final itemCreateFormProvider =
+    Provider.autoDispose.family<ItemCreateForm, dynamic>(
   (ref, typeValue) => ItemCreateForm(
     nameControl: FormControl<String>(validators: [Validators.required]),
     colorControl: FormControl<PocketColor?>(),

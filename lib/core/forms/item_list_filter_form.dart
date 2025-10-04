@@ -16,7 +16,7 @@ class ItemListFilterForm<T> extends FormGroup {
   String? get keywordValue => keyword.value;
   T? get typeValue => type.value;
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> get json {
     return Map.fromEntries(
       {
         'keyword': keywordValue,
@@ -26,7 +26,8 @@ class ItemListFilterForm<T> extends FormGroup {
   }
 }
 
-final itemListFilterFormProvider = Provider.autoDispose.family<ItemListFilterForm, dynamic>(
+final itemListFilterFormProvider =
+    Provider.autoDispose.family<ItemListFilterForm, dynamic>(
   (ref, typeAllValue) => ItemListFilterForm(
     keywordControl: FormControl<String>(),
     typeControl: FormControl<dynamic>(value: typeAllValue),
