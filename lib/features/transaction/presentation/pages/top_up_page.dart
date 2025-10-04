@@ -2,7 +2,7 @@ import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
-import 'package:dompet/core/widgets/reactive_date_picker.dart';
+import 'package:dompet/core/widgets/reactive_datetime_picker.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
@@ -10,7 +10,6 @@ import 'package:dompet/features/wallet/presentation/providers/wallet_provider.da
 import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -65,6 +64,8 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final form = ref.watch(topUpFormProvider);
+
+    form.dateControl.value = now;
 
     final walletAsync = ref.watch(walletProvider);
 
@@ -162,11 +163,11 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
 
               CardInput(
                 label: 'Top Up Date',
-                child: DompetReactiveDatePicker(
+                child: DompetReactiveDateTimePicker(
                   formControl: form.dateControl,
                   hintText: 'Select date',
                   firstDate: DateTime(1900),
-                  lastDate: DateTime(2101),
+                  lastDate: DateTime.now(),
                 ),
               ),
 

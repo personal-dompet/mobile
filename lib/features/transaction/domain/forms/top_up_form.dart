@@ -14,7 +14,6 @@ class TopUpForm extends FormGroup {
           ),
           'description': FormControl<String?>(),
           'date': FormControl<DateTime>(
-            value: DateTime.now(),
             validators: [Validators.required],
           ),
         });
