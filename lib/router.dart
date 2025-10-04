@@ -1,16 +1,6 @@
-import 'package:dompet/core/enum/transfer_static_subject.dart';
-import 'package:dompet/features/account/presentation/pages/account_page.dart';
-import 'package:dompet/features/account/presentation/pages/create_account_page.dart';
-import 'package:dompet/features/account/presentation/pages/select_account_page.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:dompet/features/auth/presentation/widgets/auth_guard.dart';
-import 'package:dompet/features/home/presentation/pages/home_page.dart';
 import 'package:dompet/features/home/presentation/widgets/header.dart';
-import 'package:dompet/features/pocket/presentation/pages/create_pocket_page.dart';
-import 'package:dompet/features/pocket/presentation/pages/pocket_page.dart';
-import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
-import 'package:dompet/features/transaction/presentation/pages/top_up_page.dart';
-import 'package:dompet/features/transfer/presentation/pages/create_transfer_page.dart';
-import 'package:dompet/features/transfer/presentation/pages/transfer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,25 +10,16 @@ final GlobalKey<NavigatorState> _shellNavigatorKey =
 
 final router = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/',
+  initialLocation: Routes.dashboard.path,
   routes: [
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {
-        String? routeName;
         final path = state.uri.toString();
-        if (path == '/' || path.isEmpty) {
-          routeName = 'Dompet';
-        } else if (path.startsWith('/pockets')) {
-          routeName = 'Pocket';
-        } else if (path.startsWith('/accounts')) {
-          routeName = 'Account';
-        } else if (path.startsWith('/analytics')) {
-          routeName = 'Analytic';
-        }
+        final routeName = Routes.fromPath(path).name;
 
         return Scaffold(
-          appBar: HeaderAppBar(title: routeName ?? 'Dompet'),
+          appBar: HeaderAppBar(title: routeName),
           body: SafeArea(
             child: AuthGuard(child: child),
           ),
@@ -66,16 +47,16 @@ final router = GoRouter(
             onTap: (index) {
               switch (index) {
                 case 1:
-                  context.go('/pockets');
+                  PocketRoute().go(context);
                   break;
                 case 2:
-                  context.go('/accounts');
+                  AccountRoute().go(context);
                   break;
                 case 3:
-                  context.go('/analytics');
+                  AnalyticsRoute().go(context);
                   break;
                 default:
-                  context.go('/');
+                  DashboardRoute().go(context);
               }
             },
           ),
@@ -83,137 +64,27 @@ final router = GoRouter(
         );
       },
       routes: [
-        GoRoute(
-          path: '/',
-          pageBuilder: (context, state) => _buildPageWithNoTransition(
-              context: context, state: state, child: HomePage()),
-          name: 'Dompet',
-        ),
-        GoRoute(
-          path: '/pockets',
-          pageBuilder: (context, state) => _buildPageWithNoTransition(
-              context: context, state: state, child: PocketPage()),
-          name: 'Pocket',
-        ),
-        GoRoute(
-          path: '/accounts',
-          pageBuilder: (context, state) => _buildPageWithNoTransition(
-              context: context, state: state, child: AccountPage()),
-          name: 'Account',
-        ),
-        GoRoute(
-          path: '/analytics',
-          pageBuilder: (context, state) => _buildPageWithNoTransition(
-              context: context, state: state, child: TransferPage()),
-          name: 'Analytic',
-        ),
+        DashboardRoute().goRoute,
+        PocketRoute().goRoute,
+        AccountRoute().goRoute,
+        AnalyticsRoute().goRoute,
       ],
     ),
     // Top Up page route (not using shell route layout)
-    GoRoute(
-      path: '/top-up',
-      pageBuilder: (context, state) {
-        return _buildPageWithNoTransition(
-          context: context,
-          state: state,
-          child: TopUpPage(),
-        );
-      },
-      name: 'TopUp',
-    ),
-
-    GoRoute(
-      path: '/pockets/create',
-      pageBuilder: (context, state) {
-        return _buildPageWithNoTransition(
-          context: context,
-          state: state,
-          child: CreatePocketPage(),
-        );
-      },
-      name: 'CreatePocket',
-    ),
-    GoRoute(
-      path: '/pockets/select',
-      pageBuilder: (context, state) {
-        final selectedAccountId =
-            int.tryParse(state.uri.queryParameters['selectedAccountId'] ?? '');
-        final title = SelectPocketTitle.fromValue(
-            state.uri.queryParameters['title'] ??
-                SelectPocketTitle.general.value);
-        return _buildPageWithNoTransition(
-          context: context,
-          state: state,
-          child: SelectPocketPage(
-            selectedPocketId: selectedAccountId,
-            title: title ?? SelectPocketTitle.general,
-          ),
-        );
-      },
-      name: 'SelectPocket',
-    ),
-    GoRoute(
-      path: '/accounts/select',
-      pageBuilder: (context, state) {
-        final selectedAccountId =
-            int.tryParse(state.uri.queryParameters['selectedAccountId'] ?? '');
-        return _buildPageWithNoTransition(
-          context: context,
-          state: state,
-          child: SelectAccountPage(selectedAccountId: selectedAccountId),
-        );
-      },
-      name: 'SelectAccount',
-    ),
-
-    GoRoute(
-      path: '/accounts/create',
-      pageBuilder: (context, state) {
-        return _buildPageWithNoTransition(
-          context: context,
-          state: state,
-          child: CreateAccountPage(),
-        );
-      },
-      name: 'CreateAccount',
-    ),
-    GoRoute(
-      path: '/transfers/create',
-      pageBuilder: (context, state) {
-        final staticQuery = state.uri.queryParameters['static'];
-        TransferStaticSubject? subject;
-        if (staticQuery != null) {
-          subject = TransferStaticSubject.values.firstWhere(
-            (element) => element.name == staticQuery,
-            orElse: () => TransferStaticSubject.source,
-          );
-        }
-        return _buildPageWithNoTransition(
-          context: context,
-          state: state,
-          child: CreateTransferPage(subject: subject),
-        );
-      },
-      name: 'CreateTransfer',
-    ),
+    TopUpRoute().goRoute,
+    CreatePocketRoute().goRoute,
+    SelectPocketRoute().goRoute,
+    SelectAccountRoute().goRoute,
+    CreateAccountRoute().goRoute,
+    CreateTransferRoute().goRoute,
   ],
 );
 
 int _calculateIndex(GoRouterState state) {
   final path = state.uri.toString();
-  if (path.startsWith('/pockets')) return 1;
-  if (path.startsWith('/accounts')) return 2;
-  if (path.startsWith('/analytics')) return 3;
+  final route = Routes.fromPath(path);
+  if (route == Routes.pockets) return 1;
+  if (route == Routes.accounts) return 2;
+  if (route == Routes.analytics) return 3;
   return 0;
-}
-
-NoTransitionPage _buildPageWithNoTransition<T>({
-  required BuildContext context,
-  required GoRouterState state,
-  required Widget child,
-}) {
-  return NoTransitionPage<T>(
-    key: state.pageKey,
-    child: child,
-  );
 }
