@@ -2,7 +2,6 @@ import 'package:dompet/features/pocket/data/pocket_source.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
 import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PocketRepository {
@@ -12,7 +11,6 @@ class PocketRepository {
 
   Future<List<PocketModel>> getPockets(PocketFilterForm form) async {
     final data = await _source.getPockets(form);
-    debugPrint('PocketRepository: $data');
     return data.map((e) => PocketModel.fromJson(e)).toList();
   }
 
