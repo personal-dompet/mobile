@@ -56,8 +56,12 @@ class AccountTypeSelectorBottomSheet extends ConsumerWidget {
 
               return Container(
                 decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(12),
+                  color: colorScheme.surfaceVariant,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: typeColor.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
                 ),
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
@@ -88,7 +92,7 @@ class AccountTypeSelectorBottomSheet extends ConsumerWidget {
                   ),
                   trailing: Icon(
                     Icons.arrow_forward_ios_rounded,
-                    color: colorScheme.onSurface.withValues(alpha: 0.5),
+                    color: typeColor,
                     size: 16,
                   ),
                   onTap: () {

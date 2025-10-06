@@ -61,7 +61,7 @@ class CreateAccountPage extends ConsumerWidget {
                                 const AccountTypeSelectorBottomSheet(),
                           );
                           if (result != null && context.mounted) {
-                            final typeControl = accountCreateForm.type;
+                            final typeControl = form.type;
                             typeControl.value = result;
                           }
                         },
