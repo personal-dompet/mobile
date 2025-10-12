@@ -56,7 +56,7 @@ class AccountTypeSelectorBottomSheet extends ConsumerWidget {
 
               return Container(
                 decoration: BoxDecoration(
-                  color: colorScheme.surfaceVariant,
+                  color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: typeColor.withValues(alpha: 0.3),

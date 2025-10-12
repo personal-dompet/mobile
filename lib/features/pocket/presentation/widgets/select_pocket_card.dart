@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class SelectPocketCard extends StatelessWidget {
-  final String formControlName;
+  final FormControl<PocketModel> formControl;
   final String? label;
   final String? placeholder;
   final bool isDisabled;
 
   const SelectPocketCard({
     super.key,
-    required this.formControlName,
+    required this.formControl,
     this.label,
     this.placeholder,
     this.isDisabled = false,
@@ -20,7 +20,7 @@ class SelectPocketCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ReactiveFormField<PocketModel, PocketModel>(
-      formControlName: formControlName,
+      formControl: formControl,
       builder: (field) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

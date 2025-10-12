@@ -112,6 +112,9 @@ class CreatePocketPage extends ConsumerWidget {
                           form: form,
                         ),
                       ),
+                      const SizedBox(
+                        height: 8,
+                      ),
                       CardInput(
                         label: 'Name',
                         child: ReactiveTextField<String>(
@@ -129,7 +132,6 @@ class CreatePocketPage extends ConsumerWidget {
                         label: 'Color',
                         child: ColorPicker(form: form),
                       ),
-                      const SizedBox(height: 16),
                       CardInput(
                         label: 'Icon',
                         child: IconPicker(form: form),
@@ -138,8 +140,6 @@ class CreatePocketPage extends ConsumerWidget {
                       SubmitButton(
                         text: 'Create Pocket',
                         onPressed: () {
-                          // TODO: Implement form submission
-                          // For now, just pop back with the form data
                           Navigator.of(context).pop(pocketCreateForm);
                         },
                       ),
