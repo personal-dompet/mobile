@@ -1,19 +1,19 @@
 import 'package:dompet/core/enum/transfer_static_subject.dart';
-import 'package:dompet/features/transfer/presentation/pages/create_transfer_page.dart';
+import 'package:dompet/features/transfer/presentation/pages/create_account_transfer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'base_routes.dart';
 
 /// Type-safe route configuration for the create transfer route with parameters
-class CreateTransferRoute extends AppRoute {
+class CreateAccountTransferRoute extends AppRoute {
   final TransferStaticSubject? subject;
 
-  CreateTransferRoute({
+  CreateAccountTransferRoute({
     this.subject,
   });
 
   @override
-  Routes get route => Routes.createTransfer;
+  Routes get route => Routes.createAccountTransfer;
 
   @override
   Map<String, String> get queryParameters {
@@ -38,6 +38,6 @@ class CreateTransferRoute extends AppRoute {
       );
     }
 
-    return CreateTransferPage(subject: subject);
+    return CreateAccountTransferPage(subject: subject);
   }
 }

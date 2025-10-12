@@ -12,17 +12,18 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class CreateTransferPage extends ConsumerStatefulWidget {
+class CreatePocketTransferPage extends ConsumerStatefulWidget {
   final TransferStaticSubject? subject;
-  const CreateTransferPage({super.key, this.subject});
+  const CreatePocketTransferPage({super.key, this.subject});
 
   @override
-  ConsumerState<CreateTransferPage> createState() => _CreateTransferPageState();
+  ConsumerState<CreatePocketTransferPage> createState() =>
+      _CreateTransferPageState();
 }
 
-class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
+class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
   late FocusNode _descriptionFocusNode;
-  bool _hasValidated = false; // Track if form validation has occurred
+  bool _hasValidated = false;
 
   @override
   void initState() {
@@ -38,8 +39,6 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
 
   void _submit(BuildContext context) async {
     final form = ref.read(pocketTransferFormProvider);
-
-    // Mark all fields as touched to show validation errors if form is invalid
     if (!form.valid) {
       form.markAllAsTouched();
       setState(() {
@@ -47,24 +46,7 @@ class _CreateTransferPageState extends ConsumerState<CreateTransferPage> {
       });
       return;
     }
-
-    // If form is valid, proceed with submission
-    // Show loading or disable button here if needed
-
-    // Perform the transfer operation
-    // await transferNotifier.transfer();
-
-    // Check if the widget is still mounted before updating UI
-    // if (!mounted || !context.mounted) return;
-
     final payload = form;
-
-    // Reset the form
-    // form.reset();
-
-    // context.showSuccessSnackbar('Transfer successful!');
-
-    // Navigate back
     Navigator.of(context).pop<PocketTransferForm>(payload);
   }
 
