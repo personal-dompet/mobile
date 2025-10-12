@@ -5,6 +5,7 @@ import 'package:dompet/features/account/presentation/widgets/account_empty_list.
 import 'package:dompet/features/account/presentation/widgets/account_grid.dart';
 import 'package:dompet/features/account/presentation/widgets/account_search_field.dart';
 import 'package:dompet/features/account/presentation/widgets/account_type_selector.dart';
+import 'package:dompet/routes/create_pocket_transfer_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +15,27 @@ class AccountPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final accountsAsync = ref.watch(filteredAccountProvider);
     return Scaffold(
+      floatingActionButton: accountsAsync.when(
+        data: (data) {
+          // Only show FAB when there are accounts
+          if (data != null && data.length >= 2) {
+            return FloatingActionButton(
+              onPressed: () {
+                CreatePocketTransferRoute().push(context);
+              },
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              tooltip: 'Transfer',
+              child: const Icon(Icons.swap_horiz),
+            );
+          } else {
+            // Return an empty container when no accounts are available
+            return Container();
+          }
+        },
+        loading: () => Container(), // Hide FAB while loading
+        error: (error, stack) => Container(), // Hide FAB on error
+      ),
       body: RefreshWrapper(
         onRefresh: () async => ref.invalidate(filteredAccountProvider),
         child: accountsAsync.when(
