@@ -8,6 +8,7 @@ import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dar
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
+import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
 import 'package:dompet/features/transfer/presentation/providers/transfer_provider.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:dompet/routes/routes.dart';
@@ -192,15 +193,15 @@ class WalletCard extends ConsumerWidget {
                                 transferForm.fromPocket.value = wallet;
                                 transferForm.toPocket.value = pocket;
 
-                                final form = await CreateTransferRoute(
+                                final form = await CreatePocketTransferRoute(
                                   subject: TransferStaticSubject.source,
                                 ).push<PocketTransferForm>(context);
                                 if (form == null) return;
                                 await ref
                                     .read(transferProvider.notifier)
                                     .pocketTransfer(form);
-                                // transferForm.fromPocketControl.value =
-                                // context.push('/transfers');
+                                ref.invalidate(pocketTransferFormProvider);
+                                ref.invalidate(recentPocketTransfersProvider);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
