@@ -1,10 +1,10 @@
 import 'package:dompet/core/enum/category.dart';
-import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
+import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class IconPicker extends ConsumerWidget {
-  final PocketCreateForm form;
+  final CreatePocketForm form;
 
   const IconPicker({super.key, required this.form});
 

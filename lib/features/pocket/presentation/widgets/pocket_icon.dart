@@ -1,10 +1,10 @@
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/enum/category.dart';
-import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
+import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:flutter/material.dart';
 
 class PocketIcon extends StatelessWidget {
-  final PocketCreateForm form;
+  final CreatePocketForm form;
   final bool hideEditIcon;
   const PocketIcon({super.key, required this.form, this.hideEditIcon = false});
 
