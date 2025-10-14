@@ -4,8 +4,8 @@ import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class PocketCreateForm extends FormGroup {
-  PocketCreateForm()
+class CreatePocketForm extends FormGroup {
+  CreatePocketForm()
       : super({
           'name': FormControl<String>(
             validators: [Validators.required],
@@ -35,6 +35,6 @@ class PocketCreateForm extends FormGroup {
       }.entries);
 }
 
-final pocketCreateFormProvider = Provider<PocketCreateForm>((ref) {
-  return PocketCreateForm();
+final createPocketFormProvider = Provider<CreatePocketForm>((ref) {
+  return CreatePocketForm();
 });
