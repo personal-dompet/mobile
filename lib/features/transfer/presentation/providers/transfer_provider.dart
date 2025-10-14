@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:dompet/features/pocket/presentation/provider/all_pocket_provider.dart';
-import 'package:dompet/features/pocket/presentation/provider/filtered_pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_list_provider.dart';
 import 'package:dompet/features/transfer/data/transfer_repository.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_filter_form.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
@@ -30,8 +29,7 @@ class TransferProvider extends AsyncNotifier<List<PocketTransferModel>> {
     if (ref.mounted) {
       state = AsyncValue.data(newState);
       ref.invalidate(walletProvider);
-      ref.invalidate(filteredPocketProvider);
-      ref.invalidate(allPocketProvider);
+      ref.invalidate(pocketListProvider);
     }
   }
 }
