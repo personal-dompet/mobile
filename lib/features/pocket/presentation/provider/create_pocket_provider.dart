@@ -1,61 +1,81 @@
-import 'package:dompet/features/pocket/data/pocket_repository.dart';
+import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
-import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
-import 'package:dompet/features/pocket/domain/forms/pocket_filter_form.dart';
-import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
+import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_list_provider.dart';
+import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
+import 'package:dompet/routes/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreatePocketProvider {
-  final PocketRepository _repository;
+class CreatePocketService {
+  final Ref _ref;
+  final ListType _listType;
 
-  CreatePocketProvider(this._repository);
+  CreatePocketService({required ListType listType, required Ref ref})
+      : _listType = listType,
+        _ref = ref;
 
-  Future<List<PocketModel>> execute(
-    PocketCreateForm form,
-    List<PocketModel>? previousState, [
-    PocketFilterForm? filter,
-  ]) async {
-    final filterType = filter?.type.value ?? PocketType.all;
+  Future<void> execute(BuildContext context) async {
+    // Determine pocket type
+    final type = await _determinePocketType(context);
+    if (type == null) return;
 
-    List<PocketModel> newState = previousState ?? [];
+    // Check if context is still valid
+    if (!context.mounted) return;
 
-    if (previousState != null &&
-        (filterType == form.typeValue || filterType == PocketType.all)) {
-      newState = [
-        PocketModel.placeholder(
-          balance: 0,
-          name: form.nameValue,
-          type: form.typeValue!,
-          color: form.colorValue!,
-          icon: form.iconValue,
-          priority: 0,
-        ),
-        ...previousState,
-      ];
+    // Navigate to create pocket screen
+    final resultData = await _navigateToCreatePocket(context, type);
+    if (resultData == null || !context.mounted) return;
+
+    // Save the created pocket
+    _saveCreatedPocket(context, resultData);
+  }
+
+  Future<PocketType?> _determinePocketType(BuildContext context) async {
+    // If viewing all pockets, use all type
+    if (_listType == ListType.all) {
+      return await showModalBottomSheet<PocketType>(
+        context: context,
+        isScrollControlled: true,
+        useRootNavigator: true,
+        builder: (context) => const PocketTypeSelectorBottomSheet(),
+      );
     }
 
-    try {
-      final result = await _repository.create(form);
+    // Get current filter
+    final filter = _ref.read(pocketFilterProvider);
 
-      List<PocketModel> updatedState = [];
-      if (filterType == result.type || filterType == PocketType.all) {
-        updatedState = [result];
-      }
-
-      newState = [
-        ...updatedState,
-        ...(previousState?.where((pocket) => pocket.id != result.id).toList() ??
-            []),
-      ];
-    } catch (e) {
-      // Return previous state if there's an error
-      return previousState ?? [];
+    // If filter is set to 'all', ask user to select specific type
+    if (filter.type == PocketType.all) {
+      return await showModalBottomSheet<PocketType>(
+        context: context,
+        isScrollControlled: true,
+        useRootNavigator: true,
+        builder: (context) => const PocketTypeSelectorBottomSheet(),
+      );
     }
 
-    return newState;
+    // Use the filtered type
+    return filter.type;
+  }
+
+  Future<CreatePocketForm?> _navigateToCreatePocket(
+      BuildContext context, PocketType type) async {
+    final form = _ref.read(createPocketFormProvider);
+    form.type.value = type;
+
+    return await CreatePocketRoute().push<CreatePocketForm>(context);
+  }
+
+  Future<void> _saveCreatedPocket(
+      BuildContext context, CreatePocketForm resultData) async {
+    await _ref.read(pocketListProvider.notifier).create(resultData);
+    _ref.invalidateSelf();
   }
 }
 
-final createPocketProvider = Provider.autoDispose<CreatePocketProvider>((ref) {
-  return CreatePocketProvider(ref.read(pocketRepositoryProvider));
+final createPocketProvider = Provider.family<CreatePocketService, ListType>(
+    (Ref ref, ListType listType) {
+  return CreatePocketService(listType: listType, ref: ref);
 });
