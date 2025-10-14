@@ -1,6 +1,5 @@
 import 'package:dompet/core/enum/list_type.dart';
-import 'package:dompet/core/widgets/refresh_wrapper.dart';
-import 'package:dompet/features/pocket/presentation/provider/filtered_pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/filtered_pocket_list_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_empty_list.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_search_field.dart';
@@ -12,52 +11,36 @@ class PocketPage extends ConsumerWidget {
   const PocketPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pocketsAsync = ref.watch(filteredPocketProvider);
+    final pockets = ref.watch(filteredPocketListProvider);
+
     return Scaffold(
-      body: RefreshWrapper(
-        onRefresh: () async {
-          // Using invalidate instead of refresh method for non-autoDispose provider
-          ref.invalidate(filteredPocketProvider);
-        },
-        child: pocketsAsync.when(
-          data: (data) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: PocketSearchField(),
-                  ),
-                  const SizedBox(height: 16),
-                  PocketTypeSelector(),
-                  const SizedBox(height: 16),
-                  if (data.isNotEmpty)
-                    Expanded(
-                      child: PocketGrid(
-                        data: data,
-                        listType: ListType.filtered,
-                        onTap: (pocket) {},
-                      ),
-                    ),
-                  if (data.isEmpty)
-                    Expanded(
-                      child: SingleChildScrollView(
-                          child: PocketEmptyList(
-                        listType: ListType.filtered,
-                      )),
-                    ),
-                ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: PocketSearchField(),
+            ),
+            const SizedBox(height: 16),
+            PocketTypeSelector(),
+            const SizedBox(height: 16),
+            if (pockets.isNotEmpty)
+              Expanded(
+                child: PocketGrid(
+                  data: pockets,
+                  listType: ListType.filtered,
+                  onTap: (pocket) {},
+                ),
               ),
-            );
-          },
-          loading: () => const Center(
-              child: CircularProgressIndicator(
-            strokeWidth: 1,
-          )),
-          error: (error, stack) => Center(
-            child: Text('Error loading transactions: $error'),
-          ),
+            if (pockets.isEmpty)
+              Expanded(
+                child: SingleChildScrollView(
+                    child: PocketEmptyList(
+                  listType: ListType.filtered,
+                )),
+              ),
+          ],
         ),
       ),
     );

@@ -3,7 +3,7 @@ import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
-import 'package:dompet/features/pocket/domain/forms/pocket_create_form.dart';
+import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/presentation/widgets/color_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/icon_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_icon.dart';
@@ -33,7 +33,7 @@ class CreatePocketPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pocketCreateForm = ref.watch(pocketCreateFormProvider);
+    final pocketCreateForm = ref.watch(createPocketFormProvider);
 
     final iconControl = pocketCreateForm.icon;
     final colorControl = pocketCreateForm.color;
@@ -50,7 +50,7 @@ class CreatePocketPage extends ConsumerWidget {
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        ref.invalidate(pocketCreateFormProvider);
+        ref.invalidate(createPocketFormProvider);
       },
       child: ReactiveForm(
         formGroup: pocketCreateForm,
@@ -61,7 +61,7 @@ class CreatePocketPage extends ConsumerWidget {
               if (type != null)
                 ReactiveFormConsumer(
                   builder: (context, formGroup, child) {
-                    final form = formGroup as PocketCreateForm;
+                    final form = formGroup as CreatePocketForm;
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -103,7 +103,7 @@ class CreatePocketPage extends ConsumerWidget {
               formGroup: pocketCreateForm,
               child: ReactiveFormConsumer(
                 builder: (context, formGroup, child) {
-                  final form = formGroup as PocketCreateForm;
+                  final form = formGroup as CreatePocketForm;
                   return Column(
                     children: [
                       Align(
