@@ -60,7 +60,9 @@ class _RecentPocketTransferItem extends StatelessWidget {
         ),
       ),
       title: Text(
-        transfer.description ?? 'Pocket Transfer',
+        transfer.description == null || transfer.description!.isEmpty
+            ? 'Pocket Transfer'
+            : transfer.description!,
         style: const TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 14,

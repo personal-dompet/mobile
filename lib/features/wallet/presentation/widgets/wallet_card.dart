@@ -198,7 +198,7 @@ class WalletCard extends ConsumerWidget {
                                 ).push<PocketTransferForm>(context);
                                 if (form == null) return;
                                 await ref
-                                    .read(transferProvider.notifier)
+                                    .read(transferProvider)
                                     .pocketTransfer(form);
                                 ref.invalidate(pocketTransferFormProvider);
                                 ref.invalidate(recentPocketTransfersProvider);
