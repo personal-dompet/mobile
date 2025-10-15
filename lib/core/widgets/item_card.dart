@@ -46,7 +46,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
     );
 
     // Only animate if item.id equals -1 (new item)
-    if (widget.id(widget.item) == -1) {
+    if (widget.id(widget.item) < 0) {
       _controller.repeat(reverse: true);
     }
   }
@@ -55,10 +55,9 @@ class _ItemCardState<T> extends State<ItemCard<T>>
   void didUpdateWidget(covariant ItemCard<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Restart animation if the item id changed to -1
-    if (widget.id(widget.item) == -1 && oldWidget.id(oldWidget.item) != -1) {
+    if (widget.id(widget.item) < 0 && oldWidget.id(oldWidget.item) > 0) {
       _controller.repeat(reverse: true);
-    } else if (widget.id(widget.item) != -1 &&
-        oldWidget.id(oldWidget.item) == -1) {
+    } else if (widget.id(widget.item) > 0 && oldWidget.id(oldWidget.item) < 0) {
       _controller.stop();
     }
   }
@@ -76,7 +75,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
     final icon = widget.icon?.call(widget.item) ?? Icons.question_mark;
 
     // If item.id equals -1, wrap with animated container
-    if (widget.id(widget.item) == -1) {
+    if (widget.id(widget.item) < 0) {
       return AnimatedBuilder(
         animation: _animation,
         builder: (context, child) {
