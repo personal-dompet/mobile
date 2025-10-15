@@ -6,6 +6,7 @@ import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 
 class WalletModel extends PocketModel {
   final int totalBalance;
+  final bool isLoading;
 
   WalletModel({
     required super.id,
@@ -15,6 +16,7 @@ class WalletModel extends PocketModel {
     required super.createdAt,
     required super.updatedAt,
     required this.totalBalance,
+    this.isLoading = false,
     super.icon,
     super.color,
     super.priority = 0,
@@ -44,7 +46,7 @@ class WalletModel extends PocketModel {
     Category? icon,
   }) {
     return WalletModel(
-      id: -1,
+      id: -1 * DateTime.now().second,
       name: name ?? 'Wallet',
       type: PocketType.wallet,
       totalBalance: totalBalance ?? 0,
@@ -54,6 +56,7 @@ class WalletModel extends PocketModel {
       color: color,
       icon: icon,
       priority: 0,
+      isLoading: true,
     );
   }
 
@@ -71,6 +74,7 @@ class WalletModel extends PocketModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? totalBalance,
+    bool? isLoading,
   }) {
     return WalletModel(
       id: id ?? this.id,
@@ -83,6 +87,7 @@ class WalletModel extends PocketModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       totalBalance: totalBalance ?? this.totalBalance,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }
