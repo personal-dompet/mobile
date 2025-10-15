@@ -3,6 +3,7 @@ import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/wallet/data/wallet_repository.dart';
 import 'package:dompet/features/wallet/domain/model/wallet_model.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WalletProvider extends AsyncNotifier<WalletModel?> {
@@ -28,19 +29,23 @@ class WalletProvider extends AsyncNotifier<WalletModel?> {
     }
   }
 
-  void optimisticUpdateBalance(PocketModel newWalletPocket) {
+  void optimisticUpdateBalance(PocketModel newWalletPocket,
+      [bool? isLoading = false]) {
     if (!state.hasValue) return;
 
     state = AsyncData(state.value!.copyWith(
       balance: newWalletPocket.balance,
+      isLoading: isLoading,
     ));
+    debugPrint(state.value?.isLoading.toString());
   }
 
-  void optimisticUpdateTotalBalance(int newTotalBalance) {
+  void optimisticUpdateTotalBalance(int newTotalBalance, [bool? isLoading]) {
     if (!state.hasValue) return;
 
     state = AsyncData(state.value!.copyWith(
       totalBalance: newTotalBalance + state.value!.totalBalance,
+      isLoading: isLoading,
     ));
   }
 }
