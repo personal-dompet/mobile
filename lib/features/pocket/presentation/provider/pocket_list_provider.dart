@@ -63,6 +63,16 @@ class _PocketListNotifier extends AsyncNotifier<List<PocketModel>> {
       }
     }
   }
+
+  void optimisticUpdate(PocketModel newPocket) {
+    if (!state.hasValue) return;
+    state = AsyncData(state.value!.map((pocket) {
+      if (pocket.id == newPocket.id) {
+        return newPocket;
+      }
+      return pocket;
+    }).toList());
+  }
 }
 
 final pocketListProvider =

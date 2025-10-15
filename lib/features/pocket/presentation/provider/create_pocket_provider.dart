@@ -17,23 +17,18 @@ class CreatePocketService {
         _ref = ref;
 
   Future<void> execute(BuildContext context) async {
-    // Determine pocket type
-    final type = await _determinePocketType(context);
+    final type = await _selectPocketType(context);
     if (type == null) return;
 
-    // Check if context is still valid
     if (!context.mounted) return;
 
-    // Navigate to create pocket screen
     final resultData = await _navigateToCreatePocket(context, type);
     if (resultData == null || !context.mounted) return;
 
-    // Save the created pocket
     _saveCreatedPocket(context, resultData);
   }
 
-  Future<PocketType?> _determinePocketType(BuildContext context) async {
-    // If viewing all pockets, use all type
+  Future<PocketType?> _selectPocketType(BuildContext context) async {
     if (_listType == ListType.all) {
       return await showModalBottomSheet<PocketType>(
         context: context,
@@ -43,10 +38,8 @@ class CreatePocketService {
       );
     }
 
-    // Get current filter
     final filter = _ref.read(pocketFilterProvider);
 
-    // If filter is set to 'all', ask user to select specific type
     if (filter.type == PocketType.all) {
       return await showModalBottomSheet<PocketType>(
         context: context,
@@ -56,7 +49,6 @@ class CreatePocketService {
       );
     }
 
-    // Use the filtered type
     return filter.type;
   }
 
