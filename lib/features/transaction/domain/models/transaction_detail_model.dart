@@ -45,7 +45,7 @@ class TransactionDetailModel extends TransactionModel {
     Category? category,
   }) {
     return TransactionDetailModel(
-      id: -1,
+      id: -1 * DateTime.now().second,
       amount: amount ?? 0,
       description: description ?? '',
       date: date ?? DateTime.now(),

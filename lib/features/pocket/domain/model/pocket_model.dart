@@ -49,7 +49,7 @@ class PocketModel extends TimestampModel {
     PocketType? type,
   }) {
     return PocketModel(
-      id: -1,
+      id: -1 * DateTime.now().second,
       name: name ?? '',
       color: color,
       balance: balance ?? 0,

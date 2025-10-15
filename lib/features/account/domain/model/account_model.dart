@@ -40,7 +40,7 @@ class AccountModel extends TimestampModel {
     int? balance,
   }) {
     return AccountModel(
-      id: -1,
+      id: -1 * DateTime.now().second,
       name: name ?? '',
       type: type ?? AccountType.cash,
       color: color,
