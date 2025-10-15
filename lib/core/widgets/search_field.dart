@@ -1,4 +1,3 @@
-import 'package:dompet/core/utils/helpers/debounce_helper.dart';
 import 'package:flutter/material.dart';
 
 class SearchField extends StatefulWidget {
@@ -14,12 +13,11 @@ class SearchField extends StatefulWidget {
 }
 
 class _SearchFieldState extends State<SearchField> {
-  final Debounce _debounceHelper = Debounce();
   final TextEditingController _controller = TextEditingController();
 
   @override
   void dispose() {
-    _debounceHelper.cancel();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -28,9 +26,7 @@ class _SearchFieldState extends State<SearchField> {
     return TextField(
       controller: _controller,
       onChanged: (control) {
-        _debounceHelper.debounce(() {
-          widget.onSearch(keyword: _controller.text);
-        });
+        widget.onSearch(keyword: _controller.text);
       },
       decoration: InputDecoration(
         hintText: 'Search...',
