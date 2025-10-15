@@ -1,5 +1,6 @@
 import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
+import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/account/presentation/provider/all_account_provider.dart';
 import 'package:dompet/features/account/presentation/provider/filtered_account_provider.dart';
@@ -60,12 +61,15 @@ class WalletCard extends ConsumerWidget {
                     ),
               ),
               const SizedBox(height: 4),
-              Text(
-                wallet?.formattedTotalBalance ?? '-',
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+              AnimatedOpacityContainer(
+                isAnimated: wallet?.isLoading ?? false,
+                child: Text(
+                  wallet?.formattedTotalBalance ?? '-',
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
               ),
               const SizedBox(height: 12),
               SizedBox(
@@ -168,15 +172,18 @@ class WalletCard extends ConsumerWidget {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        wallet.formattedBalance,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
-                            ?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      AnimatedOpacityContainer(
+                        isAnimated: wallet.isLoading,
+                        child: Text(
+                          wallet.formattedBalance,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       Row(
