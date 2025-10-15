@@ -21,6 +21,8 @@ class TransferSource {
 
   Future<Map<String, dynamic>> pocketTransfer(
       PocketTransferForm request) async {
+    await Future.delayed(Duration(seconds: 5));
+
     final response = await _dio.post<Map<String, dynamic>>('$_prefix/pockets',
         data: request.json);
     return response.data ?? {};
