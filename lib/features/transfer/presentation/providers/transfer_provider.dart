@@ -30,45 +30,45 @@ class _TransferService {
 
     pocketListNotifier.optimisticUpdate(newSourcePocket);
     pocketListNotifier.optimisticUpdate(newDestinationPocket);
-    recentPocketTransferNotifier.optimisticUpdate(
-        PocketTransferModel.placeholder(
-            amount: request.amountValue,
-            description: request.descriptionValue,
-            destinationPocket: newDestinationPocket,
-            sourcePocket: newSourcePocket));
+    recentPocketTransferNotifier.optimisticCreate(
+      PocketTransferModel.placeholder(
+        amount: request.amountValue,
+        description: request.descriptionValue,
+        destinationPocket: newDestinationPocket,
+        sourcePocket: newSourcePocket,
+      ),
+    );
     if (newSourcePocket.type == PocketType.wallet) {
-      walletNotifier.optimisticUpdateBalance(newSourcePocket);
+      walletNotifier.optimisticUpdateBalance(newSourcePocket, true);
     }
     if (newDestinationPocket.type == PocketType.wallet) {
-      walletNotifier.optimisticUpdateBalance(newDestinationPocket);
+      walletNotifier.optimisticUpdateBalance(newDestinationPocket, true);
     }
 
     try {
       final newState =
           await _ref.read(transferRepositoryProvider).pocketTransfer(request);
 
-      if (_ref.mounted) {
-        pocketListNotifier.optimisticUpdate(newState.sourcePocket);
-        pocketListNotifier.optimisticUpdate(newState.destinationPocket);
-        recentPocketTransferNotifier.optimisticUpdate(newState);
-        if (newState.sourcePocket.type == PocketType.wallet) {
-          walletNotifier.optimisticUpdateBalance(newState.sourcePocket);
-        }
-        if (newState.destinationPocket.type == PocketType.wallet) {
-          walletNotifier.optimisticUpdateBalance(newState.destinationPocket);
-        }
+      pocketListNotifier.optimisticUpdate(newState.sourcePocket);
+      pocketListNotifier.optimisticUpdate(newState.destinationPocket);
+      recentPocketTransferNotifier.optimisticCreate(newState);
+      if (newState.sourcePocket.type == PocketType.wallet) {
+        walletNotifier.optimisticUpdateBalance(newState.sourcePocket);
       }
+      if (newState.destinationPocket.type == PocketType.wallet) {
+        walletNotifier.optimisticUpdateBalance(newState.destinationPocket);
+      }
+      // if (_ref.mounted) {
+      // }
     } catch (e) {
-      if (_ref.mounted) {
-        pocketListNotifier.optimisticUpdate(request.fromPocketValue);
-        pocketListNotifier.optimisticUpdate(request.toPocketValue);
-        recentPocketTransferNotifier.revertUpdate(recentPocketTransfers);
-        if (request.fromPocketValue.type == PocketType.wallet) {
-          walletNotifier.optimisticUpdateBalance(request.fromPocketValue);
-        }
-        if (request.toPocketValue.type == PocketType.wallet) {
-          walletNotifier.optimisticUpdateBalance(request.toPocketValue);
-        }
+      pocketListNotifier.optimisticUpdate(request.fromPocketValue);
+      pocketListNotifier.optimisticUpdate(request.toPocketValue);
+      recentPocketTransferNotifier.revertCreate(recentPocketTransfers);
+      if (request.fromPocketValue.type == PocketType.wallet) {
+        walletNotifier.optimisticUpdateBalance(request.fromPocketValue);
+      }
+      if (request.toPocketValue.type == PocketType.wallet) {
+        walletNotifier.optimisticUpdateBalance(request.toPocketValue);
       }
     }
   }

@@ -18,17 +18,25 @@ class _RecentPocketTransferNotifier
     return result;
   }
 
-  void optimisticUpdate(PocketTransferModel newPocketTransfer) {
+  void optimisticCreate(PocketTransferModel newPocketTransfer,
+      [int? placeholderId]) {
     if (!state.hasValue) return;
 
     final currentStates = [...state.value!];
-    if (currentStates.length >= 5) {
+    if (newPocketTransfer.id > 0) {
+      state = AsyncData(currentStates.map((transfer) {
+        return transfer.id == placeholderId ? newPocketTransfer : transfer;
+      }).toList());
+      return;
+    }
+
+    if (currentStates.length >= 5 && newPocketTransfer.id < 0) {
       currentStates.removeLast();
     }
     state = AsyncData([newPocketTransfer, ...currentStates]);
   }
 
-  void revertUpdate(List<PocketTransferModel> previousPocketTransfers) {
+  void revertCreate(List<PocketTransferModel> previousPocketTransfers) {
     state = AsyncData(previousPocketTransfers);
   }
 }
