@@ -97,21 +97,21 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                     final fromPocket = form.fromPocketValue;
                     final amount = form.amountValue;
 
-                    final newBalance = (fromPocket?.balance ?? 0) - amount;
+                    final newBalance = (fromPocket.balance) - amount;
                     final formattedNewBalance =
                         FormatCurrency.formatRupiah(newBalance);
 
                     return AccountPocketSelector(
                       label: 'From Pocket',
                       placeholder: 'Select source pocket',
-                      color: fromPocket?.color,
-                      icon: fromPocket?.icon?.icon,
-                      name: fromPocket?.name,
-                      balance: fromPocket?.formattedBalance,
-                      formattedNewBalance: newBalance == fromPocket?.balance
+                      color: fromPocket.color,
+                      icon: fromPocket.icon?.icon,
+                      name: fromPocket.name,
+                      balance: fromPocket.formattedBalance,
+                      formattedNewBalance: newBalance == fromPocket.balance
                           ? null
                           : formattedNewBalance,
-                      showBalanceChange: newBalance != fromPocket?.balance,
+                      showBalanceChange: newBalance != fromPocket.balance,
                       isDisabled:
                           widget.subject == TransferStaticSubject.source,
                       onTap: () async {
@@ -139,23 +139,23 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                     final toPocket = form.toPocketValue;
                     final amount = form.amountValue;
 
-                    final newBalance = (toPocket?.balance ?? 0) + amount;
+                    final newBalance = (toPocket.balance) + amount;
                     final formattedNewBalance =
                         FormatCurrency.formatRupiah(newBalance);
 
                     return AccountPocketSelector(
                       label: 'To Pocket',
                       placeholder: 'Select destination pocket',
-                      color: toPocket?.color,
-                      icon: toPocket?.icon?.icon,
-                      name: toPocket?.name,
-                      balance: toPocket?.formattedBalance,
+                      color: toPocket.color,
+                      icon: toPocket.icon?.icon,
+                      name: toPocket.name,
+                      balance: toPocket.formattedBalance,
                       isDisabled:
                           widget.subject == TransferStaticSubject.destination,
-                      formattedNewBalance: newBalance == toPocket?.balance
+                      formattedNewBalance: newBalance == toPocket.balance
                           ? null
                           : formattedNewBalance,
-                      showBalanceChange: newBalance != toPocket?.balance,
+                      showBalanceChange: newBalance != toPocket.balance,
                       onTap: () async {
                         final selectedPocket = await context
                             .pushNamed<PocketModel>('SelectPocket',
