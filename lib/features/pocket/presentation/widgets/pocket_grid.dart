@@ -35,6 +35,7 @@ class PocketGrid extends ConsumerWidget {
         if (index == data.length) {
           return AddPocketCardItem(
             listType: listType,
+            onFormCreated: (pocket) => onTap(pocket),
           );
         }
         // Otherwise, show the regular pocket card

@@ -6,6 +6,7 @@ import 'package:dompet/features/pocket/domain/forms/create_recurring_pocket_form
 import 'package:dompet/features/pocket/domain/forms/create_saving_pocket_form.dart';
 import 'package:dompet/features/pocket/domain/forms/create_spending_pocket_form.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
+import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class _PocketListNotifier extends AsyncNotifier<List<PocketModel>> {
@@ -50,6 +51,9 @@ class _PocketListNotifier extends AsyncNotifier<List<PocketModel>> {
       } else {
         result = await ref.read(pocketRepositoryProvider).create(form);
       }
+
+      final pocketTransferForm = ref.read(pocketTransferFormProvider);
+      pocketTransferForm.toPocket.value = result;
 
       final List<PocketModel> newState = [result];
 

@@ -24,7 +24,8 @@ class _PocketService {
       : _listType = listType,
         _ref = ref;
 
-  Future<void> execute(BuildContext context) async {
+  Future<void> execute(BuildContext context,
+      {ValueChanged<CreatePocketForm>? onFormCreated}) async {
     try {
       final type = await _selectPocketType(context);
       if (type == null) return;
@@ -33,7 +34,7 @@ class _PocketService {
 
       final creationType = await _navigateToCreatePocket(context, type);
       if (creationType == null || !context.mounted) return;
-      await _saveCreatedPocket(context, creationType);
+      await _saveCreatedPocket(context, creationType, onFormCreated);
     } finally {
       _ref.invalidateSelf();
       _ref.invalidate(createPocketFormProvider);
@@ -78,10 +79,10 @@ class _PocketService {
   }
 
   Future<void> _saveCreatedPocket(
-    BuildContext context,
-    PocketCreationType creationType,
-  ) async {
+      BuildContext context, PocketCreationType creationType,
+      [ValueChanged<CreatePocketForm>? onFormCreated]) async {
     final pocketForm = _ref.read(createPocketFormProvider);
+    onFormCreated?.call(pocketForm);
     if (creationType == PocketCreationType.pocket) {
       await _ref.read(pocketListProvider.notifier).create(pocketForm);
       return;
