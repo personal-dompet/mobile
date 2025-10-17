@@ -41,22 +41,8 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
     final form = ProviderScope.containerOf(context).read(topUpFormProvider);
     form.markAllAsTouched();
     if (form.valid) {
-      // Show loading or disable button here if needed
-
-      // Perform the top-up operation first
-      // await walletNotifier.topUp();
-
-      // Check if the widget is still mounted before updating UI
-      // if (!mounted || !context.mounted) return;
-
       final payload = form;
 
-      // Reset the form
-      // form.reset();
-
-      // context.showSuccessSnackbar('Top-up successful!');
-
-      // Navigate back
       Navigator.of(context).pop<TopUpForm>(payload);
     }
   }
@@ -76,7 +62,10 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        form.reset();
+        // Only reset the form if the user backed out without submitting
+        if (result == null) {
+          form.reset();
+        }
       },
       child: Scaffold(
         appBar: AppBar(
