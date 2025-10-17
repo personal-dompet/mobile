@@ -1,0 +1,132 @@
+import 'package:dompet/core/widgets/account_pocket_selector.dart';
+import 'package:dompet/core/widgets/card_input.dart';
+import 'package:dompet/core/widgets/masked_amount_input.dart';
+import 'package:dompet/core/widgets/reactive_date_picker.dart';
+import 'package:dompet/core/widgets/submit_button.dart';
+import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
+import 'package:dompet/features/pocket/domain/forms/create_recurring_pocket_form.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reactive_forms/reactive_forms.dart';
+
+class CreateRecurringPocketPage extends ConsumerWidget {
+  const CreateRecurringPocketPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pocketForm = ref.read(createPocketFormProvider);
+    final recurringPocketForm = ref.read(createRecurringPocketFormProvider);
+
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Create Recurring Pocket Detail'),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: ReactiveForm(
+            formGroup: recurringPocketForm,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CardInput(
+                  label: 'Pocket',
+                  child: AccountPocketSelector(
+                    label: 'Pocket',
+                    placeholder: '',
+                    color: pocketForm.color.value,
+                    icon: pocketForm.icon.value?.icon,
+                    name: pocketForm.name.value,
+                    isDisabled: true,
+                    onTap: () {},
+                  ),
+                ),
+                CardInput(
+                  label: 'Product',
+                  child: ReactiveTextField<String?>(
+                    formControl: recurringPocketForm.productName,
+                    keyboardType: TextInputType.multiline,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter description',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                CardInput(
+                  label: 'Product Description',
+                  child: ReactiveTextField<String?>(
+                    formControl: recurringPocketForm.productDescription,
+                    keyboardType: TextInputType.multiline,
+                    textCapitalization: TextCapitalization.sentences,
+                    maxLines: 3,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter description',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                CardInput(
+                  label: 'Amount',
+                  child: MaskedAmountInput(
+                    formControl: recurringPocketForm.amount,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      hintText: 'Enter amount',
+                      border: const OutlineInputBorder(),
+                      // errorText: errorText,
+                    ),
+                  ),
+                ),
+                CardInput(
+                  label: 'Due Date',
+                  child: DompetReactiveDatePicker(
+                    formControl: recurringPocketForm.dueDate,
+                    hintText: 'Select date',
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(3000),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8).copyWith(top: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SubmitButton(
+                text: 'Create Pocket with Details',
+                onPressed: () {
+                  recurringPocketForm.markAllAsTouched();
+                  if (recurringPocketForm.invalid) return;
+                  Navigator.of(context)
+                      .pop<PocketCreationType>(PocketCreationType.detail);
+                },
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.outline,
+                ),
+                onPressed: () {
+                  Navigator.of(context)
+                      .pop<PocketCreationType>(PocketCreationType.pocket);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text('Skip, Create Anyway'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

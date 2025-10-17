@@ -1,7 +1,7 @@
+import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-import 'package:dompet/core/utils/helpers/format_currency.dart';
 
 /// A masked input field for amount values that:
 /// - Displays values with thousand separators (e.g., "2.500")
@@ -18,7 +18,8 @@ class MaskedAmountInput extends ReactiveFormField<int?, int?> {
 
   MaskedAmountInput({
     super.key,
-    required String formControlName,
+    required FormControl<int> formControl,
+    // required String formControlName,
     this.labelText,
     this.hintText,
     this.helperText,
@@ -29,7 +30,7 @@ class MaskedAmountInput extends ReactiveFormField<int?, int?> {
     super.validationMessages,
     super.showErrors,
   }) : super(
-          formControlName: formControlName,
+          formControl: formControl,
           builder: (ReactiveFormFieldState<int?, int?> field) {
             return _AmountInput(
               field: field,
@@ -105,6 +106,16 @@ class _AmountInputState extends State<_AmountInput> {
     });
   }
 
+  InputDecoration _buildInputDecoration() {
+    final baseDecoration = widget.decoration ?? const InputDecoration();
+    return baseDecoration.copyWith(
+      labelText: widget.labelText ?? baseDecoration.labelText,
+      hintText: widget.hintText ?? baseDecoration.hintText,
+      helperText: widget.helperText ?? baseDecoration.helperText,
+      errorText: widget.field.errorText,
+    );
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -118,13 +129,8 @@ class _AmountInputState extends State<_AmountInput> {
       focusNode: widget.field.focusNode,
       keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction,
-      decoration: widget.decoration ??
-          InputDecoration(
-            labelText: widget.labelText,
-            hintText: widget.hintText,
-            helperText: widget.helperText,
-            errorText: widget.field.errorText,
-          ),
+      enabled: !widget.field.control.disabled,
+      decoration: _buildInputDecoration(),
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
       ],
