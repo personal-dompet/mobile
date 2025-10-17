@@ -1,6 +1,6 @@
-import 'package:dompet/routes/routes.dart';
 import 'package:dompet/features/auth/presentation/widgets/auth_guard.dart';
 import 'package:dompet/features/home/presentation/widgets/header.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -73,6 +73,9 @@ final router = GoRouter(
     // Top Up page route (not using shell route layout)
     TopUpRoute().goRoute,
     CreatePocketRoute().goRoute,
+    CreateSpendingPocketRoute().goRoute,
+    CreateSavingPocketRoute().goRoute,
+    CreateRecurringPocketRoute().goRoute,
     SelectPocketRoute().goRoute,
     SelectAccountRoute().goRoute,
     CreateAccountRoute().goRoute,
