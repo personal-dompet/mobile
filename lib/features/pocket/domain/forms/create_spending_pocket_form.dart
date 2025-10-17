@@ -4,7 +4,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 class CreateSpendingPocketForm extends FormGroup {
   CreateSpendingPocketForm()
       : super({
-          'lowBalanceThreshold': FormControl<int>(),
+          'lowBalanceThreshold': FormControl<int>(value: 0),
           'lowBalanceReminder': FormControl<bool>(),
         });
 
@@ -23,6 +23,6 @@ class CreateSpendingPocketForm extends FormGroup {
 }
 
 final createSpendingPocketFormProvider =
-    Provider.autoDispose<CreateSpendingPocketForm>((ref) {
+    Provider<CreateSpendingPocketForm>((ref) {
   return CreateSpendingPocketForm();
 });

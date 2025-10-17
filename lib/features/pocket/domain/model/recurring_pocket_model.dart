@@ -3,6 +3,7 @@ import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
+import 'package:intl/intl.dart';
 
 class RecurringPocketModel extends PocketModel {
   final String productName;
@@ -74,7 +75,10 @@ class RecurringPocketModel extends PocketModel {
   }
 
   String get formattedAmount => FormatCurrency.formatRupiah(amount);
-  String get formattedDueDate => dueDate?.toIso8601String() ?? '';
+  String get formattedDueDate =>
+      dueDate != null ? DateFormat('dd MMMM yyyy').format(dueDate!) : '';
+  String get formattedDueDateTime =>
+      dueDate != null ? DateFormat('HH:mm').format(dueDate!) : '';
 
   @override
   RecurringPocketModel copyWith({

@@ -27,11 +27,13 @@ class CreateRecurringPocketForm extends FormGroup {
         'productName': productNameValue,
         'amount': amountValue,
         'productDescription': productDescriptionValue,
-        'dueDate': dueDateValue?.toIso8601String(),
+        'dueDate': dueDateValue != null
+            ? (dueDateValue!.millisecondsSinceEpoch / 1000).toInt()
+            : null,
       }.entries);
 }
 
 final createRecurringPocketFormProvider =
-    Provider.autoDispose<CreateRecurringPocketForm>((ref) {
+    Provider<CreateRecurringPocketForm>((ref) {
   return CreateRecurringPocketForm();
 });

@@ -33,6 +33,13 @@ class CreatePocketForm extends FormGroup {
         'icon': iconValue?.iconKey,
         'type': typeValue?.value,
       }.entries);
+
+  void setDefaultValue(CreatePocketForm form) {
+    name.value = form.nameValue;
+    color.value = form.colorValue;
+    icon.value = form.iconValue;
+    type.value = form.typeValue;
+  }
 }
 
 final createPocketFormProvider = Provider<CreatePocketForm>((ref) {

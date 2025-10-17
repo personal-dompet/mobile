@@ -23,11 +23,12 @@ class CreateSavingPocketForm extends FormGroup {
   Map<String, dynamic> get json => Map.fromEntries({
         'targetAmount': targetAmountValue,
         'targetDescription': targetDescriptionValue,
-        'targetDate': targetDateValue?.toIso8601String(),
+        'targetDate': targetDateValue != null
+            ? (targetDateValue!.millisecondsSinceEpoch / 1000).toInt()
+            : null,
       }.entries);
 }
 
-final createSavingPocketFormProvider =
-    Provider.autoDispose<CreateSavingPocketForm>((ref) {
+final createSavingPocketFormProvider = Provider<CreateSavingPocketForm>((ref) {
   return CreateSavingPocketForm();
 });
