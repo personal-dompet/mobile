@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CardInput extends StatelessWidget {
-  final String label;
+  final String? label;
   final Widget child;
 
   const CardInput({
     super.key,
-    required this.label,
+    this.label,
     required this.child,
   });
 
@@ -17,15 +17,16 @@ class CardInput extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 8,
           children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            if (label != null)
+              Text(
+                label!,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
             child,
           ],
         ),
