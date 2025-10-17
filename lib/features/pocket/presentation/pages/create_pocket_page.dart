@@ -4,10 +4,12 @@ import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/color_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/icon_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_icon.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -31,6 +33,30 @@ class CreatePocketPage extends ConsumerWidget {
     }
   }
 
+  Future<PocketCreationType?> _toCreateSpendingPocketPage(
+    BuildContext context,
+  ) async {
+    final detailResult =
+        await CreateSpendingPocketRoute().push<PocketCreationType?>(context);
+    return detailResult;
+  }
+
+  Future<PocketCreationType?> _toCreateSavingPocketPage(
+    BuildContext context,
+  ) async {
+    final detailResult =
+        await CreateSavingPocketRoute().push<PocketCreationType?>(context);
+    return detailResult;
+  }
+
+  Future<PocketCreationType?> _toCreateRecurringPocketPage(
+    BuildContext context,
+  ) async {
+    final detailResult =
+        await CreateRecurringPocketRoute().push<PocketCreationType?>(context);
+    return detailResult;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pocketCreateForm = ref.watch(createPocketFormProvider);
@@ -50,7 +76,7 @@ class CreatePocketPage extends ConsumerWidget {
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        ref.invalidate(createPocketFormProvider);
+        // ref.invalidate(createPocketFormProvider);
       },
       child: ReactiveForm(
         formGroup: pocketCreateForm,
@@ -119,6 +145,7 @@ class CreatePocketPage extends ConsumerWidget {
                         label: 'Name',
                         child: ReactiveTextField<String>(
                           formControl: form.name,
+                          autofocus: false,
                           decoration: const InputDecoration(
                             hintText: 'Enter pocket name',
                             border: OutlineInputBorder(),
@@ -136,17 +163,33 @@ class CreatePocketPage extends ConsumerWidget {
                         label: 'Icon',
                         child: IconPicker(form: form),
                       ),
-                      const SizedBox(height: 24),
-                      SubmitButton(
-                        text: 'Create Pocket',
-                        onPressed: () {
-                          Navigator.of(context).pop(pocketCreateForm);
-                        },
-                      ),
                     ],
                   );
                 },
               ),
+            ),
+          ),
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8).copyWith(top: 16),
+            child: SubmitButton(
+              text: 'Next',
+              onPressed: () async {
+                pocketCreateForm.markAllAsTouched();
+                if (pocketCreateForm.invalid) return;
+                PocketCreationType? pocketCreationType;
+                if (type == PocketType.spending) {
+                  pocketCreationType =
+                      await _toCreateSpendingPocketPage(context);
+                } else if (type == PocketType.saving) {
+                  pocketCreationType = await _toCreateSavingPocketPage(context);
+                } else {
+                  pocketCreationType =
+                      await _toCreateRecurringPocketPage(context);
+                }
+                if (pocketCreationType == null || !context.mounted) return;
+                Navigator.of(context)
+                    .pop<PocketCreationType?>(pocketCreationType);
+              },
             ),
           ),
         ),
