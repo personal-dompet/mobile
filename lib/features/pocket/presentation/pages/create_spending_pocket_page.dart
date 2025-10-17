@@ -73,6 +73,8 @@ class CreateSpendingPocketPage extends ConsumerWidget {
                 ),
                 CardInput(
                   label: 'Low Balance Threshold',
+                  info:
+                      'Some dummy info here, place it with well copy written text that explaining about this section',
                   child: MaskedAmountInput(
                     formControl: spendingPocketForm.lowBalanceThreshold,
                     keyboardType: TextInputType.number,
