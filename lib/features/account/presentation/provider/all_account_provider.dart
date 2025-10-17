@@ -21,11 +21,8 @@ class AllAccountProvider extends AsyncNotifier<List<AccountModel>> {
 
   Future<void> create(AccountCreateForm form) async {
     final previousState = state.value;
-    debugPrint('previousState: $previousState');
     final newState =
         await ref.read(createAccountProvider).execute(form, previousState);
-
-    debugPrint('newState: $newState');
 
     // Only update state if still mounted
     if (ref.mounted) {

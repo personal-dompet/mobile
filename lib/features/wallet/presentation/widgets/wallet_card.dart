@@ -87,7 +87,10 @@ class WalletCard extends ConsumerWidget {
                     final topUpForm =
                         await TopUpRoute().push<TopUpForm>(context);
 
-                    if (topUpForm == null) return;
+                    if (topUpForm == null) {
+                      form.reset();
+                      return;
+                    }
 
                     await ref.read(walletProvider.notifier).topUp(topUpForm);
 
@@ -100,7 +103,7 @@ class WalletCard extends ConsumerWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
+                    // foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

@@ -37,7 +37,6 @@ class WalletProvider extends AsyncNotifier<WalletModel?> {
       balance: newWalletPocket.balance,
       isLoading: isLoading,
     ));
-    debugPrint(state.value?.isLoading.toString());
   }
 
   void optimisticUpdateTotalBalance(int newTotalBalance, [bool? isLoading]) {
