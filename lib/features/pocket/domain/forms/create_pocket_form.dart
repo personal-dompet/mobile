@@ -1,6 +1,7 @@
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -39,6 +40,15 @@ class CreatePocketForm extends FormGroup {
     color.value = form.colorValue;
     icon.value = form.iconValue;
     type.value = form.typeValue;
+  }
+
+  PocketModel toPocketModel() {
+    return PocketModel.placeholder(
+      color: colorValue,
+      icon: iconValue,
+      name: nameValue,
+      type: typeValue,
+    );
   }
 }
 
