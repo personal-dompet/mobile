@@ -159,7 +159,7 @@ class _IconPickerState extends ConsumerState<IconPicker> {
                   decoration: BoxDecoration(
                     color: isSelected && widget.form.color.value != null
                         ? widget.form.color.value?.withValues(alpha: 0.25)
-                        : Theme.of(context).cardColor,
+                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isSelected && widget.form.color.value != null
@@ -167,13 +167,6 @@ class _IconPickerState extends ConsumerState<IconPicker> {
                           : Colors.transparent,
                       width: 2,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: Center(
                     child: Icon(
