@@ -10,10 +10,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SelectPocketPage extends ConsumerWidget {
   final int? selectedPocketId;
   final SelectPocketTitle title;
-  const SelectPocketPage(
-      {super.key,
-      this.selectedPocketId,
-      this.title = SelectPocketTitle.general});
+  const SelectPocketPage({
+    super.key,
+    this.selectedPocketId,
+    this.title = SelectPocketTitle.general,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

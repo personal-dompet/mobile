@@ -201,7 +201,7 @@ class _CreateTransferPageState
                     }
 
                     return MaskedAmountInput(
-                      formControlName: 'amount',
+                      formControl: form.amount,
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       onEditingComplete: () {

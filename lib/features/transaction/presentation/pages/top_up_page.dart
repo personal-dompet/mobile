@@ -39,6 +39,7 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
 
   void _submit(BuildContext context) async {
     final form = ProviderScope.containerOf(context).read(topUpFormProvider);
+    form.markAllAsTouched();
     if (form.valid) {
       // Show loading or disable button here if needed
 
@@ -73,127 +74,129 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Top Up'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        form.reset();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Top Up'),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: ReactiveForm(
-          formGroup: form,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    const Text(
-                      'Wallet',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: ReactiveForm(
+            formGroup: form,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      const Text(
+                        'Wallet',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      DateFormat('dd MMMM yyyy').format(now),
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
-
-              CardInput(
-                label: 'Account',
-                child: ReactiveFormConsumer(
-                  builder: (context, consumerForm, _) {
-                    final form = consumerForm as TopUpForm;
-                    final account = form.accountValue;
-                    final amount = form.amountValue;
-
-                    final newBalance = (account?.balance ?? 0) + amount;
-                    final formattedNewBalance =
-                        FormatCurrency.formatRupiah(newBalance);
-
-                    return AccountPocketSelector(
-                      label: 'Account',
-                      placeholder: 'Select account',
-                      color: account?.color,
-                      icon: account?.type.icon,
-                      name: account?.name,
-                      balance: account?.formattedBalance,
-                      formattedNewBalance: newBalance == account?.balance
-                          ? null
-                          : formattedNewBalance,
-                      showBalanceChange: newBalance != account?.balance,
-                      onTap: () async {
-                        final selectedAccount = await SelectAccountRoute(
-                          selectedAccountId: form.account.value?.id,
-                        ).push<AccountModel>(context);
-                        if (selectedAccount != null && mounted) {
-                          form.account.value = selectedAccount;
-                        }
-                      },
-                    );
-                  },
-                ),
-              ),
-
-              // Amount input
-              CardInput(
-                label: 'Amount',
-                child: MaskedAmountInput(
-                  formControlName: 'amount',
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                  onEditingComplete: () {
-                    FocusScope.of(context).requestFocus(_descriptionFocusNode);
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Enter amount',
-                    border: OutlineInputBorder(),
+                      const Spacer(),
+                      Text(
+                        DateFormat('dd MMMM yyyy').format(now),
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ],
                   ),
                 ),
-              ),
 
-              CardInput(
-                label: 'Top Up Date',
-                child: DompetReactiveDateTimePicker(
-                  formControl: form.date,
-                  hintText: 'Select date',
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                ),
-              ),
+                CardInput(
+                  label: 'Account',
+                  child: ReactiveFormConsumer(
+                    builder: (context, consumerForm, _) {
+                      final form = consumerForm as TopUpForm;
+                      final account = form.accountValue;
+                      final amount = form.amountValue;
 
-              // Description input
-              CardInput(
-                label: 'Description',
-                child: ReactiveTextField<String?>(
-                  formControlName: 'description',
-                  focusNode: _descriptionFocusNode,
-                  keyboardType: TextInputType.multiline,
-                  textCapitalization: TextCapitalization.sentences,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter description',
-                    border: OutlineInputBorder(),
+                      final newBalance = (account?.balance ?? 0) + amount;
+                      final formattedNewBalance =
+                          FormatCurrency.formatRupiah(newBalance);
+
+                      return AccountPocketSelector(
+                        label: 'Account',
+                        placeholder: 'Select account',
+                        color: account?.color,
+                        icon: account?.type.icon,
+                        name: account?.name,
+                        balance: account?.formattedBalance,
+                        formattedNewBalance: newBalance == account?.balance
+                            ? null
+                            : formattedNewBalance,
+                        showBalanceChange: newBalance != account?.balance,
+                        onTap: () async {
+                          final selectedAccount = await SelectAccountRoute(
+                            selectedAccountId: form.account.value?.id,
+                          ).push<AccountModel>(context);
+                          if (selectedAccount != null && mounted) {
+                            form.account.value = selectedAccount;
+                          }
+                        },
+                      );
+                    },
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
 
-              // Submit button
-              SubmitButton(
-                text: 'Top Up',
-                onPressed: () => _submit(context),
-              ),
-            ],
+                // Amount input
+                CardInput(
+                  label: 'Amount',
+                  child: MaskedAmountInput(
+                    formControl: form.amount,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
+                    onEditingComplete: () {
+                      FocusScope.of(context)
+                          .requestFocus(_descriptionFocusNode);
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Enter amount',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+
+                CardInput(
+                  label: 'Top Up Date',
+                  child: DompetReactiveDateTimePicker(
+                    formControl: form.date,
+                    hintText: 'Select date',
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  ),
+                ),
+
+                // Description input
+                CardInput(
+                  label: 'Description',
+                  child: ReactiveTextField<String?>(
+                    formControlName: 'description',
+                    focusNode: _descriptionFocusNode,
+                    keyboardType: TextInputType.multiline,
+                    textCapitalization: TextCapitalization.sentences,
+                    maxLines: 3,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter description',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Submit button
+                SubmitButton(
+                  text: 'Top Up',
+                  onPressed: () => _submit(context),
+                ),
+              ],
+            ),
           ),
         ),
       ),
