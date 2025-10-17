@@ -67,14 +67,14 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
           form.reset();
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Top Up'),
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: ReactiveForm(
-            formGroup: form,
+      child: ReactiveForm(
+        formGroup: form,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Top Up'),
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -177,15 +177,17 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
-
-                // Submit button
-                SubmitButton(
-                  text: 'Top Up',
-                  onPressed: () => _submit(context),
-                ),
               ],
             ),
+          ),
+          bottomNavigationBar: ReactiveFormConsumer(
+            builder: (context, formGroup, _) {
+              // TODO : TBC
+              return SubmitButton(
+                text: 'Top Up',
+                onPressed: () => _submit(context),
+              );
+            },
           ),
         ),
       ),

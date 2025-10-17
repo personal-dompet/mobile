@@ -1,6 +1,7 @@
 import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
+import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
@@ -54,18 +55,18 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
   Widget build(BuildContext context) {
     final form = ref.watch(pocketTransferFormProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Transfer Funds'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+    return ReactiveForm(
+      formGroup: form,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Transfer Funds'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: ReactiveForm(
-          formGroup: form,
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -143,31 +144,35 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                     final formattedNewBalance =
                         FormatCurrency.formatRupiah(newBalance);
 
-                    return AccountPocketSelector(
-                      label: 'To Pocket',
-                      placeholder: 'Select destination pocket',
-                      color: toPocket.color,
-                      icon: toPocket.icon?.icon,
-                      name: toPocket.name,
-                      balance: toPocket.formattedBalance,
-                      isDisabled:
-                          widget.subject == TransferStaticSubject.destination,
-                      formattedNewBalance: newBalance == toPocket.balance
-                          ? null
-                          : formattedNewBalance,
-                      showBalanceChange: newBalance != toPocket.balance,
-                      onTap: () async {
-                        final selectedPocket = await context
-                            .pushNamed<PocketModel>('SelectPocket',
-                                queryParameters: {
-                              'selectedPocketId':
-                                  form.toPocket.value?.id.toString(),
-                              'title': 'destination',
-                            });
-                        if (selectedPocket != null && mounted) {
-                          form.toPocket.value = selectedPocket;
-                        }
-                      },
+                    return AnimatedOpacityContainer(
+                      isAnimated: form.toPocket.value == null ||
+                          form.toPocket.value!.id < 0,
+                      child: AccountPocketSelector(
+                        label: 'To Pocket',
+                        placeholder: 'Select destination pocket',
+                        color: toPocket.color,
+                        icon: toPocket.icon?.icon,
+                        name: toPocket.name,
+                        balance: toPocket.formattedBalance,
+                        isDisabled:
+                            widget.subject == TransferStaticSubject.destination,
+                        formattedNewBalance: newBalance == toPocket.balance
+                            ? null
+                            : formattedNewBalance,
+                        showBalanceChange: newBalance != toPocket.balance,
+                        onTap: () async {
+                          final selectedPocket = await context
+                              .pushNamed<PocketModel>('SelectPocket',
+                                  queryParameters: {
+                                'selectedPocketId':
+                                    form.toPocket.value?.id.toString(),
+                                'title': 'destination',
+                              });
+                          if (selectedPocket != null && mounted) {
+                            form.toPocket.value = selectedPocket;
+                          }
+                        },
+                      ),
                     );
                   },
                 ),
@@ -230,15 +235,20 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-
-              // Submit button
-              SubmitButton(
-                text: 'Transfer Funds',
-                onPressed: () => _submit(context),
-              ),
             ],
           ),
+        ),
+        bottomNavigationBar: ReactiveFormConsumer(
+          builder: (context, formGroup, _) {
+            final pocketTransferForm = formGroup as PocketTransferForm;
+            return SubmitButton(
+              text: 'Transfer Funds',
+              onPressed: pocketTransferForm.toPocket.value == null ||
+                      pocketTransferForm.toPocket.value!.id < 0
+                  ? null
+                  : () => _submit(context),
+            );
+          },
         ),
       ),
     );
