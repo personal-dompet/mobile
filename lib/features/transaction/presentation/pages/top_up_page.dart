@@ -183,9 +183,13 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
           bottomNavigationBar: ReactiveFormConsumer(
             builder: (context, formGroup, _) {
               // TODO : TBC
-              return SubmitButton(
-                text: 'Top Up',
-                onPressed: () => _submit(context),
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16)
+                    .copyWith(bottom: 24),
+                child: SubmitButton(
+                  text: 'Top Up',
+                  onPressed: () => _submit(context),
+                ),
               );
             },
           ),

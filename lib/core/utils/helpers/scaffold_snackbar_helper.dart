@@ -1,3 +1,4 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
 /// Extension methods for showing different types of snackbars using ScaffoldMessenger
@@ -13,7 +14,7 @@ extension ScaffoldSnackbarExtension on BuildContext {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: Theme.of(this).colorScheme.tertiary, // Success color from theme
+        backgroundColor: AppTheme.successColor, // Success color from theme
         duration: duration ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -34,7 +35,7 @@ extension ScaffoldSnackbarExtension on BuildContext {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: Theme.of(this).colorScheme.error,
+        backgroundColor: AppTheme.errorColor,
         duration: duration ?? const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -55,7 +56,7 @@ extension ScaffoldSnackbarExtension on BuildContext {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: Theme.of(this).colorScheme.surface,
+        backgroundColor: AppTheme.infoColor,
         duration: duration ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(

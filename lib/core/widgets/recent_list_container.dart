@@ -1,3 +1,4 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class RecentListContainer extends StatelessWidget {
@@ -37,7 +38,7 @@ class RecentListContainer extends StatelessWidget {
                   child: Text(
                     'See all',
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: AppTheme.primaryColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
@@ -51,7 +52,7 @@ class RecentListContainer extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: length,
             separatorBuilder: (context, index) => Divider(
-              color: Theme.of(context).dividerColor.withValues(alpha: 0.3),
+              color: AppTheme.disabledColor.withValues(alpha: 0.5),
               height: 1,
               indent: 72,
               endIndent: 16,

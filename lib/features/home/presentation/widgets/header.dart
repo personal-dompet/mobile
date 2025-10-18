@@ -1,4 +1,5 @@
 import 'package:dompet/features/auth/presentation/widgets/login_button.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class HeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -13,7 +14,7 @@ class HeaderAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: Theme.of(context)
             .textTheme
             .headlineLarge
-            ?.copyWith(color: Theme.of(context).colorScheme.primary),
+            ?.copyWith(color: AppTheme.primaryColor),
       ),
       actions: const [
         Padding(

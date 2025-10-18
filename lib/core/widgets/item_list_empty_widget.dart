@@ -1,3 +1,4 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -32,7 +33,7 @@ class ItemListEmptyWidget<T> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textColor = Theme.of(context).colorScheme.onSurface;
+    final textColor = AppTheme.textColorPrimary;
 
     // Get the current filter values
     final keyword = keywordValue?.call();
@@ -76,7 +77,7 @@ class ItemListEmptyWidget<T> extends ConsumerWidget {
           Icon(
             icon,
             size: 64,
-            color: textColor.withValues(alpha: 0.5),
+            color: AppTheme.textColorPrimary.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
           Text(
@@ -92,7 +93,7 @@ class ItemListEmptyWidget<T> extends ConsumerWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
-              color: textColor,
+              color: AppTheme.textColorPrimary,
             ),
           ),
           const SizedBox(height: 24),

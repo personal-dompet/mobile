@@ -1,3 +1,4 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
 /// A widget that displays a horizontal stepper indicator with steps and active step highlighting
@@ -13,11 +14,9 @@ class StepperIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final activeColor = theme.colorScheme.primary; // #6366F1 (Indigo)
-    final completedColor = theme.colorScheme.tertiary; // #10B981 (Green)
-    final inactiveColor =
-        theme.colorScheme.outlineVariant; // #4B5563 (Dark gray)
+    final activeColor = AppTheme.primaryColor; // #6366F1 (Indigo)
+    final completedColor = AppTheme.successColor; // #10B981 (Green)
+    final inactiveColor = AppTheme.textColorSecondary; // #4B5563 (Dark gray)
     final connectorColor = inactiveColor;
 
     return Container(
@@ -53,7 +52,7 @@ class StepperIndicator extends StatelessWidget {
                         ? Icon(
                             Icons.check,
                             size: 16,
-                            color: theme.colorScheme.surface,
+                            color: AppTheme.surfaceColor,
                           )
                         : Text(
                             '${index + 1}',
@@ -63,9 +62,9 @@ class StepperIndicator extends StatelessWidget {
                                   ? FontWeight.bold
                                   : FontWeight.normal,
                               color: isCurrentStep
-                                  ? theme.colorScheme.surface
+                                  ? AppTheme.surfaceColor
                                   : (isCompletedStep
-                                      ? theme.colorScheme.surface
+                                      ? AppTheme.surfaceColor
                                       : inactiveColor),
                             ),
                           ),
@@ -84,8 +83,8 @@ class StepperIndicator extends StatelessWidget {
                         color: isCurrentStep
                             ? activeColor
                             : isCompletedStep
-                                ? theme.colorScheme.tertiary
-                                : theme.colorScheme.onSurfaceVariant,
+                                ? AppTheme.successColor
+                                : AppTheme.textColorSecondary,
                       ),
                     ),
                   ),

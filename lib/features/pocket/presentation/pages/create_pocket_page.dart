@@ -10,6 +10,7 @@ import 'package:dompet/features/pocket/presentation/widgets/icon_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_icon.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
 import 'package:dompet/routes/routes.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -19,8 +20,6 @@ class CreatePocketPage extends ConsumerWidget {
 
   // Get color based on pocket type
   Color _getPocketTypeColor(BuildContext context, PocketType type) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     switch (type) {
       case PocketType.spending:
         return Colors.redAccent; // Red for spending
@@ -29,7 +28,7 @@ class CreatePocketPage extends ConsumerWidget {
       case PocketType.recurring:
         return Colors.blueAccent; // Blue for recurring
       default:
-        return colorScheme.primary;
+        return AppTheme.primaryColor;
     }
   }
 

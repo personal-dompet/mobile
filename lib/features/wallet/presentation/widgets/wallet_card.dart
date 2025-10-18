@@ -13,6 +13,7 @@ import 'package:dompet/features/transfer/presentation/providers/recent_pocket_tr
 import 'package:dompet/features/transfer/presentation/providers/transfer_provider.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:dompet/routes/routes.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,13 +43,13 @@ class WalletCard extends ConsumerWidget {
                   Text(
                     'Wallet',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: AppTheme.textColorPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
                   Icon(
                     Icons.account_balance_wallet,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: AppTheme.primaryColor,
                     size: 28,
                   ),
                 ],
@@ -57,7 +58,7 @@ class WalletCard extends ConsumerWidget {
               Text(
                 'Total Balance',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: AppTheme.textColorSecondary,
                     ),
               ),
               const SizedBox(height: 4),
@@ -66,7 +67,7 @@ class WalletCard extends ConsumerWidget {
                 child: Text(
                   wallet?.formattedTotalBalance ?? '-',
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: AppTheme.primaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -98,11 +99,10 @@ class WalletCard extends ConsumerWidget {
                     ref.invalidate(recentTransactionProvider);
                     ref.invalidate(allAccountProvider);
                     ref.invalidate(filteredAccountProvider);
-                    context.showSuccessSnackbar('Top-up successful!');
                     form.reset();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: AppTheme.primaryColor,
                     // foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -121,14 +121,14 @@ class WalletCard extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context)
                         .colorScheme
-                        .outline
-                        .withValues(alpha: .3),
+                        .primaryContainer
+                        .withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: Theme.of(context)
                           .colorScheme
-                          .outline
-                          .withValues(alpha: .2),
+                          .primary
+                          .withValues(alpha: 0.3),
                     ),
                   ),
                   child: Column(
@@ -143,9 +143,7 @@ class WalletCard extends ConsumerWidget {
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
+                                  color: AppTheme.textColorSecondary,
                                   fontWeight: FontWeight.w500,
                                 ),
                           ),
@@ -166,8 +164,7 @@ class WalletCard extends ConsumerWidget {
                                   .textTheme
                                   .labelSmall
                                   ?.copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.w500,
                                   ),
                             ),
@@ -183,7 +180,7 @@ class WalletCard extends ConsumerWidget {
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
+                                color: AppTheme.textColorPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
@@ -214,8 +211,7 @@ class WalletCard extends ConsumerWidget {
                                 ref.invalidate(recentPocketTransfersProvider);
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.primary,
+                                backgroundColor: AppTheme.primaryColor,
                                 foregroundColor: Colors.white,
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),
@@ -243,8 +239,7 @@ class WalletCard extends ConsumerWidget {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.secondary,
+                                backgroundColor: AppTheme.secondaryColor,
                                 foregroundColor: Colors.white,
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),

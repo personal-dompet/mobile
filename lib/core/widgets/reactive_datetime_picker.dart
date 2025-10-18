@@ -1,3 +1,4 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -55,8 +56,8 @@ class DompetReactiveDateTimePicker extends StatelessWidget {
                 displayText,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: displayText.isEmpty
-                        ? Theme.of(context).disabledColor
-                        : Theme.of(context).textTheme.bodyLarge?.color,
+                        ? AppTheme.disabledColor
+                        : AppTheme.textColorPrimary,
                     height: 1),
               ),
             ),

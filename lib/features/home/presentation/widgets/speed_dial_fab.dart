@@ -1,4 +1,5 @@
 import 'package:dompet/routes/routes.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class SpeedDialFab extends StatefulWidget {
@@ -54,7 +55,7 @@ class _SpeedDialFabState extends State<SpeedDialFab>
           animation: _animation,
           delay: 0.2,
           icon: Icons.call_made_rounded,
-          color: Theme.of(context).colorScheme.primary,
+          color: AppTheme.primaryColor,
           onPressed: () {
             CreatePocketTransferRoute().push(context);
             _toggle();
@@ -66,7 +67,7 @@ class _SpeedDialFabState extends State<SpeedDialFab>
           animation: _animation,
           delay: 0.1,
           icon: Icons.remove_circle_outline_rounded,
-          color: Theme.of(context).colorScheme.error,
+          color: AppTheme.errorColor,
           onPressed: () {
             // Navigate to expense page
             // For now, we'll just show a snackbar as a placeholder
@@ -82,7 +83,7 @@ class _SpeedDialFabState extends State<SpeedDialFab>
           animation: _animation,
           delay: 0.0,
           icon: Icons.add_circle_outline_rounded,
-          color: Theme.of(context).colorScheme.tertiary,
+          color: AppTheme.successColor,
           onPressed: () {
             // Navigate to income page
             // For now, we'll just show a snackbar as a placeholder
@@ -145,13 +146,13 @@ class _FabButton extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
+                      color: AppTheme.surfaceColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       label,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: AppTheme.textColorPrimary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

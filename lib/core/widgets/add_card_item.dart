@@ -1,3 +1,4 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class AddCardItem extends StatelessWidget {
@@ -16,8 +17,7 @@ class AddCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final itemColor = color ?? theme.colorScheme.primary;
+    final itemColor = color ?? AppTheme.primaryColor;
 
     return Container(
       decoration: BoxDecoration(
@@ -26,7 +26,7 @@ class AddCardItem extends StatelessWidget {
           color: itemColor.withValues(alpha: 0.3),
           width: 1.5,
         ),
-        color: Theme.of(context).colorScheme.surface,
+        color: AppTheme.surfaceColor,
       ),
       child: InkWell(
         onTap: onTap,
@@ -64,9 +64,9 @@ class AddCardItem extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               label,
-              style: theme.textTheme.titleSmall?.copyWith(
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: theme.colorScheme.onSurface,
+                color: AppTheme.textColorPrimary,
                 fontSize: 20,
                 height: 1.2,
               ),

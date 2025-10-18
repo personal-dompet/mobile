@@ -1,4 +1,5 @@
 import 'package:dompet/features/auth/presentation/providers/user_provider.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,7 +51,7 @@ class _UnauthenticatedWidget extends ConsumerWidget {
             Icon(
               Icons.lock_rounded,
               size: 80,
-              color: Theme.of(context).colorScheme.primary,
+              color: AppTheme.primaryColor,
             ),
             const SizedBox(height: 24),
             const Text(

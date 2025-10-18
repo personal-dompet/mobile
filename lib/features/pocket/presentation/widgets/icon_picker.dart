@@ -1,5 +1,6 @@
 import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -94,7 +95,7 @@ class _IconPickerState extends ConsumerState<IconPicker> {
               Text(
                 '${filteredCategories.length} icons',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).hintColor,
+                      color: AppTheme.disabledColor,
                     ),
               ),
           ],
@@ -112,14 +113,14 @@ class _IconPickerState extends ConsumerState<IconPicker> {
                   Icon(
                     Icons.search_off_outlined,
                     size: 48,
-                    color: Theme.of(context).hintColor,
+                    color: AppTheme.disabledColor,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'No icons found',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Theme.of(context).hintColor,
+                      color: AppTheme.disabledColor,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -127,7 +128,7 @@ class _IconPickerState extends ConsumerState<IconPicker> {
                     'Try using different keywords',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Theme.of(context).hintColor,
+                      color: AppTheme.disabledColor,
                     ),
                   ),
                 ],
@@ -173,7 +174,7 @@ class _IconPickerState extends ConsumerState<IconPicker> {
                       category.icon,
                       color: isSelected && widget.form.color.value != null
                           ? widget.form.color.value
-                          : Theme.of(context).iconTheme.color,
+                          : AppTheme.textColorPrimary,
                       size: 24,
                     ),
                   ),

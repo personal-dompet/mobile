@@ -5,6 +5,7 @@ import 'package:dompet/features/transfer/presentation/providers/recent_pocket_tr
 import 'package:dompet/features/transfer/presentation/widgets/recent_pocket_transfers_list.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:dompet/features/wallet/presentation/widgets/wallet_card.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,7 +32,7 @@ class HomePage extends ConsumerWidget {
                 indent: 16,
                 endIndent: 16,
                 thickness: 1,
-                color: Theme.of(context).dividerColor.withValues(alpha: 0.3),
+                color: AppTheme.surfaceColor.withValues(alpha: 0.3),
               ),
               const RecentPocketTransfersList(),
             ],

@@ -1,3 +1,4 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class ItemCard<T> extends StatefulWidget {
@@ -70,8 +71,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = widget.color?.call(widget.item) ?? theme.colorScheme.primary;
+    final color = widget.color?.call(widget.item) ?? AppTheme.primaryColor;
     final icon = widget.icon?.call(widget.item) ?? Icons.question_mark;
 
     // If item.id equals -1, wrap with animated container
@@ -81,17 +81,17 @@ class _ItemCardState<T> extends State<ItemCard<T>>
         builder: (context, child) {
           return Opacity(
             opacity: _animation.value,
-            child: _buildContainer(theme, color, icon),
+            child: _buildContainer(color, icon),
           );
         },
       );
     }
 
     // Regular item card without animation
-    return _buildContainer(theme, color, icon);
+    return _buildContainer(color, icon);
   }
 
-  Widget _buildContainer(ThemeData theme, Color color, IconData icon) {
+  Widget _buildContainer(Color color, IconData icon) {
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
@@ -102,7 +102,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
             color: (widget.isSelected) ? color : color.withValues(alpha: 0.3),
             width: (widget.isSelected) ? 2.0 : 1.5,
           ),
-          color: Theme.of(context).colorScheme.surface,
+          color: AppTheme.surfaceColor,
           boxShadow: [
             if (widget.isSelected)
               BoxShadow(
@@ -112,12 +112,12 @@ class _ItemCardState<T> extends State<ItemCard<T>>
               ),
           ],
         ),
-        child: _buildCardContent(theme, color, icon),
+        child: _buildCardContent(color, icon),
       ),
     );
   }
 
-  Widget _buildCardContent(ThemeData theme, Color color, IconData icon) {
+  Widget _buildCardContent(Color color, IconData icon) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -153,12 +153,12 @@ class _ItemCardState<T> extends State<ItemCard<T>>
         // Item name with enhanced styling
         Text(
           widget.name(widget.item),
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: theme.colorScheme.onSurface,
-            fontSize: 20,
-            height: 1.2,
-          ),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppTheme.textColorPrimary,
+                fontSize: 20,
+                height: 1.2,
+              ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
@@ -167,10 +167,10 @@ class _ItemCardState<T> extends State<ItemCard<T>>
         // Balance information with enhanced styling
         Text(
           widget.balance(widget.item),
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w800,
-            color: theme.colorScheme.onSurface,
-          ),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textColorPrimary,
+              ),
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -192,10 +192,10 @@ class _ItemCardState<T> extends State<ItemCard<T>>
           ),
           child: Text(
             widget.displayName(widget.item),
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ),
       ],

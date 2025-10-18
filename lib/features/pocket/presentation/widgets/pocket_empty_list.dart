@@ -3,6 +3,7 @@ import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provider.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,7 +19,7 @@ class PocketEmptyList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textColor = Theme.of(context).colorScheme.onSurface;
+    final textColor = AppTheme.textColorPrimary;
     final filter = ref.watch(pocketFilterProvider);
 
     // Get the current filter values
@@ -64,7 +65,7 @@ class PocketEmptyList extends ConsumerWidget {
           Icon(
             type.icon,
             size: 64,
-            color: textColor.withValues(alpha: 0.5),
+            color: AppTheme.textColorPrimary.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
           Text(
@@ -80,7 +81,7 @@ class PocketEmptyList extends ConsumerWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
-              color: textColor,
+              color: AppTheme.textColorPrimary,
             ),
           ),
           const SizedBox(height: 24),

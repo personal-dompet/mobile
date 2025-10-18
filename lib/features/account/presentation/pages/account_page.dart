@@ -6,6 +6,7 @@ import 'package:dompet/features/account/presentation/widgets/account_grid.dart';
 import 'package:dompet/features/account/presentation/widgets/account_search_field.dart';
 import 'package:dompet/features/account/presentation/widgets/account_type_selector.dart';
 import 'package:dompet/routes/create_pocket_transfer_route.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,8 +24,8 @@ class AccountPage extends ConsumerWidget {
               onPressed: () {
                 CreatePocketTransferRoute().push(context);
               },
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: AppTheme.primaryColor,
+              foregroundColor: AppTheme.backgroundColor,
               tooltip: 'Transfer',
               child: const Icon(Icons.swap_horiz),
             );

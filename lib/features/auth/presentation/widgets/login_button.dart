@@ -1,5 +1,6 @@
 import 'package:dompet/features/auth/presentation/providers/user_provider.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +23,7 @@ class LoginButton extends ConsumerWidget {
           await userNotifier.signIn();
         },
         icon: Icon(Icons.login_rounded,
-            color: Theme.of(context).colorScheme.primary),
+            color: AppTheme.primaryColor),
       );
     }
 
@@ -70,7 +71,7 @@ class LoginButton extends ConsumerWidget {
                 Icon(
                   Icons.copy_rounded,
                   size: 20,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: AppTheme.primaryColor,
                 ),
                 const SizedBox(width: 8),
                 const Text('Copy ID'),
@@ -84,12 +85,12 @@ class LoginButton extends ConsumerWidget {
                 Icon(
                   Icons.logout_rounded,
                   size: 20,
-                  color: Theme.of(context).colorScheme.error,
+                  color: AppTheme.errorColor,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   'Logout',
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  style: TextStyle(color: AppTheme.errorColor),
                 ),
               ],
             ),
@@ -97,7 +98,7 @@ class LoginButton extends ConsumerWidget {
         ],
         child: user.photoURL != null
             ? CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.primary,
+                backgroundColor: AppTheme.primaryColor,
                 radius: 24,
                 child: CircleAvatar(
                   backgroundImage: NetworkImage(user.photoURL!),
@@ -108,13 +109,13 @@ class LoginButton extends ConsumerWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: AppTheme.primaryColor,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.person_rounded,
                   size: 30,
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  color: AppTheme.backgroundColor,
                 ),
               ),
       );

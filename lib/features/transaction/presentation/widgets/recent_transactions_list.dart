@@ -1,6 +1,7 @@
 import 'package:dompet/core/widgets/recent_list_container.dart';
 import 'package:dompet/features/transaction/domain/models/transaction_detail_model.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -54,10 +55,10 @@ class _RecentTransactionItem extends StatelessWidget {
           const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
       leading: CircleAvatar(
         radius: 20,
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        backgroundColor: AppTheme.cardColor,
         child: Icon(
           transaction.category.icon,
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          color: AppTheme.primaryColor,
           size: 20,
         ),
       ),
@@ -87,8 +88,7 @@ class _RecentTransactionItem extends StatelessWidget {
             transaction.pocket.name,
             style: TextStyle(
               fontSize: 12,
-              color: transaction.pocket.color ??
-                  Theme.of(context).colorScheme.primary,
+              color: transaction.pocket.color ?? AppTheme.primaryColor,
             ),
           ),
         ],
@@ -103,8 +103,8 @@ class _RecentTransactionItem extends StatelessWidget {
               fontWeight: FontWeight.w600,
               fontSize: 14,
               color: transaction.isIncome
-                  ? Theme.of(context).colorScheme.tertiary
-                  : Theme.of(context).colorScheme.error,
+                  ? AppTheme.successColor
+                  : AppTheme.errorColor,
             ),
           ),
           Text(

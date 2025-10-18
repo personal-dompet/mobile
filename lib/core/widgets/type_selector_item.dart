@@ -1,3 +1,4 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class TypeSelectorItem extends StatelessWidget {
@@ -16,7 +17,7 @@ class TypeSelectorItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = Theme.of(context).colorScheme.primary;
+    final activeColor = AppTheme.primaryColor;
     final inactiveColor = Colors.transparent;
     return FilledButton(
       style: FilledButton.styleFrom(
@@ -25,9 +26,7 @@ class TypeSelectorItem extends StatelessWidget {
         side: BorderSide(
             color: isSelected
                 ? activeColor
-                : Theme.of(context)
-                    .colorScheme
-                    .onSurface
+                : AppTheme.textColorPrimary
                     .withValues(alpha: .5)),
       ),
       onPressed: onPressed,
@@ -36,7 +35,7 @@ class TypeSelectorItem extends StatelessWidget {
         style: TextStyle(
             color: isSelected
                 ? activeColor
-                : Theme.of(context).colorScheme.onSurface),
+                : AppTheme.textColorPrimary),
       ),
     );
   }

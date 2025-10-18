@@ -1,4 +1,5 @@
 import 'package:dompet/features/account/domain/enum/account_type.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,12 +14,10 @@ class AccountTypeSelectorBottomSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        color: AppTheme.surfaceColor,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(20),
         ),
@@ -31,7 +30,7 @@ class AccountTypeSelectorBottomSheet extends ConsumerWidget {
             height: 4,
             margin: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: colorScheme.onSurface.withValues(alpha: 0.4),
+              color: AppTheme.textColorPrimary.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -56,7 +55,7 @@ class AccountTypeSelectorBottomSheet extends ConsumerWidget {
 
               return Container(
                 decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest,
+                  color: AppTheme.cardColor,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: typeColor.withValues(alpha: 0.3),
@@ -81,13 +80,13 @@ class AccountTypeSelectorBottomSheet extends ConsumerWidget {
                     accountType.displayName,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface,
+                          color: AppTheme.textColorPrimary,
                         ),
                   ),
                   subtitle: Text(
                     accountType.description,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurface.withValues(alpha: 0.7),
+                          color: AppTheme.textColorPrimary.withValues(alpha: 0.7),
                         ),
                   ),
                   trailing: Icon(

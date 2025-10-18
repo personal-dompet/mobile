@@ -2,6 +2,7 @@ import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/core/widgets/recent_list_container.dart';
 import 'package:dompet/features/transfer/domain/models/pocket_transfer_model.dart';
 import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,10 +56,10 @@ class _RecentPocketTransferItem extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
         leading: CircleAvatar(
           radius: 20,
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          backgroundColor: AppTheme.cardColor,
           child: Icon(
             Icons.swap_horiz,
-            color: Theme.of(context).colorScheme.onPrimaryContainer,
+            color: AppTheme.primaryColor,
             size: 20,
           ),
         ),
@@ -79,7 +80,7 @@ class _RecentPocketTransferItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 color: transfer.sourcePocket.color?.withValues(alpha: 0.8) ??
-                    Theme.of(context).colorScheme.primary,
+                    AppTheme.primaryColor,
               ),
             ),
             const Text(
@@ -95,7 +96,7 @@ class _RecentPocketTransferItem extends StatelessWidget {
                 fontSize: 12,
                 color:
                     transfer.destinationPocket.color?.withValues(alpha: 0.8) ??
-                        Theme.of(context).colorScheme.primary,
+                        AppTheme.primaryColor,
               ),
             ),
           ],
@@ -109,7 +110,7 @@ class _RecentPocketTransferItem extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
-                color: Theme.of(context).colorScheme.primary,
+                color: AppTheme.primaryColor,
               ),
             ),
             Text(
