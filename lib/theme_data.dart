@@ -3,30 +3,30 @@ import 'package:flutter/material.dart';
 /// AppTheme provides easy access to all theme colors and properties
 /// Access colors using AppTheme.primaryColor, AppTheme.successColor, etc.
 class AppTheme {
-  // Base pastel colors
-  static const Color primaryPastel = Color(0xFF60a39c); // Slightly darker pastel teal
-  static const Color secondaryPastel = Color(0xFFffafcc); // Pastel Coral
-  static const Color accentPastel = Color(0xFFffd6a5); // Pastel Orange
+  // Base OLED-friendly colors (darker/more saturated colors that work better with black)
+  static const Color primaryOled = Color(0xFF4DB6AC); // Teal, more saturated
+  static const Color secondaryOled = Color(0xFFFF70A6); // Pink, better contrast on black
+  static const Color accentOled = Color(0xFFFF9500); // Orange, vibrant but not too bright
 
-  // Surface and background colors (darker pastels for contrast)
-  static const Color surfaceColor = Color(0xFF2C2C2C); // Dark gray
+  // Surface and background colors (pure black for OLED optimization)
+  static const Color surfaceColor = Color(0xFF000000); // Pure black
   static const Color backgroundColor =
-      Color(0xFF1A1A1A); // Very dark gray (natural dark)
-  static const Color cardColor = Color(0xFF3A3A3A); // Lighter gray for cards
+      Color(0xFF000000); // Pure black (for OLED optimization)
+  static const Color cardColor = Color(0xFF121212); // Very dark gray for cards to provide subtle contrast
 
-  // Utility colors (pastel variants)
-  static const Color primaryColor = primaryPastel;
-  static const Color secondaryColor = secondaryPastel;
-  static const Color errorColor = Color(0xFFffb3ba); // Pastel Red
-  static const Color successColor = Color(0xFFb5ead7); // Mint Green
-  static const Color warningColor = Color(0xFFffeaa7); // Mellow Yellow
-  static const Color infoColor = Color(0xFF87ceeb); // Sky Blue
-  static const Color disabledColor = Color(0xFFa8a8a8); // Pastel Gray
+  // Utility colors (darker/more saturated variants)
+  static const Color primaryColor = primaryOled;
+  static const Color secondaryColor = secondaryOled;
+  static const Color errorColor = Color(0xFFCF6679); // Material design error for dark theme
+  static const Color successColor = Color(0xFF4CAF50); // More saturated green
+  static const Color warningColor = Color(0xFFFFB74D); // More saturated yellow-orange
+  static const Color infoColor = Color(0xFF29B6F6); // More saturated blue
+  static const Color disabledColor = Color(0xFF444444); // Dark gray
 
   // Text and icon colors
-  static const Color textColorPrimary = Color(0xFFE5E7EB); // Light gray
-  static const Color textColorSecondary = Color(0xFFD1D5DB); // Medium gray
-  static const Color textColorTertiary = Color(0xFF9CA3AF); // Darker gray
+  static const Color textColorPrimary = Color(0xFFFFFFFF); // Pure white
+  static const Color textColorSecondary = Color(0xFFB3B3B3); // Medium light gray
+  static const Color textColorTertiary = Color(0xFF888888); // Medium gray
 }
 
 class AppThemes {
@@ -38,7 +38,7 @@ class AppThemes {
 
       // Color scheme
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppTheme.primaryPastel,
+        seedColor: AppTheme.primaryOled,
         brightness: Brightness.dark,
         primary: AppTheme.primaryColor,
         onPrimary: Colors.white,

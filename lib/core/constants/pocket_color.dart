@@ -2,43 +2,43 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-/// A collection of predefined warm pastel colors for pockets.
+/// A collection of predefined vibrant OLED-friendly colors for pockets.
 /// Users can only select colors from this constant collection.
 /// PocketColor extends Color, so instances can be used anywhere a Color is expected.
 class PocketColor extends Color {
   /// Creates a PocketColor from an ARGB integer value.
   const PocketColor(super.value);
 
-  /// Returns a list of 16 distinct warm pastel colors
+  /// Returns a list of 16 distinct vibrant OLED-friendly colors
   static List<PocketColor> get colors => [
         // Red/Pink variants
-        const PocketColor(0xFFffadad), // Pastel Red
-        const PocketColor(0xFFff847c), // Watermelon
+        const PocketColor(0xFFEF5350), // Vibrant Red
+        const PocketColor(0xFFF06292), // Vibrant Pink
 
         // Orange/Yellow variants
-        const PocketColor(0xFFffd6a5), // Pastel Orange
-        const PocketColor(0xFFffd8be), // Apricot
-        const PocketColor(0xFFffffba), // Light Yellow
+        const PocketColor(0xFFFF9800), // Vibrant Orange
+        const PocketColor(0xFFFFCA28), // Vibrant Amber
+        const PocketColor(0xFFFDD835), // Vibrant Yellow
 
         // Green variants
-        const PocketColor(0xFFcaffbf), // Pastel Green
-        const PocketColor(0xFF99b898), // Sage Green
+        const PocketColor(0xFF4CAF50), // Vibrant Green
+        const PocketColor(0xFF8BC34A), // Vibrant Lime Green
 
         // Blue/Cyan variants
-        const PocketColor(0xFF9bf6ff), // Pastel Cyan
-        const PocketColor(0xFFa0c4ff), // Pastel Blue
-        const PocketColor(0xFFbae1ff), // Baby Blue
+        const PocketColor(0xFF29B6F6), // Vibrant Cyan
+        const PocketColor(0xFF42A5F5), // Vibrant Blue
+        const PocketColor(0xFF64B5F6), // Vibrant Light Blue
 
         // Purple/Violet variants
-        const PocketColor(0xFFbdb2ff), // Pastel Indigo
-        const PocketColor(0xFFe1baff), // Lavender
-        const PocketColor(0xFFd291bc), // Orchid
+        const PocketColor(0xFFAB47BC), // Vibrant Purple
+        const PocketColor(0xFFBA68C8), // Vibrant Orchid
+        const PocketColor(0xFFCE93D8), // Vibrant Lavender
 
         // Neutral variants
-        const PocketColor(0xFFe2f0cb), // Light Moss Green
-        const PocketColor(0xFFc7ceea), // Periwinkle
+        const PocketColor(0xFF8D6E63), // Vibrant Brown
+        const PocketColor(0xFF78909C), // Vibrant Blue Grey
 
-        const PocketColor(0xFFb0b0b0), // Grey
+        const PocketColor(0xFF757575), // Vibrant Grey
       ];
 
   /// Converts this PocketColor to a hex string representation
