@@ -39,19 +39,10 @@ class DompetApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      child: GestureDetector(
-        onTap: () {
-          final currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus &&
-              currentFocus.focusedChild != null) {
-            currentFocus.focusedChild!.unfocus();
-          }
-        },
-        child: MaterialApp.router(
-          title: 'Dompet',
-          theme: AppThemes.darkTheme,
-          routerConfig: router,
-        ),
+      child: MaterialApp.router(
+        title: 'Dompet',
+        theme: AppThemes.darkTheme,
+        routerConfig: router,
       ),
     );
   }

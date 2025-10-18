@@ -5,6 +5,7 @@ import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
+import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:flutter/material.dart';
@@ -144,35 +145,45 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                     final formattedNewBalance =
                         FormatCurrency.formatRupiah(newBalance);
 
-                    return AnimatedOpacityContainer(
-                      isAnimated: form.toPocket.value == null ||
-                          form.toPocket.value!.id < 0,
-                      child: AccountPocketSelector(
-                        label: 'To Pocket',
-                        placeholder: 'Select destination pocket',
-                        color: toPocket.color,
-                        icon: toPocket.icon?.icon,
-                        name: toPocket.name,
-                        balance: toPocket.formattedBalance,
-                        isDisabled:
-                            widget.subject == TransferStaticSubject.destination,
-                        formattedNewBalance: newBalance == toPocket.balance
-                            ? null
-                            : formattedNewBalance,
-                        showBalanceChange: newBalance != toPocket.balance,
-                        onTap: () async {
-                          final selectedPocket = await context
-                              .pushNamed<PocketModel>('SelectPocket',
-                                  queryParameters: {
-                                'selectedPocketId':
-                                    form.toPocket.value?.id.toString(),
-                                'title': 'destination',
-                              });
-                          if (selectedPocket != null && mounted) {
-                            form.toPocket.value = selectedPocket;
-                          }
-                        },
-                      ),
+                    return ReactiveFormConsumer(
+                      builder: (context, formGroup, _) {
+                        final transferForm = formGroup as PocketTransferForm;
+                        return AnimatedOpacityContainer(
+                          isAnimated: (!transferForm.toPocket.hasErrors ||
+                                  transferForm.toPocket.value != null) &&
+                              transferForm.toPocket.value!.id < 0,
+                          child: AccountPocketSelector(
+                            formControl: transferForm.toPocket,
+                            label: 'To Pocket',
+                            placeholder: 'Select destination pocket',
+                            color: transferForm.toPocket.value?.color,
+                            icon: transferForm.toPocket.value?.icon?.icon,
+                            name: transferForm.toPocket.value?.name,
+                            balance:
+                                transferForm.toPocket.value?.formattedBalance,
+                            isDisabled: widget.subject ==
+                                TransferStaticSubject.destination,
+                            formattedNewBalance: newBalance ==
+                                    transferForm.toPocket.value?.balance
+                                ? null
+                                : formattedNewBalance,
+                            showBalanceChange: newBalance !=
+                                transferForm.toPocket.value?.balance,
+                            onTap: () async {
+                              final selectedPocket = await context
+                                  .pushNamed<PocketModel>('SelectPocket',
+                                      queryParameters: {
+                                    'selectedPocketId':
+                                        form.toPocket.value?.id.toString(),
+                                    'title': 'destination',
+                                  });
+                              if (selectedPocket != null && mounted) {
+                                form.toPocket.value = selectedPocket;
+                              }
+                            },
+                          ),
+                        );
+                      },
                     );
                   },
                 ),
@@ -241,12 +252,16 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
         bottomNavigationBar: ReactiveFormConsumer(
           builder: (context, formGroup, _) {
             final pocketTransferForm = formGroup as PocketTransferForm;
-            return SubmitButton(
-              text: 'Transfer Funds',
-              onPressed: pocketTransferForm.toPocket.value == null ||
-                      pocketTransferForm.toPocket.value!.id < 0
-                  ? null
-                  : () => _submit(context),
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16).copyWith(bottom: 24),
+              child: SubmitButton(
+                text: 'Transfer Funds',
+                onPressed: pocketTransferForm.toPocket.value == null ||
+                        pocketTransferForm.toPocket.value!.id < 0
+                    ? null
+                    : () => _submit(context),
+              ),
             );
           },
         ),

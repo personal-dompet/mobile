@@ -1,3 +1,4 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class CardInput extends StatelessWidget {
@@ -29,25 +30,35 @@ class CardInput extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            child,
             if (info != null)
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: AppTheme.infoColor,
                   ),
-                  color: Theme.of(context)
-                      .colorScheme
-                      .secondary
-                      .withValues(alpha: 0.3),
+                  color: AppTheme.infoColor.withValues(alpha: 0.3),
                 ),
-                child: Text(
-                  info!,
-                  style: TextStyle(color: Colors.white),
+                child: Row(
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      color: AppTheme.infoColor,
+                    ),
+                    Expanded(
+                      child: Text(
+                        info!,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            if (info != null) const SizedBox.shrink(),
+            child,
           ],
         ),
       ),

@@ -1,6 +1,9 @@
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
 class AccountPocketSelector<T> extends StatelessWidget {
+  final FormControl<T?>? formControl;
   final String label;
   final String placeholder;
   final Color? color;
@@ -14,6 +17,7 @@ class AccountPocketSelector<T> extends StatelessWidget {
 
   const AccountPocketSelector({
     super.key,
+    this.formControl,
     required this.label,
     required this.placeholder,
     this.color,
@@ -35,65 +39,72 @@ class AccountPocketSelector<T> extends StatelessWidget {
     final colorForIcon = color ?? Colors.grey;
     final chevronColor = name != null ? colorForIcon : Colors.grey;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color:
-              color?.withValues(alpha: 0.5) ?? Theme.of(context).dividerColor,
-          width: 1,
-        ),
-      ),
-      child: InkWell(
-        onTap: isDisabled ? null : onTap,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: Row(
-            children: [
-              Container(
-                width: 56,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: colorToUse,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(11),
-                    bottomLeft: Radius.circular(11),
-                  ),
-                ),
-                child: Center(
-                  child: Icon(
-                    iconToUse,
-                    color: colorForIcon,
-                    size: 32,
-                  ),
-                ),
+    return Column(
+      spacing: 4,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: color?.withValues(alpha: 0.5) ?? AppTheme.disabledColor,
+              width: 1,
+            ),
+          ),
+          child: InkWell(
+            onTap: isDisabled ? null : onTap,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: AppTheme.surfaceColor,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      nameToUse,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+              padding: const EdgeInsets.only(right: 8),
+              child: Row(
+                children: [
+                  Container(
+                    width: 56,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: colorToUse,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(11),
+                        bottomLeft: Radius.circular(11),
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    if (balance != null)
-                      Text.rich(
-                        overflow: TextOverflow.ellipsis,
-                        TextSpan(
-                          text: balance,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w600,
+                    child: Center(
+                      child: Icon(
+                        iconToUse,
+                        color: colorForIcon,
+                        size: 32,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          nameToUse,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
                           ),
-                          children:
-                              showBalanceChange && formattedNewBalance != null
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (balance != null)
+                          Text.rich(
+                            overflow: TextOverflow.ellipsis,
+                            TextSpan(
+                              text: balance,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              children: showBalanceChange &&
+                                      formattedNewBalance != null
                                   ? [
                                       TextSpan(
                                         text: '  →  ',
@@ -109,27 +120,37 @@ class AccountPocketSelector<T> extends StatelessWidget {
                                       ),
                                     ]
                                   : [],
-                        ),
-                      ),
-                  ],
-                ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  if (!isDisabled)
+                    Icon(
+                      Icons.chevron_right,
+                      color: chevronColor,
+                    ),
+                  if (isDisabled)
+                    Icon(
+                      Icons.lock,
+                      color: Colors.grey,
+                      size: 24,
+                    ),
+                  const SizedBox(width: 4),
+                ],
               ),
-              if (!isDisabled)
-                Icon(
-                  Icons.chevron_right,
-                  color: chevronColor,
-                ),
-              if (isDisabled)
-                Icon(
-                  Icons.lock,
-                  color: Colors.grey,
-                  size: 24,
-                ),
-              const SizedBox(width: 4),
-            ],
+            ),
           ),
         ),
-      ),
+        if (formControl != null && formControl!.hasErrors)
+          Text(
+            formControl!.errors['failed'].toString(),
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 12,
+            ),
+          )
+      ],
     );
   }
 }

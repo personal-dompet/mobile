@@ -1,11 +1,12 @@
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
-import 'package:dompet/core/widgets/reactive_date_picker.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/domain/forms/create_recurring_pocket_form.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/widgets/billing_date_option.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -84,12 +85,19 @@ class CreateRecurringPocketPage extends ConsumerWidget {
                   ),
                 ),
                 CardInput(
-                  label: 'Due Date',
-                  child: DompetReactiveDatePicker(
-                    formControl: recurringPocketForm.dueDate,
-                    hintText: 'Select date',
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(3000),
+                  label: 'Billing Date',
+                  info:
+                      'Choose when this recurring payment will be charged each months',
+                  child: ReactiveFormConsumer(
+                    builder: (context, formGroup, _) {
+                      final form = formGroup as CreateRecurringPocketForm;
+                      return BillingDateOption(
+                        selectedDate: form.billingDateValue,
+                        onDateSelected: (value) {
+                          form.billingDate.value = value;
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
@@ -97,9 +105,11 @@ class CreateRecurringPocketPage extends ConsumerWidget {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8).copyWith(top: 16),
+          padding:
+              const EdgeInsets.symmetric(vertical: 16).copyWith(bottom: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            spacing: 4,
             children: [
               SubmitButton(
                 text: 'Create Pocket with Details',
@@ -112,16 +122,13 @@ class CreateRecurringPocketPage extends ConsumerWidget {
               ),
               TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.outline,
-                ),
+                    foregroundColor: AppTheme.disabledColor,
+                    padding: const EdgeInsets.all(0)),
                 onPressed: () {
                   Navigator.of(context)
                       .pop<PocketCreationType>(PocketCreationType.pocket);
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text('Skip, Create Anyway'),
-                ),
+                child: Text('Skip, Create Anyway'),
               ),
             ],
           ),

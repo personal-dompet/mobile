@@ -3,18 +3,17 @@ import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
-import 'package:intl/intl.dart';
 
 class RecurringPocketModel extends PocketModel {
-  final String productName;
-  final int amount;
-  final DateTime? dueDate;
+  final String? productName;
+  final int? amount;
+  final DateTime? billingDate;
   final String? productDescription;
 
   RecurringPocketModel({
-    required this.productName,
-    required this.amount,
-    this.dueDate,
+    this.productName,
+    this.amount,
+    this.billingDate,
     this.productDescription,
     required super.id,
     required super.name,
@@ -33,7 +32,7 @@ class RecurringPocketModel extends PocketModel {
     return RecurringPocketModel(
       productName: json['product_name'],
       amount: json['amount'],
-      dueDate: json['due_date'] != null
+      billingDate: json['due_date'] != null
           ? DateTime.fromMillisecondsSinceEpoch(json['due_date'] * 1000)
           : null,
       productDescription: json['product_description'],
@@ -62,7 +61,7 @@ class RecurringPocketModel extends PocketModel {
     return RecurringPocketModel(
       productName: productName ?? '',
       amount: amount ?? 0,
-      dueDate: dueDate,
+      billingDate: dueDate,
       id: 0,
       name: name ?? '',
       color: color,
@@ -74,18 +73,15 @@ class RecurringPocketModel extends PocketModel {
     );
   }
 
-  String get formattedAmount => FormatCurrency.formatRupiah(amount);
-  String get formattedDueDate =>
-      dueDate != null ? DateFormat('dd MMMM yyyy').format(dueDate!) : '';
-  String get formattedDueDateTime =>
-      dueDate != null ? DateFormat('HH:mm').format(dueDate!) : '';
+  String get formattedAmount =>
+      amount != null ? FormatCurrency.formatRupiah(amount!) : '0';
 
   @override
   RecurringPocketModel copyWith({
     String? productName,
     int? amount,
     String? productDescription,
-    DateTime? dueDate,
+    DateTime? billingDate,
     int? id,
     String? name,
     PocketColor? color,
@@ -100,7 +96,7 @@ class RecurringPocketModel extends PocketModel {
       productName: productName ?? this.productName,
       amount: amount ?? this.amount,
       productDescription: productDescription ?? this.productDescription,
-      dueDate: dueDate ?? this.dueDate,
+      billingDate: billingDate ?? this.billingDate,
       id: id ?? this.id,
       name: name ?? this.name,
       color: color ?? this.color,

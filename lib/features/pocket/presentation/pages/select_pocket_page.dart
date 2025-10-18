@@ -38,6 +38,8 @@ class SelectPocketPage extends ConsumerWidget {
             if (data.isEmpty) {
               return PocketEmptyList(
                 listType: ListType.all,
+                onFormCreated: (pocket) =>
+                    Navigator.of(context).pop<PocketModel>(pocket),
               );
             }
 

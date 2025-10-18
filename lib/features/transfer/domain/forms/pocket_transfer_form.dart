@@ -41,8 +41,22 @@ class PocketTransferForm extends FormGroup {
   FormControl<String?> get description =>
       control('description') as FormControl<String?>;
 
-  PocketModel get fromPocketValue => control('fromPocket').value;
-  PocketModel get toPocketValue => control('toPocket').value;
+  PocketModel get fromPocketValue {
+    final value = control('fromPocket').value;
+    if (value == null) {
+      return PocketModel.placeholder(name: 'Select Pocket');
+    }
+    return value;
+  }
+
+  PocketModel get toPocketValue {
+    final value = control('toPocket').value;
+    if (value == null) {
+      return PocketModel.placeholder(name: 'Select Pocket');
+    }
+    return value;
+  }
+
   int get amountValue => control('amount').value ?? 0;
   String? get descriptionValue => control('description').value;
 

@@ -5,6 +5,7 @@ import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/domain/forms/create_spending_pocket_form.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -54,19 +55,20 @@ class CreateSpendingPocketPage extends ConsumerWidget {
                   },
                   child: CardInput(
                     child: Row(
+                      spacing: 8,
                       children: [
-                        ReactiveCheckbox(
+                        ReactiveSwitch(
                           formControl: spendingPocketForm.lowBalanceReminder,
-                          visualDensity: VisualDensity.compact,
                         ),
                         Expanded(
-                            child: Text(
-                          'Set low balance reminder',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
+                          child: Text(
+                            'Set low balance reminder',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
                           ),
-                        )),
+                        ),
                       ],
                     ),
                   ),
@@ -74,7 +76,7 @@ class CreateSpendingPocketPage extends ConsumerWidget {
                 CardInput(
                   label: 'Low Balance Threshold',
                   info:
-                      'Some dummy info here, place it with well copy written text that explaining about this section',
+                      'Get notified when your pocket balance drops to this amount or lower. Just make sure the "Low Balance Reminder" is turned on above.',
                   child: MaskedAmountInput(
                     formControl: spendingPocketForm.lowBalanceThreshold,
                     keyboardType: TextInputType.number,
@@ -91,9 +93,11 @@ class CreateSpendingPocketPage extends ConsumerWidget {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8).copyWith(top: 16),
+          padding:
+              const EdgeInsets.symmetric(vertical: 16).copyWith(bottom: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            spacing: 4,
             children: [
               SubmitButton(
                 text: 'Create Pocket with Details',
@@ -104,7 +108,8 @@ class CreateSpendingPocketPage extends ConsumerWidget {
               ),
               TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.outline,
+                  foregroundColor: AppTheme.disabledColor,
+                  padding: const EdgeInsets.all(0),
                 ),
                 onPressed: () {
                   Navigator.of(context)

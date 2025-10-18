@@ -170,27 +170,33 @@ class CreatePocketPage extends ConsumerWidget {
             ),
           ),
           bottomNavigationBar: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8).copyWith(top: 16),
-            child: SubmitButton(
-              text: 'Next',
-              onPressed: () async {
-                pocketCreateForm.markAllAsTouched();
-                if (pocketCreateForm.invalid) return;
-                PocketCreationType? pocketCreationType;
-                if (type == PocketType.spending) {
-                  pocketCreationType =
-                      await _toCreateSpendingPocketPage(context);
-                } else if (type == PocketType.saving) {
-                  pocketCreationType = await _toCreateSavingPocketPage(context);
-                } else {
-                  pocketCreationType =
-                      await _toCreateRecurringPocketPage(context);
-                }
-                if (pocketCreationType == null || !context.mounted) return;
-                Navigator.of(context)
-                    .pop<PocketCreationType?>(pocketCreationType);
-              },
-            ),
+            padding:
+                const EdgeInsets.symmetric(vertical: 16).copyWith(bottom: 24),
+            child: ReactiveFormConsumer(builder: (context, formGroup, _) {
+              final form = formGroup as CreatePocketForm;
+              final type = form.typeValue;
+              return SubmitButton(
+                text: 'Next',
+                onPressed: () async {
+                  form.markAllAsTouched();
+                  if (form.invalid) return;
+                  PocketCreationType? pocketCreationType;
+                  if (type == PocketType.spending) {
+                    pocketCreationType =
+                        await _toCreateSpendingPocketPage(context);
+                  } else if (type == PocketType.saving) {
+                    pocketCreationType =
+                        await _toCreateSavingPocketPage(context);
+                  } else {
+                    pocketCreationType =
+                        await _toCreateRecurringPocketPage(context);
+                  }
+                  if (pocketCreationType == null || !context.mounted) return;
+                  Navigator.of(context)
+                      .pop<PocketCreationType?>(pocketCreationType);
+                },
+              );
+            }),
           ),
         ),
       ),

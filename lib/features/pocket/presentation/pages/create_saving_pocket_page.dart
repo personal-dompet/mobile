@@ -6,6 +6,7 @@ import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/domain/forms/create_saving_pocket_form.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -125,9 +126,11 @@ class CreateSavingPocketPage extends ConsumerWidget {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8).copyWith(top: 16),
+          padding:
+              const EdgeInsets.symmetric(vertical: 16).copyWith(bottom: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            spacing: 4,
             children: [
               SubmitButton(
                 text: 'Create Pocket with Details',
@@ -138,7 +141,8 @@ class CreateSavingPocketPage extends ConsumerWidget {
               ),
               TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.outline,
+                  foregroundColor: AppTheme.disabledColor,
+                  padding: const EdgeInsets.all(0),
                 ),
                 onPressed: () {
                   Navigator.of(context)

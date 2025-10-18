@@ -52,6 +52,7 @@ class _PocketListNotifier extends AsyncNotifier<List<PocketModel>> {
         result = await ref.read(pocketRepositoryProvider).create(form);
       }
 
+      // TODO: Add another form provider that use pocket data
       final pocketTransferForm = ref.read(pocketTransferFormProvider);
       pocketTransferForm.toPocket.value = result;
 
@@ -64,6 +65,13 @@ class _PocketListNotifier extends AsyncNotifier<List<PocketModel>> {
     } catch (e) {
       if (ref.mounted) {
         state = AsyncData(previousState);
+        final pocketTransferForm = ref.read(pocketTransferFormProvider);
+        pocketTransferForm.toPocket.reset();
+        pocketTransferForm.toPocket.setErrors({
+          'failed':
+              'Failed to create new pocket. Please select existing pocket or create new one.'
+        });
+        pocketTransferForm.toPocket.markAsTouched();
       }
     }
   }
