@@ -4,7 +4,6 @@ import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/account/presentation/provider/create_account_provider.dart';
 import 'package:dompet/features/account/presentation/provider/filtered_account_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AllAccountProvider extends AsyncNotifier<List<AccountModel>> {
