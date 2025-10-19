@@ -77,7 +77,7 @@ extension ScaffoldSnackbarExtension on BuildContext {
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: const Color(0xFFF59E0B), // Amber color for warning
+        backgroundColor: AppTheme.warningColor, // Amber color for warning
         duration: duration ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(

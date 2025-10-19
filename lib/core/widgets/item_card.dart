@@ -1,3 +1,5 @@
+import 'package:dompet/core/enum/transfer_static_subject.dart';
+import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +11,7 @@ class ItemCard<T> extends StatefulWidget {
   final Color? Function(T)? color;
   final IconData? Function(T)? icon;
   final String Function(T) displayName;
-  final bool isSelected;
+  final TransferStaticSubject? transferRole;
   final VoidCallback? onTap;
 
   const ItemCard({
@@ -21,7 +23,7 @@ class ItemCard<T> extends StatefulWidget {
     this.color,
     this.icon,
     required this.displayName,
-    this.isSelected = false,
+    this.transferRole,
     this.onTap,
   });
 
@@ -92,19 +94,34 @@ class _ItemCardState<T> extends State<ItemCard<T>>
   }
 
   Widget _buildContainer(Color color, IconData icon) {
+    // Disable tap if card has a transfer role
+    final bool isDisabled = widget.transferRole != null;
+    final VoidCallback? effectiveOnTap = isDisabled
+        ? () {
+            final text = widget.transferRole! == TransferStaticSubject.source
+                ? 'source'
+                : 'destination';
+            final optionType =
+                T.toString() == 'PocketModel' ? 'pocket' : 'account';
+            context.showErrorSnackbar(
+                'Already selected as $text $optionType. Please select different $optionType or create new one.');
+            return;
+          }
+        : widget.onTap;
+
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: effectiveOnTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: (widget.isSelected) ? color : color.withValues(alpha: 0.3),
-            width: (widget.isSelected) ? 2.0 : 1.5,
+            color: isDisabled ? color : color.withValues(alpha: 0.3),
+            width: isDisabled ? 2.0 : 1.5,
           ),
           color: AppTheme.surfaceColor,
           boxShadow: [
-            if (widget.isSelected)
+            if (isDisabled)
               BoxShadow(
                 color: color.withValues(alpha: 0.3),
                 blurRadius: 8,
@@ -112,93 +129,137 @@ class _ItemCardState<T> extends State<ItemCard<T>>
               ),
           ],
         ),
-        child: _buildCardContent(color, icon),
+        child: Stack(
+          children: [
+            // Main content wrapped in a centered container to preserve original layout
+            Center(
+              child: _buildCardContent(color, icon, isDisabled),
+            ),
+            // Add source/destination indicator if applicable
+            if (isDisabled)
+              Positioned(
+                top: 16,
+                right: 0,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: color,
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    _getTransferRoleText(widget.transferRole!),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12,
+                        ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildCardContent(Color color, IconData icon) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          height: 56,
-          width: 56,
-          decoration: BoxDecoration(
-            color:
-                widget.isSelected ? color.withValues(alpha: 0.2) : Colors.black,
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: color.withValues(alpha: 0.3),
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
+  Widget _buildCardContent(Color color, IconData icon, bool isDisabled) {
+    return Opacity(
+      opacity: isDisabled ? 0.5 : 1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: 56,
+            width: 56,
+            decoration: BoxDecoration(
+              color: isDisabled ? color.withValues(alpha: 0.2) : Colors.black,
+              shape: BoxShape.circle,
+              border: Border.all(
                 color: color.withValues(alpha: 0.3),
-                blurRadius: 4,
-                offset: const Offset(0, 1),
+                width: 1.5,
               ),
-            ],
-          ),
-          child: Center(
-            child: Icon(
-              icon,
-              color: color,
-              size: 36,
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        // Item name with enhanced styling
-        Text(
-          widget.name(widget.item),
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: AppTheme.textColorPrimary,
-                fontSize: 20,
-                height: 1.2,
-              ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 4),
-        // Balance information with enhanced styling
-        Text(
-          widget.balance(widget.item),
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-                color: AppTheme.textColorPrimary,
-              ),
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 12),
-        // Item type with enhanced styling
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 4,
-          ),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: color.withValues(alpha: 0.3),
-              width: 1,
-            ),
-          ),
-          child: Text(
-            widget.displayName(widget.item),
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w600,
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.3),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
                 ),
+              ],
+            ),
+            child: Center(
+              child: Icon(
+                icon,
+                color: color,
+                size: 36,
+              ),
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 8),
+          // Item name with enhanced styling
+          Text(
+            widget.name(widget.item),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textColorPrimary,
+                  fontSize: 20,
+                  height: 1.2,
+                ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          // Balance information with enhanced styling
+          Text(
+            widget.balance(widget.item),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textColorPrimary,
+                ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 12),
+          // Item type with enhanced styling
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 4,
+            ),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: color.withValues(alpha: 0.3),
+                width: 1,
+              ),
+            ),
+            child: Text(
+              widget.displayName(widget.item),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  String _getTransferRoleText(TransferStaticSubject role) {
+    switch (role) {
+      case TransferStaticSubject.source:
+        return 'S';
+      case TransferStaticSubject.destination:
+        return 'D';
+    }
   }
 }

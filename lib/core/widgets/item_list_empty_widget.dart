@@ -33,8 +33,6 @@ class ItemListEmptyWidget<T> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textColor = AppTheme.textColorPrimary;
-
     // Get the current filter values
     final keyword = keywordValue?.call();
     final type = typeValue?.call();
