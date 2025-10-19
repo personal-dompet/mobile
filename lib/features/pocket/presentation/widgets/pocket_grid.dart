@@ -1,4 +1,5 @@
 import 'package:dompet/core/enum/list_type.dart';
+import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/widgets/add_pocket_card_item.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_card_item.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PocketGrid extends ConsumerWidget {
   final List<PocketModel> data;
   final int? selectedPocketId;
+  final PocketModel? sourcePocket;
+  final PocketModel? destinationPocket;
   final void Function(PocketModel) onTap;
   final ListType listType;
 
@@ -16,6 +19,8 @@ class PocketGrid extends ConsumerWidget {
     this.data = const [],
     this.selectedPocketId,
     required this.onTap,
+    this.destinationPocket,
+    this.sourcePocket,
     this.listType = ListType.filtered,
   });
 
@@ -41,9 +46,19 @@ class PocketGrid extends ConsumerWidget {
         // Otherwise, show the regular pocket card
         final pocket = data[index];
         final isSelected = pocket.id == selectedPocketId;
+        TransferStaticSubject? transferRole;
+
+        if (pocket.id == sourcePocket?.id) {
+          transferRole = TransferStaticSubject.source;
+        }
+        if (pocket.id == destinationPocket?.id) {
+          transferRole = TransferStaticSubject.destination;
+        }
+
         return PocketCardItem(
           pocket: pocket,
           isSelected: isSelected,
+          transferRole: transferRole,
           onTap: () => onTap(pocket),
         );
       },

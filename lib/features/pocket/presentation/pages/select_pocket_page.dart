@@ -2,8 +2,10 @@ import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_list_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_option_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_empty_list.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
+import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,7 +20,8 @@ class SelectPocketPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pocketsAsync = ref.watch(pocketListProvider);
+    final pocketsAsync = ref.watch(pocketOptionProvider);
+    final transferForm = ref.watch(pocketTransferFormProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +40,7 @@ class SelectPocketPage extends ConsumerWidget {
           data: (data) {
             if (data.isEmpty) {
               return PocketEmptyList(
-                listType: ListType.all,
+                listType: ListType.option,
                 onFormCreated: (pocket) =>
                     Navigator.of(context).pop<PocketModel>(pocket),
               );
@@ -51,7 +54,9 @@ class SelectPocketPage extends ConsumerWidget {
                     child: PocketGrid(
                       data: data,
                       selectedPocketId: selectedPocketId,
-                      listType: ListType.all,
+                      listType: ListType.option,
+                      destinationPocket: transferForm.toPocketValue,
+                      sourcePocket: transferForm.fromPocketValue,
                       onTap: (pocket) {
                         // Navigate back with the selected pocket
                         Navigator.of(context).pop<PocketModel>(pocket);

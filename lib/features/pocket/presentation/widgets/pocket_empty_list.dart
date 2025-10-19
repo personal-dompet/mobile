@@ -19,7 +19,6 @@ class PocketEmptyList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textColor = AppTheme.textColorPrimary;
     final filter = ref.watch(pocketFilterProvider);
 
     // Get the current filter values
