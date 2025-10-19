@@ -5,7 +5,6 @@ import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
-import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:flutter/material.dart';
