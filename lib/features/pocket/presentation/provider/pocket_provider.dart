@@ -51,7 +51,7 @@ class _PocketService {
   }
 
   Future<PocketType?> _selectPocketType(BuildContext context) async {
-    if (_listType == ListType.all) {
+    if (_listType == ListType.option) {
       return await showModalBottomSheet<PocketType>(
         context: context,
         isScrollControlled: true,

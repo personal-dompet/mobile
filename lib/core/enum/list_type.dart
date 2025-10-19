@@ -1,4 +1,4 @@
 enum ListType {
   filtered,
-  all,
+  option,
 }

@@ -35,7 +35,7 @@ class AccountEmptyList extends ConsumerWidget {
 
   Future<AccountType?> _determineAccountType(BuildContext context) async {
     // If viewing all accounts, use all type
-    if (listType == ListType.all) {
+    if (listType == ListType.option) {
       return AccountType.all;
     }
 

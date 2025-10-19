@@ -32,7 +32,7 @@ class AddAccountCardItem extends ConsumerWidget {
 
   Future<AccountType?> _determineAccountType(BuildContext context) async {
     // If viewing all accounts, use all type
-    if (listType == ListType.all) {
+    if (listType == ListType.option) {
       return await showModalBottomSheet<AccountType>(
         context: context,
         isScrollControlled: true,

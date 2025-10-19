@@ -95,7 +95,7 @@ class SelectAccountPage extends ConsumerWidget {
                     child: AccountGrid(
                         data: data,
                         selectedAccountId: selectedAccountId,
-                        listType: ListType.all,
+                        listType: ListType.option,
                         onTap: (account) {
                           Navigator.of(context).pop<AccountModel>(account);
                         }),
