@@ -1,5 +1,4 @@
 import 'package:dompet/core/enum/transfer_static_subject.dart';
-import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/account/presentation/provider/all_account_provider.dart';
@@ -191,19 +190,23 @@ class WalletCard extends ConsumerWidget {
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () async {
+                                final transferForm =
+                                    ref.read(pocketTransferFormProvider);
+                                transferForm.fromPocket.value = wallet;
                                 final pocket = await SelectPocketRoute(
                                   title: SelectPocketTitle.destination,
                                 ).push<PocketModel>(context);
                                 if (pocket == null || !context.mounted) return;
-                                final transferForm =
-                                    ref.read(pocketTransferFormProvider);
-                                transferForm.fromPocket.value = wallet;
                                 transferForm.toPocket.value = pocket;
 
                                 final form = await CreatePocketTransferRoute(
                                   subject: TransferStaticSubject.source,
                                 ).push<PocketTransferForm>(context);
-                                if (form == null) return;
+                                if (form == null) {
+                                  ref.invalidate(pocketTransferFormProvider);
+                                  return;
+                                }
+
                                 await ref
                                     .read(transferProvider)
                                     .pocketTransfer(form);
