@@ -62,7 +62,6 @@ dependencies:
 
   # Connectivity
   connectivity_plus: ^6.1.5
-  equatable: ^2.0.7
   go_router: ^16.2.1
   flutter_dotenv: ^6.0.0
 
