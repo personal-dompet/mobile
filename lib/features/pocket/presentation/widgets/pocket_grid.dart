@@ -45,7 +45,6 @@ class PocketGrid extends ConsumerWidget {
         }
         // Otherwise, show the regular pocket card
         final pocket = data[index];
-        final isSelected = pocket.id == selectedPocketId;
         TransferStaticSubject? transferRole;
 
         if (pocket.id == sourcePocket?.id) {
@@ -57,7 +56,6 @@ class PocketGrid extends ConsumerWidget {
 
         return PocketCardItem(
           pocket: pocket,
-          isSelected: isSelected,
           transferRole: transferRole,
           onTap: () => onTap(pocket),
         );

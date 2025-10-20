@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 class PocketCardItem extends StatelessWidget {
   final PocketModel pocket;
-  final bool isSelected;
   final VoidCallback? onTap;
   final TransferStaticSubject? transferRole;
 
@@ -13,7 +12,6 @@ class PocketCardItem extends StatelessWidget {
     super.key,
     required this.pocket,
     this.transferRole,
-    this.isSelected = false,
     this.onTap,
   });
 

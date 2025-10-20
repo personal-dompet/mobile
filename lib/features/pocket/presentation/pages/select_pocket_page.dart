@@ -79,7 +79,7 @@ class SelectPocketPage extends ConsumerWidget {
 
 enum SelectPocketTitle {
   destination('destination', 'Select Destination Pocket'),
-  origin('origin', 'Select Origin Pocket'),
+  source('source', 'Select Source Pocket'),
   general('general', 'Select Pocket');
 
   final String value;

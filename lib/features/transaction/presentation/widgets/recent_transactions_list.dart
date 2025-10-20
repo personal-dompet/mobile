@@ -63,7 +63,9 @@ class _RecentTransactionItem extends StatelessWidget {
         ),
       ),
       title: Text(
-        transaction.description ?? transaction.category.displayName,
+        transaction.description == null || transaction.description!.isEmpty
+            ? transaction.category.displayName
+            : transaction.description!,
         style: const TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 14,
