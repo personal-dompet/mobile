@@ -1,15 +1,10 @@
-import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/account/presentation/provider/all_account_provider.dart';
 import 'package:dompet/features/account/presentation/provider/filtered_account_provider.dart';
-import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
-import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
-import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
-import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
-import 'package:dompet/features/transfer/presentation/providers/transfer_provider.dart';
+import 'package:dompet/features/transfer/presentation/services/transfer_service.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:dompet/routes/routes.dart';
 import 'package:dompet/theme_data.dart';
@@ -190,28 +185,11 @@ class WalletCard extends ConsumerWidget {
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                final transferForm =
-                                    ref.read(pocketTransferFormProvider);
-                                transferForm.fromPocket.value = wallet;
-                                final pocket = await SelectPocketRoute(
-                                  title: SelectPocketTitle.destination,
-                                ).push<PocketModel>(context);
-                                if (pocket == null || !context.mounted) return;
-                                transferForm.toPocket.value = pocket;
+                                final transferService =
+                                    ref.read(transferServiceProvider);
 
-                                final form = await CreatePocketTransferRoute(
-                                  subject: TransferStaticSubject.source,
-                                ).push<PocketTransferForm>(context);
-                                if (form == null) {
-                                  ref.invalidate(pocketTransferFormProvider);
-                                  return;
-                                }
-
-                                await ref
-                                    .read(transferProvider)
-                                    .pocketTransfer(form);
-                                ref.invalidate(pocketTransferFormProvider);
-                                ref.invalidate(recentPocketTransfersProvider);
+                                await transferService.pocketTransfer(context,
+                                    sourcePocket: wallet);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.primaryColor,
@@ -223,8 +201,8 @@ class WalletCard extends ConsumerWidget {
                                 ),
                                 elevation: 2,
                               ),
-                              icon:
-                                  const Icon(Icons.swap_vert_rounded, size: 20),
+                              icon: const Icon(Icons.swap_horiz_rounded,
+                                  size: 20),
                               label: const Text('Transfer'),
                             ),
                           ),
