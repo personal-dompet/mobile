@@ -1,10 +1,10 @@
+import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/domain/forms/create_spending_pocket_form.dart';
-import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -102,8 +102,7 @@ class CreateSpendingPocketPage extends ConsumerWidget {
               SubmitButton(
                 text: 'Create Pocket with Details',
                 onPressed: () {
-                  Navigator.of(context)
-                      .pop<PocketCreationType>(PocketCreationType.detail);
+                  Navigator.of(context).pop<CreationType>(CreationType.detail);
                 },
               ),
               TextButton(
@@ -112,8 +111,7 @@ class CreateSpendingPocketPage extends ConsumerWidget {
                   padding: const EdgeInsets.all(0),
                 ),
                 onPressed: () {
-                  Navigator.of(context)
-                      .pop<PocketCreationType>(PocketCreationType.pocket);
+                  Navigator.of(context).pop<CreationType>(CreationType.basic);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(16),

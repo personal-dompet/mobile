@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
@@ -10,11 +11,6 @@ import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector
 import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-enum PocketCreationType {
-  pocket,
-  detail,
-}
 
 class _PocketService {
   final Ref _ref;
@@ -30,9 +26,7 @@ class _PocketService {
   }) async {
     try {
       final type = await _selectPocketType(context);
-      if (type == null) return;
-
-      if (!context.mounted) return;
+      if (type == null || !context.mounted) return;
 
       final creationType = await _navigateToCreatePocket(context, type);
       if (creationType == null || !context.mounted) return;
@@ -51,18 +45,9 @@ class _PocketService {
   }
 
   Future<PocketType?> _selectPocketType(BuildContext context) async {
-    if (_listType == ListType.option) {
-      return await showModalBottomSheet<PocketType>(
-        context: context,
-        isScrollControlled: true,
-        useRootNavigator: true,
-        builder: (context) => const PocketTypeSelectorBottomSheet(),
-      );
-    }
-
     final filter = _ref.read(pocketFilterProvider);
 
-    if (filter.type == PocketType.all) {
+    if (_listType == ListType.option || filter.type == PocketType.all) {
       return await showModalBottomSheet<PocketType>(
         context: context,
         isScrollControlled: true,
@@ -74,24 +59,24 @@ class _PocketService {
     return filter.type;
   }
 
-  Future<PocketCreationType?> _navigateToCreatePocket(
+  Future<CreationType?> _navigateToCreatePocket(
     BuildContext context,
     PocketType type,
   ) async {
     final form = _ref.read(createPocketFormProvider);
     form.type.value = type;
 
-    return await CreatePocketRoute().push<PocketCreationType>(context);
+    return await CreatePocketRoute().push<CreationType>(context);
   }
 
   Future<void> _saveCreatedPocket(
     BuildContext context,
-    PocketCreationType creationType, [
+    CreationType creationType, [
     ValueChanged<CreatePocketForm>? onFormCreated,
   ]) async {
     final pocketForm = _ref.read(createPocketFormProvider);
     onFormCreated?.call(pocketForm);
-    if (creationType == PocketCreationType.pocket) {
+    if (creationType == CreationType.basic) {
       await _ref.read(pocketListProvider.notifier).create(pocketForm);
       return;
     }

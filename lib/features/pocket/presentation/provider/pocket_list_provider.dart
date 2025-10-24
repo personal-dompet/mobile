@@ -52,14 +52,10 @@ class _PocketListNotifier extends AsyncNotifier<List<PocketModel>> {
         result = await ref.read(pocketRepositoryProvider).create(form);
       }
 
-      // TODO: Add another form provider that use pocket data
-      final pocketTransferForm = ref.read(pocketTransferFormProvider);
-      pocketTransferForm.toPocket.value = result;
-
-      final List<PocketModel> newState = [result];
+      _updateFormPocketValue(result);
 
       state = AsyncData([
-        ...newState,
+        result,
         ...previousState.where((pocket) => pocket.id != result.id),
       ]);
     } catch (e) {
@@ -84,6 +80,12 @@ class _PocketListNotifier extends AsyncNotifier<List<PocketModel>> {
       }
       return pocket;
     }).toList());
+  }
+
+  void _updateFormPocketValue(PocketModel pocket) {
+    // TODO: Add another form provider that use pocket data and add flagging from where the creation come from (source or destination)
+    final pocketTransferForm = ref.read(pocketTransferFormProvider);
+    pocketTransferForm.toPocket.value = pocket;
   }
 }
 

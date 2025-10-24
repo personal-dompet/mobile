@@ -1,10 +1,10 @@
+import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/domain/forms/create_recurring_pocket_form.dart';
-import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/billing_date_option.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +53,7 @@ class CreateRecurringPocketPage extends ConsumerWidget {
                     keyboardType: TextInputType.multiline,
                     textCapitalization: TextCapitalization.sentences,
                     decoration: const InputDecoration(
-                      hintText: 'Enter description',
+                      hintText: 'Enter product name',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -116,8 +116,7 @@ class CreateRecurringPocketPage extends ConsumerWidget {
                 onPressed: () {
                   recurringPocketForm.markAllAsTouched();
                   if (recurringPocketForm.invalid) return;
-                  Navigator.of(context)
-                      .pop<PocketCreationType>(PocketCreationType.detail);
+                  Navigator.of(context).pop<CreationType>(CreationType.detail);
                 },
               ),
               TextButton(
@@ -125,8 +124,7 @@ class CreateRecurringPocketPage extends ConsumerWidget {
                     foregroundColor: AppTheme.disabledColor,
                     padding: const EdgeInsets.all(0)),
                 onPressed: () {
-                  Navigator.of(context)
-                      .pop<PocketCreationType>(PocketCreationType.pocket);
+                  Navigator.of(context).pop<CreationType>(CreationType.basic);
                 },
                 child: Text('Skip, Create Anyway'),
               ),

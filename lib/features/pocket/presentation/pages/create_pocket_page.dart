@@ -1,10 +1,10 @@
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/enum/category.dart';
+import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
-import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/color_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/icon_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_icon.dart';
@@ -32,27 +32,27 @@ class CreatePocketPage extends ConsumerWidget {
     }
   }
 
-  Future<PocketCreationType?> _toCreateSpendingPocketPage(
+  Future<CreationType?> _toCreateSpendingPocketPage(
     BuildContext context,
   ) async {
     final detailResult =
-        await CreateSpendingPocketRoute().push<PocketCreationType?>(context);
+        await CreateSpendingPocketRoute().push<CreationType?>(context);
     return detailResult;
   }
 
-  Future<PocketCreationType?> _toCreateSavingPocketPage(
+  Future<CreationType?> _toCreateSavingPocketPage(
     BuildContext context,
   ) async {
     final detailResult =
-        await CreateSavingPocketRoute().push<PocketCreationType?>(context);
+        await CreateSavingPocketRoute().push<CreationType?>(context);
     return detailResult;
   }
 
-  Future<PocketCreationType?> _toCreateRecurringPocketPage(
+  Future<CreationType?> _toCreateRecurringPocketPage(
     BuildContext context,
   ) async {
     final detailResult =
-        await CreateRecurringPocketRoute().push<PocketCreationType?>(context);
+        await CreateRecurringPocketRoute().push<CreationType?>(context);
     return detailResult;
   }
 
@@ -179,7 +179,7 @@ class CreatePocketPage extends ConsumerWidget {
                 onPressed: () async {
                   form.markAllAsTouched();
                   if (form.invalid) return;
-                  PocketCreationType? pocketCreationType;
+                  CreationType? pocketCreationType;
                   if (type == PocketType.spending) {
                     pocketCreationType =
                         await _toCreateSpendingPocketPage(context);
@@ -191,8 +191,7 @@ class CreatePocketPage extends ConsumerWidget {
                         await _toCreateRecurringPocketPage(context);
                   }
                   if (pocketCreationType == null || !context.mounted) return;
-                  Navigator.of(context)
-                      .pop<PocketCreationType?>(pocketCreationType);
+                  Navigator.of(context).pop<CreationType?>(pocketCreationType);
                 },
               );
             }),
