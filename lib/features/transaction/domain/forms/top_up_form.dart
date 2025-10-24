@@ -25,14 +25,14 @@ class TopUpForm extends FormGroup {
       control('description') as FormControl<String?>;
   FormControl<DateTime> get date => control('date') as FormControl<DateTime>;
 
-  AccountModel? get accountValue => control('account').value;
+  AccountModel get accountValue => control('account').value;
   int get amountValue => control('amount').value ?? 0;
   String? get descriptionValue => control('description').value;
   DateTime get dateValue => control('date').value ?? DateTime.now();
 
   Map<String, dynamic> get json {
     return {
-      'accountId': accountValue?.id,
+      'accountId': accountValue.id,
       'amount': amountValue,
       'description': descriptionValue,
       'date': (dateValue.millisecondsSinceEpoch / 1000).toInt(),

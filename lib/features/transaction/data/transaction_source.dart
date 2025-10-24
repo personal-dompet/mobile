@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:dompet/core/services/api/api_client.dart';
 import 'package:dompet/features/transaction/domain/forms/transaction_filter_form.dart';
+import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TransactionSource {
@@ -23,6 +24,11 @@ class TransactionSource {
       return response.data as List<dynamic>;
     }
     return [];
+  }
+
+  Future<Map<String, dynamic>?> create(TransactionForm form) async {
+    final response = await _dio.post(_prefix, data: form.json);
+    return response.data;
   }
 }
 
