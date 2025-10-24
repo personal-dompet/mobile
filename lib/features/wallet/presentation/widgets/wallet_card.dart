@@ -1,6 +1,6 @@
 import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
-import 'package:dompet/features/account/presentation/provider/all_account_provider.dart';
+import 'package:dompet/features/account/presentation/provider/account_list_provider.dart';
 import 'package:dompet/features/account/presentation/provider/filtered_account_provider.dart';
 import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
@@ -91,8 +91,8 @@ class WalletCard extends ConsumerWidget {
 
                     if (!context.mounted) return;
                     ref.invalidate(recentTransactionProvider);
-                    ref.invalidate(allAccountProvider);
-                    ref.invalidate(filteredAccountProvider);
+                    ref.invalidate(accountListProvider);
+                    ref.invalidate(filteredAccountListProvider);
                     form.reset();
                   },
                   style: ElevatedButton.styleFrom(

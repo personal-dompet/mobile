@@ -58,8 +58,6 @@ class _TransferService {
       if (newState.destinationPocket.type == PocketType.wallet) {
         walletNotifier.optimisticUpdateBalance(newState.destinationPocket);
       }
-      // if (_ref.mounted) {
-      // }
     } catch (e) {
       pocketListNotifier.optimisticUpdate(request.fromPocketValue);
       pocketListNotifier.optimisticUpdate(request.toPocketValue);
