@@ -1,10 +1,11 @@
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
+import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class AccountCreateForm extends FormGroup {
-  AccountCreateForm()
+class CreateAccountForm extends FormGroup {
+  CreateAccountForm()
       : super({
           'name': FormControl<String>(
             validators: [Validators.required],
@@ -28,8 +29,16 @@ class AccountCreateForm extends FormGroup {
         'color': colorValue?.toHex(),
         'type': typeValue?.value,
       }.entries);
+
+  AccountModel toAccountModel() {
+    return AccountModel.placeholder(
+      color: colorValue,
+      name: nameValue,
+      type: typeValue,
+    );
+  }
 }
 
-final accountCreateFormProvider = Provider<AccountCreateForm>((ref) {
-  return AccountCreateForm();
+final createAccountFormProvider = Provider<CreateAccountForm>((ref) {
+  return CreateAccountForm();
 });

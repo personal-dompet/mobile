@@ -1,6 +1,6 @@
 import 'package:dompet/features/account/data/account_source.dart';
-import 'package:dompet/features/account/domain/forms/account_create_form.dart';
-import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
+import 'package:dompet/features/account/domain/forms/create_account_detail_form.dart';
+import 'package:dompet/features/account/domain/forms/create_account_form.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,13 +9,19 @@ class AccountRepository {
 
   AccountRepository(this._source);
 
-  Future<List<AccountModel>> getAccounts(AccountFilterForm form) async {
-    final data = await _source.getAccounts(form);
+  Future<List<AccountModel>> getAccounts() async {
+    final data = await _source.getAccounts();
     return data.map((e) => AccountModel.fromJson(e)).toList();
   }
 
-  Future<AccountModel> create(AccountCreateForm form) async {
+  Future<AccountModel> create(CreateAccountForm form) async {
     final data = await _source.create(form);
+    return AccountModel.fromJson(data);
+  }
+
+  Future<AccountModel> createDetail(
+      CreateAccountForm form, CreateAccountDetailForm detailForm) async {
+    final data = await _source.createDetail(form, detailForm);
     return AccountModel.fromJson(data);
   }
 }

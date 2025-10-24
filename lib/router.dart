@@ -79,6 +79,7 @@ final router = GoRouter(
     SelectPocketRoute().goRoute,
     SelectAccountRoute().goRoute,
     CreateAccountRoute().goRoute,
+    CreateAccountDetailRoute().goRoute,
     CreatePocketTransferRoute().goRoute,
     CreateAccountTransferRoute().goRoute,
   ],

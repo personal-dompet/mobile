@@ -14,6 +14,7 @@ enum Routes {
   selectPocket('/pockets/select', 'SelectPocket'),
   selectAccount('/accounts/select', 'SelectAccount'),
   createAccount('/accounts/create', 'CreateAccount'),
+  createAccountDetail('/accounts/create/detail', 'CreateAccountDetail'),
   createPocketTransfer('/transfers/pockets/create', 'CreatePocketTransfer'),
   createAccountTransfer('/transfers/accounts/create', 'CreateAccountTransfer');
 

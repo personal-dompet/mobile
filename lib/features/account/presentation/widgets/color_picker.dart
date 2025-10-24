@@ -1,10 +1,10 @@
 import 'package:dompet/core/constants/pocket_color.dart';
-import 'package:dompet/features/account/domain/forms/account_create_form.dart';
+import 'package:dompet/features/account/domain/forms/create_account_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ColorPicker extends ConsumerWidget {
-  final AccountCreateForm form;
+  final CreateAccountForm form;
 
   const ColorPicker({super.key, required this.form});
 

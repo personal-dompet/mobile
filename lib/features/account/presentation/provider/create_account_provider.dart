@@ -1,7 +1,7 @@
 import 'package:dompet/features/account/data/account_repository.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
-import 'package:dompet/features/account/domain/forms/account_create_form.dart';
 import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
+import 'package:dompet/features/account/domain/forms/create_account_form.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,7 +11,7 @@ class CreateAccountProvider {
   CreateAccountProvider(this._accountRepository);
 
   Future<List<AccountModel>> execute(
-    AccountCreateForm form,
+    CreateAccountForm form,
     List<AccountModel>? previousState, [
     AccountFilterForm? filter,
   ]) async {
