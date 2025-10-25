@@ -1,7 +1,7 @@
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/add_card_item.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
-import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_flow_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,7 +18,7 @@ class AddPocketCardItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AddCardItem(
       onTap: () async {
-        await ref.read(pocketProvider(listType)).execute(
+        await ref.read(pocketFlowProvider(listType)).beginCreate(
           context,
           onFormCreated: (pocketForm) {
             onFormCreated?.call(pocketForm.toPocketModel());

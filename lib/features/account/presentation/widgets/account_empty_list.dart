@@ -3,7 +3,7 @@ import 'package:dompet/core/widgets/item_list_empty_widget.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/account_filter_form.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
-import 'package:dompet/features/account/presentation/provider/account_provider.dart';
+import 'package:dompet/features/account/presentation/provider/account_flow_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,7 +35,7 @@ class AccountEmptyList extends ConsumerWidget {
         // Update type if needed
       },
       onAddPressed: () async {
-        await ref.read(accountProvider(listType)).execute(context,
+        await ref.read(accountFlowProvider(listType)).beginCreate(context,
             onFormCreated: (accountForm) {
           onFormCreated?.call(accountForm.toAccountModel());
         });

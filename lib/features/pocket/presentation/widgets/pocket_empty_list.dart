@@ -2,7 +2,7 @@ import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provider.dart';
-import 'package:dompet/features/pocket/presentation/provider/pocket_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_flow_provider.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,7 +86,7 @@ class PocketEmptyList extends ConsumerWidget {
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () async {
-              await ref.read(pocketProvider(listType)).execute(
+              await ref.read(pocketFlowProvider(listType)).beginCreate(
                 context,
                 onFormCreated: (pocketForm) {
                   onFormCreated?.call(pocketForm.toPocketModel());
@@ -101,23 +101,3 @@ class PocketEmptyList extends ConsumerWidget {
     );
   }
 }
-
-
-    // final form = ref.watch(pocketFilterFormProvider);
-
-    // return ItemListEmptyWidget<PocketType>(
-    //   title: 'No pockets yet',
-    //   message: 'Start organizing your finances by creating your first pocket',
-    //   icon: Icons.wallet_outlined,
-    //   form: form,
-    //   keywordValue: () => form.keywordValue,
-    //   typeValue: () => form.typeValue,
-    //   PocketType.all: PocketType.all,
-    //   displayName: (type) => type.displayName,
-    //   itemType: 'pockets',
-    //   onTypeChanged: (type) {
-    //     // Update type if needed
-    //   },
-    //   onAddPressed: () async {
-    //     await _handlePocketCreation(context);
-      // },

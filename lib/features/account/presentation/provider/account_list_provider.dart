@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:dompet/features/account/data/account_repository.dart';
-import 'package:dompet/features/account/domain/forms/create_account_detail_form.dart';
-import 'package:dompet/features/account/domain/forms/create_account_form.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
-import 'package:dompet/features/transfer/domain/forms/account_transfer_form.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class _AccountListNotifier extends AsyncNotifier<List<AccountModel>> {
@@ -13,49 +11,25 @@ class _AccountListNotifier extends AsyncNotifier<List<AccountModel>> {
     return await ref.read(accountRepositoryProvider).getAccounts();
   }
 
-  Future create(
-    CreateAccountForm form, {
-    CreateAccountDetailForm? detailForm,
-  }) async {
-    final previousState = state.value ?? [];
+  void optimisticCreate(AccountModel newAccount, {int? placeholderId}) {
+    if (!state.hasValue) return;
 
-    state = AsyncData([
-      AccountModel.placeholder(
-        color: form.colorValue,
-        name: form.nameValue,
-        type: form.typeValue,
-      ),
-      ...previousState,
-    ]);
-
-    try {
-      late AccountModel result;
-
-      if (detailForm != null) {
-        result = await ref
-            .read(accountRepositoryProvider)
-            .createDetail(form, detailForm);
-      } else {
-        result = await ref.read(accountRepositoryProvider).create(form);
-      }
-
-      _updateFormAccountValue(result);
-
-      state = AsyncData([
-        result,
-        ...previousState.where((account) => account.id != result.id),
-      ]);
-    } catch (e) {
-      if (!ref.mounted) return;
-      state = AsyncData(previousState);
-      final accountTransferForm = ref.read(accountTransferFormProvider);
-      accountTransferForm.toAccount.reset();
-      accountTransferForm.toAccount.setErrors({
-        'failed':
-            'Failed to create new account. Please select existing account or create new one.'
-      });
-      accountTransferForm.toAccount.markAsTouched();
+    final currentState = [...state.value!];
+    if (newAccount.id > 0) {
+      state = AsyncData(currentState.map((account) {
+        if (account.id == placeholderId) {
+          return newAccount;
+        }
+        return account;
+      }).toList());
+      return;
     }
+
+    state = AsyncData([newAccount, ...currentState]);
+  }
+
+  void revertOptimisticCreate(List<AccountModel> previousAccounts) {
+    state = AsyncData(previousAccounts);
   }
 
   void optimisticUpdate(AccountModel newAccount) {
@@ -66,10 +40,6 @@ class _AccountListNotifier extends AsyncNotifier<List<AccountModel>> {
       }
       return account;
     }).toList());
-  }
-
-  void _updateFormAccountValue(AccountModel account) {
-    //
   }
 }
 
