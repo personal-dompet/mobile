@@ -8,9 +8,8 @@ class TransactionRepository {
   final TransactionSource _source;
   TransactionRepository(this._source);
 
-  Future<TransactionDetailModel?> create(TransactionForm form) async {
+  Future<TransactionDetailModel> create(TransactionForm form) async {
     final response = await _source.create(form);
-    if (response == null) return null;
     return TransactionDetailModel.fromJson(response);
   }
 

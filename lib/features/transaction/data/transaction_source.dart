@@ -26,7 +26,7 @@ class TransactionSource {
     return [];
   }
 
-  Future<Map<String, dynamic>?> create(TransactionForm form) async {
+  Future<Map<String, dynamic>> create(TransactionForm form) async {
     final response = await _dio.post(_prefix, data: form.json);
     return response.data;
   }
