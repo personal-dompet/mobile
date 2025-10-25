@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dompet/features/account/data/account_repository.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class _AccountListNotifier extends AsyncNotifier<List<AccountModel>> {
