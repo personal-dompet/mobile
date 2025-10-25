@@ -7,6 +7,7 @@ enum Routes {
   accounts('/accounts', 'Account'),
   analytics('/analytics', 'Analytic'),
   topUp('/top-up', 'TopUp'),
+  createTransaction('/transactions/create', 'CreateTransaction'),
   createPocket('/pockets/create', 'CreatePocket'),
   createSpendingPocket('/pockets/spendings/create', 'CreateSpendingPocket'),
   createSavingPocket('/pockets/savings/create', 'CreateSavingPocket'),

@@ -46,7 +46,7 @@ class WalletModel extends PocketModel {
     Category? icon,
   }) {
     return WalletModel(
-      id: -1 * DateTime.now().second,
+      id: -1 * DateTime.now().millisecondsSinceEpoch,
       name: name ?? 'Wallet',
       type: PocketType.wallet,
       totalBalance: totalBalance ?? 0,

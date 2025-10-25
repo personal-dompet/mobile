@@ -7,10 +7,10 @@ import 'package:dompet/features/transfer/presentation/providers/recent_pocket_tr
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class _TransferService {
+class _TransferLogicService {
   final Ref _ref;
 
-  _TransferService(this._ref);
+  _TransferLogicService(this._ref);
 
   Future<void> pocketTransfer(PocketTransferForm request) async {
     final recentPocketTransfers = await _ref
@@ -72,6 +72,6 @@ class _TransferService {
   }
 }
 
-final transferProvider = Provider.autoDispose<_TransferService>(
-  (ref) => _TransferService(ref),
+final transferLogicProvider = Provider.autoDispose<_TransferLogicService>(
+  (ref) => _TransferLogicService(ref),
 );

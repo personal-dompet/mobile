@@ -81,7 +81,7 @@ final router = GoRouter(
     CreateAccountRoute().goRoute,
     CreateAccountDetailRoute().goRoute,
     CreatePocketTransferRoute().goRoute,
-    CreateAccountTransferRoute().goRoute,
+    CreateTransactionRoute().goRoute,
   ],
 );
 

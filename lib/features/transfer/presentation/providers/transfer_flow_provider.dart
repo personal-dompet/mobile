@@ -3,18 +3,18 @@ import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
-import 'package:dompet/features/transfer/presentation/providers/transfer_provider.dart';
+import 'package:dompet/features/transfer/presentation/providers/transfer_logic_provider.dart';
 import 'package:dompet/routes/create_pocket_transfer_route.dart';
 import 'package:dompet/routes/select_pocket_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TransferService {
+class _TransferFlowService {
   final Ref _ref;
 
-  TransferService(this._ref);
+  _TransferFlowService(this._ref);
 
-  Future pocketTransfer(
+  Future beginPocketTransfer(
     BuildContext context, {
     PocketModel? sourcePocket,
     PocketModel? destinationPocket,
@@ -41,7 +41,7 @@ class TransferService {
       return;
     }
 
-    await _ref.read(transferProvider).pocketTransfer(form);
+    await _ref.read(transferLogicProvider).pocketTransfer(form);
     _ref.invalidate(pocketTransferFormProvider);
     _ref.invalidate(recentPocketTransfersProvider);
     _ref.invalidateSelf();
@@ -56,6 +56,6 @@ class TransferService {
   }
 }
 
-final transferServiceProvider = Provider<TransferService>((ref) {
-  return TransferService(ref);
+final transferFlowProvider = Provider<_TransferFlowService>((ref) {
+  return _TransferFlowService(ref);
 });

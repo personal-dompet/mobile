@@ -134,6 +134,9 @@ class _AmountInputState extends State<_AmountInput> {
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
       ],
+      onTapOutside: (event) {
+        FocusScope.of(context).unfocus();
+      },
       onChanged: (value) {
         // Format the display value
         if (value.isEmpty) {

@@ -1,0 +1,203 @@
+import 'package:dompet/core/utils/helpers/format_currency.dart';
+import 'package:dompet/core/widgets/account_pocket_selector.dart';
+import 'package:dompet/core/widgets/card_input.dart';
+import 'package:dompet/core/widgets/masked_amount_input.dart';
+import 'package:dompet/core/widgets/reactive_datetime_picker.dart';
+import 'package:dompet/core/widgets/submit_button.dart';
+import 'package:dompet/features/account/domain/model/account_model.dart';
+import 'package:dompet/features/transaction/domain/enums/transaction_type.dart';
+import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
+import 'package:dompet/routes/routes.dart';
+import 'package:dompet/theme_data.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:reactive_forms/reactive_forms.dart';
+
+class CreateTransactionPage extends ConsumerWidget {
+  const CreateTransactionPage({super.key});
+
+  void _submit(BuildContext context) async {
+    final form =
+        ProviderScope.containerOf(context).read(transactionFormProvider);
+    form.markAllAsTouched();
+    if (form.valid) {
+      final payload = form;
+      Navigator.of(context).pop<TransactionForm>(payload);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final now = DateTime.now();
+    final form = ref.watch(transactionFormProvider);
+
+    form.date.value = now;
+    form.type.value = form.typeValue ?? TransactionType.income;
+
+    return ReactiveForm(
+      formGroup: form,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Create ${form.typeValue!.label} Transaction'),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Text(
+                      form.typeValue!.label,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: form.typeValue == TransactionType.income
+                              ? AppTheme.successColor
+                              : AppTheme.errorColor),
+                    ),
+                    const Spacer(),
+                    Text(
+                      DateFormat('dd MMMM yyyy').format(now),
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+
+              CardInput(
+                label: 'Pocket',
+                child: ReactiveFormConsumer(
+                  builder: (context, consumerForm, _) {
+                    final form = consumerForm as TransactionForm;
+                    final pocket = form.pocketValue;
+                    final amount = form.amountValue ?? 0;
+
+                    final newBalance = (pocket?.balance ?? 0) + amount;
+                    final formattedNewBalance =
+                        FormatCurrency.formatRupiah(newBalance);
+
+                    return AccountPocketSelector(
+                      label: 'Pocket',
+                      placeholder: 'Select pocket',
+                      color: pocket?.color,
+                      icon: pocket?.type.icon,
+                      name: pocket?.name,
+                      balance: pocket?.formattedBalance,
+                      formattedNewBalance: newBalance == pocket?.balance
+                          ? null
+                          : formattedNewBalance,
+                      showBalanceChange: newBalance != pocket?.balance,
+                      onTap: () async {
+                        final selectedAccount = await SelectAccountRoute(
+                          selectedAccountId: form.account.value?.id,
+                        ).push<AccountModel>(context);
+                        if (selectedAccount != null && context.mounted) {
+                          form.account.value = selectedAccount;
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
+
+              CardInput(
+                label: 'Account',
+                child: ReactiveFormConsumer(
+                  builder: (context, consumerForm, _) {
+                    final form = consumerForm as TransactionForm;
+                    final account = form.accountValue;
+                    final amount = form.amountValue ?? 0;
+
+                    final newBalance = (account?.balance ?? 0) + amount;
+                    final formattedNewBalance =
+                        FormatCurrency.formatRupiah(newBalance);
+
+                    return AccountPocketSelector(
+                      label: 'Account',
+                      placeholder: 'Select account',
+                      color: account?.color,
+                      icon: account?.type.icon,
+                      name: account?.name,
+                      balance: account?.formattedBalance,
+                      formattedNewBalance: newBalance == account?.balance
+                          ? null
+                          : formattedNewBalance,
+                      showBalanceChange: newBalance != account?.balance,
+                      onTap: () async {
+                        final selectedAccount = await SelectAccountRoute(
+                          selectedAccountId: form.account.value?.id,
+                        ).push<AccountModel>(context);
+                        if (selectedAccount != null && context.mounted) {
+                          form.account.value = selectedAccount;
+                        }
+                      },
+                    );
+                  },
+                ),
+              ),
+
+              // Amount input
+              CardInput(
+                label: 'Amount',
+                child: MaskedAmountInput(
+                  formControl: form.amount,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter amount',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+
+              CardInput(
+                label: 'Transaction Date',
+                child: DompetReactiveDateTimePicker(
+                  formControl: form.date,
+                  hintText: 'Select date',
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime.now(),
+                ),
+              ),
+
+              // Description input
+              CardInput(
+                label: 'Description',
+                child: ReactiveTextField<String?>(
+                  formControlName: 'description',
+                  keyboardType: TextInputType.multiline,
+                  textCapitalization: TextCapitalization.sentences,
+                  maxLines: 3,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter description',
+                    border: OutlineInputBorder(),
+                  ),
+                  onTapOutside: (event) {
+                    FocusScope.of(context).unfocus();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: ReactiveFormConsumer(
+          builder: (context, formGroup, _) {
+            // TODO : TBC
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16).copyWith(bottom: 24),
+              child: SubmitButton(
+                text: 'Top Up',
+                onPressed: () => _submit(context),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
