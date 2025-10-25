@@ -1,12 +1,6 @@
 import 'package:dompet/core/widgets/animatied_opacity_container.dart';
-import 'package:dompet/features/account/domain/model/account_model.dart';
-import 'package:dompet/features/account/presentation/provider/account_list_provider.dart';
-import 'package:dompet/features/account/presentation/provider/filtered_account_provider.dart';
-import 'package:dompet/features/transaction/domain/forms/top_up_form.dart';
-import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
-import 'package:dompet/features/transfer/presentation/services/transfer_service.dart';
+import 'package:dompet/features/transfer/presentation/providers/transfer_flow_provider.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
-import 'package:dompet/routes/routes.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,29 +65,7 @@ class WalletCard extends ConsumerWidget {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () async {
-                    final selectedAccount =
-                        await SelectAccountRoute().push<AccountModel>(context);
-
-                    if (selectedAccount == null || !context.mounted) return;
-
-                    final form = ref.read(topUpFormProvider);
-                    form.account.value = selectedAccount;
-
-                    final topUpForm =
-                        await TopUpRoute().push<TopUpForm>(context);
-
-                    if (topUpForm == null) {
-                      form.reset();
-                      return;
-                    }
-
-                    await ref.read(walletProvider.notifier).topUp(topUpForm);
-
-                    if (!context.mounted) return;
-                    ref.invalidate(recentTransactionProvider);
-                    ref.invalidate(accountListProvider);
-                    ref.invalidate(filteredAccountListProvider);
-                    form.reset();
+                    await ref.read(walletProvider.notifier).topUp(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryColor,
@@ -185,10 +157,10 @@ class WalletCard extends ConsumerWidget {
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                                final transferService =
-                                    ref.read(transferServiceProvider);
+                                final transferFlow =
+                                    ref.read(transferFlowProvider);
 
-                                await transferService.pocketTransfer(context,
+                                await transferFlow.beginPocketTransfer(context,
                                     sourcePocket: wallet);
                               },
                               style: ElevatedButton.styleFrom(

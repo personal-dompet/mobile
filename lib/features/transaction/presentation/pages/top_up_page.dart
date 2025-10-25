@@ -106,21 +106,21 @@ class _TopUpPageState extends ConsumerState<TopUpPage> {
                       final account = form.accountValue;
                       final amount = form.amountValue;
 
-                      final newBalance = (account?.balance ?? 0) + amount;
+                      final newBalance = account.balance + amount;
                       final formattedNewBalance =
                           FormatCurrency.formatRupiah(newBalance);
 
                       return AccountPocketSelector(
                         label: 'Account',
                         placeholder: 'Select account',
-                        color: account?.color,
-                        icon: account?.type.icon,
-                        name: account?.name,
-                        balance: account?.formattedBalance,
-                        formattedNewBalance: newBalance == account?.balance
+                        color: account.color,
+                        icon: account.type.icon,
+                        name: account.name,
+                        balance: account.formattedBalance,
+                        formattedNewBalance: newBalance == account.balance
                             ? null
                             : formattedNewBalance,
-                        showBalanceChange: newBalance != account?.balance,
+                        showBalanceChange: newBalance != account.balance,
                         onTap: () async {
                           final selectedAccount = await SelectAccountRoute(
                             selectedAccountId: form.account.value?.id,
