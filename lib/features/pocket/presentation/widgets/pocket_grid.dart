@@ -11,7 +11,8 @@ class PocketGrid extends ConsumerWidget {
   final int? selectedPocketId;
   final PocketModel? sourcePocket;
   final PocketModel? destinationPocket;
-  final void Function(PocketModel) onTap;
+  final void Function(PocketModel pocket) onTap;
+  final void Function(PocketModel pocket)? onCreated;
   final ListType listType;
 
   const PocketGrid({
@@ -19,6 +20,7 @@ class PocketGrid extends ConsumerWidget {
     this.data = const [],
     this.selectedPocketId,
     required this.onTap,
+    this.onCreated,
     this.destinationPocket,
     this.sourcePocket,
     this.listType = ListType.filtered,
@@ -40,7 +42,7 @@ class PocketGrid extends ConsumerWidget {
         if (index == data.length) {
           return AddPocketCardItem(
             listType: listType,
-            onFormCreated: (pocket) => onTap(pocket),
+            onFormCreated: (pocket) => onCreated?.call(pocket),
           );
         }
         // Otherwise, show the regular pocket card

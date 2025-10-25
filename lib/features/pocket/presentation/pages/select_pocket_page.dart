@@ -57,8 +57,10 @@ class SelectPocketPage extends ConsumerWidget {
                       listType: ListType.option,
                       destinationPocket: transferForm.toPocketValue,
                       sourcePocket: transferForm.fromPocketValue,
+                      onCreated: (pocket) {
+                        Navigator.of(context).pop<PocketModel>(pocket);
+                      },
                       onTap: (pocket) {
-                        // Navigate back with the selected pocket
                         Navigator.of(context).pop<PocketModel>(pocket);
                       },
                     ),
