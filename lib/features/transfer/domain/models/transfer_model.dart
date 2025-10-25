@@ -32,7 +32,7 @@ class TransferModel extends TimestampModel {
     return TransferModel(
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
-      id: -1 * DateTime.now().second,
+      id: -1 * DateTime.now().millisecondsSinceEpoch,
       amount: amount ?? 0,
       description: description ?? '',
     );

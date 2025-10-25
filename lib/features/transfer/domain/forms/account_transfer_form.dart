@@ -1,4 +1,4 @@
-import 'package:dompet/core/validators/amount_pocket_balance_validator.dart';
+import 'package:dompet/core/validators/amount_account_balance_validator.dart';
 import 'package:dompet/core/validators/not_equal_validator.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +29,7 @@ class AccountTransferForm extends FormGroup {
           },
           validators: [
             NotEqualValidator('fromAccount', 'toAccount'),
-            AmountPocketBalanceValidator(),
+            AmountAccountBalanceValidator(),
           ],
         );
 

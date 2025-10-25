@@ -35,7 +35,7 @@ class PocketTransferModel extends TransferModel {
     PocketModel? destinationPocket,
   }) {
     return PocketTransferModel(
-      id: -1 * DateTime.now().second,
+      id: -1 * DateTime.now().millisecondsSinceEpoch,
       sourcePocket: sourcePocket ?? PocketModel.placeholder(),
       destinationPocket: destinationPocket ?? PocketModel.placeholder(),
       amount: amount ?? 0,
