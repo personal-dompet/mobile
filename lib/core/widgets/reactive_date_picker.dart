@@ -72,8 +72,8 @@ class DompetReactiveDatePicker extends StatelessWidget {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: field.value ?? DateTime.now(),
-      firstDate: firstDate ?? DateTime(1900),
-      lastDate: lastDate ?? DateTime(2101),
+      firstDate: firstDate ?? DateTime(1971),
+      lastDate: lastDate ?? DateTime(2097),
     );
 
     if (picked != null) {

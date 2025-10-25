@@ -108,7 +108,7 @@ class CreateAccountPage extends ConsumerWidget {
                         ),
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.words,
-                        textInputAction: TextInputAction.next,
+                        textInputAction: TextInputAction.done,
                       ),
                     ),
                     CardInput(

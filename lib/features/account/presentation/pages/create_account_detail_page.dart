@@ -56,18 +56,25 @@ class CreateAccountDetailPage extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  CardInput(
-                    label: 'Account Number',
-                    child: ReactiveTextField<String?>(
-                      formControl: accountDetailForm.accountNumber,
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.done,
-                      decoration: const InputDecoration(
-                        hintText: 'Enter account number',
-                        border: OutlineInputBorder(),
+                  ReactiveFormConsumer(builder: (context, formGroup, _) {
+                    final form = formGroup as CreateAccountDetailForm;
+                    final maskedNumber = form.maskedAccountNumber;
+                    return CardInput(
+                      label: 'Number',
+                      info: maskedNumber != null
+                          ? 'Your number will be saved and presented as $maskedNumber for security.'
+                          : null,
+                      child: ReactiveTextField<String?>(
+                        formControl: form.accountNumber,
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.done,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter account number or phone number',
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                 ],
               ),
             ),
