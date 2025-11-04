@@ -1,0 +1,4 @@
+enum TransactionStaticSubject {
+  pocket,
+  account,
+}
