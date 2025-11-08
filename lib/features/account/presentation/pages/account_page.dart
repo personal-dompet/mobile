@@ -48,9 +48,10 @@ class AccountPage extends ConsumerWidget {
             if (accounts.isEmpty)
               Expanded(
                 child: SingleChildScrollView(
-                    child: AccountEmptyList(
-                  listType: ListType.filtered,
-                )),
+                  child: AccountEmptyList(
+                    listType: ListType.filtered,
+                  ),
+                ),
               ),
           ],
         ),

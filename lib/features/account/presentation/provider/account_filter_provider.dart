@@ -50,4 +50,5 @@ class AccountFilterNotifier extends StateNotifier<AccountFilter> {
 
 final accountFilterProvider =
     StateNotifierProvider<AccountFilterNotifier, AccountFilter>(
-        (ref) => AccountFilterNotifier());
+  (ref) => AccountFilterNotifier(),
+);
