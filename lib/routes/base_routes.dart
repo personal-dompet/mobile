@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 enum Routes {
+  main('/', 'Main'),
+  auth('/auth', 'Auth'),
+  splash('/splash', 'Splash'),
   dashboard('/dashboard', 'Dashboard'),
   pockets('/pockets', 'Pocket'),
   accounts('/accounts', 'Account'),
@@ -17,7 +22,8 @@ enum Routes {
   createAccount('/accounts/create', 'CreateAccount'),
   createAccountDetail('/accounts/create/detail', 'CreateAccountDetail'),
   createPocketTransfer('/transfers/pockets/create', 'CreatePocketTransfer'),
-  createAccountTransfer('/transfers/accounts/create', 'CreateAccountTransfer');
+  createAccountTransfer('/transfers/accounts/create', 'CreateAccountTransfer'),
+  selectCategory('/categories/select', 'SelectCategory');
 
   final String path;
   final String name;
@@ -56,19 +62,26 @@ abstract class AppRoute {
   String get name => route.name;
 
   /// Builds the page widget for this route
-  Widget buildPage(BuildContext context, GoRouterState state);
+  Widget? buildPage(BuildContext context, GoRouterState state) => null;
+
+  /// Redirect function for this route
+  FutureOr<String?>? redirect(BuildContext context, GoRouterState state) =>
+      null;
 
   /// Getter for GoRoute
   GoRoute get goRoute => GoRoute(
         path: path,
         pageBuilder: (context, state) {
+          final page = buildPage(context, state);
+
           return _buildPageWithNoTransition(
             context: context,
             state: state,
-            child: buildPage(context, state),
+            child: page ?? SizedBox.shrink(),
           );
         },
         name: name,
+        redirect: redirect,
       );
 
   /// Navigate to this route

@@ -14,3 +14,5 @@ export 'select_account_route.dart';
 export 'select_pocket_route.dart';
 export 'top_up_route.dart';
 export 'create_transaction_route.dart';
+export 'splash_route.dart';
+export 'auth_route.dart';

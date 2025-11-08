@@ -10,8 +10,10 @@ final GlobalKey<NavigatorState> _shellNavigatorKey =
 
 final router = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: Routes.dashboard.path,
+  initialLocation: Routes.splash.path,
   routes: [
+    SplashRoute().goRoute,
+    AuthRoute().goRoute,
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {
