@@ -1,7 +1,5 @@
 import 'package:dompet/core/enum/list_type.dart';
-import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
-import 'package:dompet/features/pocket/presentation/provider/pocket_list_provider.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_option_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_empty_list.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
@@ -31,48 +29,42 @@ class SelectPocketPage extends ConsumerWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: RefreshWrapper(
-        onRefresh: () async {
-          // Refresh the provider data
-          ref.invalidate(pocketListProvider);
-        },
-        child: pocketsAsync.when(
-          data: (data) {
-            if (data.isEmpty) {
-              return PocketEmptyList(
-                listType: ListType.option,
-                onFormCreated: (pocket) =>
-                    Navigator.of(context).pop<PocketModel>(pocket),
-              );
-            }
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: PocketGrid(
-                      data: data,
-                      selectedPocketId: selectedPocketId,
-                      listType: ListType.option,
-                      destinationPocket: transferForm.toPocketValue,
-                      sourcePocket: transferForm.fromPocketValue,
-                      onCreated: (pocket) {
-                        Navigator.of(context).pop<PocketModel>(pocket);
-                      },
-                      onTap: (pocket) {
-                        Navigator.of(context).pop<PocketModel>(pocket);
-                      },
-                    ),
-                  ),
-                ],
-              ),
+      body: pocketsAsync.when(
+        data: (data) {
+          if (data.isEmpty) {
+            return PocketEmptyList(
+              listType: ListType.option,
+              onFormCreated: (pocket) =>
+                  Navigator.of(context).pop<PocketModel>(pocket),
             );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(
-            child: Text('Error loading pockets: $error'),
-          ),
+          }
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              children: [
+                Expanded(
+                  child: PocketGrid(
+                    data: data,
+                    selectedPocketId: selectedPocketId,
+                    listType: ListType.option,
+                    destinationPocket: transferForm.toPocketValue,
+                    sourcePocket: transferForm.fromPocketValue,
+                    onCreated: (pocket) {
+                      Navigator.of(context).pop<PocketModel>(pocket);
+                    },
+                    onTap: (pocket) {
+                      Navigator.of(context).pop<PocketModel>(pocket);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Text('Error loading pockets: $error'),
         ),
       ),
     );

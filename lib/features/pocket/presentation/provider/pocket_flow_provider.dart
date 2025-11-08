@@ -76,7 +76,7 @@ class _PocketFlowService {
     } catch (e) {
       if (!ref.mounted) return;
       final message =
-          'Failed to create new pockey. Please select existing pocket or create new one.';
+          'Failed to create new pocket. Please select existing pocket or create new one.';
       if (createFrom == CreateFrom.transaction) {
         final transactionForm = ref.read(transactionFormProvider);
         transactionForm.pocket.reset();
