@@ -90,4 +90,9 @@ class WalletModel extends PocketModel {
       isLoading: isLoading ?? this.isLoading,
     );
   }
+
+  @override
+  String toString() {
+    return 'id: $id, name: $name, color: $color, balance: $balance, icon: $icon, priority: $priority, type: $type, createdAt: $createdAt, updatedAt: $updatedAt, totalBalance: $totalBalance, isLoading: $isLoading,';
+  }
 }

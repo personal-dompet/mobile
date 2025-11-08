@@ -38,8 +38,10 @@ class WalletProvider extends AsyncNotifier<WalletModel?> {
     ));
   }
 
-  void optimisticUpdateTotalBalance(WalletModel newWalletPocket,
-      [bool? isLoading = false]) {
+  void optimisticUpdateTotalBalance(
+    WalletModel newWalletPocket, [
+    bool? isLoading = false,
+  ]) {
     if (!state.hasValue) return;
 
     state = AsyncData(state.value!.copyWith(

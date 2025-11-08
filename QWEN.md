@@ -187,6 +187,8 @@ The application can be deployed to both Google Play Store and Apple App Store. T
 
 When commiting, this project use these instrutions:
 
+- Examine the changes
+- Run `git add` multiple times based on the group of all changed files. Don't use `git add .` right away without knowing what will you commits.
 - Commit all hanges that has been made
 - Follow [COMMIT_GUIDE.md](COMMIT_GUIDE.md) to ensure consistency and clarity in our commit history
 - Split into multiple commits if needed to follow the guide
