@@ -46,7 +46,7 @@ class Unauthenticated extends ConsumerWidget {
 
                 if (!context.mounted) return;
 
-                SplashRoute().replace(context);
+                SplashRoute().go(context);
               },
               icon: const Icon(Icons.login_rounded),
               label: const Text('Login'),

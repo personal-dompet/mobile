@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 enum Routes {
-  main('/', 'Main'),
   auth('/auth', 'Auth'),
   splash('/splash', 'Splash'),
   dashboard('/dashboard', 'Dashboard'),

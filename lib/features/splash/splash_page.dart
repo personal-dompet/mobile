@@ -34,7 +34,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
       if (!mounted || !context.mounted) return;
 
-      DashboardRoute().replace(context);
+      DashboardRoute().go(context);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -46,7 +46,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
     if (!context.mounted || !mounted) return;
 
     if (user == null) {
-      AuthRoute().replace(context);
+      AuthRoute().go(context);
       return;
     }
 
