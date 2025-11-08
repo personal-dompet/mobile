@@ -182,3 +182,12 @@ The application can be deployed to both Google Play Store and Apple App Store. T
 - The app has offline functionality with data synchronization
 - ProviderScope is used for Riverpod state management at the app level
 - Each feature follows a clean architecture pattern with clear separation of concerns
+
+## Commit Instructions
+
+When commiting, this project use these instrutions:
+
+- Commit all hanges that has been made
+- Follow [COMMIT_GUIDE.md](COMMIT_GUIDE.md) to ensure consistency and clarity in our commit history
+- Split into multiple commits if needed to follow the guide
+- IMPORTANT: Do not discard any changes. You can stage, unstage, commit, revert commit, but not with discarding any changes.
