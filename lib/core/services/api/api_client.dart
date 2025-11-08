@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,11 +12,15 @@ final apiClientProvider = Provider<Dio>((ref) {
   dio.options.receiveTimeout = Duration(milliseconds: 30000);
   dio.options.headers['Content-Type'] = 'application/json';
 
-  dio.interceptors.add(AuthInterceptor());
+  dio.interceptors.add(_AuthInterceptor());
+
+  if (kDebugMode) {
+    dio.interceptors.add(_DelayInterceptor());
+  }
   return dio;
 });
 
-class AuthInterceptor extends Interceptor {
+class _AuthInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
@@ -23,6 +28,15 @@ class AuthInterceptor extends Interceptor {
     if (user == null) return;
     final token = await user.getIdToken();
     options.headers['Authorization'] = 'Bearer $token';
+    super.onRequest(options, handler);
+  }
+}
+
+class _DelayInterceptor extends Interceptor {
+  @override
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    await Future.delayed(Duration(seconds: 3));
     super.onRequest(options, handler);
   }
 }

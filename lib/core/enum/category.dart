@@ -148,4 +148,178 @@ enum Category {
 
     return uniqueCategories;
   }
+
+  /// Returns a list of CategoryGroup objects, structuring the flat enum
+  /// into groups mirroring the user's visual design.
+  static List<CategoryGroup> getGroupedCategories() {
+    final List<CategoryGroup> groups = [];
+    final Map<String, List<Category>> categoryMap = {};
+
+    // Helper to add a category to the correct group
+    void addToGroup(String groupName, Category category) {
+      categoryMap.putIfAbsent(groupName, () => []).add(category);
+    }
+
+    // Map each flat enum member to its group based on the visual structure in the images.
+    for (final category in Category.values) {
+      switch (category) {
+        // --- PAYMENTS & WALLETS (Top-ups, Digital Cash) ---
+        case Category.topUp:
+        case Category.topUpCard:
+        case Category.brizziBRI:
+        case Category.dana:
+        case Category.flazzBCA:
+        case Category.goPay:
+        case Category.linkAja:
+        case Category.mandiriEmoney:
+        case Category.ovo:
+        case Category.shopeePay:
+        case Category.tapCash:
+          addToGroup('Payments & Wallets', category);
+          break;
+
+        // --- FOODS & DINING ---
+        case Category.foodsDrinks:
+        case Category.cafe:
+        case Category.restaurant:
+        case Category.takeOuts:
+        case Category.groceries:
+          addToGroup('Foods & Dining', category);
+          break;
+
+        // --- SHOPPING (Goods & Non-Food Items) ---
+        case Category.shopping:
+        case Category.fashion:
+        case Category.gadgetElectronics:
+          addToGroup('Shopping', category);
+          break;
+
+        // --- TRANSPORTATION ---
+        case Category.transportation:
+        case Category.travelFares:
+        case Category.vehicleMaintenance:
+        case Category.gasoline:
+        case Category.parkingFee:
+        case Category.publicTransport:
+        case Category.taxiOjol:
+        case Category.vehicle:
+          addToGroup('Transportation', category);
+          break;
+
+        // --- BILLS & UTILITIES ---
+        case Category.bills:
+        case Category.cableTV:
+        case Category.creditCard:
+        case Category.electricity:
+        case Category.gas:
+        case Category.insurance:
+        case Category.internet:
+        case Category.landline:
+        case Category.maintenanceFee:
+        case Category.mobileData:
+          addToGroup('Bills & Utilities', category);
+          break;
+
+        // --- HOME & HOUSEHOLD ---
+        case Category.rent:
+        case Category.subscriptions:
+        case Category.water:
+        case Category.householdAssistant:
+        case Category.laundry:
+        case Category.renovation:
+        case Category.houseApartment:
+          addToGroup('Home & Household', category);
+          break;
+
+        // --- DEBT & LOANS ---
+        case Category.debt:
+        case Category.loans:
+        case Category.mortgage:
+          addToGroup('Debt & Loans', category);
+          break;
+
+        // --- SAVINGS & INVESTMENT ---
+        case Category.savings:
+        case Category.investment:
+        case Category.emergencyFund:
+        case Category.pension:
+        case Category.interest:
+          addToGroup('Savings & Investment', category);
+          break;
+
+        // --- HEALTHCARE & WELLNESS ---
+        case Category.healthcare:
+        case Category.drugsMedicine:
+        case Category.gymFitness:
+        case Category.medicalFee:
+        case Category.personalCare:
+        case Category.sports:
+        case Category.pet:
+          addToGroup('Healthcare & Wellness', category);
+          break;
+
+        // --- EDUCATION ---
+        case Category.education:
+        case Category.books:
+        case Category.tuitionFee:
+          addToGroup('Education', category);
+          break;
+
+        // --- ENTERTAINMENT & LIFESTYLE ---
+        case Category.entertainment:
+        case Category.concert:
+        case Category.games:
+        case Category.hangOut:
+        case Category.hobby:
+        case Category.moviesMusics:
+        case Category.streamingServices:
+        case Category.vacation:
+        case Category.wedding:
+          addToGroup('Entertainment & Lifestyle', category);
+          break;
+
+        // --- FAMILY & SOCIAL ---
+        case Category.children:
+        case Category.family:
+        case Category.parent:
+        case Category.socialEvents:
+        case Category.funeral:
+        case Category.gifts:
+          addToGroup('Family & Social', category);
+          break;
+
+        // --- OTHERS & MISC. ---
+        case Category.others:
+        case Category.cashWithdrawal:
+        case Category.cost:
+        case Category.outgoing:
+        case Category.settlement:
+        case Category.taxes:
+        case Category.charityDonations:
+          addToGroup('Others & Misc.', category);
+          break;
+      }
+    }
+
+    // Convert the map into the final list of CategoryGroup objects
+    categoryMap.forEach((title, categories) {
+      // Sort categories within the group alphabetically by display name for consistency
+      categories.sort((a, b) => a.displayName.compareTo(b.displayName));
+      groups.add(CategoryGroup(title: title, categories: categories));
+    });
+
+    // Optional: Sort the groups themselves alphabetically by title
+    groups.sort((a, b) => a.title.compareTo(b.title));
+
+    return groups;
+  }
+}
+
+/// A class to hold a group of related Category enum values,
+/// representing a section header in the UI.
+class CategoryGroup {
+  final String title;
+  final List<Category> categories;
+
+  CategoryGroup({required this.title, required this.categories});
 }
