@@ -7,6 +7,7 @@ import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
 import 'package:dompet/features/transaction/domain/models/transaction_detail_model.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class _TranscationLogicService {
@@ -49,6 +50,7 @@ class _TranscationLogicService {
     accountListNotifier.optimisticUpdate(newAccount);
     pocketListNotifier.optimisticUpdate(newPocket);
     walletNotifier.optimisticUpdateTotalBalance(newWallet, true);
+    walletNotifier.optimisticUpdateBalance(newWallet, true);
     recentTransactionNotifier
         .optimisticCreate(TransactionDetailModel.placeholder(
       amount: request.amountValue,
@@ -67,11 +69,13 @@ class _TranscationLogicService {
       accountListNotifier.optimisticUpdate(newState.account);
       pocketListNotifier.optimisticUpdate(newState.pocket);
       walletNotifier.optimisticUpdateTotalBalance(newState.wallet);
+      walletNotifier.optimisticUpdateBalance(newState.wallet);
       recentTransactionNotifier.optimisticCreate(newState);
     } catch (e) {
       accountListNotifier.optimisticUpdate(request.accountValue!);
       pocketListNotifier.optimisticUpdate(request.pocketValue!);
       walletNotifier.optimisticUpdateTotalBalance(wallet);
+      walletNotifier.optimisticUpdateBalance(wallet);
       recentTransactionNotifier.revertCreate(recentTransaction);
     }
   }

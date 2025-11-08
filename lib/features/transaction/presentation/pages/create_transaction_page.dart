@@ -1,5 +1,6 @@
 import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
+import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/reactive_datetime_picker.dart';
@@ -69,42 +70,6 @@ class CreateTransactionPage extends ConsumerWidget {
               ),
 
               CardInput(
-                label: 'Pocket',
-                child: ReactiveFormConsumer(
-                  builder: (context, consumerForm, _) {
-                    final form = consumerForm as TransactionForm;
-                    final pocket = form.pocketValue;
-                    final amount = form.amountValue ?? 0;
-
-                    final newBalance = (pocket?.balance ?? 0) + amount;
-                    final formattedNewBalance =
-                        FormatCurrency.formatRupiah(newBalance);
-
-                    return AccountPocketSelector(
-                      label: 'Pocket',
-                      placeholder: 'Select pocket',
-                      color: pocket?.color,
-                      icon: pocket?.type.icon,
-                      name: pocket?.name,
-                      balance: pocket?.formattedBalance,
-                      formattedNewBalance: newBalance == pocket?.balance
-                          ? null
-                          : formattedNewBalance,
-                      showBalanceChange: newBalance != pocket?.balance,
-                      onTap: () async {
-                        final selectedAccount = await SelectAccountRoute(
-                          selectedAccountId: form.account.value?.id,
-                        ).push<AccountModel>(context);
-                        if (selectedAccount != null && context.mounted) {
-                          form.account.value = selectedAccount;
-                        }
-                      },
-                    );
-                  },
-                ),
-              ),
-
-              CardInput(
                 label: 'Account',
                 child: ReactiveFormConsumer(
                   builder: (context, consumerForm, _) {
@@ -116,26 +81,80 @@ class CreateTransactionPage extends ConsumerWidget {
                     final formattedNewBalance =
                         FormatCurrency.formatRupiah(newBalance);
 
-                    return AccountPocketSelector(
-                      label: 'Account',
-                      placeholder: 'Select account',
-                      color: account?.color,
-                      icon: account?.type.icon,
-                      name: account?.name,
-                      balance: account?.formattedBalance,
-                      formattedNewBalance: newBalance == account?.balance
-                          ? null
-                          : formattedNewBalance,
-                      showBalanceChange: newBalance != account?.balance,
-                      onTap: () async {
-                        final selectedAccount = await SelectAccountRoute(
-                          selectedAccountId: form.account.value?.id,
-                        ).push<AccountModel>(context);
-                        if (selectedAccount != null && context.mounted) {
-                          form.account.value = selectedAccount;
-                        }
-                      },
-                    );
+                    return ReactiveFormConsumer(
+                        builder: (context, formGroup, _) {
+                      final transactionForm = formGroup as TransactionForm;
+                      return AnimatedOpacityContainer(
+                        isAnimated: (!transactionForm.account.hasErrors ||
+                                transactionForm.account.value != null) &&
+                            transactionForm.account.value!.id < 0,
+                        child: AccountPocketSelector(
+                          label: 'Account',
+                          placeholder: 'Select account',
+                          color: account?.color,
+                          icon: account?.type.icon,
+                          name: account?.name,
+                          balance: account?.formattedBalance,
+                          formattedNewBalance: newBalance == account?.balance
+                              ? null
+                              : formattedNewBalance,
+                          showBalanceChange: newBalance != account?.balance,
+                          onTap: () async {
+                            final selectedAccount = await SelectAccountRoute(
+                              selectedAccountId: form.account.value?.id,
+                            ).push<AccountModel>(context);
+                            if (selectedAccount != null && context.mounted) {
+                              form.account.value = selectedAccount;
+                            }
+                          },
+                        ),
+                      );
+                    });
+                  },
+                ),
+              ),
+
+              CardInput(
+                label: 'Pocket',
+                child: ReactiveFormConsumer(
+                  builder: (context, consumerForm, _) {
+                    final form = consumerForm as TransactionForm;
+                    final pocket = form.pocketValue;
+                    final amount = form.amountValue ?? 0;
+
+                    final newBalance = (pocket?.balance ?? 0) + amount;
+                    final formattedNewBalance =
+                        FormatCurrency.formatRupiah(newBalance);
+
+                    return ReactiveFormConsumer(
+                        builder: (context, formGroup, _) {
+                      final transactionForm = formGroup as TransactionForm;
+                      return AnimatedOpacityContainer(
+                        isAnimated: (!transactionForm.pocket.hasErrors ||
+                                transactionForm.pocket.value != null) &&
+                            transactionForm.pocket.value!.id < 0,
+                        child: AccountPocketSelector(
+                          label: 'Pocket',
+                          placeholder: 'Select pocket',
+                          color: pocket?.color,
+                          icon: pocket?.type.icon,
+                          name: pocket?.name,
+                          balance: pocket?.formattedBalance,
+                          formattedNewBalance: newBalance == pocket?.balance
+                              ? null
+                              : formattedNewBalance,
+                          showBalanceChange: newBalance != pocket?.balance,
+                          onTap: () async {
+                            final selectedAccount = await SelectAccountRoute(
+                              selectedAccountId: form.account.value?.id,
+                            ).push<AccountModel>(context);
+                            if (selectedAccount != null && context.mounted) {
+                              form.account.value = selectedAccount;
+                            }
+                          },
+                        ),
+                      );
+                    });
                   },
                 ),
               ),
@@ -186,13 +205,21 @@ class CreateTransactionPage extends ConsumerWidget {
         ),
         bottomNavigationBar: ReactiveFormConsumer(
           builder: (context, formGroup, _) {
-            // TODO : TBC
+            final transactionForm = formGroup as TransactionForm;
+            final isCreatingAccount = (!transactionForm.account.hasErrors ||
+                    transactionForm.account.value != null) &&
+                transactionForm.account.value!.id < 0;
+            final isCreatingPocket = (!transactionForm.pocket.hasErrors ||
+                    transactionForm.pocket.value != null) &&
+                transactionForm.pocket.value!.id < 0;
+
+            final isWaiting = isCreatingPocket || isCreatingAccount;
             return Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 16).copyWith(bottom: 24),
               child: SubmitButton(
                 text: 'Top Up',
-                onPressed: () => _submit(context),
+                onPressed: isWaiting ? null : () => _submit(context),
               ),
             );
           },

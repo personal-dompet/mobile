@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
@@ -17,16 +18,16 @@ class _TransactionFlowService {
     PocketModel? selectedPocket,
     AccountModel? selectedAccount,
   }) async {
+    final account = selectedAccount ?? await _selectAccount(context);
+    if (account == null || !context.mounted) return;
+
+    final form = _ref.read(transactionFormProvider)..account.value = account;
+
     final pocket = selectedPocket ??
         await _selectPocket(context, title: SelectPocketTitle.general);
     if (pocket == null || !context.mounted) return;
 
-    final form = _ref.read(transactionFormProvider)..pocket.value = pocket;
-
-    final account = selectedAccount ?? await _selectAccount(context);
-    if (account == null || !context.mounted) return;
-
-    form.account.value = account;
+    form.pocket.value = pocket;
 
     final transactionForm =
         await CreateTransactionRoute().push<TransactionForm>(context);
@@ -52,7 +53,8 @@ class _TransactionFlowService {
   }
 
   Future<AccountModel?> _selectAccount(BuildContext context) async {
-    final account = await SelectAccountRoute().push<AccountModel>(context);
+    final account = await SelectAccountRoute(createFrom: CreateFrom.transaction)
+        .push<AccountModel>(context);
     return account;
   }
 }
