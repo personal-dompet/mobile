@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/animatied_opacity_container.dart';
@@ -174,6 +175,27 @@ class CreateTransactionPage extends ConsumerWidget {
               ),
 
               CardInput(
+                label: 'Category',
+                child: ReactiveTextField(
+                  formControl: form.category,
+                  valueAccessor: _CategoryAccessor(),
+                  readOnly: true,
+                  onTap: (control) async {
+                    if (control.value is Category) {
+                      final selectedCategory = control.value as Category;
+                      final category = await SelectCategoryRoute(
+                              selectedCategoryIconKey: selectedCategory.iconKey)
+                          .push<Category>(context);
+
+                      if (category != null) {
+                        control.value = category;
+                      }
+                    }
+                  },
+                ),
+              ),
+
+              CardInput(
                 label: 'Transaction Date',
                 child: DompetReactiveDateTimePicker(
                   formControl: form.date,
@@ -226,5 +248,21 @@ class CreateTransactionPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class _CategoryAccessor extends ControlValueAccessor<Category, String> {
+  @override
+  String? modelToViewValue(Category? modelValue) {
+    if (modelValue == null) return null;
+    // Convert Category to String for display
+    return modelValue.displayName;
+  }
+
+  @override
+  Category? viewToModelValue(String? viewValue) {
+    if (viewValue == null) return null;
+    // Convert String back to Category for the form control
+    return Category.fromValue(viewValue);
   }
 }

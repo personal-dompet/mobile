@@ -25,7 +25,7 @@ class SelectCategoryPage extends StatelessWidget {
         elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0).copyWith(top: 0),
         child: CategorySelector(
           selectedCategory: selectedCategory,
           onSelected: (category) {

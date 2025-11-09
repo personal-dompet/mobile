@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 enum Category {
   bills('Bills', Icons.receipt_outlined, 'bills'),
   books('Books', Icons.book_outlined, 'books'),
-  brizziBRI('Brizzi BRI', Icons.credit_card_outlined, 'brizzi_bri'),
   cableTV('Cable TV', Icons.live_tv_outlined, 'cable_tv'),
   cafe('Cafe', Icons.local_cafe_outlined, 'cafe'),
   cashWithdrawal('Cash withdrawal', Icons.account_balance_wallet_outlined,
@@ -16,7 +15,6 @@ enum Category {
   concert('Concert', Icons.music_note_outlined, 'concert'),
   cost('Cost', Icons.attach_money_outlined, 'cost'),
   creditCard('Credit card', Icons.credit_card_outlined, 'credit_card'),
-  dana('DANA', Icons.payments_outlined, 'dana'),
   debt('Debt', Icons.money_off_csred_outlined, 'debt'),
   drugsMedicine('Drugs/Medicine', Icons.medication_outlined, 'drugs_medicine'),
   education('Education', Icons.school_outlined, 'education'),
@@ -26,7 +24,6 @@ enum Category {
   entertainment('Entertainment', Icons.celebration_outlined, 'entertainment'),
   family('Family', Icons.family_restroom_outlined, 'family'),
   fashion('Fashion', Icons.checkroom_outlined, 'fashion'),
-  flazzBCA('Flazz BCA', Icons.credit_card_outlined, 'flazz_bca'),
   foodsDrinks('Foods & Drinks', Icons.restaurant_menu_outlined, 'foods_drinks'),
   funeral('Funeral', Icons.church_outlined, 'funeral'),
   gadgetElectronics('Gadget & electronics', Icons.devices_other_outlined,
@@ -35,7 +32,6 @@ enum Category {
   gas('Gas', Icons.local_gas_station_outlined, 'gas'),
   gasoline('Gasoline', Icons.local_gas_station_outlined, 'gasoline'),
   gifts('Gifts', Icons.card_giftcard_outlined, 'gifts'),
-  goPay('GoPay', Icons.payments_outlined, 'go_pay'),
   groceries('Groceries', Icons.shopping_basket_outlined, 'groceries'),
   gymFitness('Gym/Fitness', Icons.fitness_center_outlined, 'gym_fitness'),
   hangOut('Hang out', Icons.group_outlined, 'hang_out'),
@@ -50,18 +46,14 @@ enum Category {
   interest('Interest', Icons.local_florist_rounded, 'interest'),
   landline('Landline', Icons.phone_outlined, 'landline'),
   laundry('Laundry', Icons.local_laundry_service_outlined, 'laundry'),
-  linkAja('LinkAja', Icons.payments_outlined, 'link_aja'),
   loans('Loans', Icons.attach_money_outlined, 'loans'),
   maintenanceFee('Maintenance fee', Icons.build_outlined, 'maintenance_fee'),
-  mandiriEmoney(
-      'Mandiri e-money', Icons.credit_card_outlined, 'mandiri_emoney'),
   medicalFee('Medical fee', Icons.local_hospital_outlined, 'medical_fee'),
   mobileData('Mobile & Data', Icons.phone_android_outlined, 'mobile_data'),
   mortgage('Mortgage', Icons.real_estate_agent_outlined, 'mortgage'),
   moviesMusics('Movies/Musics', Icons.movie_outlined, 'movies_musics'),
   others('Others', Icons.more_horiz, 'others'),
   outgoing('Outgoing', Icons.logout_outlined, 'outgoing'),
-  ovo('OVO', Icons.payments_outlined, 'ovo'),
   parent('Parent', Icons.supervisor_account_outlined, 'parent'),
   parkingFee('Parking fee', Icons.local_parking_outlined, 'parking_fee'),
   pension('Pension', Icons.payments_outlined, 'pension'),
@@ -73,7 +65,6 @@ enum Category {
   restaurant('Restaurant', Icons.restaurant_outlined, 'restaurant'),
   savings('Savings', Icons.savings_outlined, 'savings'),
   settlement('Settlement', Icons.handshake_outlined, 'settlement'),
-  shopeePay('ShopeePay', Icons.shopping_bag_outlined, 'shopee_pay'),
   shopping('Shopping', Icons.shopping_cart_outlined, 'shopping'),
   socialEvents('Social events', Icons.people_outlined, 'social_events'),
   sports('Sports', Icons.sports_outlined, 'sports'),
@@ -163,17 +154,9 @@ enum Category {
     // Map each flat enum member to its group based on the visual structure in the images.
     for (final category in Category.values) {
       switch (category) {
-        // --- PAYMENTS & WALLETS (Top-ups, Digital Cash) ---
+        // --- PAYMENTS (Top-ups, Digital Cash) ---
         case Category.topUp:
         case Category.topUpCard:
-        case Category.brizziBRI:
-        case Category.dana:
-        case Category.flazzBCA:
-        case Category.goPay:
-        case Category.linkAja:
-        case Category.mandiriEmoney:
-        case Category.ovo:
-        case Category.shopeePay:
         case Category.tapCash:
           addToGroup('Payments & Wallets', category);
           break;

@@ -73,7 +73,6 @@ final router = GoRouter(
       ],
     ),
     // Top Up page route (not using shell route layout)
-    TopUpRoute().goRoute,
     CreatePocketRoute().goRoute,
     CreateSpendingPocketRoute().goRoute,
     CreateSavingPocketRoute().goRoute,
@@ -84,6 +83,7 @@ final router = GoRouter(
     CreateAccountDetailRoute().goRoute,
     CreatePocketTransferRoute().goRoute,
     CreateTransactionRoute().goRoute,
+    SelectCategoryRoute().goRoute,
   ],
 );
 

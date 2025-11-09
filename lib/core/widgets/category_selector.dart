@@ -49,7 +49,8 @@ class _CategorySelectorState extends State<CategorySelector> {
       mainAxisSize: MainAxisSize.min,
       children: [
         // Search field at the top
-        Padding(
+        Container(
+          color: AppTheme.backgroundColor,
           padding: const EdgeInsets.all(16.0),
           child: TextField(
             decoration: InputDecoration(
