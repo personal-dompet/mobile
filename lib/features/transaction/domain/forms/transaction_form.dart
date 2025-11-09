@@ -32,7 +32,7 @@ class TransactionForm extends FormGroup {
             validators: [Validators.required],
           ),
           'description': FormControl<String>(),
-          'category': FormControl<Category>(),
+          'category': FormControl<Category>(value: Category.others),
         });
 
   FormControl<DateTime> get date => controls['date'] as FormControl<DateTime>;

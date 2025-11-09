@@ -1,4 +1,5 @@
 import 'package:dompet/core/enum/category.dart';
+import 'package:dompet/core/enum/transaction_static_subject.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/animatied_opacity_container.dart';
@@ -17,7 +18,9 @@ import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class CreateTransactionPage extends ConsumerWidget {
-  const CreateTransactionPage({super.key});
+  final TransactionStaticSubject? subject;
+
+  const CreateTransactionPage({super.key, this.subject});
 
   void _submit(BuildContext context) async {
     final form =
@@ -78,7 +81,11 @@ class CreateTransactionPage extends ConsumerWidget {
                     final account = form.accountValue;
                     final amount = form.amountValue ?? 0;
 
-                    final newBalance = (account?.balance ?? 0) + amount;
+                    final newBalance = (account?.balance ?? 0) +
+                        (amount *
+                            (form.typeValue == TransactionType.income
+                                ? 1
+                                : -1));
                     final formattedNewBalance =
                         FormatCurrency.formatRupiah(newBalance);
 
@@ -100,6 +107,8 @@ class CreateTransactionPage extends ConsumerWidget {
                               ? null
                               : formattedNewBalance,
                           showBalanceChange: newBalance != account?.balance,
+                          isDisabled:
+                              subject == TransactionStaticSubject.account,
                           onTap: () async {
                             final selectedAccount = await SelectAccountRoute(
                               selectedAccountId: form.account.value?.id,
@@ -123,7 +132,11 @@ class CreateTransactionPage extends ConsumerWidget {
                     final pocket = form.pocketValue;
                     final amount = form.amountValue ?? 0;
 
-                    final newBalance = (pocket?.balance ?? 0) + amount;
+                    final newBalance = (pocket?.balance ?? 0) +
+                        (amount *
+                            (form.typeValue == TransactionType.income
+                                ? 1
+                                : -1));
                     final formattedNewBalance =
                         FormatCurrency.formatRupiah(newBalance);
 
@@ -145,6 +158,8 @@ class CreateTransactionPage extends ConsumerWidget {
                               ? null
                               : formattedNewBalance,
                           showBalanceChange: newBalance != pocket?.balance,
+                          isDisabled:
+                              subject == TransactionStaticSubject.pocket,
                           onTap: () async {
                             final selectedAccount = await SelectAccountRoute(
                               selectedAccountId: form.account.value?.id,

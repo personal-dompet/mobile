@@ -1,4 +1,5 @@
 import 'package:dompet/core/enum/category.dart';
+import 'package:dompet/core/enum/transaction_static_subject.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transaction/domain/enums/transaction_type.dart';
 import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
@@ -25,6 +26,7 @@ class WalletProvider extends AsyncNotifier<WalletModel?> {
     transactionFlow.beginTransaction(
       context,
       selectedPocket: form.pocketValue,
+      subject: TransactionStaticSubject.pocket,
     );
   }
 

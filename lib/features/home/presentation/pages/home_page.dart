@@ -1,4 +1,5 @@
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
+import 'package:dompet/features/home/presentation/widgets/quick_actions.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
 import 'package:dompet/features/transaction/presentation/widgets/recent_transactions_list.dart';
 import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
@@ -27,6 +28,7 @@ class HomePage extends ConsumerWidget {
             spacing: 24,
             children: [
               const WalletCard(),
+              QuickActions(),
               const RecentTransactionsList(),
               Divider(
                 indent: 16,

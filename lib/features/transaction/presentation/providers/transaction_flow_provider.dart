@@ -1,4 +1,5 @@
 import 'package:dompet/core/enum/create_from.dart';
+import 'package:dompet/core/enum/transaction_static_subject.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
@@ -17,6 +18,7 @@ class _TransactionFlowService {
     BuildContext context, {
     PocketModel? selectedPocket,
     AccountModel? selectedAccount,
+    TransactionStaticSubject? subject,
   }) async {
     final account = selectedAccount ?? await _selectAccount(context);
     if (account == null || !context.mounted) return;
@@ -29,8 +31,8 @@ class _TransactionFlowService {
 
     form.pocket.value = pocket;
 
-    final transactionForm =
-        await CreateTransactionRoute().push<TransactionForm>(context);
+    final transactionForm = await CreateTransactionRoute(subject: subject)
+        .push<TransactionForm>(context);
 
     if (transactionForm == null) {
       _ref.invalidate(transactionFormProvider);

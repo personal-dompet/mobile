@@ -18,6 +18,7 @@ class _TransferFlowService {
     BuildContext context, {
     PocketModel? sourcePocket,
     PocketModel? destinationPocket,
+    TransferStaticSubject? subject,
   }) async {
     final source = sourcePocket ??
         await _selectPocket(context, title: SelectPocketTitle.source);
@@ -33,7 +34,7 @@ class _TransferFlowService {
     transferForm.toPocket.value = destination;
 
     final form = await CreatePocketTransferRoute(
-      subject: TransferStaticSubject.source,
+      subject: subject,
     ).push<PocketTransferForm>(context);
 
     if (form == null) {
