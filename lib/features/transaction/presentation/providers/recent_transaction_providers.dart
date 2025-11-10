@@ -16,8 +16,10 @@ class _RecentTansactionNotifier
     return repository.getTransactions(form);
   }
 
-  void optimisticCreate(TransactionDetailModel newTransaction,
-      [int? placeholderId]) {
+  void optimisticCreate(
+    TransactionDetailModel newTransaction, {
+    int? placeholderId,
+  }) {
     if (!state.hasValue) return;
 
     final currentState = [...state.value!];

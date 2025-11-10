@@ -1,3 +1,4 @@
+import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/core/widgets/recent_list_container.dart';
 import 'package:dompet/features/transaction/domain/models/transaction_detail_model.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
@@ -50,72 +51,78 @@ class _RecentTransactionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
-      leading: CircleAvatar(
-        radius: 20,
-        backgroundColor: AppTheme.cardColor,
-        child: Icon(
-          transaction.category.icon,
-          color: AppTheme.primaryColor,
-          size: 20,
+    return AnimatedOpacityContainer(
+      isAnimated: transaction.id <= 0,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 6.0,
         ),
-      ),
-      title: Text(
-        transaction.description == null || transaction.description!.isEmpty
-            ? transaction.category.displayName
-            : transaction.description!,
-        style: const TextStyle(
-          fontWeight: FontWeight.w500,
-          fontSize: 14,
+        dense: true,
+        leading: CircleAvatar(
+          radius: 20,
+          backgroundColor: AppTheme.cardColor,
+          child: Icon(
+            transaction.category.icon,
+            color: AppTheme.primaryColor,
+            size: 20,
+          ),
         ),
-      ),
-      subtitle: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 8,
-        children: [
-          Text(
-            transaction.account.name,
-            style: TextStyle(fontSize: 12, color: transaction.account.color),
+        title: Text(
+          transaction.description == null || transaction.description!.isEmpty
+              ? transaction.category.displayName
+              : transaction.description!,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
           ),
-          Text(
-            '|',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.withValues(alpha: 0.7),
+        ),
+        subtitle: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            Text(
+              transaction.account.name,
+              style: TextStyle(fontSize: 12, color: transaction.account.color),
             ),
-          ),
-          Text(
-            transaction.pocket.name,
-            style: TextStyle(
-              fontSize: 12,
-              color: transaction.pocket.color ?? AppTheme.primaryColor,
+            Text(
+              '|',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.withValues(alpha: 0.7),
+              ),
             ),
-          ),
-        ],
-      ),
-      trailing: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            transaction.formattedAmount,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              color: transaction.isIncome
-                  ? AppTheme.successColor
-                  : AppTheme.errorColor,
+            Text(
+              transaction.pocket.name,
+              style: TextStyle(
+                fontSize: 12,
+                color: transaction.pocket.color ?? AppTheme.primaryColor,
+              ),
             ),
-          ),
-          Text(
-            transaction.relativeFormattedCreatedAt,
-            style: const TextStyle(
-              fontSize: 12,
+          ],
+        ),
+        trailing: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              transaction.formattedAmount,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: transaction.isIncome
+                    ? AppTheme.successColor
+                    : AppTheme.errorColor,
+              ),
             ),
-          ),
-        ],
+            Text(
+              transaction.relativeFormattedCreatedAt,
+              style: const TextStyle(
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

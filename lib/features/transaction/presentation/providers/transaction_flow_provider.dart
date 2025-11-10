@@ -1,5 +1,6 @@
 import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/transaction_static_subject.dart';
+import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
@@ -39,7 +40,17 @@ class _TransactionFlowService {
       return;
     }
 
-    await _ref.read(transactionLogicProvider).create(transactionForm);
+    await _ref.read(transactionLogicProvider).create(
+      transactionForm,
+      onSuccess: () {
+        context.showSuccessSnackbar('Record transaction successfully.');
+      },
+      onError: () {
+        context.showSuccessSnackbar(
+          'Error happen when try to record a transaction',
+        );
+      },
+    );
 
     if (!context.mounted) return;
     _ref.invalidate(transactionFormProvider);

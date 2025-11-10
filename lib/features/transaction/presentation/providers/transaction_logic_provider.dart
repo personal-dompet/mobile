@@ -7,6 +7,7 @@ import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
 import 'package:dompet/features/transaction/domain/models/transaction_detail_model.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class _TranscationLogicService {
@@ -14,7 +15,11 @@ class _TranscationLogicService {
 
   _TranscationLogicService(this._ref);
 
-  Future create(TransactionForm request) async {
+  Future create(
+    TransactionForm request, {
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
     final recentTransaction =
         await _ref.read(recentTransactionProvider.selectAsync((list) => list));
     final wallet = await _ref.read(walletProvider.selectAsync((data) => data));
@@ -39,6 +44,17 @@ class _TranscationLogicService {
           : wallet.balance,
     );
 
+    final newTransaction = TransactionDetailModel.placeholder(
+      amount: request.amountValue,
+      category: request.categoryValue,
+      date: request.dateValue,
+      description: request.descriptionValue,
+      type: request.typeValue,
+      account: newAccount,
+      pocket: newPocket,
+      wallet: newWallet,
+    );
+
     final recentTransactionNotifier =
         _ref.read(recentTransactionProvider.notifier);
 
@@ -50,17 +66,7 @@ class _TranscationLogicService {
     pocketListNotifier.optimisticUpdate(newPocket);
     walletNotifier.optimisticUpdateTotalBalance(newWallet, true);
     walletNotifier.optimisticUpdateBalance(newWallet, true);
-    recentTransactionNotifier
-        .optimisticCreate(TransactionDetailModel.placeholder(
-      amount: request.amountValue,
-      category: request.categoryValue,
-      date: request.dateValue,
-      description: request.descriptionValue,
-      type: request.typeValue,
-      account: newAccount,
-      pocket: newPocket,
-      wallet: newWallet,
-    ));
+    recentTransactionNotifier.optimisticCreate(newTransaction);
 
     try {
       final newState =
@@ -69,8 +75,13 @@ class _TranscationLogicService {
       pocketListNotifier.optimisticUpdate(newState.pocket);
       walletNotifier.optimisticUpdateTotalBalance(newState.wallet);
       walletNotifier.optimisticUpdateBalance(newState.wallet);
-      recentTransactionNotifier.optimisticCreate(newState);
+      recentTransactionNotifier.optimisticCreate(
+        newState,
+        placeholderId: newTransaction.id,
+      );
+      onSuccess();
     } catch (e) {
+      onError();
       accountListNotifier.optimisticUpdate(request.accountValue!);
       pocketListNotifier.optimisticUpdate(request.pocketValue!);
       walletNotifier.optimisticUpdateTotalBalance(wallet);

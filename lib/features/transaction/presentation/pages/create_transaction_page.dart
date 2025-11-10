@@ -1,4 +1,5 @@
 import 'package:dompet/core/enum/category.dart';
+import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/transaction_static_subject.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
@@ -8,6 +9,7 @@ import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/reactive_datetime_picker.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transaction/domain/enums/transaction_type.dart';
 import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
 import 'package:dompet/routes/routes.dart';
@@ -111,8 +113,9 @@ class CreateTransactionPage extends ConsumerWidget {
                               subject == TransactionStaticSubject.account,
                           onTap: () async {
                             final selectedAccount = await SelectAccountRoute(
-                              selectedAccountId: form.account.value?.id,
-                            ).push<AccountModel>(context);
+                                    selectedAccountId: form.account.value?.id,
+                                    createFrom: CreateFrom.transaction)
+                                .push<AccountModel>(context);
                             if (selectedAccount != null && context.mounted) {
                               form.account.value = selectedAccount;
                             }
@@ -161,11 +164,11 @@ class CreateTransactionPage extends ConsumerWidget {
                           isDisabled:
                               subject == TransactionStaticSubject.pocket,
                           onTap: () async {
-                            final selectedAccount = await SelectAccountRoute(
-                              selectedAccountId: form.account.value?.id,
-                            ).push<AccountModel>(context);
-                            if (selectedAccount != null && context.mounted) {
-                              form.account.value = selectedAccount;
+                            final selectedPocket = await SelectPocketRoute(
+                              selectedPocketId: form.pocket.value?.id,
+                            ).push<PocketModel>(context);
+                            if (selectedPocket != null && context.mounted) {
+                              form.pocket.value = selectedPocket;
                             }
                           },
                         ),
@@ -195,6 +198,10 @@ class CreateTransactionPage extends ConsumerWidget {
                   formControl: form.category,
                   valueAccessor: _CategoryAccessor(),
                   readOnly: true,
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.chevron_right),
+                    prefixIcon: Icon(form.categoryValue!.icon),
+                  ),
                   onTap: (control) async {
                     if (control.value is Category) {
                       final selectedCategory = control.value as Category;
