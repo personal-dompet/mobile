@@ -12,6 +12,7 @@ class ItemCard<T> extends StatefulWidget {
   final IconData? Function(T)? icon;
   final String Function(T) displayName;
   final TransferStaticSubject? transferRole;
+  final bool isSelected;
   final VoidCallback? onTap;
 
   const ItemCard({
@@ -24,6 +25,7 @@ class ItemCard<T> extends StatefulWidget {
     this.icon,
     required this.displayName,
     this.transferRole,
+    this.isSelected = false,
     this.onTap,
   });
 
@@ -96,6 +98,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
   Widget _buildContainer(Color color, IconData icon) {
     // Disable tap if card has a transfer role
     final bool isDisabled = widget.transferRole != null;
+    final bool isSelected = widget.isSelected;
     final VoidCallback? effectiveOnTap = isDisabled
         ? () {
             final text = widget.transferRole! == TransferStaticSubject.source
@@ -109,19 +112,21 @@ class _ItemCardState<T> extends State<ItemCard<T>>
           }
         : widget.onTap;
 
-    return GestureDetector(
+    return InkWell(
       onTap: effectiveOnTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isDisabled ? color : color.withValues(alpha: 0.3),
-            width: isDisabled ? 2.0 : 1.5,
+            color: isDisabled
+                ? color
+                : (isSelected ? color : color.withValues(alpha: 0.3)),
+            width: isDisabled ? 2.0 : (isSelected ? 2.0 : 1.5),
           ),
           color: AppTheme.surfaceColor,
           boxShadow: [
-            if (isDisabled)
+            if (isDisabled || isSelected)
               BoxShadow(
                 color: color.withValues(alpha: 0.3),
                 blurRadius: 8,
@@ -168,6 +173,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
   }
 
   Widget _buildCardContent(Color color, IconData icon, bool isDisabled) {
+    final bool isSelected = widget.isSelected;
     return Opacity(
       opacity: isDisabled ? 0.5 : 1,
       child: Column(
@@ -178,13 +184,19 @@ class _ItemCardState<T> extends State<ItemCard<T>>
             height: 56,
             width: 56,
             decoration: BoxDecoration(
-              color: isDisabled ? color.withValues(alpha: 0.2) : Colors.black,
+              color: AppTheme.backgroundColor,
               shape: BoxShape.circle,
               border: Border.all(
                 color: color.withValues(alpha: 0.3),
                 width: 1.5,
               ),
               boxShadow: [
+                if (isSelected)
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.3),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
                 BoxShadow(
                   color: color.withValues(alpha: 0.3),
                   blurRadius: 4,

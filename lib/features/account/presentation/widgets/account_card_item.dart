@@ -24,7 +24,7 @@ class AccountCardItem extends StatelessWidget {
       color: (item) => item.color,
       icon: (item) => item.type.icon,
       displayName: (item) => item.type.displayName,
-      // isSelected: isSelected,
+      isSelected: isSelected,
       onTap: onTap,
     );
   }
