@@ -1,7 +1,8 @@
+import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/enum/list_type.dart';
-import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
+import 'package:dompet/features/account/domain/forms/create_account_detail_form.dart';
 import 'package:dompet/features/account/domain/forms/create_account_form.dart';
 import 'package:dompet/features/account/presentation/provider/account_filter_provider.dart';
 import 'package:dompet/features/account/presentation/provider/account_logic_provider.dart';
@@ -28,7 +29,11 @@ class _AccountFlowService {
       if (type == null || !context.mounted) return;
 
       final creationType = await _navigateToCreateAccount(context, type);
-      if (creationType == null || !context.mounted) return;
+      if (creationType == null || !context.mounted) {
+        ref.invalidate(createAccountFormProvider);
+        ref.invalidate(createAccountDetailFormProvider);
+        return;
+      }
       await _saveCreatedAccount(
         context,
         creationType,

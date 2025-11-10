@@ -63,7 +63,7 @@ class CreateAccountDetailPage extends ConsumerWidget {
                       label: 'Number',
                       info: maskedNumber != null
                           ? 'Your number will be saved and presented as $maskedNumber for security.'
-                          : null,
+                          : 'Your number will be masked for security.',
                       child: ReactiveTextField<String?>(
                         formControl: form.accountNumber,
                         keyboardType: TextInputType.number,

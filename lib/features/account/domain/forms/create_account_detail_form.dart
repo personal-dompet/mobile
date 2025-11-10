@@ -5,8 +5,10 @@ class CreateAccountDetailForm extends FormGroup {
   CreateAccountDetailForm()
       : super({
           'provider': FormControl<String>(),
-          'accountNumber':
-              FormControl<String>(validators: [Validators.minLength(8)]),
+          'accountNumber': FormControl<String>(validators: [
+            Validators.minLength(8),
+            Validators.maxLength(32),
+          ]),
         });
 
   FormControl<String> get provider =>
