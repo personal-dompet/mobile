@@ -56,7 +56,20 @@ class _SplashPageState extends ConsumerState<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text('Loading...')),
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          spacing: 16,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              strokeWidth: 1,
+            ),
+            Text('Loading...'),
+          ],
+        ),
+      ),
     );
   }
 }
