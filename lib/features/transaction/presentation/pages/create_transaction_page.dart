@@ -189,6 +189,10 @@ class CreateTransactionPage extends ConsumerWidget {
                     hintText: 'Enter amount',
                     border: OutlineInputBorder(),
                   ),
+                  validationMessages: {
+                    'required': (error) => 'Amount is required',
+                    'number': (error) => 'Amount must be a valid number',
+                  },
                 ),
               ),
 

@@ -225,6 +225,10 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                         border: const OutlineInputBorder(),
                         errorText: errorText,
                       ),
+                      validationMessages: {
+                        'required': (error) => 'Amount is required',
+                        'min': (error) => 'Amount must be at least 1',
+                      },
                     );
                   },
                 ),

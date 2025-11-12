@@ -56,6 +56,9 @@ class CreateRecurringPocketPage extends ConsumerWidget {
                       hintText: 'Enter product name',
                       border: OutlineInputBorder(),
                     ),
+                    validationMessages: {
+                      'required': (error) => 'Product name is required',
+                    },
                   ),
                 ),
                 CardInput(
@@ -82,6 +85,9 @@ class CreateRecurringPocketPage extends ConsumerWidget {
                       border: const OutlineInputBorder(),
                       // errorText: errorText,
                     ),
+                    validationMessages: {
+                      'required': (error) => 'Amount is required',
+                    },
                   ),
                 ),
                 CardInput(

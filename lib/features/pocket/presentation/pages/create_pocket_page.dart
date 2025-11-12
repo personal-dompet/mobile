@@ -152,6 +152,9 @@ class CreatePocketPage extends ConsumerWidget {
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.words,
                           textInputAction: TextInputAction.next,
+                          validationMessages: {
+                            'required': (error) => 'Name is required',
+                          },
                         ),
                       ),
                       CardInput(

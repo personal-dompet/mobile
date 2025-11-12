@@ -109,6 +109,9 @@ class CreateAccountPage extends ConsumerWidget {
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.done,
+                        validationMessages: {
+                          'required': (error) => 'Name is required',
+                        },
                       ),
                     ),
                     CardInput(
