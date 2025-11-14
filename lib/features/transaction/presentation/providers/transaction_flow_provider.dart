@@ -4,6 +4,7 @@ import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
+import 'package:dompet/features/transaction/domain/enums/transaction_type.dart';
 import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
 import 'package:dompet/features/transaction/presentation/providers/transaction_logic_provider.dart';
 import 'package:dompet/routes/routes.dart';
@@ -21,10 +22,14 @@ class _TransactionFlowService {
     AccountModel? selectedAccount,
     TransactionStaticSubject? subject,
   }) async {
-    final account = selectedAccount ?? await _selectAccount(context);
+    final form = _ref.read(transactionFormProvider);
+
+    final account = selectedAccount ??
+        await _selectAccount(
+            context, form.typeValue == TransactionType.expense);
     if (account == null || !context.mounted) return;
 
-    final form = _ref.read(transactionFormProvider)..account.value = account;
+    form.account.value = account;
 
     final pocket = selectedPocket ??
         await _selectPocket(context, title: SelectPocketTitle.general);
@@ -65,8 +70,10 @@ class _TransactionFlowService {
     return pocket;
   }
 
-  Future<AccountModel?> _selectAccount(BuildContext context) async {
-    final account = await SelectAccountRoute(createFrom: CreateFrom.transaction)
+  Future<AccountModel?> _selectAccount(
+      BuildContext context, bool? disableEmpty) async {
+    final account = await SelectAccountRoute(
+            createFrom: CreateFrom.transaction, disableEmpty: disableEmpty)
         .push<AccountModel>(context);
     return account;
   }

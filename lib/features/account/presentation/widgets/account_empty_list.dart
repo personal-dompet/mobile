@@ -12,12 +12,14 @@ class AccountEmptyList extends ConsumerWidget {
   final ListType listType;
   final ValueChanged<AccountModel>? onFormCreated;
   final CreateFrom? createFrom;
+  final bool hideButton;
 
   const AccountEmptyList({
     super.key,
     this.listType = ListType.filtered,
     this.onFormCreated,
     this.createFrom,
+    this.hideButton = false,
   });
 
   @override
@@ -51,11 +53,15 @@ class AccountEmptyList extends ConsumerWidget {
         displayMessage =
             'We couldn\'t find any accounts matching your filters. Try adjusting your filters. Or would you like to create a new accounts?';
       }
-    } else {
+    } else if (!hideButton) {
       // No filters applied
       displayTitle = 'No accounts yet';
       displayMessage =
           'Start organizing your finances by creating your first account';
+    } else {
+      displayTitle = 'No accounts yet';
+      displayMessage =
+          'Create your first account in the Account menu and add balance to it to start managing your finances.';
     }
 
     return Padding(
@@ -86,19 +92,20 @@ class AccountEmptyList extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: () async {
-              await ref.read(accountFlowProvider(listType)).beginCreate(
-                context,
-                onFormCreated: (accountForm) {
-                  onFormCreated?.call(accountForm.toAccountModel());
-                },
-                createFrom: createFrom,
-              );
-            },
-            icon: const Icon(Icons.add_rounded),
-            label: Text('Create account'),
-          ),
+          if (!hideButton)
+            ElevatedButton.icon(
+              onPressed: () async {
+                await ref.read(accountFlowProvider(listType)).beginCreate(
+                  context,
+                  onFormCreated: (accountForm) {
+                    onFormCreated?.call(accountForm.toAccountModel());
+                  },
+                  createFrom: createFrom,
+                );
+              },
+              icon: const Icon(Icons.add_rounded),
+              label: Text('Create account'),
+            ),
         ],
       ),
     );

@@ -73,8 +73,10 @@ class CreateAccountDetailPage extends ConsumerWidget {
                           border: OutlineInputBorder(),
                         ),
                         validationMessages: {
-                          'minLength': (error) => 'Account number must be at least 8 characters',
-                          'maxLength': (error) => 'Account number must be at most 32 characters',
+                          'minLength': (error) =>
+                              'Account number must be at least 8 characters',
+                          'maxLength': (error) =>
+                              'Account number must be at most 32 characters',
                         },
                       ),
                     );

@@ -14,6 +14,7 @@ class ItemCard<T> extends StatefulWidget {
   final TransferStaticSubject? transferRole;
   final bool isSelected;
   final VoidCallback? onTap;
+  final bool isDisabled;
 
   const ItemCard({
     super.key,
@@ -27,6 +28,7 @@ class ItemCard<T> extends StatefulWidget {
     this.transferRole,
     this.isSelected = false,
     this.onTap,
+    this.isDisabled = false,
   });
 
   @override
@@ -97,15 +99,23 @@ class _ItemCardState<T> extends State<ItemCard<T>>
 
   Widget _buildContainer(Color color, IconData icon) {
     // Disable tap if card has a transfer role
-    final bool isDisabled = widget.transferRole != null;
+    final balance = widget.balance(widget.item);
+    final bool isDisabled =
+        widget.transferRole != null || (widget.isDisabled && balance == 'Rp0');
     final bool isSelected = widget.isSelected;
     final VoidCallback? effectiveOnTap = isDisabled
         ? () {
+            final optionType =
+                T.toString() == 'PocketModel' ? 'pocket' : 'account';
+            if (widget.isDisabled) {
+              context.showErrorSnackbar(
+                  'Not enough balance. Please select different $optionType that has sufficient balance.');
+              return;
+            }
             final text = widget.transferRole! == TransferStaticSubject.source
                 ? 'source'
                 : 'destination';
-            final optionType =
-                T.toString() == 'PocketModel' ? 'pocket' : 'account';
+
             context.showErrorSnackbar(
                 'Already selected as $text $optionType. Please select different $optionType or create new one.');
             return;
@@ -141,7 +151,7 @@ class _ItemCardState<T> extends State<ItemCard<T>>
               child: _buildCardContent(color, icon, isDisabled),
             ),
             // Add source/destination indicator if applicable
-            if (isDisabled)
+            if (isDisabled && !widget.isDisabled)
               Positioned(
                 top: 16,
                 right: 0,

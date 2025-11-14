@@ -15,18 +15,19 @@ class AccountGrid extends ConsumerWidget {
   final void Function(AccountModel account)? onCreated;
   final ListType listType;
   final CreateFrom? createFrom;
+  final bool disableEmpty;
 
-  const AccountGrid({
-    super.key,
-    this.data = const [],
-    this.selectedAccountId,
-    required this.onTap,
-    this.onCreated,
-    this.destinationAccount,
-    this.sourceAccount,
-    this.createFrom,
-    this.listType = ListType.filtered,
-  });
+  const AccountGrid(
+      {super.key,
+      this.data = const [],
+      this.selectedAccountId,
+      required this.onTap,
+      this.onCreated,
+      this.destinationAccount,
+      this.sourceAccount,
+      this.createFrom,
+      this.listType = ListType.filtered,
+      this.disableEmpty = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,10 +39,10 @@ class AccountGrid extends ConsumerWidget {
         crossAxisSpacing: 16,
         childAspectRatio: 1,
       ),
-      itemCount: data.length + 1,
+      itemCount: disableEmpty ? data.length : data.length + 1,
       itemBuilder: (context, index) {
         // If this is the last item, show the "Add Account" card
-        if (index == data.length) {
+        if (index == data.length && !disableEmpty) {
           return AddAccountCardItem(
             listType: listType,
             onFormCreated: (account) => onCreated?.call(account),
@@ -54,6 +55,7 @@ class AccountGrid extends ConsumerWidget {
         return AccountCardItem(
           account: account,
           isSelected: isSelected,
+          isDisabled: disableEmpty,
           onTap: () => onTap(account),
         );
       },

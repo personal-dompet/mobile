@@ -10,10 +10,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SelectAccountPage extends ConsumerWidget {
   final int? selectedAccountId;
   final CreateFrom? createFrom;
+  final bool disableEmpty;
   const SelectAccountPage({
     super.key,
     this.selectedAccountId,
     this.createFrom,
+    this.disableEmpty = false,
   });
 
   @override
@@ -37,6 +39,7 @@ class SelectAccountPage extends ConsumerWidget {
               onFormCreated: (account) =>
                   Navigator.of(context).pop<AccountModel>(account),
               createFrom: createFrom,
+              hideButton: disableEmpty,
             );
           }
 
@@ -50,6 +53,7 @@ class SelectAccountPage extends ConsumerWidget {
                     selectedAccountId: selectedAccountId,
                     listType: ListType.option,
                     createFrom: createFrom,
+                    disableEmpty: disableEmpty,
                     onTap: (account) {
                       Navigator.of(context).pop<AccountModel>(account);
                     },

@@ -6,12 +6,14 @@ class AccountCardItem extends StatelessWidget {
   final AccountModel account;
   final bool isSelected;
   final VoidCallback? onTap;
+  final bool isDisabled;
 
   const AccountCardItem({
     super.key,
     required this.account,
     this.isSelected = false,
     this.onTap,
+    this.isDisabled = false,
   });
 
   @override
@@ -25,6 +27,7 @@ class AccountCardItem extends StatelessWidget {
       icon: (item) => item.type.icon,
       displayName: (item) => item.type.displayName,
       isSelected: isSelected,
+      isDisabled: isDisabled,
       onTap: onTap,
     );
   }
