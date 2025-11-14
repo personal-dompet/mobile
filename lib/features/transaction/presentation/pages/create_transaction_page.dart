@@ -166,6 +166,7 @@ class CreateTransactionPage extends ConsumerWidget {
                           onTap: () async {
                             final selectedPocket = await SelectPocketRoute(
                               selectedPocketId: form.pocket.value?.id,
+                              disableEmpty: subject == TransactionStaticSubject.pocket,
                             ).push<PocketModel>(context);
                             if (selectedPocket != null && context.mounted) {
                               form.pocket.value = selectedPocket;

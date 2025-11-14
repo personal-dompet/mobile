@@ -26,13 +26,18 @@ class _TransactionFlowService {
 
     final account = selectedAccount ??
         await _selectAccount(
-            context, form.typeValue == TransactionType.expense);
+          context,
+          form.typeValue == TransactionType.expense,
+        );
     if (account == null || !context.mounted) return;
 
     form.account.value = account;
 
     final pocket = selectedPocket ??
-        await _selectPocket(context, title: SelectPocketTitle.general);
+        await _selectPocket(
+          context,
+          form.typeValue == TransactionType.expense,
+        );
     if (pocket == null || !context.mounted) return;
 
     form.pocket.value = pocket;
@@ -62,19 +67,25 @@ class _TransactionFlowService {
     _ref.invalidateSelf();
   }
 
-  Future<PocketModel?> _selectPocket(BuildContext context,
-      {required SelectPocketTitle title}) async {
+  Future<PocketModel?> _selectPocket(
+    BuildContext context,
+    bool? disableEmpty,
+  ) async {
     final pocket = await SelectPocketRoute(
-      title: title,
+      title: SelectPocketTitle.general,
+      disableEmpty: disableEmpty,
     ).push<PocketModel>(context);
     return pocket;
   }
 
   Future<AccountModel?> _selectAccount(
-      BuildContext context, bool? disableEmpty) async {
+    BuildContext context,
+    bool? disableEmpty,
+  ) async {
     final account = await SelectAccountRoute(
-            createFrom: CreateFrom.transaction, disableEmpty: disableEmpty)
-        .push<AccountModel>(context);
+      createFrom: CreateFrom.transaction,
+      disableEmpty: disableEmpty,
+    ).push<AccountModel>(context);
     return account;
   }
 }
