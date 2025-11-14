@@ -7,10 +7,12 @@ import 'base_routes.dart';
 class SelectPocketRoute extends AppRoute {
   final int? selectedPocketId;
   final SelectPocketTitle? title;
+  final bool? disableEmpty;
 
   SelectPocketRoute({
     this.selectedPocketId,
     this.title,
+    this.disableEmpty,
   });
 
   @override
@@ -21,11 +23,15 @@ class SelectPocketRoute extends AppRoute {
     final params = <String, String>{};
 
     if (selectedPocketId != null) {
-      params['selectedAccountId'] = selectedPocketId.toString();
+      params['selectedPocketId'] = selectedPocketId.toString();
     }
 
     if (title != null) {
       params['title'] = title!.value;
+    }
+
+    if (disableEmpty != null) {
+      params['disableEmpty'] = disableEmpty!.toString();
     }
 
     return params;
@@ -33,14 +39,16 @@ class SelectPocketRoute extends AppRoute {
 
   @override
   Widget buildPage(BuildContext context, GoRouterState state) {
-    final selectedAccountId =
-        int.tryParse(state.uri.queryParameters['selectedAccountId'] ?? '');
+    final selectedPocketId =
+        int.tryParse(state.uri.queryParameters['selectedPocketId'] ?? '');
     final titleParam = SelectPocketTitle.fromValue(
         state.uri.queryParameters['title'] ?? SelectPocketTitle.general.value);
+    final disableEmpty = state.uri.queryParameters['disableEmpty'] == 'true';
 
     return SelectPocketPage(
-      selectedPocketId: selectedAccountId,
+      selectedPocketId: selectedPocketId,
       title: titleParam ?? SelectPocketTitle.general,
+      disableEmpty: disableEmpty,
     );
   }
 }

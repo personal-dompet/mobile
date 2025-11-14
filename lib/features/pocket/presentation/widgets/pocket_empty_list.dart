@@ -10,11 +10,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PocketEmptyList extends ConsumerWidget {
   final ListType listType;
   final ValueChanged<PocketModel>? onFormCreated;
+  final bool hideButton;
 
   const PocketEmptyList({
     super.key,
     this.listType = ListType.filtered,
     this.onFormCreated,
+    this.hideButton = false,
   });
 
   @override
@@ -23,7 +25,7 @@ class PocketEmptyList extends ConsumerWidget {
 
     // Get the current filter values
     final keyword = filter.keyword;
-    final type = filter.type;
+    final type = listType == ListType.option ? PocketType.all : filter.type;
 
     // Determine appropriate title and message based on filters
     String displayTitle = 'No pockets yet';
@@ -49,11 +51,15 @@ class PocketEmptyList extends ConsumerWidget {
         displayMessage =
             'We couldn\'t find any pockets matching your filters. Try adjusting your filters. Or would you like to create a new pockets?';
       }
-    } else {
+    } else if (!hideButton) {
       // No filters applied
       displayTitle = 'No pockets yet';
       displayMessage =
           'Start organizing your finances by creating your first pocket';
+    } else {
+      displayTitle = 'No pockets yet';
+      displayMessage =
+          'Create your first pocket in the Pocket menu to start managing your finances.';
     }
 
     return Padding(
@@ -84,18 +90,19 @@ class PocketEmptyList extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: () async {
-              await ref.read(pocketFlowProvider(listType)).beginCreate(
-                context,
-                onFormCreated: (pocketForm) {
-                  onFormCreated?.call(pocketForm.toPocketModel());
-                },
-              );
-            },
-            icon: const Icon(Icons.add_rounded),
-            label: Text('Create pockets'),
-          ),
+          if (!hideButton)
+            ElevatedButton.icon(
+              onPressed: () async {
+                await ref.read(pocketFlowProvider(listType)).beginCreate(
+                  context,
+                  onFormCreated: (pocketForm) {
+                    onFormCreated?.call(pocketForm.toPocketModel());
+                  },
+                );
+              },
+              icon: const Icon(Icons.add_rounded),
+              label: Text('Create pockets'),
+            ),
         ],
       ),
     );

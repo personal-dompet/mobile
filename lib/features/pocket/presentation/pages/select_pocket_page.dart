@@ -10,10 +10,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SelectPocketPage extends ConsumerWidget {
   final int? selectedPocketId;
   final SelectPocketTitle title;
+  final bool disableEmpty;
   const SelectPocketPage({
     super.key,
     this.selectedPocketId,
     this.title = SelectPocketTitle.general,
+    this.disableEmpty = false,
   });
 
   @override
@@ -36,6 +38,7 @@ class SelectPocketPage extends ConsumerWidget {
               listType: ListType.option,
               onFormCreated: (pocket) =>
                   Navigator.of(context).pop<PocketModel>(pocket),
+              hideButton: disableEmpty,
             );
           }
 
@@ -50,6 +53,7 @@ class SelectPocketPage extends ConsumerWidget {
                     listType: ListType.option,
                     destinationPocket: transferForm.toPocketValue,
                     sourcePocket: transferForm.fromPocketValue,
+                    disableEmpty: disableEmpty,
                     onCreated: (pocket) {
                       Navigator.of(context).pop<PocketModel>(pocket);
                     },

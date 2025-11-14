@@ -14,6 +14,7 @@ class PocketGrid extends ConsumerWidget {
   final void Function(PocketModel pocket) onTap;
   final void Function(PocketModel pocket)? onCreated;
   final ListType listType;
+  final bool disableEmpty;
 
   const PocketGrid({
     super.key,
@@ -24,6 +25,7 @@ class PocketGrid extends ConsumerWidget {
     this.destinationPocket,
     this.sourcePocket,
     this.listType = ListType.filtered,
+    this.disableEmpty = false,
   });
 
   @override
@@ -36,10 +38,10 @@ class PocketGrid extends ConsumerWidget {
         crossAxisSpacing: 16,
         childAspectRatio: 1,
       ),
-      itemCount: data.length + 1, // Add 1 for the "Add Pocket" card
+      itemCount: disableEmpty ? data.length : data.length + 1, // Add 1 for the "Add Pocket" card if not disableEmpty
       itemBuilder: (context, index) {
-        // If this is the last item, show the "Add Pocket" card
-        if (index == data.length) {
+        // If this is the last item and disableEmpty is false, show the "Add Pocket" card
+        if (index == data.length && !disableEmpty) {
           return AddPocketCardItem(
             listType: listType,
             onFormCreated: (pocket) => onCreated?.call(pocket),
@@ -59,6 +61,7 @@ class PocketGrid extends ConsumerWidget {
         return PocketCardItem(
           pocket: pocket,
           transferRole: transferRole,
+          isDisabled: disableEmpty,
           onTap: () => onTap(pocket),
         );
       },
