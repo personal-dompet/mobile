@@ -17,6 +17,10 @@ class SelectAccountRoute extends AppRoute {
     this.disableEmpty,
   });
 
+  static const String selectedAccountIdParamKey = 'selectedAccountId';
+  static const String createFromParamKey = 'createFrom';
+  static const String disableEmptyParamKey = 'disableEmpty';
+
   @override
   Routes get route => Routes.selectAccount;
 
@@ -25,15 +29,15 @@ class SelectAccountRoute extends AppRoute {
     final params = <String, String>{};
 
     if (selectedAccountId != null) {
-      params['selectedAccountId'] = selectedAccountId.toString();
+      params[selectedAccountIdParamKey] = selectedAccountId.toString();
     }
 
     if (createFrom != null) {
-      params['createFrom'] = createFrom!.name;
+      params[createFromParamKey] = createFrom!.name;
     }
 
     if (disableEmpty != null) {
-      params['disableEmpty'] = disableEmpty!.toString();
+      params[disableEmptyParamKey] = disableEmpty!.toString();
     }
 
     return params;
@@ -42,11 +46,11 @@ class SelectAccountRoute extends AppRoute {
   @override
   Widget buildPage(BuildContext context, GoRouterState state) {
     final selectedAccountId =
-        int.tryParse(state.uri.queryParameters['selectedAccountId'] ?? '');
+        int.tryParse(state.uri.queryParameters[selectedAccountIdParamKey] ?? '');
     final createFrom =
-        CreateFrom.fromName(state.uri.queryParameters['createFrom'] ?? '');
+        CreateFrom.fromName(state.uri.queryParameters[createFromParamKey] ?? '');
 
-    final disableEmpty = state.uri.queryParameters['disableEmpty'] == 'true';
+    final disableEmpty = state.uri.queryParameters[disableEmptyParamKey] == 'true';
 
     return SelectAccountPage(
       selectedAccountId: selectedAccountId,

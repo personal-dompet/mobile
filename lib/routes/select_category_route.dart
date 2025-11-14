@@ -11,6 +11,8 @@ class SelectCategoryRoute extends AppRoute {
     this.selectedCategoryIconKey,
   });
 
+  static const String selectedCategoryIconKeyParam = 'selectedCategoryIconKey';
+
   @override
   Routes get route => Routes.selectCategory;
 
@@ -19,7 +21,7 @@ class SelectCategoryRoute extends AppRoute {
     final params = <String, String>{};
 
     if (selectedCategoryIconKey != null) {
-      params['selectedCategoryIconKey'] = selectedCategoryIconKey!;
+      params[selectedCategoryIconKeyParam] = selectedCategoryIconKey!;
     }
 
     return params;
@@ -27,11 +29,11 @@ class SelectCategoryRoute extends AppRoute {
 
   @override
   Widget buildPage(BuildContext context, GoRouterState state) {
-    final selectedCategoryIconKeyParam =
-        state.uri.queryParameters['selectedCategoryIconKey'];
+    final selectedCategoryIconKeyFromUri =
+        state.uri.queryParameters[selectedCategoryIconKeyParam];
 
     return SelectCategoryPage(
-      selectedCategoryIconKey: selectedCategoryIconKeyParam,
+      selectedCategoryIconKey: selectedCategoryIconKeyFromUri,
     );
   }
 }

@@ -12,6 +12,8 @@ class CreatePocketTransferRoute extends AppRoute {
     this.subject,
   });
 
+  static const String staticParamKey = 'static';
+
   @override
   Routes get route => Routes.createPocketTransfer;
 
@@ -20,7 +22,7 @@ class CreatePocketTransferRoute extends AppRoute {
     final params = <String, String>{};
 
     if (subject != null) {
-      params['static'] = subject!.name;
+      params[staticParamKey] = subject!.name;
     }
 
     return params;
@@ -28,7 +30,7 @@ class CreatePocketTransferRoute extends AppRoute {
 
   @override
   Widget buildPage(BuildContext context, GoRouterState state) {
-    final staticQuery = state.uri.queryParameters['static'];
+    final staticQuery = state.uri.queryParameters[staticParamKey];
     TransferStaticSubject? subject;
 
     if (staticQuery != null) {

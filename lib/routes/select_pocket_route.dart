@@ -15,6 +15,10 @@ class SelectPocketRoute extends AppRoute {
     this.disableEmpty,
   });
 
+  static const String selectedPocketIdParamKey = 'selectedPocketId';
+  static const String titleParamKey = 'title';
+  static const String disableEmptyParamKey = 'disableEmpty';
+
   @override
   Routes get route => Routes.selectPocket;
 
@@ -23,15 +27,15 @@ class SelectPocketRoute extends AppRoute {
     final params = <String, String>{};
 
     if (selectedPocketId != null) {
-      params['selectedPocketId'] = selectedPocketId.toString();
+      params[selectedPocketIdParamKey] = selectedPocketId.toString();
     }
 
     if (title != null) {
-      params['title'] = title!.value;
+      params[titleParamKey] = title!.value;
     }
 
     if (disableEmpty != null) {
-      params['disableEmpty'] = disableEmpty!.toString();
+      params[disableEmptyParamKey] = disableEmpty!.toString();
     }
 
     return params;
@@ -40,10 +44,10 @@ class SelectPocketRoute extends AppRoute {
   @override
   Widget buildPage(BuildContext context, GoRouterState state) {
     final selectedPocketId =
-        int.tryParse(state.uri.queryParameters['selectedPocketId'] ?? '');
+        int.tryParse(state.uri.queryParameters[selectedPocketIdParamKey] ?? '');
     final titleParam = SelectPocketTitle.fromValue(
-        state.uri.queryParameters['title'] ?? SelectPocketTitle.general.value);
-    final disableEmpty = state.uri.queryParameters['disableEmpty'] == 'true';
+        state.uri.queryParameters[titleParamKey] ?? SelectPocketTitle.general.value);
+    final disableEmpty = state.uri.queryParameters[disableEmptyParamKey] == 'true';
 
     return SelectPocketPage(
       selectedPocketId: selectedPocketId,
