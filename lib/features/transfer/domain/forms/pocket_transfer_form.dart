@@ -29,7 +29,7 @@ class PocketTransferForm extends FormGroup {
           },
           validators: [
             NotEqualValidator('fromPocket', 'toPocket'),
-            AmountPocketBalanceValidator(),
+            AmountPocketBalanceValidator(controlName: 'fromPocket'),
           ],
         );
 

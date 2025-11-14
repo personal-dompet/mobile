@@ -28,6 +28,12 @@ class CreateTransactionPage extends ConsumerWidget {
     final form =
         ProviderScope.containerOf(context).read(transactionFormProvider);
     form.markAllAsTouched();
+    // Trigger form validation which will run the form-level validators
+    // form.updateValueAndValidity();
+    // debugPrint('Form errors: ${form.errors}');
+    // debugPrint('Amount errors: ${form.amount.errors}');
+    // debugPrint('Account errors: ${form.account.errors}');
+    // debugPrint('Pocket errors: ${form.pocket.errors}');
     if (form.valid) {
       final payload = form;
       Navigator.of(context).pop<TransactionForm>(payload);
@@ -166,7 +172,8 @@ class CreateTransactionPage extends ConsumerWidget {
                           onTap: () async {
                             final selectedPocket = await SelectPocketRoute(
                               selectedPocketId: form.pocket.value?.id,
-                              disableEmpty: subject == TransactionStaticSubject.pocket,
+                              disableEmpty:
+                                  subject == TransactionStaticSubject.pocket,
                             ).push<PocketModel>(context);
                             if (selectedPocket != null && context.mounted) {
                               form.pocket.value = selectedPocket;
@@ -193,6 +200,10 @@ class CreateTransactionPage extends ConsumerWidget {
                   validationMessages: {
                     'required': (error) => 'Amount is required',
                     'number': (error) => 'Amount must be a valid number',
+                    'exceedsPocketBalance': (error) =>
+                        'Your amount is more than the pocket balance',
+                    'exceedsAccountBalance': (error) =>
+                        'Your amount is more than the account balance',
                   },
                 ),
               ),

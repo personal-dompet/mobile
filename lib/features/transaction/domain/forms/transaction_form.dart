@@ -1,4 +1,6 @@
 import 'package:dompet/core/enum/category.dart';
+import 'package:dompet/core/validators/amount_account_balance_validator.dart';
+import 'package:dompet/core/validators/amount_pocket_balance_validator.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transaction/domain/enums/transaction_type.dart';
@@ -7,33 +9,45 @@ import 'package:reactive_forms/reactive_forms.dart';
 
 class TransactionForm extends FormGroup {
   TransactionForm()
-      : super({
-          'date': FormControl<DateTime>(
-            value: DateTime.now(),
-            validators: [
-              Validators.required,
-            ],
-          ),
-          'account': FormControl<AccountModel>(
-            validators: [Validators.required],
-          ),
-          'pocket': FormControl<PocketModel>(
-            validators: [Validators.required],
-          ),
-          'amount': FormControl<int>(
-            validators: [
-              Validators.required,
-              Validators.number(
-                allowNegatives: false,
-              )
-            ],
-          ),
-          'type': FormControl<TransactionType>(
-            validators: [Validators.required],
-          ),
-          'description': FormControl<String>(),
-          'category': FormControl<Category>(value: Category.others),
-        });
+      : super(
+          {
+            'date': FormControl<DateTime>(
+              value: DateTime.now(),
+              validators: [
+                Validators.required,
+              ],
+            ),
+            'account': FormControl<AccountModel>(
+              validators: [Validators.required],
+            ),
+            'pocket': FormControl<PocketModel>(
+              validators: [Validators.required],
+            ),
+            'amount': FormControl<int>(
+              validators: [
+                Validators.required,
+                Validators.number(
+                  allowNegatives: false,
+                )
+              ],
+            ),
+            'type': FormControl<TransactionType>(
+              validators: [Validators.required],
+            ),
+            'description': FormControl<String>(),
+            'category': FormControl<Category>(value: Category.others),
+          },
+          validators: [
+            AmountPocketBalanceValidator(
+              controlName: 'pocket',
+              errorKey: 'exceedsPocketBalance',
+            ),
+            AmountAccountBalanceValidator(
+              controlName: 'account',
+              errorKey: 'exceedsAccountBalance',
+            ),
+          ],
+        );
 
   FormControl<DateTime> get date => controls['date'] as FormControl<DateTime>;
   FormControl<AccountModel> get account =>

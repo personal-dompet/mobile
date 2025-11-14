@@ -29,7 +29,7 @@ class AccountTransferForm extends FormGroup {
           },
           validators: [
             NotEqualValidator('fromAccount', 'toAccount'),
-            AmountAccountBalanceValidator(),
+            AmountAccountBalanceValidator(controlName: 'fromAccount'),
           ],
         );
 
