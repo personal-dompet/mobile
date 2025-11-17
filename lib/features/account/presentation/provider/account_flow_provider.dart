@@ -1,6 +1,7 @@
 import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/enum/list_type.dart';
+import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/create_account_detail_form.dart';
 import 'package:dompet/features/account/domain/forms/create_account_form.dart';
@@ -80,6 +81,11 @@ class _AccountFlowService {
     onFormCreated?.call(accountForm);
     try {
       await ref.read(accountLogicProvider).create(creationType, createFrom);
+      if (!context.mounted) return;
+
+      context.showSuccessSnackbar(
+        'Account "${accountForm.nameValue}" created successfully.',
+      );
     } catch (e) {
       if (!ref.mounted) return;
       final message =

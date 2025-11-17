@@ -1,6 +1,7 @@
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/enum/create_from.dart';
+import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provider.dart';
@@ -73,6 +74,12 @@ class _PocketFlowService {
     onFormCreated?.call(pocketForm);
     try {
       await ref.read(pocketLogicProvider).create(creationType);
+
+      if (!context.mounted) return;
+
+      context.showSuccessSnackbar(
+        'Pocket "${pocketForm.nameValue}" created successfully.',
+      );
     } catch (e) {
       if (!ref.mounted) return;
       final message =

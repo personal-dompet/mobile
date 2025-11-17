@@ -129,14 +129,14 @@ class _ItemCardState<T> extends State<ItemCard<T>>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isDisabled
-                ? color
-                : (isSelected ? color : color.withValues(alpha: 0.3)),
-            width: isDisabled ? 2.0 : (isSelected ? 2.0 : 1.5),
+            color: isDisabled || !isSelected
+                ? color.withValues(alpha: 0.3)
+                : color,
+            width: isSelected && !isDisabled ? 2.0 : 1.5,
           ),
           color: AppTheme.surfaceColor,
           boxShadow: [
-            if (isDisabled || isSelected)
+            if (isSelected)
               BoxShadow(
                 color: color.withValues(alpha: 0.3),
                 blurRadius: 8,

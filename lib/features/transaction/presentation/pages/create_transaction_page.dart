@@ -28,12 +28,6 @@ class CreateTransactionPage extends ConsumerWidget {
     final form =
         ProviderScope.containerOf(context).read(transactionFormProvider);
     form.markAllAsTouched();
-    // Trigger form validation which will run the form-level validators
-    // form.updateValueAndValidity();
-    // debugPrint('Form errors: ${form.errors}');
-    // debugPrint('Amount errors: ${form.amount.errors}');
-    // debugPrint('Account errors: ${form.account.errors}');
-    // debugPrint('Pocket errors: ${form.pocket.errors}');
     if (form.valid) {
       final payload = form;
       Navigator.of(context).pop<TransactionForm>(payload);

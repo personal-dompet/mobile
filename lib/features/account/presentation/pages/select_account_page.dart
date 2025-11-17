@@ -20,7 +20,6 @@ class SelectAccountPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    debugPrint('selected $selectedAccountId');
     final accountsAsync = ref.watch(accountListProvider);
 
     return Scaffold(
