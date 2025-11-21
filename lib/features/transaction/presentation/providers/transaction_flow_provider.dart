@@ -24,10 +24,12 @@ class _TransactionFlowService {
   }) async {
     final form = _ref.read(transactionFormProvider);
 
+    final isExpense = form.typeValue == TransactionType.expense;
+
     final account = selectedAccount ??
         await _selectAccount(
           context,
-          form.typeValue == TransactionType.expense,
+          isExpense,
         );
     if (account == null || !context.mounted) return;
 
@@ -36,7 +38,8 @@ class _TransactionFlowService {
     final pocket = selectedPocket ??
         await _selectPocket(
           context,
-          form.typeValue == TransactionType.expense,
+          disableEmpty: isExpense,
+          hideWallet: isExpense,
         );
     if (pocket == null || !context.mounted) return;
 
@@ -68,12 +71,14 @@ class _TransactionFlowService {
   }
 
   Future<PocketModel?> _selectPocket(
-    BuildContext context,
+    BuildContext context, {
     bool? disableEmpty,
-  ) async {
+    bool? hideWallet,
+  }) async {
     final pocket = await SelectPocketRoute(
       title: SelectPocketTitle.general,
       disableEmpty: disableEmpty,
+      hideWallet: hideWallet,
     ).push<PocketModel>(context);
     return pocket;
   }

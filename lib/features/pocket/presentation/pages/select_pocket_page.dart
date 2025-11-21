@@ -11,11 +11,13 @@ class SelectPocketPage extends ConsumerWidget {
   final int? selectedPocketId;
   final SelectPocketTitle title;
   final bool disableEmpty;
+  final bool? hideWallet;
   const SelectPocketPage({
     super.key,
     this.selectedPocketId,
     this.title = SelectPocketTitle.general,
     this.disableEmpty = false,
+    this.hideWallet = false,
   });
 
   @override
@@ -33,7 +35,11 @@ class SelectPocketPage extends ConsumerWidget {
       ),
       body: pocketsAsync.when(
         data: (data) {
-          if (data.isEmpty) {
+          List<PocketModel> pockets = [...data];
+          if (hideWallet == true) {
+            pockets.removeAt(0);
+          }
+          if (pockets.isEmpty) {
             return PocketEmptyList(
               listType: ListType.option,
               onFormCreated: (pocket) =>
@@ -48,7 +54,7 @@ class SelectPocketPage extends ConsumerWidget {
               children: [
                 Expanded(
                   child: PocketGrid(
-                    data: data,
+                    data: pockets,
                     selectedPocketId: selectedPocketId,
                     listType: ListType.option,
                     destinationPocket: transferForm.toPocketValue,

@@ -196,10 +196,8 @@ class CreateTransactionPage extends ConsumerWidget {
                     'number': (error) => 'Amount must be a valid number',
                     'exceedsPocketBalance': (error) =>
                         'Your amount is more than the pocket balance',
-                    'exceedsAccountBalance': (error) {
-                      debugPrint('ui $error');
-                      return 'Your amount is more than the account balance';
-                    },
+                    'exceedsAccountBalance': (error) =>
+                        'Your amount is more than the account balance',
                     'exceedsBalance': (error) =>
                         'Your amount is more than account and pocket balance',
                   },

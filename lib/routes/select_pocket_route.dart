@@ -1,6 +1,7 @@
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'base_routes.dart';
 
 /// Type-safe route configuration for the select pocket route with parameters
@@ -8,16 +9,19 @@ class SelectPocketRoute extends AppRoute {
   final int? selectedPocketId;
   final SelectPocketTitle? title;
   final bool? disableEmpty;
+  final bool? hideWallet;
 
   SelectPocketRoute({
     this.selectedPocketId,
     this.title,
     this.disableEmpty,
+    this.hideWallet,
   });
 
   static const String selectedPocketIdParamKey = 'selectedPocketId';
   static const String titleParamKey = 'title';
   static const String disableEmptyParamKey = 'disableEmpty';
+  static const String hideWalletParamKey = 'hideWallet';
 
   @override
   Routes get route => Routes.selectPocket;
@@ -38,6 +42,10 @@ class SelectPocketRoute extends AppRoute {
       params[disableEmptyParamKey] = disableEmpty!.toString();
     }
 
+    if (hideWallet != null) {
+      params[hideWalletParamKey] = hideWallet!.toString();
+    }
+
     return params;
   }
 
@@ -46,13 +54,17 @@ class SelectPocketRoute extends AppRoute {
     final selectedPocketId =
         int.tryParse(state.uri.queryParameters[selectedPocketIdParamKey] ?? '');
     final titleParam = SelectPocketTitle.fromValue(
-        state.uri.queryParameters[titleParamKey] ?? SelectPocketTitle.general.value);
-    final disableEmpty = state.uri.queryParameters[disableEmptyParamKey] == 'true';
+        state.uri.queryParameters[titleParamKey] ??
+            SelectPocketTitle.general.value);
+    final disableEmpty =
+        state.uri.queryParameters[disableEmptyParamKey] == 'true';
+    final hideWallet = state.uri.queryParameters[hideWalletParamKey] == 'true';
 
     return SelectPocketPage(
       selectedPocketId: selectedPocketId,
       title: titleParam ?? SelectPocketTitle.general,
       disableEmpty: disableEmpty,
+      hideWallet: hideWallet,
     );
   }
 }
