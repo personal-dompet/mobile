@@ -196,8 +196,12 @@ class CreateTransactionPage extends ConsumerWidget {
                     'number': (error) => 'Amount must be a valid number',
                     'exceedsPocketBalance': (error) =>
                         'Your amount is more than the pocket balance',
-                    'exceedsAccountBalance': (error) =>
-                        'Your amount is more than the account balance',
+                    'exceedsAccountBalance': (error) {
+                      debugPrint('ui $error');
+                      return 'Your amount is more than the account balance';
+                    },
+                    'exceedsBalance': (error) =>
+                        'Your amount is more than account and pocket balance',
                   },
                 ),
               ),
@@ -272,7 +276,7 @@ class CreateTransactionPage extends ConsumerWidget {
               padding:
                   const EdgeInsets.symmetric(vertical: 16).copyWith(bottom: 24),
               child: SubmitButton(
-                text: 'Top Up',
+                text: 'Record Transaction',
                 onPressed: isWaiting ? null : () => _submit(context),
               ),
             );

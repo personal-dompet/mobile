@@ -1,9 +1,8 @@
 import 'package:dompet/core/enum/category.dart';
-import 'package:dompet/core/validators/amount_account_balance_validator.dart';
-import 'package:dompet/core/validators/amount_pocket_balance_validator.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transaction/domain/enums/transaction_type.dart';
+import 'package:dompet/features/transaction/domain/validators/transaction_balance_validator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -37,16 +36,7 @@ class TransactionForm extends FormGroup {
             'description': FormControl<String>(),
             'category': FormControl<Category>(value: Category.others),
           },
-          validators: [
-            AmountPocketBalanceValidator(
-              controlName: 'pocket',
-              errorKey: 'exceedsPocketBalance',
-            ),
-            AmountAccountBalanceValidator(
-              controlName: 'account',
-              errorKey: 'exceedsAccountBalance',
-            ),
-          ],
+          validators: [TransactionBalanceValidator()],
         );
 
   FormControl<DateTime> get date => controls['date'] as FormControl<DateTime>;
