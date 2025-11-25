@@ -20,6 +20,8 @@ class SelectPocketPage extends ConsumerWidget {
     this.hideWallet = false,
   });
 
+  bool get _disableEmpty => disableEmpty || title == SelectPocketTitle.source;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pocketsAsync = ref.watch(pocketOptionProvider);
@@ -44,7 +46,7 @@ class SelectPocketPage extends ConsumerWidget {
               listType: ListType.option,
               onFormCreated: (pocket) =>
                   Navigator.of(context).pop<PocketModel>(pocket),
-              hideButton: disableEmpty,
+              hideButton: _disableEmpty,
             );
           }
 
@@ -59,7 +61,7 @@ class SelectPocketPage extends ConsumerWidget {
                     listType: ListType.option,
                     destinationPocket: transferForm.toPocketValue,
                     sourcePocket: transferForm.fromPocketValue,
-                    disableEmpty: disableEmpty,
+                    disableEmpty: _disableEmpty,
                     onCreated: (pocket) {
                       Navigator.of(context).pop<PocketModel>(pocket);
                     },

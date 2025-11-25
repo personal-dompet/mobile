@@ -1,6 +1,6 @@
+import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/enum/list_type.dart';
-import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
@@ -19,9 +19,11 @@ class _PocketFlowService {
 
   _PocketFlowService({required this.listType, required this.ref});
 
-  Future<void> beginCreate(BuildContext context,
-      {ValueChanged<CreatePocketForm>? onFormCreated,
-      CreateFrom? createFrom}) async {
+  Future<void> beginCreate(
+    BuildContext context, {
+    ValueChanged<CreatePocketForm>? onFormCreated,
+    CreateFrom? createFrom,
+  }) async {
     try {
       final type = await _selectPocketType(context);
       if (type == null || !context.mounted) return;

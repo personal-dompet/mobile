@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/features/transfer/presentation/providers/transfer_flow_provider.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
@@ -160,8 +161,11 @@ class WalletCard extends ConsumerWidget {
                                 final transferFlow =
                                     ref.read(transferFlowProvider);
 
-                                await transferFlow.beginPocketTransfer(context,
-                                    sourcePocket: wallet);
+                                await transferFlow.beginPocketTransfer(
+                                  context,
+                                  sourcePocket: wallet,
+                                  subject: TransferStaticSubject.source,
+                                );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.primaryColor,
