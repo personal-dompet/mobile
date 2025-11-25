@@ -1,3 +1,4 @@
+import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/core/enum/creation_type.dart';
@@ -153,7 +154,7 @@ class CreatePocketPage extends ConsumerWidget {
                           textCapitalization: TextCapitalization.words,
                           textInputAction: TextInputAction.next,
                           validationMessages: {
-                            'required': (error) => 'Name is required',
+                            ErrorKey.required.name: (error) => ErrorKey.required.message(),
                           },
                         ),
                       ),

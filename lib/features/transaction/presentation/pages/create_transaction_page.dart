@@ -1,3 +1,4 @@
+import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/transaction_static_subject.dart';
@@ -192,14 +193,14 @@ class CreateTransactionPage extends ConsumerWidget {
                     border: OutlineInputBorder(),
                   ),
                   validationMessages: {
-                    'required': (error) => 'Amount is required',
-                    'number': (error) => 'Amount must be a valid number',
-                    'exceedsPocketBalance': (error) =>
-                        'Your amount is more than the pocket balance',
-                    'exceedsAccountBalance': (error) =>
-                        'Your amount is more than the account balance',
-                    'exceedsBalance': (error) =>
-                        'Your amount is more than account and pocket balance',
+                    ErrorKey.required.name: (error) => ErrorKey.required.message(),
+                    ErrorKey.number.name: (error) => ErrorKey.number.message(),
+                    ErrorKey.exceedsPocketBalance.name: (error) =>
+                        ErrorKey.exceedsPocketBalance.message(),
+                    ErrorKey.exceedsAccountBalance.name: (error) =>
+                        ErrorKey.exceedsAccountBalance.message(),
+                    ErrorKey.exceedsBalance.name: (error) =>
+                        ErrorKey.exceedsBalance.message(),
                   },
                 ),
               ),

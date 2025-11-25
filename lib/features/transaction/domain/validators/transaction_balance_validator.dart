@@ -1,3 +1,4 @@
+import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/validators/amount_balance_validator.dart';
 import 'package:dompet/features/transaction/domain/enums/transaction_type.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -24,15 +25,15 @@ class TransactionBalanceValidator extends Validator<FormGroup> {
     Map<String, bool>? errors;
 
     if (isAccountValid != null && isPocketValid != null) {
-      errors = {'exceedsBalance': true};
+      errors = {ErrorKey.exceedsBalance.name: true};
     }
 
     if (isAccountValid == null && isPocketValid != null) {
-      errors = {'exceedsPocketBalance': true};
+      errors = {ErrorKey.exceedsPocketBalance.name: true};
     }
 
     if (isAccountValid != null && isPocketValid == null) {
-      errors = {'exceedsAccountBalance': true};
+      errors = {ErrorKey.exceedsAccountBalance.name: true};
     }
 
     if (errors != null) {

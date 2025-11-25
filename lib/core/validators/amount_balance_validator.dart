@@ -1,21 +1,22 @@
+import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class AmountBalanceValidator extends Validator<FormGroup> {
   final String controlName;
-  final String errorKey;
+  final ErrorKey errorKey;
   final bool forAccount;
 
   AmountBalanceValidator._({
     required this.controlName,
-    this.errorKey = 'exceedsBalance',
+    this.errorKey = ErrorKey.exceedsBalance,
     required this.forAccount,
   });
 
   factory AmountBalanceValidator.forAccount({
     required String controlName,
-    String errorKey = 'exceedsBalance',
+    ErrorKey errorKey = ErrorKey.exceedsBalance,
   }) {
     return AmountBalanceValidator._(
       controlName: controlName,
@@ -27,7 +28,7 @@ class AmountBalanceValidator extends Validator<FormGroup> {
   /// Factory constructor for validating against PocketModel
   factory AmountBalanceValidator.forPocket({
     required String controlName,
-    String errorKey = 'exceedsBalance',
+    ErrorKey errorKey = ErrorKey.exceedsBalance,
   }) {
     return AmountBalanceValidator._(
       controlName: controlName,
@@ -64,8 +65,8 @@ class AmountBalanceValidator extends Validator<FormGroup> {
     }
 
     if (amount > balance) {
-      // amountControl.setErrors({errorKey: true});
-      return {errorKey: true};
+      amountControl.setErrors({errorKey.name: true});
+      return {errorKey.name: true};
     }
 
     return null;

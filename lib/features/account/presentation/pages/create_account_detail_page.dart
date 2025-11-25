@@ -1,3 +1,4 @@
+import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/card_input.dart';
@@ -73,10 +74,10 @@ class CreateAccountDetailPage extends ConsumerWidget {
                           border: OutlineInputBorder(),
                         ),
                         validationMessages: {
-                          'minLength': (error) =>
-                              'Account number must be at least 8 characters',
-                          'maxLength': (error) =>
-                              'Account number must be at most 32 characters',
+                          ErrorKey.minLength.name: (error) =>
+                              ErrorKey.minLength.message(minLength: 8),
+                          ErrorKey.maxLength.name: (error) =>
+                              ErrorKey.maxLength.message(maxLength: 32),
                         },
                       ),
                     );
