@@ -5,6 +5,7 @@ import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart'
 import 'package:dompet/features/transfer/domain/models/pocket_transfer_model.dart';
 import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class _TransferLogicService {
@@ -12,7 +13,11 @@ class _TransferLogicService {
 
   _TransferLogicService(this._ref);
 
-  Future<void> pocketTransfer(PocketTransferForm request) async {
+  Future<void> pocketTransfer(
+    PocketTransferForm request, {
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
     final recentPocketTransfers = await _ref
         .read(recentPocketTransfersProvider.selectAsync((list) => list));
 
@@ -58,7 +63,9 @@ class _TransferLogicService {
       if (newState.destinationPocket.type == PocketType.wallet) {
         walletNotifier.optimisticUpdateBalance(newState.destinationPocket);
       }
+      onSuccess();
     } catch (e) {
+      onError();
       pocketListNotifier.optimisticUpdate(request.fromPocketValue);
       pocketListNotifier.optimisticUpdate(request.toPocketValue);
       recentPocketTransferNotifier.revertCreate(recentPocketTransfers);

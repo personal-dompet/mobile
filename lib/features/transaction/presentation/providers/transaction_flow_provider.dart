@@ -60,7 +60,7 @@ class _TransactionFlowService {
       },
       onError: () {
         context.showSuccessSnackbar(
-          'Error happen when try to record a transaction',
+          'Error happen when trying to record a transaction.',
         );
       },
     );

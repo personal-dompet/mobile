@@ -1,4 +1,5 @@
 import 'package:dompet/core/enum/transfer_static_subject.dart';
+import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
@@ -29,7 +30,10 @@ class _TransferFlowService {
 
     final destination = destinationPocket ??
         await _selectPocket(context, title: SelectPocketTitle.destination);
-    if (destination == null || !context.mounted) return;
+    if (destination == null || !context.mounted) {
+      _ref.invalidate(pocketTransferFormProvider);
+      return;
+    }
 
     transferForm.toPocket.value = destination;
 
@@ -42,7 +46,17 @@ class _TransferFlowService {
       return;
     }
 
-    await _ref.read(transferLogicProvider).pocketTransfer(form);
+    await _ref.read(transferLogicProvider).pocketTransfer(
+      form,
+      onSuccess: () {
+        context.showSuccessSnackbar('Balance transfered successfully.');
+      },
+      onError: () {
+        context.showSuccessSnackbar(
+          'Error happen when trying to transfer balance.',
+        );
+      },
+    );
     _ref.invalidate(pocketTransferFormProvider);
     _ref.invalidate(recentPocketTransfersProvider);
     _ref.invalidateSelf();
