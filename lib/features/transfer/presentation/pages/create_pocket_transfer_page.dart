@@ -1,5 +1,7 @@
+import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
+import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
 import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/core/widgets/card_input.dart';
@@ -7,6 +9,7 @@ import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
+import 'package:dompet/features/transfer/presentation/widgets/swap_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -132,6 +135,30 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                 ),
               ),
 
+              SwapButton(
+                onTap: () {
+                  if (widget.subject != null) {
+                    context
+                        .showErrorSnackbar('Locked pocket cannot be swapped.');
+                    return;
+                  }
+
+                  final fromPocket = form.fromPocket.value;
+                  final toPocket = form.toPocket.value;
+
+                  if (fromPocket != null && toPocket != null) {
+                    if (toPocket.balance <= 0) {
+                      context.showErrorSnackbar(
+                          'Source pocket after swap must have at least Rp1 balance.');
+                      return;
+                    }
+
+                    form.fromPocket.value = toPocket;
+                    form.toPocket.value = fromPocket;
+                  }
+                },
+              ),
+
               CardInput(
                 label: 'Destination',
                 child: ReactiveFormConsumer(
@@ -200,7 +227,7 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                     String? errorText;
                     if (_hasValidated &&
                         amountControl.invalid &&
-                        amountControl.hasError('exceedsBalance')) {
+                        amountControl.hasError(ErrorKey.exceedsBalance.name)) {
                       final fromPocket = fromPocketControl.value;
                       if (fromPocket != null) {
                         errorText =
@@ -208,8 +235,8 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                       }
                     } else if (_hasValidated &&
                         amountControl.invalid &&
-                        amountControl.hasError('min')) {
-                      errorText = 'Amount must be at least 1';
+                        amountControl.hasError(ErrorKey.min.name)) {
+                      errorText = ErrorKey.min.message(min: 1);
                     }
 
                     return MaskedAmountInput(
@@ -226,8 +253,10 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                         errorText: errorText,
                       ),
                       validationMessages: {
-                        'required': (error) => 'Amount is required',
-                        'min': (error) => 'Amount must be at least 1',
+                        ErrorKey.required.name: (error) => ErrorKey.required.message(),
+                        ErrorKey.min.name: (error) => ErrorKey.min.message(min: 1),
+                        ErrorKey.exceedsBalance.name: (error) =>
+                            ErrorKey.exceedsBalance.message(),
                       },
                     );
                   },
