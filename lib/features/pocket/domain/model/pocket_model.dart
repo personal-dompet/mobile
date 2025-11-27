@@ -1,23 +1,19 @@
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/enum/category.dart';
+import 'package:dompet/core/models/financial_entity_model.dart';
 import 'package:dompet/core/models/timestamp_model.dart';
-import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 
-class PocketModel extends TimestampModel {
-  final int id;
-  final String name;
-  final PocketColor? color;
-  final int balance;
+class PocketModel extends FinancialEntityModel {
   final Category? icon;
   final int priority;
   final PocketType type;
 
   PocketModel({
-    required this.id,
-    required this.name,
-    required this.color,
-    required this.balance,
+    required super.id,
+    required super.name,
+    required super.color,
+    required super.balance,
     required this.icon,
     required this.priority,
     required this.type,
@@ -26,17 +22,17 @@ class PocketModel extends TimestampModel {
   });
 
   factory PocketModel.fromJson(Map<String, dynamic> json) {
-    final timestamp = TimestampModel.fromJson(json);
+    final financialEntity = FinancialEntityModel.fromJson(json);
     return PocketModel(
-      id: json['id'],
-      name: json['name'],
-      color: json['color'] != null ? PocketColor.parse(json['color']) : null,
-      balance: json['balance'],
+      id: financialEntity.id,
+      name: financialEntity.name,
+      type: PocketType.fromValue(json['type']),
+      color: financialEntity.color,
+      balance: financialEntity.balance,
       icon: json['icon'] != null ? Category.fromValue(json['icon']) : null,
       priority: json['priority'],
-      type: PocketType.fromValue(json['type']),
-      createdAt: timestamp.createdAt,
-      updatedAt: timestamp.updatedAt,
+      createdAt: financialEntity.createdAt,
+      updatedAt: financialEntity.updatedAt,
     );
   }
 
@@ -60,8 +56,6 @@ class PocketModel extends TimestampModel {
       updatedAt: DateTime.now(),
     );
   }
-
-  String get formattedBalance => FormatCurrency.formatRupiah(balance);
 
   PocketModel copyWith({
     int? id,

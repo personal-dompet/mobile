@@ -1,35 +1,31 @@
 import 'package:dompet/core/constants/pocket_color.dart';
+import 'package:dompet/core/models/financial_entity_model.dart';
 import 'package:dompet/core/models/timestamp_model.dart';
-import 'package:dompet/core/utils/helpers/format_currency.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 
-class AccountModel extends TimestampModel {
-  final int id;
-  final String name;
-  final int balance;
-  final PocketColor? color;
+class AccountModel extends FinancialEntityModel {
   final AccountType type;
 
   AccountModel({
-    required this.id,
-    required this.name,
+    required super.id,
+    required super.name,
     required this.type,
-    required this.color,
-    required this.balance,
+    required super.color,
+    required super.balance,
     required super.createdAt,
     required super.updatedAt,
   });
 
   factory AccountModel.fromJson(Map<String, dynamic> json) {
-    final timestamp = TimestampModel.fromJson(json);
+    final financialEntity = FinancialEntityModel.fromJson(json);
     return AccountModel(
-      id: json['id'],
-      name: json['name'],
+      id: financialEntity.id,
+      name: financialEntity.name,
       type: AccountType.fromValue(json['type']),
-      color: PocketColor.parse(json['color']),
-      balance: json['balance'],
-      createdAt: timestamp.createdAt,
-      updatedAt: timestamp.updatedAt,
+      color: financialEntity.color,
+      balance: financialEntity.balance,
+      createdAt: financialEntity.createdAt,
+      updatedAt: financialEntity.updatedAt,
     );
   }
 
@@ -49,8 +45,6 @@ class AccountModel extends TimestampModel {
       updatedAt: DateTime.now(),
     );
   }
-
-  String get formattedBalance => FormatCurrency.formatRupiah(balance);
 
   AccountModel copyWith({
     int? id,
