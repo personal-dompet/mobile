@@ -1,8 +1,10 @@
 import 'package:dompet/core/enum/list_type.dart';
+import 'package:dompet/core/widgets/financial_entity_empty.dart';
+import 'package:dompet/core/widgets/financial_entity_grid.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_flow_provider.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_option_provider.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_empty_list.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,11 +44,19 @@ class SelectPocketPage extends ConsumerWidget {
             pockets.removeAt(0);
           }
           if (pockets.isEmpty) {
-            return PocketEmptyList(
-              listType: ListType.option,
-              onFormCreated: (pocket) =>
-                  Navigator.of(context).pop<PocketModel>(pocket),
-              hideButton: _disableEmpty,
+            return FinancialEntityEmpty(
+              onCreate: () async {
+                await ref.read(pocketFlowProvider(ListType.option)).beginCreate(
+                  context,
+                  onFormCreated: (pocketForm) {
+                    Navigator.of(context).pop<PocketModel>(
+                      pocketForm.toPocketModel(),
+                    );
+                  },
+                );
+              },
+              filter: ref.watch(pocketFilterProvider),
+              listType: ListType.filtered,
             );
           }
 
@@ -55,15 +65,24 @@ class SelectPocketPage extends ConsumerWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: PocketGrid(
+                  child: FinancialEntityGrid<PocketModel>(
                     data: pockets,
-                    selectedPocketId: selectedPocketId,
+                    selectedId: selectedPocketId,
                     listType: ListType.option,
-                    destinationPocket: transferForm.toPocketValue,
-                    sourcePocket: transferForm.fromPocketValue,
+                    destination: transferForm.toPocketValue,
+                    source: transferForm.fromPocketValue,
                     disableEmpty: _disableEmpty,
-                    onCreated: (pocket) {
-                      Navigator.of(context).pop<PocketModel>(pocket);
+                    onCreate: () async {
+                      await ref
+                          .read(pocketFlowProvider(ListType.option))
+                          .beginCreate(
+                        context,
+                        onFormCreated: (pocketForm) {
+                          Navigator.of(context).pop<PocketModel>(
+                            pocketForm.toPocketModel(),
+                          );
+                        },
+                      );
                     },
                     onTap: (pocket) {
                       Navigator.of(context).pop<PocketModel>(pocket);

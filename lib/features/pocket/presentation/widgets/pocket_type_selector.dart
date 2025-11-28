@@ -1,4 +1,4 @@
-import 'package:dompet/core/widgets/type_selector_item.dart';
+import 'package:dompet/core/widgets/entity_type_selector_item.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provider.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,7 @@ class PocketTypeSelector extends ConsumerWidget {
         itemCount: _pocketTypes.length,
         itemBuilder: (context, index) {
           final type = _pocketTypes[index];
-          return TypeSelectorItem(
+          return EntityTypeSelectorItem(
             displayName: type.displayName,
             color: type.color,
             isSelected: type == filter.type,

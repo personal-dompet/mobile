@@ -1,34 +1,38 @@
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/enum/transfer_static_subject.dart';
+import 'package:dompet/core/models/financial_entity_model.dart';
+import 'package:dompet/core/widgets/add_entity_card.dart';
 import 'package:dompet/core/widgets/financial_entity_card.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
-import 'package:dompet/features/pocket/presentation/widgets/add_pocket_card_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PocketGrid extends ConsumerWidget {
-  final List<PocketModel> data;
-  final int? selectedPocketId;
-  final PocketModel? sourcePocket;
-  final PocketModel? destinationPocket;
-  final void Function(PocketModel pocket) onTap;
-  final void Function(PocketModel pocket)? onCreated;
+class FinancialEntityGrid<T extends FinancialEntityModel>
+    extends ConsumerWidget {
+  final List<T> data;
+  final int? selectedId;
+  final T? source;
+  final T? destination;
+  final void Function(T entity) onTap;
+  final void Function() onCreate;
   final ListType listType;
   final bool disableEmpty;
 
-  const PocketGrid({
+  const FinancialEntityGrid({
     super.key,
     this.data = const [],
-    this.selectedPocketId,
+    this.selectedId,
     required this.onTap,
-    this.onCreated,
-    this.destinationPocket,
-    this.sourcePocket,
+    required this.onCreate,
+    this.destination,
+    this.source,
     this.listType = ListType.filtered,
     this.disableEmpty = false,
   });
 
   int get _itemCount => disableEmpty ? data.length : data.length + 1;
+  String get _addButtonLabel =>
+      data is PocketModel ? 'Add Pocket' : 'Add Account';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,26 +47,29 @@ class PocketGrid extends ConsumerWidget {
       itemCount: _itemCount,
       itemBuilder: (context, index) {
         if (index == data.length && !disableEmpty) {
-          return AddPocketCardItem(
-            listType: listType,
-            onFormCreated: (pocket) => onCreated?.call(pocket),
+          return AddEntityCard(
+            onTap: onCreate,
+            label: _addButtonLabel,
           );
         }
-        final pocket = data[index];
+        final entity = data[index];
         TransferStaticSubject? transferRole;
 
-        if (pocket.id == sourcePocket?.id) {
+        if (entity.id == source?.id) {
           transferRole = TransferStaticSubject.source;
         }
-        if (pocket.id == destinationPocket?.id) {
+        if (entity.id == destination?.id) {
           transferRole = TransferStaticSubject.destination;
         }
 
+        final isSelected = entity.id == selectedId;
+
         return FinancialEntityCard(
-          item: pocket,
+          item: entity,
           transferRole: transferRole,
+          isSelected: isSelected,
           isDisabled: disableEmpty,
-          onTap: () => onTap(pocket),
+          onTap: () => onTap(entity),
         );
       },
     );

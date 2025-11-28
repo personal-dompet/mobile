@@ -1,13 +1,13 @@
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
-class TypeSelectorItem extends StatelessWidget {
+class EntityTypeSelectorItem extends StatelessWidget {
   final bool isSelected;
   final VoidCallback? onPressed;
   final String displayName;
   final Color color;
 
-  const TypeSelectorItem({
+  const EntityTypeSelectorItem({
     super.key,
     this.isSelected = false,
     this.onPressed,
@@ -26,16 +26,13 @@ class TypeSelectorItem extends StatelessWidget {
         side: BorderSide(
             color: isSelected
                 ? activeColor
-                : AppTheme.textColorPrimary
-                    .withValues(alpha: .5)),
+                : AppTheme.textColorPrimary.withValues(alpha: .5)),
       ),
       onPressed: onPressed,
       child: Text(
         displayName,
         style: TextStyle(
-            color: isSelected
-                ? activeColor
-                : AppTheme.textColorPrimary),
+            color: isSelected ? activeColor : AppTheme.textColorPrimary),
       ),
     );
   }

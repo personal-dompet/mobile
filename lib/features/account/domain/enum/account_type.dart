@@ -1,6 +1,7 @@
+import 'package:dompet/core/models/entity_base_type.dart';
 import 'package:flutter/material.dart';
 
-enum AccountType {
+enum AccountType implements EntityBaseType {
   all('all', 'All', Icons.account_balance_wallet_outlined, 'All account types',
       Colors.grey),
   cash('cash', 'Cash', Icons.money_outlined, 'Physical cash accounts',
@@ -10,10 +11,15 @@ enum AccountType {
   eWallet('e-wallet', 'E-Wallet', Icons.phone_android_outlined,
       'Digital wallets and payment apps', Colors.green);
 
+  @override
   final String value;
+  @override
   final String displayName;
+  @override
   final IconData icon;
+  @override
   final String description;
+  @override
   final Color color;
 
   const AccountType(

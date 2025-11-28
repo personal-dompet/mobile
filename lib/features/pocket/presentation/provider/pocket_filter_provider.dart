@@ -1,39 +1,11 @@
+import 'package:dompet/core/models/financial_entity_filter.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
-class PocketFilter {
-  final String? keyword;
-  final PocketType type;
-
-  PocketFilter({
-    this.keyword,
-    this.type = PocketType.all,
-  });
-
-  PocketFilter copyWith({
-    String? keyword,
-    PocketType? type,
-  }) {
-    return PocketFilter(
-      keyword: keyword ?? this.keyword,
-      type: type ?? this.type,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is PocketFilter &&
-        other.keyword == keyword &&
-        other.type == type;
-  }
-
-  @override
-  int get hashCode => Object.hash(keyword, type);
-}
-
-class PocketFilterNotifier extends StateNotifier<PocketFilter> {
-  PocketFilterNotifier() : super(PocketFilter());
+class PocketFilterNotifier
+    extends StateNotifier<FinancialEntityFilter<PocketType>> {
+  PocketFilterNotifier()
+      : super(FinancialEntityFilter<PocketType>(type: PocketType.all));
 
   void setSearchKeyword(String? keyword) {
     state = state.copyWith(keyword: keyword);
@@ -44,10 +16,9 @@ class PocketFilterNotifier extends StateNotifier<PocketFilter> {
   }
 
   void clearFilters() {
-    state = PocketFilter();
+    state = FinancialEntityFilter<PocketType>(type: PocketType.all);
   }
 }
 
-final pocketFilterProvider =
-    StateNotifierProvider<PocketFilterNotifier, PocketFilter>(
-        (ref) => PocketFilterNotifier());
+final pocketFilterProvider = StateNotifierProvider<PocketFilterNotifier,
+    FinancialEntityFilter<PocketType>>((ref) => PocketFilterNotifier());

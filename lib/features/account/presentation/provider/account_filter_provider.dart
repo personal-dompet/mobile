@@ -1,39 +1,11 @@
+import 'package:dompet/core/models/financial_entity_filter.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
-class AccountFilter {
-  final String? keyword;
-  final AccountType type;
-
-  AccountFilter({
-    this.keyword,
-    this.type = AccountType.all,
-  });
-
-  AccountFilter copyWith({
-    String? keyword,
-    AccountType? type,
-  }) {
-    return AccountFilter(
-      keyword: keyword ?? this.keyword,
-      type: type ?? this.type,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is AccountFilter &&
-        other.keyword == keyword &&
-        other.type == type;
-  }
-
-  @override
-  int get hashCode => Object.hash(keyword, type);
-}
-
-class AccountFilterNotifier extends StateNotifier<AccountFilter> {
-  AccountFilterNotifier() : super(AccountFilter());
+class AccountFilterNotifier
+    extends StateNotifier<FinancialEntityFilter<AccountType>> {
+  AccountFilterNotifier()
+      : super(FinancialEntityFilter<AccountType>(type: AccountType.all));
 
   void setSearchKeyword(String? keyword) {
     state = state.copyWith(keyword: keyword);
@@ -44,11 +16,11 @@ class AccountFilterNotifier extends StateNotifier<AccountFilter> {
   }
 
   void clearFilters() {
-    state = AccountFilter();
+    state = FinancialEntityFilter<AccountType>(type: AccountType.all);
   }
 }
 
-final accountFilterProvider =
-    StateNotifierProvider<AccountFilterNotifier, AccountFilter>(
+final accountFilterProvider = StateNotifierProvider<AccountFilterNotifier,
+    FinancialEntityFilter<AccountType>>(
   (ref) => AccountFilterNotifier(),
 );

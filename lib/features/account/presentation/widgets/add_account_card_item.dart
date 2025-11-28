@@ -1,6 +1,6 @@
 import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/list_type.dart';
-import 'package:dompet/core/widgets/add_card_item.dart';
+import 'package:dompet/core/widgets/add_entity_card.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/account/presentation/provider/account_flow_provider.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class AddAccountCardItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AddCardItem(
+    return AddEntityCard(
       onTap: () async {
         await ref.read(accountFlowProvider(listType)).beginCreate(
           context,
@@ -31,7 +31,6 @@ class AddAccountCardItem extends ConsumerWidget {
         );
       },
       label: 'Add Account',
-      icon: Icons.add,
     );
   }
 }

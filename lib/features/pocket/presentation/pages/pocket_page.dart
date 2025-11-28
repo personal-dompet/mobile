@@ -1,9 +1,13 @@
 import 'package:dompet/core/enum/list_type.dart';
+import 'package:dompet/core/widgets/entity_type_selector.dart';
+import 'package:dompet/core/widgets/financial_entity_empty.dart';
+import 'package:dompet/core/widgets/financial_entity_grid.dart';
+import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/filtered_pocket_list_provider.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_empty_list.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_grid.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provider.dart';
+import 'package:dompet/features/pocket/presentation/provider/pocket_flow_provider.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_search_field.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,26 +27,63 @@ class PocketPage extends ConsumerWidget {
               child: PocketSearchField(),
             ),
             const SizedBox(height: 16),
-            PocketTypeSelector(),
+            EntityTypeSelector<PocketType>(
+              types: [
+                PocketType.all,
+                PocketType.spending,
+                PocketType.recurring,
+                PocketType.saving,
+              ],
+              filter: ref.watch(pocketFilterProvider),
+              onSelect: (type) {
+                ref.read(pocketFilterProvider.notifier).setSelectedType(type);
+              },
+            ),
             const SizedBox(height: 16),
             if (pockets.isNotEmpty)
               Expanded(
-                child: PocketGrid(
+                child: FinancialEntityGrid<PocketModel>(
                   data: pockets,
                   listType: ListType.filtered,
-                  onTap: (pocket) {},
+                  onTap: (pocket) {
+                    // TODO: Rederect to detail
+                  },
+                  onCreate: () async {
+                    await ref
+                        .read(pocketFlowProvider(ListType.filtered))
+                        .beginCreate(
+                          context,
+                        );
+                  },
                 ),
               ),
             if (pockets.isEmpty)
               Expanded(
                 child: SingleChildScrollView(
-                    child: PocketEmptyList(
-                  listType: ListType.filtered,
-                )),
+                  child: FinancialEntityEmpty(
+                    onCreate: () async {
+                      await ref
+                          .read(pocketFlowProvider(ListType.filtered))
+                          .beginCreate(
+                            context,
+                          );
+                    },
+                    filter: ref.watch(pocketFilterProvider),
+                    listType: ListType.filtered,
+                  ),
+                ),
               ),
           ],
         ),
       ),
     );
+  }
+}
+
+class _PocketListSection extends ConsumerWidget {
+  const _PocketListSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container();
   }
 }

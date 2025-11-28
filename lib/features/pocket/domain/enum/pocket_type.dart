@@ -1,6 +1,7 @@
+import 'package:dompet/core/models/entity_base_type.dart';
 import 'package:flutter/material.dart';
 
-enum PocketType {
+enum PocketType implements EntityBaseType {
   all('all', 'All', Icons.wallet_outlined, 'All pocket types', Colors.grey),
   wallet('wallet', 'Wallet', Icons.wallet_outlined,
       'Main wallet for general funds', Colors.grey),
@@ -23,10 +24,15 @@ enum PocketType {
       'For regular bills and subscriptions like rent or streaming services',
       Colors.blueAccent);
 
+  @override
   final String value;
+  @override
   final String displayName;
+  @override
   final IconData icon;
+  @override
   final String description;
+  @override
   final Color color;
 
   const PocketType(

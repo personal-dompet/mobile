@@ -1,5 +1,5 @@
 import 'package:dompet/core/enum/list_type.dart';
-import 'package:dompet/core/widgets/add_card_item.dart';
+import 'package:dompet/core/widgets/add_entity_card.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_flow_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ class AddPocketCardItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AddCardItem(
+    return AddEntityCard(
       onTap: () async {
         await ref.read(pocketFlowProvider(listType)).beginCreate(
           context,
@@ -26,7 +26,6 @@ class AddPocketCardItem extends ConsumerWidget {
         );
       },
       label: 'Add Pocket',
-      icon: Icons.add,
     );
   }
 }
