@@ -2,11 +2,11 @@ import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
+import 'package:dompet/core/widgets/entity_type_selector_bottom_sheet.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provider.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_logic_provider.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
 import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:dompet/routes/routes.dart';
@@ -49,7 +49,16 @@ class _PocketFlowService {
         context: context,
         isScrollControlled: true,
         useRootNavigator: true,
-        builder: (context) => const PocketTypeSelectorBottomSheet(),
+        builder: (context) => EntityTypeSelectorBottomSheet<PocketType>(
+          onSelect: (type) {
+            Navigator.of(context).pop<PocketType>(type);
+          },
+          types: [
+            PocketType.spending,
+            PocketType.recurring,
+            PocketType.saving,
+          ],
+        ),
       );
     }
 
