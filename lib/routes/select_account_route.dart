@@ -8,17 +8,20 @@ import 'base_routes.dart';
 /// Type-safe route configuration for the select account route with parameters
 class SelectAccountRoute extends AppRoute {
   final int? selectedAccountId;
+  final SelectAccountTitle? title;
   final CreateFrom? createFrom;
   final bool? disableEmpty;
 
   SelectAccountRoute({
     this.selectedAccountId,
     this.createFrom,
+    this.title,
     this.disableEmpty,
   });
 
   static const String selectedAccountIdParamKey = 'selectedAccountId';
   static const String createFromParamKey = 'createFrom';
+  static const String titleParamKey = 'title';
   static const String disableEmptyParamKey = 'disableEmpty';
 
   @override
@@ -30,6 +33,10 @@ class SelectAccountRoute extends AppRoute {
 
     if (selectedAccountId != null) {
       params[selectedAccountIdParamKey] = selectedAccountId.toString();
+    }
+
+    if (title != null) {
+      params[titleParamKey] = title!.value;
     }
 
     if (createFrom != null) {
@@ -45,17 +52,23 @@ class SelectAccountRoute extends AppRoute {
 
   @override
   Widget buildPage(BuildContext context, GoRouterState state) {
-    final selectedAccountId =
-        int.tryParse(state.uri.queryParameters[selectedAccountIdParamKey] ?? '');
-    final createFrom =
-        CreateFrom.fromName(state.uri.queryParameters[createFromParamKey] ?? '');
+    final selectedAccountId = int.tryParse(
+        state.uri.queryParameters[selectedAccountIdParamKey] ?? '');
+    final createFrom = CreateFrom.fromName(
+        state.uri.queryParameters[createFromParamKey] ?? '');
 
-    final disableEmpty = state.uri.queryParameters[disableEmptyParamKey] == 'true';
+    final titleParam = SelectAccountTitle.fromValue(
+        state.uri.queryParameters[titleParamKey] ??
+            SelectAccountTitle.general.value);
+
+    final disableEmpty =
+        state.uri.queryParameters[disableEmptyParamKey] == 'true';
 
     return SelectAccountPage(
       selectedAccountId: selectedAccountId,
       createFrom: createFrom,
       disableEmpty: disableEmpty,
+      title: titleParam ?? SelectAccountTitle.general,
     );
   }
 }

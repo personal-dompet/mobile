@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -9,11 +10,13 @@ class SelectPocketRoute extends AppRoute {
   final int? selectedPocketId;
   final SelectPocketTitle? title;
   final bool? disableEmpty;
+  final CreateFrom? createFrom;
   final bool? hideWallet;
 
   SelectPocketRoute({
     this.selectedPocketId,
     this.title,
+    this.createFrom,
     this.disableEmpty,
     this.hideWallet,
   });
@@ -21,6 +24,7 @@ class SelectPocketRoute extends AppRoute {
   static const String selectedPocketIdParamKey = 'selectedPocketId';
   static const String titleParamKey = 'title';
   static const String disableEmptyParamKey = 'disableEmpty';
+  static const String createFromParamKey = 'createFrom';
   static const String hideWalletParamKey = 'hideWallet';
 
   @override
@@ -36,6 +40,10 @@ class SelectPocketRoute extends AppRoute {
 
     if (title != null) {
       params[titleParamKey] = title!.value;
+    }
+
+    if (createFrom != null) {
+      params[createFromParamKey] = createFrom!.name;
     }
 
     if (disableEmpty != null) {
@@ -59,12 +67,15 @@ class SelectPocketRoute extends AppRoute {
     final disableEmpty =
         state.uri.queryParameters[disableEmptyParamKey] == 'true';
     final hideWallet = state.uri.queryParameters[hideWalletParamKey] == 'true';
+    final createFrom = CreateFrom.fromName(
+        state.uri.queryParameters[createFromParamKey] ?? '');
 
     return SelectPocketPage(
       selectedPocketId: selectedPocketId,
       title: titleParam ?? SelectPocketTitle.general,
       disableEmpty: disableEmpty,
       hideWallet: hideWallet,
+      createFrom: createFrom,
     );
   }
 }
