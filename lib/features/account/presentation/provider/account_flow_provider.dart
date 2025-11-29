@@ -2,12 +2,12 @@ import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
+import 'package:dompet/core/widgets/entity_type_selector_bottom_sheet.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/create_account_detail_form.dart';
 import 'package:dompet/features/account/domain/forms/create_account_form.dart';
 import 'package:dompet/features/account/presentation/provider/account_filter_provider.dart';
 import 'package:dompet/features/account/presentation/provider/account_logic_provider.dart';
-import 'package:dompet/features/account/presentation/widgets/account_type_selector_bottom_sheet.dart';
 import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
 import 'package:dompet/features/transfer/domain/forms/account_transfer_form.dart';
 import 'package:dompet/routes/create_account_route.dart';
@@ -54,7 +54,16 @@ class _AccountFlowService {
         context: context,
         isScrollControlled: true,
         useRootNavigator: true,
-        builder: (context) => const AccountTypeSelectorBottomSheet(),
+        builder: (context) => EntityTypeSelectorBottomSheet<AccountType>(
+          types: [
+            AccountType.cash,
+            AccountType.bank,
+            AccountType.eWallet,
+          ],
+          onSelect: (type) {
+            Navigator.of(context).pop<AccountType>(type);
+          },
+        ),
       );
     }
 
