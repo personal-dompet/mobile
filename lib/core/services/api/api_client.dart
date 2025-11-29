@@ -16,6 +16,7 @@ final apiClientProvider = Provider<Dio>((ref) {
 
   if (kDebugMode) {
     dio.interceptors.add(_DelayInterceptor());
+    dio.interceptors.add(_DebugInterceptor());
   }
   return dio;
 });
@@ -38,5 +39,13 @@ class _DelayInterceptor extends Interceptor {
       RequestOptions options, RequestInterceptorHandler handler) async {
     await Future.delayed(Duration(seconds: 3));
     super.onRequest(options, handler);
+  }
+}
+
+class _DebugInterceptor extends Interceptor {
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    debugPrint('Request Error ${err.response?.statusCode}: $err');
+    super.onError(err, handler);
   }
 }
