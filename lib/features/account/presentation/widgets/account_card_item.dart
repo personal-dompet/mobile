@@ -1,9 +1,11 @@
+import 'package:dompet/core/enum/transfer_static_subject.dart';
+import 'package:dompet/core/widgets/financial_entity_card.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
-import 'package:dompet/core/widgets/item_card.dart';
 import 'package:flutter/material.dart';
 
 class AccountCardItem extends StatelessWidget {
   final AccountModel account;
+  final TransferStaticSubject? transferRole;
   final bool isSelected;
   final VoidCallback? onTap;
   final bool isDisabled;
@@ -11,6 +13,7 @@ class AccountCardItem extends StatelessWidget {
   const AccountCardItem({
     super.key,
     required this.account,
+    this.transferRole,
     this.isSelected = false,
     this.onTap,
     this.isDisabled = false,
@@ -18,14 +21,9 @@ class AccountCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ItemCard<AccountModel>(
+    return FinancialEntityCard<AccountModel>(
       item: account,
-      id: (item) => item.id,
-      name: (item) => item.name,
-      balance: (item) => item.formattedBalance,
-      color: (item) => item.color,
-      icon: (item) => item.type.icon,
-      displayName: (item) => item.type.displayName,
+      transferRole: transferRole,
       isSelected: isSelected,
       isDisabled: isDisabled,
       onTap: onTap,
