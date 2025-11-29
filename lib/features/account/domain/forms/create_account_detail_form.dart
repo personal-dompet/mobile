@@ -4,7 +4,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 class CreateAccountDetailForm extends FormGroup {
   CreateAccountDetailForm()
       : super({
-          'provider': FormControl<String>(),
+          'provider': FormControl<String>(validators: [Validators.required]),
           'accountNumber': FormControl<String>(validators: [
             Validators.minLength(8),
             Validators.maxLength(32),
