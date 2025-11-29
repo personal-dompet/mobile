@@ -1,10 +1,10 @@
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/widgets/card_input.dart';
+import 'package:dompet/core/widgets/entity_type_selector_bottom_sheet.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/create_account_form.dart';
-import 'package:dompet/features/account/presentation/widgets/account_type_selector_bottom_sheet.dart';
 import 'package:dompet/features/account/presentation/widgets/color_picker.dart';
 import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +60,16 @@ class CreateAccountPage extends ConsumerWidget {
                             isScrollControlled: true,
                             useRootNavigator: true,
                             builder: (context) =>
-                                const AccountTypeSelectorBottomSheet(),
+                                EntityTypeSelectorBottomSheet<AccountType>(
+                              types: [
+                                AccountType.cash,
+                                AccountType.bank,
+                                AccountType.eWallet,
+                              ],
+                              onSelect: (type) {
+                                Navigator.of(context).pop<AccountType>(type);
+                              },
+                            ),
                           );
                           if (result != null && context.mounted) {
                             final typeControl = form.type;

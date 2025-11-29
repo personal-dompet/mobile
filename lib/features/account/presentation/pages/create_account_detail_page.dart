@@ -51,6 +51,10 @@ class CreateAccountDetailPage extends ConsumerWidget {
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.next,
+                      validationMessages: {
+                        ErrorKey.required.name: (error) =>
+                            ErrorKey.required.message(),
+                      },
                       decoration: const InputDecoration(
                         hintText: 'Enter provider',
                         border: OutlineInputBorder(),
@@ -97,9 +101,10 @@ class CreateAccountDetailPage extends ConsumerWidget {
                   text: 'Create Account with Details',
                   onPressed: () {
                     accountDetailForm.markAllAsTouched();
+                    debugPrint(accountDetailForm.errors.toString());
                     if (accountDetailForm.invalid) return;
-                    Navigator.of(context)
-                        .pop<CreationType>(CreationType.detail);
+                    // Navigator.of(context)
+                    //     .pop<CreationType>(CreationType.detail);
                   },
                 ),
                 TextButton(

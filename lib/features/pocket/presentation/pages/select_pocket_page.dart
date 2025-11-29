@@ -1,3 +1,4 @@
+import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/financial_entity_empty.dart';
 import 'package:dompet/core/widgets/financial_entity_grid.dart';
@@ -12,12 +13,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SelectPocketPage extends ConsumerWidget {
   final int? selectedPocketId;
   final SelectPocketTitle title;
+  final CreateFrom? createFrom;
   final bool disableEmpty;
   final bool? hideWallet;
+
   const SelectPocketPage({
     super.key,
     this.selectedPocketId,
     this.title = SelectPocketTitle.general,
+    this.createFrom,
     this.disableEmpty = false,
     this.hideWallet = false,
   });
@@ -53,6 +57,7 @@ class SelectPocketPage extends ConsumerWidget {
                       pocketForm.toPocketModel(),
                     );
                   },
+                  createFrom: createFrom,
                 );
               },
               filter: ref.watch(pocketFilterProvider),
@@ -82,6 +87,7 @@ class SelectPocketPage extends ConsumerWidget {
                             pocketForm.toPocketModel(),
                           );
                         },
+                        createFrom: createFrom,
                       );
                     },
                     onTap: (pocket) {

@@ -3,13 +3,13 @@ import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/widgets/card_input.dart';
+import 'package:dompet/core/widgets/entity_type_selector_bottom_sheet.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
 import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/presentation/widgets/color_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/icon_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_icon.dart';
-import 'package:dompet/features/pocket/presentation/widgets/pocket_type_selector_bottom_sheet.dart';
 import 'package:dompet/routes/routes.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +109,16 @@ class CreatePocketPage extends ConsumerWidget {
                               isScrollControlled: true,
                               useRootNavigator: true,
                               builder: (context) =>
-                                  const PocketTypeSelectorBottomSheet(),
+                                  EntityTypeSelectorBottomSheet<PocketType>(
+                                onSelect: (type) {
+                                  Navigator.of(context).pop<PocketType>(type);
+                                },
+                                types: [
+                                  PocketType.spending,
+                                  PocketType.recurring,
+                                  PocketType.saving,
+                                ],
+                              ),
                             );
                             if (result != null && context.mounted) {
                               final typeControl = form.type;
@@ -154,7 +163,8 @@ class CreatePocketPage extends ConsumerWidget {
                           textCapitalization: TextCapitalization.words,
                           textInputAction: TextInputAction.next,
                           validationMessages: {
-                            ErrorKey.required.name: (error) => ErrorKey.required.message(),
+                            ErrorKey.required.name: (error) =>
+                                ErrorKey.required.message(),
                           },
                         ),
                       ),
