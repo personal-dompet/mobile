@@ -1,4 +1,5 @@
 import 'package:dompet/core/enum/transfer_static_subject.dart';
+import 'package:dompet/features/transfer/presentation/pages/create_account_transfer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'base_routes.dart';
@@ -29,8 +30,16 @@ class CreateAccountTransferRoute extends AppRoute {
 
   @override
   Widget buildPage(BuildContext context, GoRouterState state) {
-    // TODO: Implement CreateAccountTransferPage once the page is created
-    // This route is defined but the actual page implementation may not exist yet
-    throw UnimplementedError('CreateAccountTransferPage not yet implemented');
+    final staticQuery = state.uri.queryParameters[staticParamKey];
+    TransferStaticSubject? subject;
+
+    if (staticQuery != null) {
+      subject = TransferStaticSubject.values.firstWhere(
+        (element) => element.name == staticQuery,
+        orElse: () => TransferStaticSubject.source,
+      );
+    }
+
+    return CreateAccountTransferPage(subject: subject);
   }
 }
