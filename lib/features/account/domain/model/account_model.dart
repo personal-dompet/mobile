@@ -1,6 +1,5 @@
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/models/financial_entity_model.dart';
-import 'package:dompet/core/models/timestamp_model.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 
 class AccountModel extends FinancialEntityModel {
