@@ -1,7 +1,10 @@
+import 'package:dompet/features/account/domain/model/account_model.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transfer/data/transfer_source.dart';
-import 'package:dompet/features/transfer/domain/forms/pocket_transfer_filter_form.dart';
+import 'package:dompet/features/transfer/domain/forms/account_transfer_form.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
-import 'package:dompet/features/transfer/domain/models/pocket_transfer_model.dart';
+import 'package:dompet/features/transfer/domain/forms/transfer_filter_form.dart';
+import 'package:dompet/features/transfer/domain/models/transfer_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TransferRepository {
@@ -9,15 +12,21 @@ class TransferRepository {
 
   TransferRepository(this._source);
 
-  Future<List<PocketTransferModel>> pocketTransfers(
-      PocketTransferFilterForm form) async {
+  Future<List<TransferModel>> pocketTransfers(TransferFilterForm form) async {
     final data = await _source.pocketTransfers(form);
-    return PocketTransferModel.fromJsonList(data);
+    return TransferModel.fromJsonList(data);
   }
 
-  Future<PocketTransferModel> pocketTransfer(PocketTransferForm request) async {
+  Future<TransferModel<PocketModel>> pocketTransfer(
+      PocketTransferForm request) async {
     final data = await _source.pocketTransfer(request);
-    return PocketTransferModel.fromJson(data);
+    return TransferModel<PocketModel>.fromJson(data);
+  }
+
+  Future<TransferModel<AccountModel>> accountTransfer(
+      AccountTransferForm request) async {
+    final data = await _source.accountTransfer(request);
+    return TransferModel<AccountModel>.fromJson(data);
   }
 }
 

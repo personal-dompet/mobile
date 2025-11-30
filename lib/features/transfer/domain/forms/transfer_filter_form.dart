@@ -1,10 +1,12 @@
 import 'package:dompet/core/enum/sort_order.dart';
+import 'package:dompet/core/models/financial_entity_model.dart';
+import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class PocketTransferFilterForm extends FormGroup {
-  PocketTransferFilterForm()
+class TransferFilterForm<T extends FinancialEntityModel> extends FormGroup {
+  TransferFilterForm()
       : super({
           'page': FormControl<int>(
             value: 1,
@@ -23,8 +25,8 @@ class PocketTransferFilterForm extends FormGroup {
               Validators.min(5),
             ],
           ),
-          'sourcePocket': FormControl<PocketModel>(),
-          'destiationPocket': FormControl<PocketModel>(),
+          'source': FormControl<T>(),
+          'destiation': FormControl<T>(),
           'minAmount': FormControl<int>(
             validators: [
               Validators.required,
@@ -40,8 +42,8 @@ class PocketTransferFilterForm extends FormGroup {
           'startDate': FormControl<DateTime>(),
           'endDate': FormControl<DateTime>(),
           'search': FormControl<String>(),
-          'sortBy': FormControl<PocketTransferSortBy>(
-            value: PocketTransferSortBy.date,
+          'sortBy': FormControl<TransferSortBy>(
+            value: TransferSortBy.date,
           ),
           'sortOrder': FormControl<SortOrder>(
             value: SortOrder.desc,
@@ -50,10 +52,8 @@ class PocketTransferFilterForm extends FormGroup {
 
   FormControl<int> get page => control('page') as FormControl<int>;
   FormControl<int> get limit => control('limit') as FormControl<int>;
-  FormControl<PocketModel> get sourcePocket =>
-      control('sourcePocket') as FormControl<PocketModel>;
-  FormControl<PocketModel> get destiationPocket =>
-      control('destiationPocket') as FormControl<PocketModel>;
+  FormControl<T> get source => control('source') as FormControl<T>;
+  FormControl<T> get destiation => control('destiation') as FormControl<T>;
   FormControl<int> get minAmount => control('minAmount') as FormControl<int>;
   FormControl<int> get maxAmount => control('maxAmount') as FormControl<int>;
   FormControl<DateTime> get startDate =>
@@ -61,29 +61,28 @@ class PocketTransferFilterForm extends FormGroup {
   FormControl<DateTime> get endDate =>
       control('endDate') as FormControl<DateTime>;
   FormControl<String> get search => control('search') as FormControl<String>;
-  FormControl<PocketTransferSortBy> get sortBy =>
-      control('sortBy') as FormControl<PocketTransferSortBy>;
+  FormControl<TransferSortBy> get sortBy =>
+      control('sortBy') as FormControl<TransferSortBy>;
   FormControl<SortOrder> get sortOrder =>
       control('sortOrder') as FormControl<SortOrder>;
 
   int get pageValue => page.value ?? 1;
   int get limitValue => limit.value ?? 20;
-  PocketModel? get sourcePocketValue => sourcePocket.value;
-  PocketModel? get destiationPocketValue => destiationPocket.value;
+  T? get sourceValue => source.value;
+  T? get destiationValue => destiation.value;
   int? get minAmountValue => minAmount.value;
   int? get maxAmountValue => maxAmount.value;
   DateTime? get startDateValue => startDate.value;
   DateTime? get endDateValue => endDate.value;
   String? get searchValue => search.value;
-  PocketTransferSortBy get sortByValue =>
-      sortBy.value ?? PocketTransferSortBy.date;
+  TransferSortBy get sortByValue => sortBy.value ?? TransferSortBy.date;
   SortOrder get sortOrderValue => sortOrder.value ?? SortOrder.desc;
 
   Map<String, dynamic> get json => Map.fromEntries({
         'page': pageValue,
         'limit': limitValue,
-        'sourcePocketId': sourcePocketValue?.id,
-        'destiationPocketId': destiationPocketValue?.id,
+        'sourceId': sourceValue?.id,
+        'destiationId': destiationValue?.id,
         'minAmount': minAmountValue,
         'maxAmount': maxAmountValue,
         'startDate': startDateValue == null
@@ -98,13 +97,18 @@ class PocketTransferFilterForm extends FormGroup {
       }.entries.where((entry) => entry.value != null));
 }
 
-enum PocketTransferSortBy {
+enum TransferSortBy {
   createdAt,
   amount,
   date,
 }
 
 final pocketTransferFilterFormProvider =
-    Provider.autoDispose<PocketTransferFilterForm>((ref) {
-  return PocketTransferFilterForm();
+    Provider.autoDispose<TransferFilterForm>((ref) {
+  return TransferFilterForm<PocketModel>();
+});
+
+final accountTransferFilterFormProvider =
+    Provider.autoDispose<TransferFilterForm>((ref) {
+  return TransferFilterForm<AccountModel>();
 });

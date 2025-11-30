@@ -42,7 +42,7 @@ class PocketTransferForm extends FormGroup {
       control('description') as FormControl<String?>;
 
   PocketModel get fromPocketValue {
-    final value = control('fromPocket').value;
+    final value = fromPocket.value;
     if (value == null) {
       return PocketModel.placeholder(name: 'Select Pocket');
     }
@@ -50,20 +50,20 @@ class PocketTransferForm extends FormGroup {
   }
 
   PocketModel get toPocketValue {
-    final value = control('toPocket').value;
+    final value = toPocket.value;
     if (value == null) {
       return PocketModel.placeholder(name: 'Select Pocket');
     }
     return value;
   }
 
-  int get amountValue => control('amount').value ?? 0;
-  String? get descriptionValue => control('description').value;
+  int get amountValue => amount.value ?? 0;
+  String? get descriptionValue => description.value;
 
   Map<String, dynamic> get json {
     return {
-      'sourcePocketId': fromPocketValue.id,
-      'destinationPocketId': toPocketValue.id,
+      'sourceId': fromPocketValue.id,
+      'destinationId': toPocketValue.id,
       'amount': amountValue,
       'description': descriptionValue,
     };

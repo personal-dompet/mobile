@@ -1,8 +1,14 @@
+import 'package:dompet/features/account/domain/enum/account_type.dart';
+import 'package:dompet/features/account/domain/model/account_model.dart';
+import 'package:dompet/features/account/presentation/provider/account_list_provider.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_list_provider.dart';
 import 'package:dompet/features/transfer/data/transfer_repository.dart';
+import 'package:dompet/features/transfer/domain/forms/account_transfer_form.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
-import 'package:dompet/features/transfer/domain/models/pocket_transfer_model.dart';
+import 'package:dompet/features/transfer/domain/models/transfer_model.dart';
+import 'package:dompet/features/transfer/presentation/providers/recent_account_transfer_provider.dart';
 import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:flutter/foundation.dart';
@@ -36,11 +42,11 @@ class _TransferLogicService {
     pocketListNotifier.optimisticUpdate(newSourcePocket);
     pocketListNotifier.optimisticUpdate(newDestinationPocket);
     recentPocketTransferNotifier.optimisticCreate(
-      PocketTransferModel.placeholder(
+      TransferModel<PocketModel>.placeholder(
         amount: request.amountValue,
         description: request.descriptionValue,
-        destinationPocket: newDestinationPocket,
-        sourcePocket: newSourcePocket,
+        destination: newDestinationPocket,
+        source: newSourcePocket,
       ),
     );
     if (newSourcePocket.type == PocketType.wallet) {
@@ -54,14 +60,14 @@ class _TransferLogicService {
       final newState =
           await _ref.read(transferRepositoryProvider).pocketTransfer(request);
 
-      pocketListNotifier.optimisticUpdate(newState.sourcePocket);
-      pocketListNotifier.optimisticUpdate(newState.destinationPocket);
+      pocketListNotifier.optimisticUpdate(newState.source);
+      pocketListNotifier.optimisticUpdate(newState.destination);
       recentPocketTransferNotifier.optimisticCreate(newState);
-      if (newState.sourcePocket.type == PocketType.wallet) {
-        walletNotifier.optimisticUpdateBalance(newState.sourcePocket);
+      if (newState.source.type == PocketType.wallet) {
+        walletNotifier.optimisticUpdateBalance(newState.source);
       }
-      if (newState.destinationPocket.type == PocketType.wallet) {
-        walletNotifier.optimisticUpdateBalance(newState.destinationPocket);
+      if (newState.destination.type == PocketType.wallet) {
+        walletNotifier.optimisticUpdateBalance(newState.destination);
       }
       onSuccess();
     } catch (e) {
@@ -75,6 +81,53 @@ class _TransferLogicService {
       if (request.toPocketValue.type == PocketType.wallet) {
         walletNotifier.optimisticUpdateBalance(request.toPocketValue);
       }
+    }
+  }
+
+  Future<void> accountTransfer(
+    AccountTransferForm request, {
+    required VoidCallback onSuccess,
+    required VoidCallback onError,
+  }) async {
+    final recentAccountTransfers = await _ref
+        .read(recentAccountTransfersProvider.selectAsync((list) => list));
+
+    final newSourceAccount = request.fromAccountValue.copyWith(
+      balance: request.fromAccountValue.balance - request.amountValue,
+    );
+    final newDestinationAccount = request.toAccountValue.copyWith(
+      balance: request.toAccountValue.balance + request.amountValue,
+    );
+
+    final recentAccountTransferNotifier =
+        _ref.read(recentAccountTransfersProvider.notifier);
+    final accountListNotifier = _ref.read(accountListProvider.notifier);
+
+    accountListNotifier.optimisticUpdate(newSourceAccount);
+    accountListNotifier.optimisticUpdate(newDestinationAccount);
+    recentAccountTransferNotifier.optimisticCreate(
+      TransferModel<AccountModel>.placeholder(
+        amount: request.amountValue,
+        description: request.descriptionValue,
+        destination: newDestinationAccount,
+        source: newSourceAccount,
+      ),
+    );
+
+    try {
+      final newState =
+          await _ref.read(transferRepositoryProvider).accountTransfer(request);
+
+      accountListNotifier.optimisticUpdate(newState.source);
+      accountListNotifier.optimisticUpdate(newState.destination);
+      recentAccountTransferNotifier.optimisticCreate(newState);
+
+      onSuccess();
+    } catch (e) {
+      onError();
+      accountListNotifier.optimisticUpdate(request.fromAccountValue);
+      accountListNotifier.optimisticUpdate(request.toAccountValue);
+      recentAccountTransferNotifier.revertCreate(recentAccountTransfers);
     }
   }
 }

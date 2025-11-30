@@ -1,16 +1,16 @@
 import 'dart:async';
 
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transfer/data/transfer_repository.dart';
-import 'package:dompet/features/transfer/domain/forms/pocket_transfer_filter_form.dart';
-import 'package:dompet/features/transfer/domain/models/pocket_transfer_model.dart';
+import 'package:dompet/features/transfer/domain/forms/transfer_filter_form.dart';
+import 'package:dompet/features/transfer/domain/models/transfer_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class _RecentPocketTransferNotifier
-    extends AsyncNotifier<List<PocketTransferModel>> {
+class _RecentPocketTransferNotifier extends AsyncNotifier<List<TransferModel>> {
   @override
-  FutureOr<List<PocketTransferModel>> build() async {
+  FutureOr<List<TransferModel>> build() async {
     final repository = ref.read(transferRepositoryProvider);
-    final form = PocketTransferFilterForm()
+    final form = TransferFilterForm<PocketModel>()
       ..page.value = 1
       ..limit.value = 5;
 
@@ -18,8 +18,7 @@ class _RecentPocketTransferNotifier
     return result;
   }
 
-  void optimisticCreate(PocketTransferModel newPocketTransfer,
-      [int? placeholderId]) {
+  void optimisticCreate(TransferModel newPocketTransfer, [int? placeholderId]) {
     if (!state.hasValue) return;
 
     final currentStates = [...state.value!];
@@ -36,11 +35,11 @@ class _RecentPocketTransferNotifier
     state = AsyncData([newPocketTransfer, ...currentStates]);
   }
 
-  void revertCreate(List<PocketTransferModel> previousPocketTransfers) {
+  void revertCreate(List<TransferModel> previousPocketTransfers) {
     state = AsyncData(previousPocketTransfers);
   }
 }
 
-final recentPocketTransfersProvider = AsyncNotifierProvider<
-    _RecentPocketTransferNotifier,
-    List<PocketTransferModel>>(_RecentPocketTransferNotifier.new);
+final recentPocketTransfersProvider =
+    AsyncNotifierProvider<_RecentPocketTransferNotifier, List<TransferModel>>(
+        _RecentPocketTransferNotifier.new);

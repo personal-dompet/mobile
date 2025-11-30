@@ -1,12 +1,15 @@
 import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
+import 'package:dompet/features/account/domain/model/account_model.dart';
+import 'package:dompet/features/account/presentation/pages/select_account_page.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
+import 'package:dompet/features/transfer/domain/forms/account_transfer_form.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
+import 'package:dompet/features/transfer/presentation/providers/recent_account_transfer_provider.dart';
 import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
 import 'package:dompet/features/transfer/presentation/providers/transfer_logic_provider.dart';
-import 'package:dompet/routes/create_pocket_transfer_route.dart';
-import 'package:dompet/routes/select_pocket_route.dart';
+import 'package:dompet/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -62,12 +65,67 @@ class _TransferFlowService {
     _ref.invalidateSelf();
   }
 
+  Future beginAccountTransfer(
+    BuildContext context, {
+    AccountModel? sourceAccount,
+    AccountModel? destinationAccount,
+    TransferStaticSubject? subject,
+  }) async {
+    final source = sourceAccount ??
+        await _selectAccount(context, title: SelectAccountTitle.source);
+    if (source == null || !context.mounted) return;
+
+    final transferForm = _ref.read(accountTransferFormProvider);
+    transferForm.fromAccount.value = source;
+
+    final destination = destinationAccount ??
+        await _selectAccount(context, title: SelectAccountTitle.destination);
+    if (destination == null || !context.mounted) {
+      _ref.invalidate(accountTransferFormProvider);
+      return;
+    }
+
+    transferForm.toAccount.value = destination;
+
+    final form = await CreateAccountTransferRoute(
+      subject: subject,
+    ).push<AccountTransferForm>(context);
+
+    if (form == null) {
+      _ref.invalidate(accountTransferFormProvider);
+      return;
+    }
+
+    await _ref.read(transferLogicProvider).accountTransfer(
+      form,
+      onSuccess: () {
+        context.showSuccessSnackbar('Balance transfered successfully.');
+      },
+      onError: () {
+        context.showSuccessSnackbar(
+          'Error happen when trying to transfer balance.',
+        );
+      },
+    );
+    _ref.invalidate(accountTransferFormProvider);
+    _ref.invalidate(recentAccountTransfersProvider);
+    _ref.invalidateSelf();
+  }
+
   Future<PocketModel?> _selectPocket(BuildContext context,
       {required SelectPocketTitle title}) async {
     final pocket = await SelectPocketRoute(
       title: title,
     ).push<PocketModel>(context);
     return pocket;
+  }
+
+  Future<AccountModel?> _selectAccount(BuildContext context,
+      {required SelectAccountTitle title}) async {
+    final acccount = await SelectAccountRoute(
+      title: title,
+    ).push<AccountModel>(context);
+    return acccount;
   }
 }
 

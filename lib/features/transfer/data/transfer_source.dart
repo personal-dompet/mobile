@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:dompet/core/services/api/api_client.dart';
-import 'package:dompet/features/transfer/domain/forms/pocket_transfer_filter_form.dart';
+import 'package:dompet/features/transfer/domain/forms/account_transfer_form.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
+import 'package:dompet/features/transfer/domain/forms/transfer_filter_form.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TransferSource {
@@ -11,7 +12,7 @@ class TransferSource {
 
   TransferSource(this._dio);
 
-  Future<List<dynamic>> pocketTransfers(PocketTransferFilterForm form) async {
+  Future<List<dynamic>> pocketTransfers(TransferFilterForm form) async {
     final response = await _dio.get<List<dynamic>>(
       '$_prefix/pockets',
       queryParameters: form.json,
@@ -22,6 +23,13 @@ class TransferSource {
   Future<Map<String, dynamic>> pocketTransfer(
       PocketTransferForm request) async {
     final response = await _dio.post<Map<String, dynamic>>('$_prefix/pockets',
+        data: request.json);
+    return response.data ?? {};
+  }
+
+  Future<Map<String, dynamic>> accountTransfer(
+      AccountTransferForm request) async {
+    final response = await _dio.post<Map<String, dynamic>>('$_prefix/accounts',
         data: request.json);
     return response.data ?? {};
   }

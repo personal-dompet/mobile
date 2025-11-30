@@ -41,15 +41,29 @@ class AccountTransferForm extends FormGroup {
   FormControl<String?> get description =>
       control('description') as FormControl<String?>;
 
-  AccountModel? get fromAccountValue => control('fromAccount').value;
-  AccountModel? get toAccountValue => control('toAccount').value;
-  int get amountValue => control('amount').value ?? 0;
-  String? get descriptionValue => control('description').value;
+  AccountModel get fromAccountValue {
+    final value = fromAccount.value;
+    if (value == null) {
+      return AccountModel.placeholder(name: 'Select Pocket');
+    }
+    return value;
+  }
+
+  AccountModel get toAccountValue {
+    final value = toAccount.value;
+    if (value == null) {
+      return AccountModel.placeholder(name: 'Select Pocket');
+    }
+    return value;
+  }
+
+  int get amountValue => amount.value ?? 0;
+  String? get descriptionValue => description.value;
 
   Map<String, dynamic> get json {
     return {
-      'sourceAccountId': fromAccountValue?.id,
-      'destinationAccountId': toAccountValue?.id,
+      'sourceId': fromAccountValue.id,
+      'destinationId': toAccountValue.id,
       'amount': amountValue,
       'description': descriptionValue,
     };
