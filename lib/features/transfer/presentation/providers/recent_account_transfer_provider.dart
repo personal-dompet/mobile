@@ -15,7 +15,7 @@ class _RecentAccountTransferNotifier
       ..page.value = 1
       ..limit.value = 5;
 
-    final result = await repository.pocketTransfers(form);
+    final result = await repository.accountTransfers(form);
     return result;
   }
 

@@ -1,8 +1,7 @@
 import 'package:dompet/core/models/financial_entity_model.dart';
 import 'package:dompet/core/models/timestamp_model.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
-import 'package:dompet/features/account/domain/model/account_model.dart';
-import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
+import 'package:flutter/cupertino.dart';
 
 class TransferModel<T extends FinancialEntityModel> extends TimestampModel {
   final int id;
@@ -22,13 +21,11 @@ class TransferModel<T extends FinancialEntityModel> extends TimestampModel {
   });
 
   factory TransferModel.fromJson(Map<String, dynamic> json) {
+    debugPrint('json $json');
     final timestamp = TimestampModel.fromJson(json);
-    final source = T is PocketModel
-        ? PocketModel.fromJson(json['source'])
-        : AccountModel.fromJson(json['source']);
-    final destination = T is PocketModel
-        ? PocketModel.fromJson(json['destination'])
-        : AccountModel.fromJson(json['destination']);
+    debugPrint('timestamp $timestamp');
+    final source = FinancialEntityModel.fromJson(json['source']);
+    final destination = FinancialEntityModel.fromJson(json['destination']);
 
     return TransferModel(
       createdAt: timestamp.createdAt,
@@ -47,24 +44,12 @@ class TransferModel<T extends FinancialEntityModel> extends TimestampModel {
     T? source,
     T? destination,
   }) {
-    late T transferSource;
-    late T transferDestination;
-    if (source != null) transferSource = source;
-    if (destination != null) transferDestination = destination;
-    if (T is PocketModel) {
-      transferSource = PocketModel.placeholder() as T;
-      transferDestination = PocketModel.placeholder() as T;
-    }
-    if (T is AccountModel) {
-      transferSource = AccountModel.placeholder() as T;
-      transferDestination = AccountModel.placeholder() as T;
-    }
     return TransferModel(
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       id: -1 * DateTime.now().millisecondsSinceEpoch,
-      source: transferSource,
-      destination: transferDestination,
+      source: source ?? FinancialEntityModel.placeholder() as T,
+      destination: destination ?? FinancialEntityModel.placeholder() as T,
       amount: amount ?? 0,
       description: description ?? '',
     );

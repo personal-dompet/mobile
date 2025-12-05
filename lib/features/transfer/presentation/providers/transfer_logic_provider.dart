@@ -1,4 +1,3 @@
-import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/account/presentation/provider/account_list_provider.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
@@ -81,6 +80,8 @@ class _TransferLogicService {
       if (request.toPocketValue.type == PocketType.wallet) {
         walletNotifier.optimisticUpdateBalance(request.toPocketValue);
       }
+    } finally {
+      _ref.invalidateSelf();
     }
   }
 
@@ -124,14 +125,17 @@ class _TransferLogicService {
 
       onSuccess();
     } catch (e) {
+      debugPrint(e.toString());
       onError();
       accountListNotifier.optimisticUpdate(request.fromAccountValue);
       accountListNotifier.optimisticUpdate(request.toAccountValue);
       recentAccountTransferNotifier.revertCreate(recentAccountTransfers);
+    } finally {
+      _ref.invalidateSelf();
     }
   }
 }
 
-final transferLogicProvider = Provider.autoDispose<_TransferLogicService>(
+final transferLogicProvider = Provider<_TransferLogicService>(
   (ref) => _TransferLogicService(ref),
 );

@@ -1,6 +1,7 @@
 import 'package:dompet/core/models/financial_entity_model.dart';
 import 'package:dompet/core/widgets/animatied_opacity_container.dart';
 import 'package:dompet/core/widgets/recent_list_container.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transfer/domain/models/transfer_model.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
@@ -11,13 +12,18 @@ class RecentTransfersList<T extends FinancialEntityModel>
   final AsyncValue<List<TransferModel<FinancialEntityModel>>> recentTransfers;
   const RecentTransfersList({super.key, required this.recentTransfers});
 
+  String get _entityName =>
+      recentTransfers is AsyncValue<List<TransferModel<PocketModel>>>
+          ? 'Pocket'
+          : 'Account';
+
   @override
   Widget build(BuildContext context) {
     return recentTransfers.when(
       data: (transfers) {
         if (transfers.isEmpty) {
-          return const Center(
-            child: Text('No recent pocket transfers'),
+          return Center(
+            child: Text('No recent ${_entityName.toLowerCase()} transfers'),
           );
         }
 
@@ -26,9 +32,10 @@ class RecentTransfersList<T extends FinancialEntityModel>
           itemBuilder: (context, index) => _RecentTransferItem<T>(
             transfer: transfers[index],
           ),
-          title: 'Recent Pocket Transfers',
+          title: 'Recent $_entityName Transfers',
           onSeeAllPressed: () {
-            debugPrint('See all recent pocket transfers pressed');
+            debugPrint(
+                'See all recent ${_entityName.toLowerCase()} transfers pressed');
           },
         );
       },
@@ -36,9 +43,12 @@ class RecentTransfersList<T extends FinancialEntityModel>
           child: CircularProgressIndicator(
         strokeWidth: 1,
       )),
-      error: (error, stack) => Center(
-        child: Text('Error loading pocket transfers: $error'),
-      ),
+      error: (error, stack) {
+        return Center(
+          child: Text(
+              'Error loading ${_entityName.toLowerCase()} transfers: $error | stack => $stack'),
+        );
+      },
     );
   }
 }
@@ -48,6 +58,8 @@ class _RecentTransferItem<T extends FinancialEntityModel>
   final TransferModel<FinancialEntityModel> transfer;
 
   const _RecentTransferItem({required this.transfer});
+
+  String get _entityName => T is PocketModel ? 'Pocket' : 'Account';
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +79,7 @@ class _RecentTransferItem<T extends FinancialEntityModel>
         ),
         title: Text(
           transfer.description == null || transfer.description!.isEmpty
-              ? 'Pocket Transfer'
+              ? '$_entityName Transfer'
               : transfer.description!,
           style: const TextStyle(
             fontWeight: FontWeight.w500,

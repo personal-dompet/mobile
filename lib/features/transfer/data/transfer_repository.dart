@@ -17,14 +17,21 @@ class TransferRepository {
     return TransferModel.fromJsonList(data);
   }
 
+  Future<List<TransferModel>> accountTransfers(TransferFilterForm form) async {
+    final data = await _source.accountTransfers(form);
+    return TransferModel.fromJsonList(data);
+  }
+
   Future<TransferModel<PocketModel>> pocketTransfer(
-      PocketTransferForm request) async {
+    PocketTransferForm request,
+  ) async {
     final data = await _source.pocketTransfer(request);
     return TransferModel<PocketModel>.fromJson(data);
   }
 
   Future<TransferModel<AccountModel>> accountTransfer(
-      AccountTransferForm request) async {
+    AccountTransferForm request,
+  ) async {
     final data = await _source.accountTransfer(request);
     return TransferModel<AccountModel>.fromJson(data);
   }

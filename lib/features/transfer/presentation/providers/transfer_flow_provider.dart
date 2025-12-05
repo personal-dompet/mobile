@@ -24,21 +24,21 @@ class _TransferFlowService {
     PocketModel? destinationPocket,
     TransferStaticSubject? subject,
   }) async {
-    final source = sourcePocket ??
-        await _selectPocket(context, title: SelectPocketTitle.source);
-    if (source == null || !context.mounted) return;
-
-    final transferForm = _ref.read(pocketTransferFormProvider);
-    transferForm.fromPocket.value = source;
-
     final destination = destinationPocket ??
         await _selectPocket(context, title: SelectPocketTitle.destination);
-    if (destination == null || !context.mounted) {
+    if (destination == null || !context.mounted) return;
+
+    final transferForm = _ref.read(pocketTransferFormProvider);
+    transferForm.toPocket.value = destination;
+
+    final source = sourcePocket ??
+        await _selectPocket(context, title: SelectPocketTitle.source);
+    if (source == null || !context.mounted) {
       _ref.invalidate(pocketTransferFormProvider);
       return;
     }
 
-    transferForm.toPocket.value = destination;
+    transferForm.fromPocket.value = source;
 
     final form = await CreatePocketTransferRoute(
       subject: subject,
@@ -71,21 +71,24 @@ class _TransferFlowService {
     AccountModel? destinationAccount,
     TransferStaticSubject? subject,
   }) async {
-    final source = sourceAccount ??
-        await _selectAccount(context, title: SelectAccountTitle.source);
-    if (source == null || !context.mounted) return;
+    final destination = destinationAccount ??
+        await _selectAccount(
+          context,
+          title: SelectAccountTitle.destination,
+        );
+    if (destination == null || !context.mounted) return;
 
     final transferForm = _ref.read(accountTransferFormProvider);
-    transferForm.fromAccount.value = source;
+    transferForm.toAccount.value = destination;
 
-    final destination = destinationAccount ??
-        await _selectAccount(context, title: SelectAccountTitle.destination);
-    if (destination == null || !context.mounted) {
+    final source = sourceAccount ??
+        await _selectAccount(context, title: SelectAccountTitle.source);
+    if (source == null || !context.mounted) {
       _ref.invalidate(accountTransferFormProvider);
       return;
     }
 
-    transferForm.toAccount.value = destination;
+    transferForm.fromAccount.value = source;
 
     final form = await CreateAccountTransferRoute(
       subject: subject,
@@ -102,7 +105,7 @@ class _TransferFlowService {
         context.showSuccessSnackbar('Balance transfered successfully.');
       },
       onError: () {
-        context.showSuccessSnackbar(
+        context.showErrorSnackbar(
           'Error happen when trying to transfer balance.',
         );
       },
