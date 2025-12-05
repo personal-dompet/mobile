@@ -1,6 +1,7 @@
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/models/timestamp_model.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
+import 'package:flutter/cupertino.dart';
 
 /// Abstract base class for financial entities like accounts and pockets
 class FinancialEntityModel extends TimestampModel {
@@ -20,6 +21,8 @@ class FinancialEntityModel extends TimestampModel {
 
   factory FinancialEntityModel.fromJson(Map<String, dynamic> json) {
     final timestamp = TimestampModel.fromJson(json);
+    debugPrint('color, ${json['color']}');
+    debugPrint('PocketColor ${PocketColor.parse(json['color'])}');
     return FinancialEntityModel(
       id: json['id'],
       name: json['name'],
@@ -27,6 +30,22 @@ class FinancialEntityModel extends TimestampModel {
       balance: json['balance'],
       createdAt: timestamp.createdAt,
       updatedAt: timestamp.updatedAt,
+    );
+  }
+
+  factory FinancialEntityModel.placeholder({
+    String? name,
+    PocketColor? color,
+    int? balance,
+    int? priority,
+  }) {
+    return FinancialEntityModel(
+      id: -1 * DateTime.now().millisecondsSinceEpoch,
+      name: name ?? '',
+      color: color,
+      balance: balance ?? 0,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
   }
 

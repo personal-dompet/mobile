@@ -9,6 +9,16 @@ class Unauthenticated extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(userProvider);
+
+    final isLoading = userAsync.isLoading;
+
+    if (isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),

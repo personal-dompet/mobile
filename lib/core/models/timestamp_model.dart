@@ -19,11 +19,11 @@ class TimestampModel {
   }
 
   String get formattedCreatedAt => DateFormat('dd MMMM yyyy').format(createdAt);
-  String? get formattedUpdatedAt =>
-      updatedAt != null ? DateFormat('dd MMMM yyyy').format(updatedAt!) : null;
+  // String? get formattedUpdatedAt =>
+  //     updatedAt != null ? DateFormat('dd MMMM yyyy').format(updatedAt!) : null;
   String get formattedCreatedAtTime => DateFormat('HH:mm').format(createdAt);
-  String? get formattedUpdatedAtTime =>
-      updatedAt != null ? DateFormat('HH:mm').format(updatedAt!) : null;
+  // String? get formattedUpdatedAtTime =>
+  //     updatedAt != null ? DateFormat('HH:mm').format(updatedAt!) : null;
 
   String get relativeFormattedCreatedAt {
     final now = DateTime.now();
