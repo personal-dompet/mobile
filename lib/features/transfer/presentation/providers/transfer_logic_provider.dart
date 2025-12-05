@@ -125,7 +125,6 @@ class _TransferLogicService {
 
       onSuccess();
     } catch (e) {
-      debugPrint(e.toString());
       onError();
       accountListNotifier.optimisticUpdate(request.fromAccountValue);
       accountListNotifier.optimisticUpdate(request.toAccountValue);

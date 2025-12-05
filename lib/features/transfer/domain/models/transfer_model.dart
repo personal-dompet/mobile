@@ -21,9 +21,7 @@ class TransferModel<T extends FinancialEntityModel> extends TimestampModel {
   });
 
   factory TransferModel.fromJson(Map<String, dynamic> json) {
-    debugPrint('json $json');
     final timestamp = TimestampModel.fromJson(json);
-    debugPrint('timestamp $timestamp');
     final source = FinancialEntityModel.fromJson(json['source']);
     final destination = FinancialEntityModel.fromJson(json['destination']);
 

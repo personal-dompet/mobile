@@ -34,8 +34,7 @@ class RecentTransfersList<T extends FinancialEntityModel>
           ),
           title: 'Recent $_entityName Transfers',
           onSeeAllPressed: () {
-            debugPrint(
-                'See all recent ${_entityName.toLowerCase()} transfers pressed');
+            // See all recent ${_entityName.toLowerCase()} transfers pressed
           },
         );
       },
