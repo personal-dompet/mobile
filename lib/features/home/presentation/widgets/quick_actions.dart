@@ -75,63 +75,63 @@ class QuickActions extends ConsumerWidget {
         icon: Icons.auto_graph_rounded,
         label: 'Auto Budgeting',
         color: AppTheme.warningColor,
-        onTap: () {
-          context.showErrorSnackbar('Work In Progress');
-          // TODO: Implement auto budgeting action
-        },
+        // onTap: () {
+        //   context.showErrorSnackbar('Work In Progress');
+        //   // TODO: Implement auto budgeting action
+        // },
       ),
       _QuickActionItem(
         icon: Icons.bar_chart_rounded,
         label: 'Analytics',
         color: AppTheme.warningColor,
-        onTap: () {
-          context.showErrorSnackbar('Work In Progress');
-          // TODO: Implement analytics action
-        },
+        // onTap: () {
+        //   context.showErrorSnackbar('Work In Progress');
+        //   // TODO: Implement analytics action
+        // },
       ),
       _QuickActionItem(
         icon: Icons.account_balance_rounded,
         label: 'Bill Payment',
         color: AppTheme.errorColor,
-        onTap: () {
-          context.showErrorSnackbar('Work In Progress');
-          // TODO: Implement bill payment action
-          // This should navigate to a page where user can view upcoming bills,
-          // make payments, set up auto-payments, or mark bills as paid
-        },
+        // onTap: () {
+        //   context.showErrorSnackbar('Work In Progress');
+        //   // TODO: Implement bill payment action
+        //   // This should navigate to a page where user can view upcoming bills,
+        //   // make payments, set up auto-payments, or mark bills as paid
+        // },
       ),
       _QuickActionItem(
         icon: Icons.flag_rounded,
         label: 'Goal Tracker',
         color: AppTheme.successColor,
-        onTap: () {
-          context.showErrorSnackbar('Work In Progress');
-          // TODO: Implement goal tracker action
-          // This should navigate to a page where user can set, view, and track
-          // their financial goals (e.g., saving for vacation, emergency fund, etc.)
-        },
+        // onTap: () {
+        //   context.showErrorSnackbar('Work In Progress');
+        //   // TODO: Implement goal tracker action
+        //   // This should navigate to a page where user can set, view, and track
+        //   // their financial goals (e.g., saving for vacation, emergency fund, etc.)
+        // },
       ),
       _QuickActionItem(
         icon: Icons.insert_chart_rounded,
         label: 'Budget',
         color: AppTheme.warningColor,
-        onTap: () {
-          context.showErrorSnackbar('Work In Progress');
-          // TODO: Implement view budget action
-          // This should navigate to a page showing budget overview,
-          // spending vs budgeted amounts, and ability to create/edit budgets
-        },
+        // onTap: () {
+        //   context.showErrorSnackbar('Work In Progress');
+        //   // TODO: Implement view budget action
+        //   // This should navigate to a page showing budget overview,
+        //   // spending vs budgeted amounts, and ability to create/edit budgets
+        // },
       ),
       _QuickActionItem(
         icon: Icons.health_and_safety_rounded,
         label: 'Health Check',
         color: AppTheme.successColor,
-        onTap: () {
-          context.showErrorSnackbar('Work In Progress');
-          // TODO: Implement financial health check action
-          // This should navigate to a page showing overall financial health metrics
-          // like expense to income ratio, savings rate, debt to asset ratio, etc.
-        },
+        // onTap: () {
+        //   context.showErrorSnackbar('Work In Progress');
+        //   // TODO: Implement financial health check action
+        //   // This should navigate to a page showing overall financial health metrics
+        //   // like expense to income ratio, savings rate, debt to asset ratio, etc.
+        // },
       ),
     ];
 
@@ -185,7 +185,10 @@ class _QuickActionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap ??
+          () {
+            context.showErrorSnackbar('Work In Progress');
+          },
       child: Badge(
         label: onTap == null
             ? Icon(

@@ -118,18 +118,20 @@ class _ItemCardState<T extends FinancialEntityModel>
         ? () {
             final optionType =
                 T.toString() == 'PocketModel' ? 'pocket' : 'account';
-            if (widget.isDisabled) {
+            if (widget.isDisabled && balance == 'Rp0') {
               context.showErrorSnackbar(
                   'Not enough balance. Please select different $optionType that has sufficient balance.');
               return;
             }
-            final text = widget.transferRole! == TransferStaticSubject.source
-                ? 'source'
-                : 'destination';
+            if (widget.transferRole != null) {
+              final text = widget.transferRole! == TransferStaticSubject.source
+                  ? 'source'
+                  : 'destination';
 
-            context.showErrorSnackbar(
-                'Already selected as $text $optionType. Please select different $optionType or create new one.');
-            return;
+              context.showErrorSnackbar(
+                  'Already selected as $text $optionType. Please select different $optionType or create new one.');
+              return;
+            }
           }
         : widget.onTap;
 
@@ -162,7 +164,7 @@ class _ItemCardState<T extends FinancialEntityModel>
               child: _buildCardContent(color, icon, isDisabled),
             ),
             // Add source/destination indicator if applicable
-            if (isDisabled && !widget.isDisabled)
+            if (isDisabled && widget.transferRole != null)
               Positioned(
                 top: 16,
                 right: 0,

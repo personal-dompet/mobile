@@ -55,12 +55,18 @@ class FinancialEntityGrid<T extends FinancialEntityModel>
         final entity = data[index];
         TransferStaticSubject? transferRole;
 
+        debugPrint('Destination ID: ${destination?.id}');
+        debugPrint('Source ID: ${source?.id}');
+        debugPrint('Entity ID: ${entity.id}');
+
         if (entity.id == source?.id) {
           transferRole = TransferStaticSubject.source;
         }
         if (entity.id == destination?.id) {
           transferRole = TransferStaticSubject.destination;
         }
+
+        debugPrint('${entity.name}: ${transferRole?.name}');
 
         final isSelected = entity.id == selectedId;
 
