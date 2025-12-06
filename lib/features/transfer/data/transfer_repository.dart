@@ -1,3 +1,4 @@
+import 'package:dompet/core/models/financial_entity_model.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transfer/data/transfer_source.dart';
@@ -12,28 +13,30 @@ class TransferRepository {
 
   TransferRepository(this._source);
 
-  Future<List<TransferModel>> pocketTransfers(TransferFilterForm form) async {
+  Future<List<TransferModel<PocketModel>>> pocketTransfers(
+      TransferFilterForm form) async {
     final data = await _source.pocketTransfers(form);
-    return TransferModel.fromJsonList(data);
+    return TransferModel.fromJsonList(data, PocketModel.fromJson);
   }
 
-  Future<List<TransferModel>> accountTransfers(TransferFilterForm form) async {
+  Future<List<TransferModel<AccountModel>>> accountTransfers(
+      TransferFilterForm form) async {
     final data = await _source.accountTransfers(form);
-    return TransferModel.fromJsonList(data);
+    return TransferModel.fromJsonList(data, AccountModel.fromJson);
   }
 
   Future<TransferModel<PocketModel>> pocketTransfer(
     PocketTransferForm request,
   ) async {
     final data = await _source.pocketTransfer(request);
-    return TransferModel<PocketModel>.fromJson(data);
+    return TransferModel<PocketModel>.fromJson(data, PocketModel.fromJson);
   }
 
   Future<TransferModel<AccountModel>> accountTransfer(
     AccountTransferForm request,
   ) async {
     final data = await _source.accountTransfer(request);
-    return TransferModel<AccountModel>.fromJson(data);
+    return TransferModel<AccountModel>.fromJson(data, AccountModel.fromJson);
   }
 }
 

@@ -1,7 +1,6 @@
 import 'package:dompet/core/models/financial_entity_model.dart';
 import 'package:dompet/core/models/timestamp_model.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
-import 'package:flutter/cupertino.dart';
 
 class TransferModel<T extends FinancialEntityModel> extends TimestampModel {
   final int id;
@@ -20,10 +19,16 @@ class TransferModel<T extends FinancialEntityModel> extends TimestampModel {
     this.description,
   });
 
-  factory TransferModel.fromJson(Map<String, dynamic> json) {
+  factory TransferModel.fromJson(
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>)? entityFromJson,
+  ) {
     final timestamp = TimestampModel.fromJson(json);
-    final source = FinancialEntityModel.fromJson(json['source']);
-    final destination = FinancialEntityModel.fromJson(json['destination']);
+    final parser =
+        entityFromJson ?? ((json) => FinancialEntityModel.fromJson(json) as T);
+
+    final source = parser(json['source']);
+    final destination = parser(json['destination']);
 
     return TransferModel(
       createdAt: timestamp.createdAt,
@@ -31,8 +36,8 @@ class TransferModel<T extends FinancialEntityModel> extends TimestampModel {
       id: json['id'],
       amount: json['amount'],
       description: json['description'],
-      source: source as T,
-      destination: destination as T,
+      source: source,
+      destination: destination,
     );
   }
 
@@ -53,8 +58,13 @@ class TransferModel<T extends FinancialEntityModel> extends TimestampModel {
     );
   }
 
-  static List<TransferModel> fromJsonList(List<dynamic> jsonList) {
-    return jsonList.map((json) => TransferModel.fromJson(json)).toList();
+  static List<TransferModel<T>> fromJsonList<T extends FinancialEntityModel>(
+    List<dynamic> jsonList,
+    T Function(Map<String, dynamic>)? entityFromJson,
+  ) {
+    return jsonList
+        .map((json) => TransferModel.fromJson(json, entityFromJson))
+        .toList();
   }
 
   String get formattedAmount => FormatCurrency.formatRupiah(amount);
