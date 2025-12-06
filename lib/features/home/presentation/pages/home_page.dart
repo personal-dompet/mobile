@@ -1,6 +1,7 @@
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/home/presentation/widgets/quick_actions.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
+import 'package:dompet/features/transaction/presentation/widgets/recent_transactions_list.dart';
 import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
 import 'package:dompet/features/wallet/presentation/widgets/wallet_card.dart';
@@ -26,21 +27,10 @@ class HomePage extends ConsumerWidget {
             children: [
               const WalletCard(),
               QuickActions(),
-              // const RecentTransactionsList(),
-              // Divider(
-              //   indent: 16,
-              //   endIndent: 16,
-              //   thickness: 1,
-              //   color: AppTheme.disabledColor.withValues(alpha: 0.5),
-              // ),
-              // const RecentPocketTransfersList(),
-              // Divider(
-              //   indent: 16,
-              //   endIndent: 16,
-              //   thickness: 1,
-              //   color: AppTheme.disabledColor.withValues(alpha: 0.5),
-              // ),
-              // const RecentAccountTransfersList(),
+              SizedBox(
+                height: 8,
+              ),
+              const RecentTransactionsList(),
             ],
           ),
         ),
