@@ -67,6 +67,7 @@ dependencies:
 
   # Forms
   reactive_forms: ^18.1.1
+  marquee: ^2.3.0
 
 dev_dependencies:
   flutter_test:
