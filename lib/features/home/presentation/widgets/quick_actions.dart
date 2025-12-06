@@ -9,6 +9,7 @@ import 'package:dompet/features/transfer/presentation/providers/transfer_flow_pr
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:marquee/marquee.dart';
 
 class QuickActions extends ConsumerWidget {
   const QuickActions({super.key});
@@ -230,17 +231,28 @@ class _QuickActionItem extends StatelessWidget {
               const SizedBox(height: 8),
               Expanded(
                 child: Center(
-                  child: Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.textColorPrimary,
+                  child: label.length >= 16
+                      ? Marquee(
+                          text: label,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppTheme.textColorPrimary,
+                                  ),
+                          blankSpace: 8,
+                          startPadding: 0,
+                          pauseAfterRound: Duration(seconds: 1),
+                        )
+                      : Text(
+                          label,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppTheme.textColorPrimary,
+                                  ),
                         ),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
                 ),
               ),
             ],
