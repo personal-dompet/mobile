@@ -59,14 +59,17 @@ class _TransferLogicService {
       final newState =
           await _ref.read(transferRepositoryProvider).pocketTransfer(request);
 
-      pocketListNotifier.optimisticUpdate(newState.source);
-      pocketListNotifier.optimisticUpdate(newState.destination);
+      final source = newState.source;
+      final destination = newState.destination;
+
+      pocketListNotifier.optimisticUpdate(source);
+      pocketListNotifier.optimisticUpdate(destination);
       recentPocketTransferNotifier.optimisticCreate(newState);
-      if (newState.source.type == PocketType.wallet) {
-        walletNotifier.optimisticUpdateBalance(newState.source);
+      if (source.type == PocketType.wallet) {
+        walletNotifier.optimisticUpdateBalance(source);
       }
-      if (newState.destination.type == PocketType.wallet) {
-        walletNotifier.optimisticUpdateBalance(newState.destination);
+      if (destination.type == PocketType.wallet) {
+        walletNotifier.optimisticUpdateBalance(destination);
       }
       onSuccess();
     } catch (e) {

@@ -55,7 +55,7 @@ class _TransferFlowService {
         context.showSuccessSnackbar('Balance transfered successfully.');
       },
       onError: () {
-        context.showSuccessSnackbar(
+        context.showErrorSnackbar(
           'Error happen when trying to transfer balance.',
         );
       },
