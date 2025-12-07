@@ -9,10 +9,10 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i21;
-import 'package:dompet/core/enum/create_from.dart' as _i25;
-import 'package:dompet/core/enum/transaction_static_subject.dart' as _i24;
-import 'package:dompet/core/enum/transfer_static_subject.dart' as _i23;
+import 'package:auto_route/auto_route.dart' as _i22;
+import 'package:dompet/core/enum/create_from.dart' as _i27;
+import 'package:dompet/core/enum/transaction_static_subject.dart' as _i25;
+import 'package:dompet/core/enum/transfer_static_subject.dart' as _i24;
 import 'package:dompet/features/account/presentation/pages/account_page.dart'
     as _i1;
 import 'package:dompet/features/account/presentation/pages/create_account_detail_page.dart'
@@ -20,12 +20,13 @@ import 'package:dompet/features/account/presentation/pages/create_account_detail
 import 'package:dompet/features/account/presentation/pages/create_account_page.dart'
     as _i5;
 import 'package:dompet/features/account/presentation/pages/select_account_page.dart'
-    as _i16;
+    as _i17;
 import 'package:dompet/features/analytic/presentation/analytic_page.dart'
     as _i2;
 import 'package:dompet/features/auth/presentation/pages/auth_page.dart' as _i3;
 import 'package:dompet/features/dashbaord/dashboard_page.dart' as _i13;
 import 'package:dompet/features/home/presentation/pages/home_page.dart' as _i14;
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart' as _i26;
 import 'package:dompet/features/pocket/presentation/pages/create_pocket_page.dart'
     as _i7;
 import 'package:dompet/features/pocket/presentation/pages/create_recurring_pocket_page.dart'
@@ -34,32 +35,34 @@ import 'package:dompet/features/pocket/presentation/pages/create_saving_pocket_p
     as _i10;
 import 'package:dompet/features/pocket/presentation/pages/create_spending_pocket_page.dart'
     as _i11;
-import 'package:dompet/features/pocket/presentation/pages/pocket_page.dart'
+import 'package:dompet/features/pocket/presentation/pages/pocket_detail_page.dart'
     as _i15;
+import 'package:dompet/features/pocket/presentation/pages/pocket_page.dart'
+    as _i16;
 import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart'
-    as _i18;
-import 'package:dompet/features/splash/splash_page.dart' as _i19;
+    as _i19;
+import 'package:dompet/features/splash/splash_page.dart' as _i20;
 import 'package:dompet/features/transaction/presentation/pages/create_transaction_page.dart'
     as _i12;
 import 'package:dompet/features/transaction/presentation/pages/select_category_page.dart'
-    as _i17;
+    as _i18;
 import 'package:dompet/features/transaction/presentation/pages/transaction_page.dart'
-    as _i20;
+    as _i21;
 import 'package:dompet/features/transfer/presentation/pages/create_account_transfer_page.dart'
     as _i6;
 import 'package:dompet/features/transfer/presentation/pages/create_pocket_transfer_page.dart'
     as _i8;
-import 'package:flutter/material.dart' as _i22;
+import 'package:flutter/material.dart' as _i23;
 
 /// generated route for
 /// [_i1.AccountPage]
-class AccountRoute extends _i21.PageRouteInfo<void> {
-  const AccountRoute({List<_i21.PageRouteInfo>? children})
+class AccountRoute extends _i22.PageRouteInfo<void> {
+  const AccountRoute({List<_i22.PageRouteInfo>? children})
       : super(AccountRoute.name, initialChildren: children);
 
   static const String name = 'AccountRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i1.AccountPage();
@@ -69,13 +72,13 @@ class AccountRoute extends _i21.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.AnalyticPage]
-class AnalyticRoute extends _i21.PageRouteInfo<void> {
-  const AnalyticRoute({List<_i21.PageRouteInfo>? children})
+class AnalyticRoute extends _i22.PageRouteInfo<void> {
+  const AnalyticRoute({List<_i22.PageRouteInfo>? children})
       : super(AnalyticRoute.name, initialChildren: children);
 
   static const String name = 'AnalyticRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i2.AnalyticPage();
@@ -85,13 +88,13 @@ class AnalyticRoute extends _i21.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.AuthPage]
-class AuthRoute extends _i21.PageRouteInfo<void> {
-  const AuthRoute({List<_i21.PageRouteInfo>? children})
+class AuthRoute extends _i22.PageRouteInfo<void> {
+  const AuthRoute({List<_i22.PageRouteInfo>? children})
       : super(AuthRoute.name, initialChildren: children);
 
   static const String name = 'AuthRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i3.AuthPage();
@@ -101,13 +104,13 @@ class AuthRoute extends _i21.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.CreateAccountDetailPage]
-class CreateAccountDetailRoute extends _i21.PageRouteInfo<void> {
-  const CreateAccountDetailRoute({List<_i21.PageRouteInfo>? children})
+class CreateAccountDetailRoute extends _i22.PageRouteInfo<void> {
+  const CreateAccountDetailRoute({List<_i22.PageRouteInfo>? children})
       : super(CreateAccountDetailRoute.name, initialChildren: children);
 
   static const String name = 'CreateAccountDetailRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i4.CreateAccountDetailPage();
@@ -117,13 +120,13 @@ class CreateAccountDetailRoute extends _i21.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.CreateAccountPage]
-class CreateAccountRoute extends _i21.PageRouteInfo<void> {
-  const CreateAccountRoute({List<_i21.PageRouteInfo>? children})
+class CreateAccountRoute extends _i22.PageRouteInfo<void> {
+  const CreateAccountRoute({List<_i22.PageRouteInfo>? children})
       : super(CreateAccountRoute.name, initialChildren: children);
 
   static const String name = 'CreateAccountRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i5.CreateAccountPage();
@@ -134,11 +137,11 @@ class CreateAccountRoute extends _i21.PageRouteInfo<void> {
 /// generated route for
 /// [_i6.CreateAccountTransferPage]
 class CreateAccountTransferRoute
-    extends _i21.PageRouteInfo<CreateAccountTransferRouteArgs> {
+    extends _i22.PageRouteInfo<CreateAccountTransferRouteArgs> {
   CreateAccountTransferRoute({
-    _i22.Key? key,
-    _i23.TransferStaticSubject? subject,
-    List<_i21.PageRouteInfo>? children,
+    _i23.Key? key,
+    _i24.TransferStaticSubject? subject,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
           CreateAccountTransferRoute.name,
           args: CreateAccountTransferRouteArgs(key: key, subject: subject),
@@ -147,7 +150,7 @@ class CreateAccountTransferRoute
 
   static const String name = 'CreateAccountTransferRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<CreateAccountTransferRouteArgs>(
@@ -164,9 +167,9 @@ class CreateAccountTransferRoute
 class CreateAccountTransferRouteArgs {
   const CreateAccountTransferRouteArgs({this.key, this.subject});
 
-  final _i22.Key? key;
+  final _i23.Key? key;
 
-  final _i23.TransferStaticSubject? subject;
+  final _i24.TransferStaticSubject? subject;
 
   @override
   String toString() {
@@ -186,13 +189,13 @@ class CreateAccountTransferRouteArgs {
 
 /// generated route for
 /// [_i7.CreatePocketPage]
-class CreatePocketRoute extends _i21.PageRouteInfo<void> {
-  const CreatePocketRoute({List<_i21.PageRouteInfo>? children})
+class CreatePocketRoute extends _i22.PageRouteInfo<void> {
+  const CreatePocketRoute({List<_i22.PageRouteInfo>? children})
       : super(CreatePocketRoute.name, initialChildren: children);
 
   static const String name = 'CreatePocketRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i7.CreatePocketPage();
@@ -203,11 +206,11 @@ class CreatePocketRoute extends _i21.PageRouteInfo<void> {
 /// generated route for
 /// [_i8.CreatePocketTransferPage]
 class CreatePocketTransferRoute
-    extends _i21.PageRouteInfo<CreatePocketTransferRouteArgs> {
+    extends _i22.PageRouteInfo<CreatePocketTransferRouteArgs> {
   CreatePocketTransferRoute({
-    _i22.Key? key,
-    _i23.TransferStaticSubject? subject,
-    List<_i21.PageRouteInfo>? children,
+    _i23.Key? key,
+    _i24.TransferStaticSubject? subject,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
           CreatePocketTransferRoute.name,
           args: CreatePocketTransferRouteArgs(key: key, subject: subject),
@@ -216,7 +219,7 @@ class CreatePocketTransferRoute
 
   static const String name = 'CreatePocketTransferRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<CreatePocketTransferRouteArgs>(
@@ -230,9 +233,9 @@ class CreatePocketTransferRoute
 class CreatePocketTransferRouteArgs {
   const CreatePocketTransferRouteArgs({this.key, this.subject});
 
-  final _i22.Key? key;
+  final _i23.Key? key;
 
-  final _i23.TransferStaticSubject? subject;
+  final _i24.TransferStaticSubject? subject;
 
   @override
   String toString() {
@@ -252,13 +255,13 @@ class CreatePocketTransferRouteArgs {
 
 /// generated route for
 /// [_i9.CreateRecurringPocketPage]
-class CreateRecurringPocketRoute extends _i21.PageRouteInfo<void> {
-  const CreateRecurringPocketRoute({List<_i21.PageRouteInfo>? children})
+class CreateRecurringPocketRoute extends _i22.PageRouteInfo<void> {
+  const CreateRecurringPocketRoute({List<_i22.PageRouteInfo>? children})
       : super(CreateRecurringPocketRoute.name, initialChildren: children);
 
   static const String name = 'CreateRecurringPocketRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i9.CreateRecurringPocketPage();
@@ -268,13 +271,13 @@ class CreateRecurringPocketRoute extends _i21.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.CreateSavingPocketPage]
-class CreateSavingPocketRoute extends _i21.PageRouteInfo<void> {
-  const CreateSavingPocketRoute({List<_i21.PageRouteInfo>? children})
+class CreateSavingPocketRoute extends _i22.PageRouteInfo<void> {
+  const CreateSavingPocketRoute({List<_i22.PageRouteInfo>? children})
       : super(CreateSavingPocketRoute.name, initialChildren: children);
 
   static const String name = 'CreateSavingPocketRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i10.CreateSavingPocketPage();
@@ -284,13 +287,13 @@ class CreateSavingPocketRoute extends _i21.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i11.CreateSpendingPocketPage]
-class CreateSpendingPocketRoute extends _i21.PageRouteInfo<void> {
-  const CreateSpendingPocketRoute({List<_i21.PageRouteInfo>? children})
+class CreateSpendingPocketRoute extends _i22.PageRouteInfo<void> {
+  const CreateSpendingPocketRoute({List<_i22.PageRouteInfo>? children})
       : super(CreateSpendingPocketRoute.name, initialChildren: children);
 
   static const String name = 'CreateSpendingPocketRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i11.CreateSpendingPocketPage();
@@ -301,11 +304,11 @@ class CreateSpendingPocketRoute extends _i21.PageRouteInfo<void> {
 /// generated route for
 /// [_i12.CreateTransactionPage]
 class CreateTransactionRoute
-    extends _i21.PageRouteInfo<CreateTransactionRouteArgs> {
+    extends _i22.PageRouteInfo<CreateTransactionRouteArgs> {
   CreateTransactionRoute({
-    _i22.Key? key,
-    _i24.TransactionStaticSubject? subject,
-    List<_i21.PageRouteInfo>? children,
+    _i23.Key? key,
+    _i25.TransactionStaticSubject? subject,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
           CreateTransactionRoute.name,
           args: CreateTransactionRouteArgs(key: key, subject: subject),
@@ -314,7 +317,7 @@ class CreateTransactionRoute
 
   static const String name = 'CreateTransactionRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<CreateTransactionRouteArgs>(
@@ -328,9 +331,9 @@ class CreateTransactionRoute
 class CreateTransactionRouteArgs {
   const CreateTransactionRouteArgs({this.key, this.subject});
 
-  final _i22.Key? key;
+  final _i23.Key? key;
 
-  final _i24.TransactionStaticSubject? subject;
+  final _i25.TransactionStaticSubject? subject;
 
   @override
   String toString() {
@@ -350,13 +353,13 @@ class CreateTransactionRouteArgs {
 
 /// generated route for
 /// [_i13.DashboardPage]
-class DashboardRoute extends _i21.PageRouteInfo<void> {
-  const DashboardRoute({List<_i21.PageRouteInfo>? children})
+class DashboardRoute extends _i22.PageRouteInfo<void> {
+  const DashboardRoute({List<_i22.PageRouteInfo>? children})
       : super(DashboardRoute.name, initialChildren: children);
 
   static const String name = 'DashboardRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i13.DashboardPage();
@@ -366,13 +369,13 @@ class DashboardRoute extends _i21.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i14.HomePage]
-class HomeRoute extends _i21.PageRouteInfo<void> {
-  const HomeRoute({List<_i21.PageRouteInfo>? children})
+class HomeRoute extends _i22.PageRouteInfo<void> {
+  const HomeRoute({List<_i22.PageRouteInfo>? children})
       : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i14.HomePage();
@@ -381,31 +384,78 @@ class HomeRoute extends _i21.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i15.PocketPage]
-class PocketRoute extends _i21.PageRouteInfo<void> {
-  const PocketRoute({List<_i21.PageRouteInfo>? children})
+/// [_i15.PocketDetailPage]
+class PocketDetailRoute extends _i22.PageRouteInfo<PocketDetailRouteArgs> {
+  PocketDetailRoute({
+    _i23.Key? key,
+    required _i26.PocketModel pocket,
+    List<_i22.PageRouteInfo>? children,
+  }) : super(
+          PocketDetailRoute.name,
+          args: PocketDetailRouteArgs(key: key, pocket: pocket),
+          initialChildren: children,
+        );
+
+  static const String name = 'PocketDetailRoute';
+
+  static _i22.PageInfo page = _i22.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<PocketDetailRouteArgs>();
+      return _i15.PocketDetailPage(key: args.key, pocket: args.pocket);
+    },
+  );
+}
+
+class PocketDetailRouteArgs {
+  const PocketDetailRouteArgs({this.key, required this.pocket});
+
+  final _i23.Key? key;
+
+  final _i26.PocketModel pocket;
+
+  @override
+  String toString() {
+    return 'PocketDetailRouteArgs{key: $key, pocket: $pocket}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PocketDetailRouteArgs) return false;
+    return key == other.key && pocket == other.pocket;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ pocket.hashCode;
+}
+
+/// generated route for
+/// [_i16.PocketPage]
+class PocketRoute extends _i22.PageRouteInfo<void> {
+  const PocketRoute({List<_i22.PageRouteInfo>? children})
       : super(PocketRoute.name, initialChildren: children);
 
   static const String name = 'PocketRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i15.PocketPage();
+      return const _i16.PocketPage();
     },
   );
 }
 
 /// generated route for
-/// [_i16.SelectAccountPage]
-class SelectAccountRoute extends _i21.PageRouteInfo<SelectAccountRouteArgs> {
+/// [_i17.SelectAccountPage]
+class SelectAccountRoute extends _i22.PageRouteInfo<SelectAccountRouteArgs> {
   SelectAccountRoute({
-    _i22.Key? key,
+    _i23.Key? key,
     int? selectedAccountId,
-    _i25.CreateFrom? createFrom,
+    _i27.CreateFrom? createFrom,
     bool? disableEmpty,
-    _i16.SelectAccountTitle title = _i16.SelectAccountTitle.general,
-    List<_i21.PageRouteInfo>? children,
+    _i17.SelectAccountTitle title = _i17.SelectAccountTitle.general,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
           SelectAccountRoute.name,
           args: SelectAccountRouteArgs(
@@ -420,13 +470,13 @@ class SelectAccountRoute extends _i21.PageRouteInfo<SelectAccountRouteArgs> {
 
   static const String name = 'SelectAccountRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<SelectAccountRouteArgs>(
         orElse: () => const SelectAccountRouteArgs(),
       );
-      return _i16.SelectAccountPage(
+      return _i17.SelectAccountPage(
         key: args.key,
         selectedAccountId: args.selectedAccountId,
         createFrom: args.createFrom,
@@ -443,18 +493,18 @@ class SelectAccountRouteArgs {
     this.selectedAccountId,
     this.createFrom,
     this.disableEmpty,
-    this.title = _i16.SelectAccountTitle.general,
+    this.title = _i17.SelectAccountTitle.general,
   });
 
-  final _i22.Key? key;
+  final _i23.Key? key;
 
   final int? selectedAccountId;
 
-  final _i25.CreateFrom? createFrom;
+  final _i27.CreateFrom? createFrom;
 
   final bool? disableEmpty;
 
-  final _i16.SelectAccountTitle title;
+  final _i17.SelectAccountTitle title;
 
   @override
   String toString() {
@@ -482,12 +532,12 @@ class SelectAccountRouteArgs {
 }
 
 /// generated route for
-/// [_i17.SelectCategoryPage]
-class SelectCategoryRoute extends _i21.PageRouteInfo<SelectCategoryRouteArgs> {
+/// [_i18.SelectCategoryPage]
+class SelectCategoryRoute extends _i22.PageRouteInfo<SelectCategoryRouteArgs> {
   SelectCategoryRoute({
-    _i22.Key? key,
+    _i23.Key? key,
     String? selectedCategoryIconKey,
-    List<_i21.PageRouteInfo>? children,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
           SelectCategoryRoute.name,
           args: SelectCategoryRouteArgs(
@@ -499,13 +549,13 @@ class SelectCategoryRoute extends _i21.PageRouteInfo<SelectCategoryRouteArgs> {
 
   static const String name = 'SelectCategoryRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<SelectCategoryRouteArgs>(
         orElse: () => const SelectCategoryRouteArgs(),
       );
-      return _i17.SelectCategoryPage(
+      return _i18.SelectCategoryPage(
         key: args.key,
         selectedCategoryIconKey: args.selectedCategoryIconKey,
       );
@@ -516,7 +566,7 @@ class SelectCategoryRoute extends _i21.PageRouteInfo<SelectCategoryRouteArgs> {
 class SelectCategoryRouteArgs {
   const SelectCategoryRouteArgs({this.key, this.selectedCategoryIconKey});
 
-  final _i22.Key? key;
+  final _i23.Key? key;
 
   final String? selectedCategoryIconKey;
 
@@ -538,16 +588,16 @@ class SelectCategoryRouteArgs {
 }
 
 /// generated route for
-/// [_i18.SelectPocketPage]
-class SelectPocketRoute extends _i21.PageRouteInfo<SelectPocketRouteArgs> {
+/// [_i19.SelectPocketPage]
+class SelectPocketRoute extends _i22.PageRouteInfo<SelectPocketRouteArgs> {
   SelectPocketRoute({
-    _i22.Key? key,
+    _i23.Key? key,
     int? selectedPocketId,
-    _i18.SelectPocketTitle title = _i18.SelectPocketTitle.general,
-    _i25.CreateFrom? createFrom,
+    _i19.SelectPocketTitle title = _i19.SelectPocketTitle.general,
+    _i27.CreateFrom? createFrom,
     bool? disableEmpty,
     bool? hideWallet = false,
-    List<_i21.PageRouteInfo>? children,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
           SelectPocketRoute.name,
           args: SelectPocketRouteArgs(
@@ -563,13 +613,13 @@ class SelectPocketRoute extends _i21.PageRouteInfo<SelectPocketRouteArgs> {
 
   static const String name = 'SelectPocketRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<SelectPocketRouteArgs>(
         orElse: () => const SelectPocketRouteArgs(),
       );
-      return _i18.SelectPocketPage(
+      return _i19.SelectPocketPage(
         key: args.key,
         selectedPocketId: args.selectedPocketId,
         title: args.title,
@@ -585,19 +635,19 @@ class SelectPocketRouteArgs {
   const SelectPocketRouteArgs({
     this.key,
     this.selectedPocketId,
-    this.title = _i18.SelectPocketTitle.general,
+    this.title = _i19.SelectPocketTitle.general,
     this.createFrom,
     this.disableEmpty,
     this.hideWallet = false,
   });
 
-  final _i22.Key? key;
+  final _i23.Key? key;
 
   final int? selectedPocketId;
 
-  final _i18.SelectPocketTitle title;
+  final _i19.SelectPocketTitle title;
 
-  final _i25.CreateFrom? createFrom;
+  final _i27.CreateFrom? createFrom;
 
   final bool? disableEmpty;
 
@@ -631,33 +681,33 @@ class SelectPocketRouteArgs {
 }
 
 /// generated route for
-/// [_i19.SplashPage]
-class SplashRoute extends _i21.PageRouteInfo<void> {
-  const SplashRoute({List<_i21.PageRouteInfo>? children})
+/// [_i20.SplashPage]
+class SplashRoute extends _i22.PageRouteInfo<void> {
+  const SplashRoute({List<_i22.PageRouteInfo>? children})
       : super(SplashRoute.name, initialChildren: children);
 
   static const String name = 'SplashRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i19.SplashPage();
+      return const _i20.SplashPage();
     },
   );
 }
 
 /// generated route for
-/// [_i20.TransactionPage]
-class TransactionRoute extends _i21.PageRouteInfo<void> {
-  const TransactionRoute({List<_i21.PageRouteInfo>? children})
+/// [_i21.TransactionPage]
+class TransactionRoute extends _i22.PageRouteInfo<void> {
+  const TransactionRoute({List<_i22.PageRouteInfo>? children})
       : super(TransactionRoute.name, initialChildren: children);
 
   static const String name = 'TransactionRoute';
 
-  static _i21.PageInfo page = _i21.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i20.TransactionPage();
+      return const _i21.TransactionPage();
     },
   );
 }

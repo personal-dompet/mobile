@@ -4,9 +4,11 @@ import 'package:dompet/core/widgets/entity_type_selector.dart';
 import 'package:dompet/core/widgets/financial_entity_list_section.dart';
 import 'package:dompet/core/widgets/financial_entity_page.dart';
 import 'package:dompet/features/pocket/domain/enum/pocket_type.dart';
+import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/pocket/presentation/provider/filtered_pocket_list_provider.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provider.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_flow_provider.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,7 +57,7 @@ class _PocketListSection extends ConsumerWidget {
     final pockets = ref.watch(filteredPocketListProvider);
     final filter = ref.watch(pocketFilterProvider);
 
-    return FinancialEntityListSection(
+    return FinancialEntityListSection<PocketModel, PocketType>(
       filter: filter,
       data: pockets,
       onCreate: () async {
@@ -68,7 +70,7 @@ class _PocketListSection extends ConsumerWidget {
             );
       },
       onTap: (selected) {
-        // TODO: To detail page
+        context.router.push(PocketDetailRoute(pocket: selected));
       },
     );
   }
