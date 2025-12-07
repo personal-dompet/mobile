@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/enum/list_type.dart';
@@ -10,7 +11,7 @@ import 'package:dompet/features/account/presentation/provider/account_filter_pro
 import 'package:dompet/features/account/presentation/provider/account_logic_provider.dart';
 import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
 import 'package:dompet/features/transfer/domain/forms/account_transfer_form.dart';
-import 'package:dompet/routes/create_account_route.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -77,7 +78,7 @@ class _AccountFlowService {
     final form = ref.read(createAccountFormProvider);
     form.type.value = type;
 
-    return await CreateAccountRoute().push<CreationType>(context);
+    return await context.router.push<CreationType>(CreateAccountRoute());
   }
 
   Future<void> _saveCreatedAccount(

@@ -1,5 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/features/auth/presentation/providers/user_provider.dart';
-import 'package:dompet/routes/routes.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,7 +57,7 @@ class Unauthenticated extends ConsumerWidget {
 
                 if (!context.mounted) return;
 
-                SplashRoute().go(context);
+                context.router.replace(SplashRoute());
               },
               icon: const Icon(Icons.login_rounded),
               label: const Text('Login'),

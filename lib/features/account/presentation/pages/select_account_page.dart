@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/financial_entity_empty.dart';
@@ -10,20 +11,22 @@ import 'package:dompet/features/transfer/domain/forms/account_transfer_form.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+@RoutePage()
 class SelectAccountPage extends ConsumerWidget {
   final int? selectedAccountId;
   final CreateFrom? createFrom;
   final SelectAccountTitle title;
-  final bool disableEmpty;
+  final bool? disableEmpty;
   const SelectAccountPage({
     super.key,
     this.selectedAccountId,
     this.createFrom,
-    this.disableEmpty = false,
+    this.disableEmpty,
     this.title = SelectAccountTitle.general,
   });
 
-  bool get _disableEmpty => disableEmpty || title == SelectAccountTitle.source;
+  bool get _disableEmpty =>
+      (disableEmpty ?? false) || title == SelectAccountTitle.source;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

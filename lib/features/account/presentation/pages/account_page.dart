@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/entity_type_selector.dart';
 import 'package:dompet/core/widgets/financial_entity_list_section.dart';
@@ -9,6 +10,7 @@ import 'package:dompet/features/account/presentation/provider/account_flow_provi
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+@RoutePage()
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
   @override

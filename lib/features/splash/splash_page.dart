@@ -1,11 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/features/account/presentation/provider/account_list_provider.dart';
 import 'package:dompet/features/auth/presentation/providers/user_provider.dart';
 import 'package:dompet/features/pocket/presentation/provider/pocket_list_provider.dart';
+import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
 import 'package:dompet/features/wallet/presentation/providers/wallet_provider.dart';
-import 'package:dompet/routes/routes.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+@RoutePage()
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
 
@@ -30,11 +33,12 @@ class _SplashPageState extends ConsumerState<SplashPage> {
         ref.watch(walletProvider.future),
         ref.watch(accountListProvider.future),
         ref.watch(pocketListProvider.future),
+        ref.watch(recentTransactionProvider.future),
       ]);
 
       if (!mounted || !context.mounted) return;
 
-      DashboardRoute().go(context);
+      context.router.replace(DashboardRoute());
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -46,7 +50,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
     if (!context.mounted || !mounted) return;
 
     if (user == null) {
-      AuthRoute().go(context);
+      context.router.replace(AuthRoute());
       return;
     }
 

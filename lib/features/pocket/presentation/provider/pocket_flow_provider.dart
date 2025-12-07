@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/enum/list_type.dart';
@@ -9,7 +10,7 @@ import 'package:dompet/features/pocket/presentation/provider/pocket_filter_provi
 import 'package:dompet/features/pocket/presentation/provider/pocket_logic_provider.dart';
 import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
-import 'package:dompet/routes/routes.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -72,7 +73,7 @@ class _PocketFlowService {
     final form = ref.read(createPocketFormProvider);
     form.type.value = type;
 
-    return await CreatePocketRoute().push<CreationType>(context);
+    return await context.router.push<CreationType>(CreatePocketRoute());
   }
 
   Future<void> _saveCreatedPocket(

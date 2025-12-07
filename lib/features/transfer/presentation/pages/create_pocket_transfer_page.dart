@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
@@ -8,14 +9,16 @@ import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
+import 'package:dompet/features/pocket/presentation/pages/select_pocket_page.dart';
 import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart';
 import 'package:dompet/features/transfer/presentation/widgets/swap_button.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+@RoutePage()
 class CreatePocketTransferPage extends ConsumerStatefulWidget {
   final TransferStaticSubject? subject;
   const CreatePocketTransferPage({super.key, this.subject});
@@ -119,13 +122,11 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                       isDisabled:
                           widget.subject == TransferStaticSubject.source,
                       onTap: () async {
-                        final selectedPocket = await context
-                            .pushNamed<PocketModel>('SelectPocket',
-                                queryParameters: {
-                              'selectedPocketId':
-                                  form.fromPocket.value?.id.toString(),
-                              'title': 'origin',
-                            });
+                        final selectedPocket = await context.router
+                            .push<PocketModel>(SelectPocketRoute(
+                          selectedPocketId: form.fromPocket.value?.id,
+                          title: SelectPocketTitle.source,
+                        ));
                         if (selectedPocket != null && mounted) {
                           form.fromPocket.value = selectedPocket;
                         }
@@ -196,13 +197,11 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                             showBalanceChange: newBalance !=
                                 transferForm.toPocket.value?.balance,
                             onTap: () async {
-                              final selectedPocket = await context
-                                  .pushNamed<PocketModel>('SelectPocket',
-                                      queryParameters: {
-                                    'selectedPocketId':
-                                        form.toPocket.value?.id.toString(),
-                                    'title': 'destination',
-                                  });
+                              final selectedPocket = await context.router
+                                  .push<PocketModel>(SelectPocketRoute(
+                                selectedPocketId: form.toPocket.value?.id,
+                                title: SelectPocketTitle.destination,
+                              ));
                               if (selectedPocket != null && mounted) {
                                 form.toPocket.value = selectedPocket;
                               }
@@ -253,8 +252,10 @@ class _CreateTransferPageState extends ConsumerState<CreatePocketTransferPage> {
                         errorText: errorText,
                       ),
                       validationMessages: {
-                        ErrorKey.required.name: (error) => ErrorKey.required.message(),
-                        ErrorKey.min.name: (error) => ErrorKey.min.message(min: 1),
+                        ErrorKey.required.name: (error) =>
+                            ErrorKey.required.message(),
+                        ErrorKey.min.name: (error) =>
+                            ErrorKey.min.message(min: 1),
                         ErrorKey.exceedsBalance.name: (error) =>
                             ErrorKey.exceedsBalance.message(),
                       },

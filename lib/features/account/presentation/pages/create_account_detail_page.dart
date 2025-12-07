@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/widgets/account_pocket_selector.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+@RoutePage()
 class CreateAccountDetailPage extends ConsumerWidget {
   const CreateAccountDetailPage({super.key});
   @override

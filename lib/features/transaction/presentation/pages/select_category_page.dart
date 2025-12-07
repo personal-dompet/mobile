@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/core/widgets/category_selector.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class SelectCategoryPage extends StatelessWidget {
   final String? selectedCategoryIconKey;
 

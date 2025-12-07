@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/enum/creation_type.dart';
 import 'package:dompet/core/widgets/card_input.dart';
@@ -6,11 +7,12 @@ import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/account/domain/enum/account_type.dart';
 import 'package:dompet/features/account/domain/forms/create_account_form.dart';
 import 'package:dompet/features/account/presentation/widgets/color_picker.dart';
-import 'package:dompet/routes/routes.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+@RoutePage()
 class CreateAccountPage extends ConsumerWidget {
   const CreateAccountPage({super.key});
 
@@ -150,8 +152,9 @@ class CreateAccountPage extends ConsumerWidget {
                     if (type == AccountType.cash) {
                       creationType = CreationType.basic;
                     } else {
-                      creationType = await CreateAccountDetailRoute()
-                          .push<CreationType?>(context);
+                      creationType = await context.router.push<CreationType?>(
+                        CreateAccountDetailRoute(),
+                      );
                     }
 
                     if (creationType == null || !context.mounted) return;

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/entity_type_selector.dart';
 import 'package:dompet/core/widgets/financial_entity_list_section.dart';
@@ -9,6 +10,7 @@ import 'package:dompet/features/pocket/presentation/provider/pocket_flow_provide
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+@RoutePage()
 class PocketPage extends StatelessWidget {
   const PocketPage({super.key});
   @override

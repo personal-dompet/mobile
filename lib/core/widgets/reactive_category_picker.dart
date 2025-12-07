@@ -1,5 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/enum/category.dart';
-import 'package:dompet/routes/select_category_route.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -36,9 +37,10 @@ class DompetReactiveCategoryPicker extends StatelessWidget {
 
         return InkWell(
           onTap: () async {
-            final category = await SelectCategoryRoute(
+            final category =
+                await context.router.push<Category>(SelectCategoryRoute(
               selectedCategoryIconKey: formControl.value?.iconKey,
-            ).push<Category>(context);
+            ));
             if (category == null) return;
             formControl.value = category;
           },

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/constants/pocket_color.dart';
 import 'package:dompet/core/enum/category.dart';
@@ -10,12 +11,13 @@ import 'package:dompet/features/pocket/domain/forms/create_pocket_form.dart';
 import 'package:dompet/features/pocket/presentation/widgets/color_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/icon_picker.dart';
 import 'package:dompet/features/pocket/presentation/widgets/pocket_icon.dart';
-import 'package:dompet/routes/routes.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+@RoutePage()
 class CreatePocketPage extends ConsumerWidget {
   const CreatePocketPage({super.key});
 
@@ -36,8 +38,9 @@ class CreatePocketPage extends ConsumerWidget {
   Future<CreationType?> _toCreateSpendingPocketPage(
     BuildContext context,
   ) async {
-    final detailResult =
-        await CreateSpendingPocketRoute().push<CreationType?>(context);
+    final detailResult = await context.router.push<CreationType?>(
+      CreateSpendingPocketRoute(),
+    );
     return detailResult;
   }
 

@@ -27,13 +27,15 @@ void main() async {
       overrides: [
         // sharedPreferencesProvider.overrideWithValue(sharedPreferences),
       ],
-      child: const DompetApp(),
+      child: DompetApp(),
     ),
   );
 }
 
 class DompetApp extends StatelessWidget {
-  const DompetApp({super.key});
+  DompetApp({super.key});
+
+  final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class DompetApp extends StatelessWidget {
       child: MaterialApp.router(
         title: 'Dompet',
         theme: AppThemes.darkTheme,
-        routerConfig: router,
+        routerConfig: _appRouter.config(),
       ),
     );
   }

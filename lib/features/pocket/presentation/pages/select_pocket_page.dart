@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/enum/create_from.dart';
 import 'package:dompet/core/enum/list_type.dart';
 import 'package:dompet/core/widgets/financial_entity_empty.dart';
@@ -10,11 +11,12 @@ import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+@RoutePage()
 class SelectPocketPage extends ConsumerWidget {
   final int? selectedPocketId;
   final SelectPocketTitle title;
   final CreateFrom? createFrom;
-  final bool disableEmpty;
+  final bool? disableEmpty;
   final bool? hideWallet;
 
   const SelectPocketPage({
@@ -22,11 +24,12 @@ class SelectPocketPage extends ConsumerWidget {
     this.selectedPocketId,
     this.title = SelectPocketTitle.general,
     this.createFrom,
-    this.disableEmpty = false,
+    this.disableEmpty,
     this.hideWallet = false,
   });
 
-  bool get _disableEmpty => disableEmpty || title == SelectPocketTitle.source;
+  bool get _disableEmpty =>
+      (disableEmpty ?? false) || title == SelectPocketTitle.source;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

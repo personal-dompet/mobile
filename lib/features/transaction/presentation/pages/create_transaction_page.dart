@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/enum/category.dart';
 import 'package:dompet/core/enum/create_from.dart';
@@ -13,13 +14,14 @@ import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transaction/domain/enums/transaction_type.dart';
 import 'package:dompet/features/transaction/domain/forms/transaction_form.dart';
-import 'package:dompet/routes/routes.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+@RoutePage()
 class CreateTransactionPage extends ConsumerWidget {
   final TransactionStaticSubject? subject;
 
@@ -113,10 +115,13 @@ class CreateTransactionPage extends ConsumerWidget {
                           isDisabled:
                               subject == TransactionStaticSubject.account,
                           onTap: () async {
-                            final selectedAccount = await SelectAccountRoute(
-                                    selectedAccountId: form.account.value?.id,
-                                    createFrom: CreateFrom.transaction)
-                                .push<AccountModel>(context);
+                            final selectedAccount =
+                                await context.router.push<AccountModel>(
+                              SelectAccountRoute(
+                                selectedAccountId: form.account.value?.id,
+                                createFrom: CreateFrom.transaction,
+                              ),
+                            );
                             if (selectedAccount != null && context.mounted) {
                               form.account.value = selectedAccount;
                             }
@@ -193,7 +198,8 @@ class CreateTransactionPage extends ConsumerWidget {
                     border: OutlineInputBorder(),
                   ),
                   validationMessages: {
-                    ErrorKey.required.name: (error) => ErrorKey.required.message(),
+                    ErrorKey.required.name: (error) =>
+                        ErrorKey.required.message(),
                     ErrorKey.number.name: (error) => ErrorKey.number.message(),
                     ErrorKey.exceedsPocketBalance.name: (error) =>
                         ErrorKey.exceedsPocketBalance.message(),

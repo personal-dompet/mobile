@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
@@ -9,7 +10,7 @@ import 'package:dompet/features/transfer/domain/forms/pocket_transfer_form.dart'
 import 'package:dompet/features/transfer/presentation/providers/recent_account_transfer_provider.dart';
 import 'package:dompet/features/transfer/presentation/providers/recent_pocket_transfer_provider.dart';
 import 'package:dompet/features/transfer/presentation/providers/transfer_logic_provider.dart';
-import 'package:dompet/routes/routes.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -40,9 +41,11 @@ class _TransferFlowService {
 
     transferForm.fromPocket.value = source;
 
-    final form = await CreatePocketTransferRoute(
-      subject: subject,
-    ).push<PocketTransferForm>(context);
+    final form = await context.router.push<PocketTransferForm>(
+      CreatePocketTransferRoute(
+        subject: subject,
+      ),
+    );
 
     if (form == null) {
       _ref.invalidate(pocketTransferFormProvider);

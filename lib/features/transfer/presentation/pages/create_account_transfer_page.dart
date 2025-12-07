@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/constants/error_key.dart';
 import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/utils/helpers/format_currency.dart';
@@ -8,14 +9,16 @@ import 'package:dompet/core/widgets/card_input.dart';
 import 'package:dompet/core/widgets/masked_amount_input.dart';
 import 'package:dompet/core/widgets/submit_button.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
+import 'package:dompet/features/account/presentation/pages/select_account_page.dart';
 import 'package:dompet/features/transfer/domain/forms/account_transfer_form.dart';
 import 'package:dompet/features/transfer/presentation/widgets/swap_button.dart';
+import 'package:dompet/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+@RoutePage()
 class CreateAccountTransferPage extends ConsumerStatefulWidget {
   final TransferStaticSubject? subject;
   const CreateAccountTransferPage({super.key, this.subject});
@@ -120,13 +123,11 @@ class _CreateTransferPageState
                       isDisabled:
                           widget.subject == TransferStaticSubject.source,
                       onTap: () async {
-                        final selectedAccount = await context
-                            .pushNamed<AccountModel>('SelectAccount',
-                                queryParameters: {
-                              'selectedAccountId':
-                                  form.fromAccount.value?.id.toString(),
-                              'title': 'origin',
-                            });
+                        final selectedAccount = await context.router
+                            .push<AccountModel>(SelectAccountRoute(
+                          selectedAccountId: form.fromAccount.value?.id,
+                          title: SelectAccountTitle.source,
+                        ));
                         if (selectedAccount != null && mounted) {
                           form.fromAccount.value = selectedAccount;
                         }
@@ -197,13 +198,11 @@ class _CreateTransferPageState
                             showBalanceChange: newBalance !=
                                 transferForm.toAccount.value?.balance,
                             onTap: () async {
-                              final selectedAccount = await context
-                                  .pushNamed<AccountModel>('SelectAccount',
-                                      queryParameters: {
-                                    'selectedAccountId':
-                                        form.toAccount.value?.id.toString(),
-                                    'title': 'destination',
-                                  });
+                              final selectedAccount = await context.router
+                                  .push<AccountModel>(SelectAccountRoute(
+                                selectedAccountId: form.toAccount.value?.id,
+                                title: SelectAccountTitle.destination,
+                              ));
                               if (selectedAccount != null && mounted) {
                                 form.toAccount.value = selectedAccount;
                               }

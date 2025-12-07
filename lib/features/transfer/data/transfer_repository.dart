@@ -1,4 +1,3 @@
-import 'package:dompet/core/models/financial_entity_model.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/features/transfer/data/transfer_source.dart';

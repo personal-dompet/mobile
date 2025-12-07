@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dompet/core/widgets/refresh_wrapper.dart';
 import 'package:dompet/features/home/presentation/widgets/quick_actions.dart';
 import 'package:dompet/features/transaction/presentation/providers/recent_transaction_providers.dart';
@@ -8,6 +9,7 @@ import 'package:dompet/features/wallet/presentation/widgets/wallet_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+@RoutePage()
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
