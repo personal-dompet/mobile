@@ -1,10 +1,13 @@
 import 'package:dompet/core/enum/transfer_static_subject.dart';
 import 'package:dompet/core/models/financial_entity_model.dart';
+import 'package:dompet/core/utils/helpers/hero_tag.dart';
 import 'package:dompet/core/utils/helpers/scaffold_snackbar_helper.dart';
+import 'package:dompet/core/widgets/financial_entity_icon_container.dart';
 import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 
 class FinancialEntityCard<T extends FinancialEntityModel>
     extends StatefulWidget {
@@ -85,6 +88,13 @@ class _ItemCardState<T extends FinancialEntityModel>
 
     final item = widget.item as AccountModel;
     return item.type.displayName;
+  }
+
+  String get iconTag {
+    return createHeroTag(
+      data: widget.item is AccountModel ? 'account-icon' : 'poket-icon',
+      id: widget.item.id,
+    );
   }
 
   @override
@@ -203,36 +213,12 @@ class _ItemCardState<T extends FinancialEntityModel>
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            height: 56,
-            width: 56,
-            decoration: BoxDecoration(
-              color: AppTheme.backgroundColor,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: color.withValues(alpha: 0.3),
-                width: 1.5,
-              ),
-              boxShadow: [
-                if (isSelected)
-                  BoxShadow(
-                    color: color.withValues(alpha: 0.3),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                BoxShadow(
-                  color: color.withValues(alpha: 0.3),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Icon(
-                icon,
-                color: color,
-                size: 36,
-              ),
+          Hero(
+            tag: iconTag,
+            child: FinancialEntityIconContainer(
+              color: color,
+              icon: icon,
+              isSelected: isSelected,
             ),
           ),
           const SizedBox(height: 8),
