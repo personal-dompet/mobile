@@ -26,8 +26,8 @@ class SpendingPocketModel extends PocketModel {
   factory SpendingPocketModel.fromJson(Map<String, dynamic> json) {
     final pocket = PocketModel.fromJson(json);
     return SpendingPocketModel(
-      lowBalanceThreshold: json['low_balance_threshold'],
-      lowBalanceReminder: json['low_balance_reminder'],
+      lowBalanceThreshold: json['lowBalanceThreshold'] ?? 0,
+      lowBalanceReminder: json['lowBalanceReminder'] ?? false,
       id: pocket.id,
       name: pocket.name,
       color: pocket.color,

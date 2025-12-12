@@ -14,13 +14,14 @@ class FinancialEntityListSection<T extends FinancialEntityModel,
   final void Function(T selected) onTap;
   final ListType listType;
 
-  const FinancialEntityListSection(
-      {super.key,
-      required this.filter,
-      required this.data,
-      required this.onCreate,
-      required this.onTap,
-      this.listType = ListType.filtered});
+  const FinancialEntityListSection({
+    super.key,
+    required this.filter,
+    required this.data,
+    required this.onCreate,
+    required this.onTap,
+    this.listType = ListType.filtered,
+  });
   @override
   Widget build(BuildContext context) {
     if (data.isNotEmpty) {

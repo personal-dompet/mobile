@@ -30,12 +30,12 @@ class RecurringPocketModel extends PocketModel {
   factory RecurringPocketModel.fromJson(Map<String, dynamic> json) {
     final pocket = PocketModel.fromJson(json);
     return RecurringPocketModel(
-      productName: json['product_name'],
+      productName: json['productName'],
       amount: json['amount'],
-      billingDate: json['due_date'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(json['due_date'] * 1000)
+      billingDate: json['dueDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['dueDate'] * 1000)
           : null,
-      productDescription: json['product_description'],
+      productDescription: json['productDescription'],
       id: pocket.id,
       name: pocket.name,
       color: pocket.color,

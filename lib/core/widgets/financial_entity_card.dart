@@ -7,7 +7,6 @@ import 'package:dompet/features/account/domain/model/account_model.dart';
 import 'package:dompet/features/pocket/domain/model/pocket_model.dart';
 import 'package:dompet/theme_data.dart';
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
 
 class FinancialEntityCard<T extends FinancialEntityModel>
     extends StatefulWidget {

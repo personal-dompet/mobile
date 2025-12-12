@@ -19,6 +19,11 @@ class PocketSource {
     return response.data ?? [];
   }
 
+  Future<Map<String, dynamic>> detail(int id) async {
+    final response = await _dio.get('$_prefix/$id');
+    return response.data ?? {};
+  }
+
   Future<Map<String, dynamic>> create() async {
     try {
       final form = _ref.read(createPocketFormProvider);

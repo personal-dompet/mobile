@@ -29,10 +29,10 @@ class SavingPocketModel extends PocketModel {
   factory SavingPocketModel.fromJson(Map<String, dynamic> json) {
     final pocket = PocketModel.fromJson(json);
     return SavingPocketModel(
-      targetAmount: json['target_amount'],
-      targetDescription: json['target_description'],
-      targetDate: json['target_date'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(json['target_date'] * 1000)
+      targetAmount: json['targetAmount'],
+      targetDescription: json['targetDescription'],
+      targetDate: json['targetDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['targetDate'] * 1000)
           : null,
       id: pocket.id,
       name: pocket.name,
