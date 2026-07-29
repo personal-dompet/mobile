@@ -1,0 +1,49 @@
+name: dompet_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  path: ^1.9.1
+  sqflite: ^2.4.2+1
+  get_it: ^9.2.1
+  bloc: ^9.2.0
+  flutter_bloc: ^9.1.1
+  intl: ^0.20.2
+  auto_route: ^11.1.0
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.11.0
+  flutter_gen: ^5.14.1
+  reactive_forms: ^18.2.2
+  reactive_date_time_picker: ^5.0.1
+  navigation_history_observer: ^1.1.1
+  sqflite_common_ffi: ^2.4.1
+  path_provider: ^2.1.5
+  flutter_slidable: ^4.0.3
+  sqlite3: ^3.3.3
+
+dev_dependencies:
+  integration_test:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  auto_route_generator: ^10.5.0
+  build_runner: ^2.15.0
+  flutter_gen_runner: ^5.14.1
+  json_serializable: ^6.13.2
+  freezed: ^3.2.5
+flutter:
+
+  uses-material-design: true
+

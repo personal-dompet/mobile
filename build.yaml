@@ -1,0 +1,10 @@
+targets:
+  $default:
+    builders:
+      flutter_gen_runner:
+        options:
+          output: lib/core/gen
+      json_serializable:
+        options:
+          include_if_null: false
+          checked: true
