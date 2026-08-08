@@ -7,6 +7,7 @@ import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/categories/widgets/category_field.dart';
 import 'package:dompet_app/features/transactions/cubits/transaction_cubit.dart';
+import 'package:dompet_app/features/transactions/effective_balance.dart';
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
 import 'package:dompet_app/features/transactions/forms/transaction_form.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class _TransactionPageState extends State<TransactionPage> {
   late TransactionForm _form;
 
   int _previousAmount = 0;
+  int? _previousAssetId;
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _TransactionPageState extends State<TransactionPage> {
     _form = widget.form ?? TransactionForm();
     if (isEdit) {
       _previousAmount = _form.totalAmount ?? 0;
+      _previousAssetId = _form.assetId;
     }
   }
 
@@ -140,14 +143,16 @@ class _TransactionPageState extends State<TransactionPage> {
                               (previousValue, element) =>
                                   previousValue + element.amount!,
                             );
-                            final balance =
-                                _form.assetBalance! +
-                                (widget.type == .expense
-                                    ? _previousAmount.toDouble()
-                                    : _previousAmount * -1);
+                            final effectiveBalance = computeEffectiveBalance(
+                              currentBalance: _form.assetBalance!,
+                              type: widget.type,
+                              previousAmount: isEdit ? _previousAmount : null,
+                              previousAssetId: _previousAssetId,
+                              currentAssetId: _form.assetId,
+                            );
 
                             if (widget.type == .expense &&
-                                totalAmount > balance) {
+                                totalAmount > effectiveBalance) {
                               final result =
                                   await _insufficientBalanceConfirmation(
                                     context,
