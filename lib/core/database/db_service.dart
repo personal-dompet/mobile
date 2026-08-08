@@ -11,15 +11,38 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 class DbService {
   Database? _database;
 
-  // final String? _testPath;
+  final String? _testPath;
 
-  // DbService({String? testPath}) : _testPath = testPath;
+  DbService({String? testPath}) : _testPath = testPath;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('dompet.db');
+    final testPath = _testPath;
+    _database = await (testPath != null
+        ? _openDatabase(testPath)
+        : _initDB('dompet.db'));
     return _database!;
   }
+
+  /// Opens a database at the given [path] without touching app storage.
+  ///
+  /// Used by tests (in-memory or temp file) and by the snapshot regeneration
+  /// script. The caller is responsible for removing any existing file.
+  Future<Database> _openDatabase(String path) {
+    return databaseFactoryFfi.openDatabase(
+      path,
+      options: _databaseOptions,
+    );
+  }
+
+  OpenDatabaseOptions get _databaseOptions => OpenDatabaseOptions(
+    version: 1,
+    onCreate: _onCreate,
+    onUpgrade: _onUpgrade,
+    onConfigure: (db) async {
+      await db.execute('PRAGMA foreign_keys = ON');
+    },
+  );
 
   Future<Database> _initDB(String fileName) async {
     final databaseFactory = databaseFactoryFfi;
@@ -29,30 +52,13 @@ class DbService {
     final path = join(dirPath, fileName);
     await databaseFactoryFfi.deleteDatabase(path);
     try {
-      return await databaseFactory.openDatabase(
-        path,
-        options: OpenDatabaseOptions(
-          version: 1,
-          onCreate: _onCreate,
-          onUpgrade: _onUpgrade,
-          onConfigure: (db) async {
-            await db.execute('PRAGMA foreign_keys = ON');
-          },
-        ),
-      );
+      return await databaseFactory.openDatabase(path, options: _databaseOptions);
     } catch (e) {
       if (e.toString().contains('not a database')) {
         await deleteDatabase(path);
         return await databaseFactory.openDatabase(
           path,
-          options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: _onCreate,
-            onUpgrade: _onUpgrade,
-            onConfigure: (db) async {
-              await db.execute('PRAGMA foreign_keys = ON');
-            },
-          ),
+          options: _databaseOptions,
         );
       }
       rethrow;

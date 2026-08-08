@@ -31,9 +31,7 @@ final getIt = GetIt.instance;
 
 Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerLazySingleton<DbService>(
-    () => DbService(
-      // testPath: dbTestPath
-    ),
+    () => DbService(testPath: dbTestPath),
   );
 
   getIt.registerLazySingleton<AccountRepository>(
