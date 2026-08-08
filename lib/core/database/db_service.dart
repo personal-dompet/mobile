@@ -65,6 +65,7 @@ class DbService {
     batch.execute(accountSchema);
     batch.execute(appConfigurationSchema);
     batch.execute(budgetPlanSchema);
+    batch.execute(budgetPeriodSchema);
     batch.execute(journalEntrySchema);
     batch.execute(journalLineSchema);
 
