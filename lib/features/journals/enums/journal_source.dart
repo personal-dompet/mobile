@@ -17,4 +17,8 @@ enum JournalSource {
   final String value;
 
   const JournalSource(this.value);
+
+  static List<String> get allValues {
+    return JournalSource.values.map((policy) => policy.value).toList();
+  }
 }
