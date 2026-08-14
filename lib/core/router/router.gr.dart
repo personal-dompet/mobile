@@ -10,7 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i19;
-import 'package:dompet_app/features/accounts/model/account.dart' as _i21;
+import 'package:dompet_app/features/accounts/models/account.dart' as _i21;
 import 'package:dompet_app/features/activities/pages/activity_detail_page.dart'
     as _i1;
 import 'package:dompet_app/features/activities/pages/activity_page.dart' as _i2;

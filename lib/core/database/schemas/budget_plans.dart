@@ -15,3 +15,9 @@ const budgetPlanSchema =
     FOREIGN KEY (${BudgetPlanKey.accountId}) REFERENCES $accountTable(${AccountKey.id})
   )
 ''';
+
+const budgetPlanStatusIdx =
+    '''
+  CREATE INDEX IF NOT EXISTS idx_budget_plan_status
+  ON $budgetPlanTable (${BudgetPlanKey.isDeleted});
+''';

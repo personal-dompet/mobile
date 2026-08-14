@@ -6,7 +6,7 @@ import 'package:dompet_app/core/database/schemas/schemas.dart';
 import 'package:dompet_app/core/database/views/views.dart';
 import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/core/extensions/date.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
 import 'package:dompet_app/features/transactions/forms/balance_adjustment_form.dart';

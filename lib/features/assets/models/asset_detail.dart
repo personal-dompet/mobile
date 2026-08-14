@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:dompet_app/core/extensions/number.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 
 class AssetDetail {

@@ -33,7 +33,7 @@ _JournalLine _$JournalLineFromJson(Map<String, dynamic> json) => $checkedCreate(
       accountName: $checkedConvert('account_name', (v) => v as String),
       accountType: $checkedConvert(
         'account_type',
-        (v) => $enumDecode(_$AccountTypeNameEnumMap, v),
+        (v) => $enumDecode(_$AccountTypeEnumMap, v),
       ),
       balance: $checkedConvert(
         'account_balance',
@@ -69,13 +69,13 @@ Map<String, dynamic> _$JournalLineToJson(_JournalLine instance) =>
       'note': ?instance.note,
       'line_order': instance.lineOrder,
       'account_name': instance.accountName,
-      'account_type': _$AccountTypeNameEnumMap[instance.accountType]!,
+      'account_type': _$AccountTypeEnumMap[instance.accountType]!,
       'account_balance': instance.balance,
       'account_normal_balance':
           _$BalanceTypeEnumMap[instance.accountNormalBalance]!,
     };
 
-const _$AccountTypeNameEnumMap = {
+const _$AccountTypeEnumMap = {
   AccountType.asset: 'ASSET',
   AccountType.liability: 'LIABILITY',
   AccountType.equity: 'EQUITY',

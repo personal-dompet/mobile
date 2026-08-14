@@ -3,7 +3,7 @@ import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/extensions/number.dart';
 import 'package:dompet_app/core/states/action_state.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/transactions/cubits/balance_adjustment_cubit.dart';
 import 'package:dompet_app/features/transactions/forms/balance_adjustment_form.dart';

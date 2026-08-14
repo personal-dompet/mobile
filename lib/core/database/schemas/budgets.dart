@@ -7,7 +7,7 @@ const budgetSchema =
     '''
   CREATE TABLE IF NOT EXISTS $budgetTable (
     ${BudgetKey.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-    ${BudgetKey.budgetPlanId} INTEGER NOT NULL,
+    ${BudgetKey.accountId} INTEGER NOT NULL,
     ${BudgetKey.periodStart} INTEGER NOT NULL,
     ${BudgetKey.periodEnd} INTEGER NOT NULL,
     ${BudgetKey.budgetedAmount} INTEGER NOT NULL CHECK(${BudgetKey.budgetedAmount} > 0),
@@ -15,8 +15,20 @@ const budgetSchema =
     ${BudgetKey.leftover} INTEGER NOT NULL DEFAULT 0,
     ${BudgetKey.closedAt} INTEGER,
     ${BudgetKey.createdAt} INTEGER DEFAULT (strftime('%s', 'now')),
-    UNIQUE(${BudgetKey.budgetPlanId}, ${BudgetKey.periodStart}),
+    UNIQUE(${BudgetKey.accountId}, ${BudgetKey.periodStart}),
     CHECK(${BudgetKey.periodStart} < ${BudgetKey.periodEnd}),
-    FOREIGN KEY (${BudgetKey.budgetPlanId}) REFERENCES $budgetPlanTable(${BudgetPlanKey.id})
+    FOREIGN KEY (${BudgetKey.accountId}) REFERENCES $accountTable(${AccountKey.id})
   )
+''';
+
+const budgetPeriodIdx =
+    '''
+  CREATE INDEX IF NOT EXISTS idx_budget_period 
+  ON $budgetTable (${BudgetKey.periodStart}, ${BudgetKey.periodEnd});
+''';
+
+const budgetStatusIdx =
+    '''
+  CREATE INDEX IF NOT EXISTS idx_budget_status
+  ON $budgetTable (${BudgetKey.accountId}, ${BudgetKey.closedAt});
 ''';

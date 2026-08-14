@@ -1,6 +1,6 @@
 import 'package:dompet_app/core/utils/open_add_activity_bottom_sheet.dart';
 import 'package:dompet_app/core/widgets/empty_message.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:flutter/material.dart';
 
 class EmptyActivities extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:dompet_app/core/utils/open_add_account_bottom_sheet.dart';
 import 'package:dompet_app/core/widgets/grid_tile_add.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/assets/widgets/asset_card.dart';
 import 'package:dompet_app/features/setup/cubits/asset_setup_cubit.dart';
 import 'package:dompet_app/features/setup/widgets/wallet_setup_hero.dart';

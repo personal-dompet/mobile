@@ -3,8 +3,8 @@ import 'package:dompet_app/core/database/db_service.dart';
 import 'package:dompet_app/core/database/schemas/schemas.dart';
 import 'package:dompet_app/core/database/views/views.dart';
 import 'package:dompet_app/core/enums/enum.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
-import 'package:dompet_app/features/accounts/model/account_filter.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
+import 'package:dompet_app/features/accounts/models/account_filter.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AccountRepository {

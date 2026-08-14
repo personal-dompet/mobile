@@ -4,7 +4,7 @@ import 'package:dompet_app/core/cubits/pagination_cubit.dart';
 import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/core/extensions/date.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/activities/enums/activity_type.dart';
 import 'package:dompet_app/features/activities/extensions/list_activity.dart';

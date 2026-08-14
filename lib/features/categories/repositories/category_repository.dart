@@ -1,7 +1,7 @@
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
 import 'package:dompet_app/core/database/db_service.dart';
 import 'package:dompet_app/core/database/schemas/schemas.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/categories/forms/category_form.dart';
 import 'package:flutter/material.dart';
 
