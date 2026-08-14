@@ -85,9 +85,7 @@ class TransactionRepository {
         type == .expense
             ? AccountPreset.otherExpense.code
             : AccountPreset.otherIncome.code,
-        type == .expense
-            ? AccountTypeName.expense.value
-            : AccountTypeName.income.value,
+        type == .expense ? AccountType.expense.value : AccountType.income.value,
       ],
     );
 

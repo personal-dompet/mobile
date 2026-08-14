@@ -12,7 +12,7 @@ abstract class Account with _$Account {
     @JsonKey(name: AccountKey.id) required int id,
     @JsonKey(name: AccountKey.code) required String code,
     @JsonKey(name: AccountKey.name) required String name,
-    @JsonKey(name: AccountKey.type) required AccountTypeName type,
+    @JsonKey(name: AccountKey.type) required AccountType type,
 
     @JsonKey(name: AccountKey.isLiquid)
     @BoolIntConverter()

@@ -35,7 +35,7 @@ abstract class JournalFilter with _$JournalFilter {
               INNER JOIN $accountTable 
                 ON $accountTable.${AccountKey.id} = $journalLineTable.${JournalLineKey.accountId}
               WHERE $journalLineTable.${JournalLineKey.journalEntryId} = $journalEntryTable.${JournalEntryKey.id}
-                AND $accountTable.${AccountKey.type} = '${AccountTypeName.asset.value}'
+                AND $accountTable.${AccountKey.type} = '${AccountType.asset.value}'
                 AND $journalLineTable.${JournalLineKey.creditAmount} > 0
             )
           ''');
@@ -48,7 +48,7 @@ abstract class JournalFilter with _$JournalFilter {
               INNER JOIN $accountTable 
                 ON $accountTable.${AccountKey.id} = $journalLineTable.${JournalLineKey.accountId}
               WHERE $journalLineTable.${JournalLineKey.journalEntryId} = $journalEntryTable.${JournalEntryKey.id}
-                AND $accountTable.${AccountKey.type} = '${AccountTypeName.asset.value}'
+                AND $accountTable.${AccountKey.type} = '${AccountType.asset.value}'
                 AND $journalLineTable.${JournalLineKey.debitAmount} > 0
             )
           ''');

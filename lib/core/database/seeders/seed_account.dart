@@ -19,14 +19,16 @@ Future<void> seedAccount(Transaction txn) async {
         ${AccountKey.type},
         ${AccountKey.normalBalance},
         ${AccountKey.isLiquid},
-        ${AccountKey.iconCode}
+        ${AccountKey.iconCode},
+        ${AccountKey.isSystem}
       ) VALUES (
         ?,
         ?,
         ?,
         ?,
         ?,
-        ?
+        ?,
+        1
       ) ON CONFLICT DO NOTHING
     ''',
       [

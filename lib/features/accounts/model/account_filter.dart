@@ -9,7 +9,7 @@ abstract class AccountFilter with _$AccountFilter {
   const AccountFilter._();
   const factory AccountFilter({
     String? name,
-    AccountTypeName? type,
+    AccountType? type,
     bool? isSystem,
     bool? isLiqid,
   }) = _AccountFilter;

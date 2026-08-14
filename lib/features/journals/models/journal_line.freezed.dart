@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$JournalLine {
 
-@JsonKey(name: JournalLineKey.id) int get id;@JsonKey(name: JournalLineKey.journalEntryId) int get journalEntryId;@JsonKey(name: JournalLineKey.accountId) int get accountId;@JsonKey(name: JournalLineKey.debitAmount) int get debitAmount;@JsonKey(name: JournalLineKey.creditAmount) int get creditAmount;@JsonKey(name: JournalLineKey.note) String? get note;@JsonKey(name: JournalLineKey.lineOrder) int get lineOrder;@JsonKey(name: JournalLineKey.accountName) String get accountName;@JsonKey(name: JournalLineKey.accountType) AccountTypeName get accountType;@JsonKey(name: JournalLineKey.accountBalance) int get balance;@JsonKey(name: JournalLineKey.accountNormalBalance) BalanceType get accountNormalBalance;
+@JsonKey(name: JournalLineKey.id) int get id;@JsonKey(name: JournalLineKey.journalEntryId) int get journalEntryId;@JsonKey(name: JournalLineKey.accountId) int get accountId;@JsonKey(name: JournalLineKey.debitAmount) int get debitAmount;@JsonKey(name: JournalLineKey.creditAmount) int get creditAmount;@JsonKey(name: JournalLineKey.note) String? get note;@JsonKey(name: JournalLineKey.lineOrder) int get lineOrder;@JsonKey(name: JournalLineKey.accountName) String get accountName;@JsonKey(name: JournalLineKey.accountType) AccountType get accountType;@JsonKey(name: JournalLineKey.accountBalance) int get balance;@JsonKey(name: JournalLineKey.accountNormalBalance) BalanceType get accountNormalBalance;
 /// Create a copy of JournalLine
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $JournalLineCopyWith<$Res>  {
   factory $JournalLineCopyWith(JournalLine value, $Res Function(JournalLine) _then) = _$JournalLineCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: JournalLineKey.id) int id,@JsonKey(name: JournalLineKey.journalEntryId) int journalEntryId,@JsonKey(name: JournalLineKey.accountId) int accountId,@JsonKey(name: JournalLineKey.debitAmount) int debitAmount,@JsonKey(name: JournalLineKey.creditAmount) int creditAmount,@JsonKey(name: JournalLineKey.note) String? note,@JsonKey(name: JournalLineKey.lineOrder) int lineOrder,@JsonKey(name: JournalLineKey.accountName) String accountName,@JsonKey(name: JournalLineKey.accountType) AccountTypeName accountType,@JsonKey(name: JournalLineKey.accountBalance) int balance,@JsonKey(name: JournalLineKey.accountNormalBalance) BalanceType accountNormalBalance
+@JsonKey(name: JournalLineKey.id) int id,@JsonKey(name: JournalLineKey.journalEntryId) int journalEntryId,@JsonKey(name: JournalLineKey.accountId) int accountId,@JsonKey(name: JournalLineKey.debitAmount) int debitAmount,@JsonKey(name: JournalLineKey.creditAmount) int creditAmount,@JsonKey(name: JournalLineKey.note) String? note,@JsonKey(name: JournalLineKey.lineOrder) int lineOrder,@JsonKey(name: JournalLineKey.accountName) String accountName,@JsonKey(name: JournalLineKey.accountType) AccountType accountType,@JsonKey(name: JournalLineKey.accountBalance) int balance,@JsonKey(name: JournalLineKey.accountNormalBalance) BalanceType accountNormalBalance
 });
 
 
@@ -76,7 +76,7 @@ as int,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non
 as String?,lineOrder: null == lineOrder ? _self.lineOrder : lineOrder // ignore: cast_nullable_to_non_nullable
 as int,accountName: null == accountName ? _self.accountName : accountName // ignore: cast_nullable_to_non_nullable
 as String,accountType: null == accountType ? _self.accountType : accountType // ignore: cast_nullable_to_non_nullable
-as AccountTypeName,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
+as AccountType,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
 as int,accountNormalBalance: null == accountNormalBalance ? _self.accountNormalBalance : accountNormalBalance // ignore: cast_nullable_to_non_nullable
 as BalanceType,
   ));
@@ -163,7 +163,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: JournalLineKey.id)  int id, @JsonKey(name: JournalLineKey.journalEntryId)  int journalEntryId, @JsonKey(name: JournalLineKey.accountId)  int accountId, @JsonKey(name: JournalLineKey.debitAmount)  int debitAmount, @JsonKey(name: JournalLineKey.creditAmount)  int creditAmount, @JsonKey(name: JournalLineKey.note)  String? note, @JsonKey(name: JournalLineKey.lineOrder)  int lineOrder, @JsonKey(name: JournalLineKey.accountName)  String accountName, @JsonKey(name: JournalLineKey.accountType)  AccountTypeName accountType, @JsonKey(name: JournalLineKey.accountBalance)  int balance, @JsonKey(name: JournalLineKey.accountNormalBalance)  BalanceType accountNormalBalance)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: JournalLineKey.id)  int id, @JsonKey(name: JournalLineKey.journalEntryId)  int journalEntryId, @JsonKey(name: JournalLineKey.accountId)  int accountId, @JsonKey(name: JournalLineKey.debitAmount)  int debitAmount, @JsonKey(name: JournalLineKey.creditAmount)  int creditAmount, @JsonKey(name: JournalLineKey.note)  String? note, @JsonKey(name: JournalLineKey.lineOrder)  int lineOrder, @JsonKey(name: JournalLineKey.accountName)  String accountName, @JsonKey(name: JournalLineKey.accountType)  AccountType accountType, @JsonKey(name: JournalLineKey.accountBalance)  int balance, @JsonKey(name: JournalLineKey.accountNormalBalance)  BalanceType accountNormalBalance)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _JournalLine() when $default != null:
 return $default(_that.id,_that.journalEntryId,_that.accountId,_that.debitAmount,_that.creditAmount,_that.note,_that.lineOrder,_that.accountName,_that.accountType,_that.balance,_that.accountNormalBalance);case _:
@@ -184,7 +184,7 @@ return $default(_that.id,_that.journalEntryId,_that.accountId,_that.debitAmount,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: JournalLineKey.id)  int id, @JsonKey(name: JournalLineKey.journalEntryId)  int journalEntryId, @JsonKey(name: JournalLineKey.accountId)  int accountId, @JsonKey(name: JournalLineKey.debitAmount)  int debitAmount, @JsonKey(name: JournalLineKey.creditAmount)  int creditAmount, @JsonKey(name: JournalLineKey.note)  String? note, @JsonKey(name: JournalLineKey.lineOrder)  int lineOrder, @JsonKey(name: JournalLineKey.accountName)  String accountName, @JsonKey(name: JournalLineKey.accountType)  AccountTypeName accountType, @JsonKey(name: JournalLineKey.accountBalance)  int balance, @JsonKey(name: JournalLineKey.accountNormalBalance)  BalanceType accountNormalBalance)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: JournalLineKey.id)  int id, @JsonKey(name: JournalLineKey.journalEntryId)  int journalEntryId, @JsonKey(name: JournalLineKey.accountId)  int accountId, @JsonKey(name: JournalLineKey.debitAmount)  int debitAmount, @JsonKey(name: JournalLineKey.creditAmount)  int creditAmount, @JsonKey(name: JournalLineKey.note)  String? note, @JsonKey(name: JournalLineKey.lineOrder)  int lineOrder, @JsonKey(name: JournalLineKey.accountName)  String accountName, @JsonKey(name: JournalLineKey.accountType)  AccountType accountType, @JsonKey(name: JournalLineKey.accountBalance)  int balance, @JsonKey(name: JournalLineKey.accountNormalBalance)  BalanceType accountNormalBalance)  $default,) {final _that = this;
 switch (_that) {
 case _JournalLine():
 return $default(_that.id,_that.journalEntryId,_that.accountId,_that.debitAmount,_that.creditAmount,_that.note,_that.lineOrder,_that.accountName,_that.accountType,_that.balance,_that.accountNormalBalance);case _:
@@ -204,7 +204,7 @@ return $default(_that.id,_that.journalEntryId,_that.accountId,_that.debitAmount,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: JournalLineKey.id)  int id, @JsonKey(name: JournalLineKey.journalEntryId)  int journalEntryId, @JsonKey(name: JournalLineKey.accountId)  int accountId, @JsonKey(name: JournalLineKey.debitAmount)  int debitAmount, @JsonKey(name: JournalLineKey.creditAmount)  int creditAmount, @JsonKey(name: JournalLineKey.note)  String? note, @JsonKey(name: JournalLineKey.lineOrder)  int lineOrder, @JsonKey(name: JournalLineKey.accountName)  String accountName, @JsonKey(name: JournalLineKey.accountType)  AccountTypeName accountType, @JsonKey(name: JournalLineKey.accountBalance)  int balance, @JsonKey(name: JournalLineKey.accountNormalBalance)  BalanceType accountNormalBalance)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: JournalLineKey.id)  int id, @JsonKey(name: JournalLineKey.journalEntryId)  int journalEntryId, @JsonKey(name: JournalLineKey.accountId)  int accountId, @JsonKey(name: JournalLineKey.debitAmount)  int debitAmount, @JsonKey(name: JournalLineKey.creditAmount)  int creditAmount, @JsonKey(name: JournalLineKey.note)  String? note, @JsonKey(name: JournalLineKey.lineOrder)  int lineOrder, @JsonKey(name: JournalLineKey.accountName)  String accountName, @JsonKey(name: JournalLineKey.accountType)  AccountType accountType, @JsonKey(name: JournalLineKey.accountBalance)  int balance, @JsonKey(name: JournalLineKey.accountNormalBalance)  BalanceType accountNormalBalance)?  $default,) {final _that = this;
 switch (_that) {
 case _JournalLine() when $default != null:
 return $default(_that.id,_that.journalEntryId,_that.accountId,_that.debitAmount,_that.creditAmount,_that.note,_that.lineOrder,_that.accountName,_that.accountType,_that.balance,_that.accountNormalBalance);case _:
@@ -230,7 +230,7 @@ class _JournalLine extends JournalLine {
 @override@JsonKey(name: JournalLineKey.note) final  String? note;
 @override@JsonKey(name: JournalLineKey.lineOrder) final  int lineOrder;
 @override@JsonKey(name: JournalLineKey.accountName) final  String accountName;
-@override@JsonKey(name: JournalLineKey.accountType) final  AccountTypeName accountType;
+@override@JsonKey(name: JournalLineKey.accountType) final  AccountType accountType;
 @override@JsonKey(name: JournalLineKey.accountBalance) final  int balance;
 @override@JsonKey(name: JournalLineKey.accountNormalBalance) final  BalanceType accountNormalBalance;
 
@@ -267,7 +267,7 @@ abstract mixin class _$JournalLineCopyWith<$Res> implements $JournalLineCopyWith
   factory _$JournalLineCopyWith(_JournalLine value, $Res Function(_JournalLine) _then) = __$JournalLineCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: JournalLineKey.id) int id,@JsonKey(name: JournalLineKey.journalEntryId) int journalEntryId,@JsonKey(name: JournalLineKey.accountId) int accountId,@JsonKey(name: JournalLineKey.debitAmount) int debitAmount,@JsonKey(name: JournalLineKey.creditAmount) int creditAmount,@JsonKey(name: JournalLineKey.note) String? note,@JsonKey(name: JournalLineKey.lineOrder) int lineOrder,@JsonKey(name: JournalLineKey.accountName) String accountName,@JsonKey(name: JournalLineKey.accountType) AccountTypeName accountType,@JsonKey(name: JournalLineKey.accountBalance) int balance,@JsonKey(name: JournalLineKey.accountNormalBalance) BalanceType accountNormalBalance
+@JsonKey(name: JournalLineKey.id) int id,@JsonKey(name: JournalLineKey.journalEntryId) int journalEntryId,@JsonKey(name: JournalLineKey.accountId) int accountId,@JsonKey(name: JournalLineKey.debitAmount) int debitAmount,@JsonKey(name: JournalLineKey.creditAmount) int creditAmount,@JsonKey(name: JournalLineKey.note) String? note,@JsonKey(name: JournalLineKey.lineOrder) int lineOrder,@JsonKey(name: JournalLineKey.accountName) String accountName,@JsonKey(name: JournalLineKey.accountType) AccountType accountType,@JsonKey(name: JournalLineKey.accountBalance) int balance,@JsonKey(name: JournalLineKey.accountNormalBalance) BalanceType accountNormalBalance
 });
 
 
@@ -295,7 +295,7 @@ as int,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non
 as String?,lineOrder: null == lineOrder ? _self.lineOrder : lineOrder // ignore: cast_nullable_to_non_nullable
 as int,accountName: null == accountName ? _self.accountName : accountName // ignore: cast_nullable_to_non_nullable
 as String,accountType: null == accountType ? _self.accountType : accountType // ignore: cast_nullable_to_non_nullable
-as AccountTypeName,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
+as AccountType,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
 as int,accountNormalBalance: null == accountNormalBalance ? _self.accountNormalBalance : accountNormalBalance // ignore: cast_nullable_to_non_nullable
 as BalanceType,
   ));

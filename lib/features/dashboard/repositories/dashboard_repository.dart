@@ -28,7 +28,7 @@ class DashboardRepository {
       WHERE ${AccountKey.isLiquid} = 1
         AND ${AccountKey.isDeleted} = 0
     ''',
-      [AccountTypeName.liability.value],
+      [AccountType.liability.value],
     );
 
     final balance = queryResult.first[AccountKey.balance] as int;
@@ -59,8 +59,8 @@ class DashboardRepository {
         AND ($journalEntryTable.${JournalEntryKey.entryDate} BETWEEN ? AND ?)
     ''',
       [
-        AccountTypeName.income.value,
-        AccountTypeName.expense.value,
+        AccountType.income.value,
+        AccountType.expense.value,
         JournalSource.transaction.value,
         JournalStatus.posted.name,
         startDate.secondsSinceEpoch,

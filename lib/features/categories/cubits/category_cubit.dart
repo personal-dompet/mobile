@@ -54,8 +54,8 @@ class CategoryCubit extends Cubit<CategoryState> {
   }) async {
     final filter = AccountFilter(
       type: type == TransactionType.expense
-          ? AccountTypeName.expense
-          : AccountTypeName.income,
+          ? AccountType.expense
+          : AccountType.income,
       name: keyword,
     );
 

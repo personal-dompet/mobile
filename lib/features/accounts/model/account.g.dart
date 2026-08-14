@@ -71,11 +71,11 @@ Map<String, dynamic> _$AccountToJson(_Account instance) => <String, dynamic>{
 };
 
 const _$AccountTypeNameEnumMap = {
-  AccountTypeName.asset: 'ASSET',
-  AccountTypeName.liability: 'LIABILITY',
-  AccountTypeName.equity: 'EQUITY',
-  AccountTypeName.income: 'INCOME',
-  AccountTypeName.expense: 'EXPENSE',
+  AccountType.asset: 'ASSET',
+  AccountType.liability: 'LIABILITY',
+  AccountType.equity: 'EQUITY',
+  AccountType.income: 'INCOME',
+  AccountType.expense: 'EXPENSE',
 };
 
 const _$BalanceTypeEnumMap = {
