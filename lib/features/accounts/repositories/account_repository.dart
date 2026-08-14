@@ -16,11 +16,11 @@ class AccountRepository {
     final db = await _dbService.database;
 
     final whereClauses = [
-      '${AccountKey.isDeleted} = ?',
+      '${AccountKey.isDeleted} = 0',
       ...filter.whereClauses,
     ];
 
-    final arguments = [0, ...filter.arguments];
+    final arguments = filter.arguments;
 
     final result = await db.rawQuery('''
       SELECT *
@@ -53,7 +53,10 @@ class AccountRepository {
     final db = await _dbService.database;
 
     final result = await db.rawQuery('''
-      SELECT COUNT(*) FROM $accountTable WHERE ${AccountKey.isSystem} = 0 AND ${AccountKey.type} = '${AccountType.asset.name}'
+      SELECT COUNT(*) FROM $accountTable 
+        WHERE ${AccountKey.isSystem} = 0 
+          AND ${AccountKey.type} = '${AccountType.asset.name}'
+          AND ${AccountKey.isDeleted} = 0
     ''');
 
     final int? count = Sqflite.firstIntValue(result);
