@@ -2,8 +2,9 @@ import 'package:dompet_app/core/constants/field_keys/field_key.dart';
 import 'package:dompet_app/core/database/db_service.dart';
 import 'package:dompet_app/core/database/schemas/schemas.dart';
 import 'package:dompet_app/core/database/views/views.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
-import 'package:dompet_app/features/accounts/model/account_filter.dart';
+import 'package:dompet_app/core/enums/enum.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
+import 'package:dompet_app/features/accounts/models/account_filter.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AccountRepository {
@@ -15,11 +16,11 @@ class AccountRepository {
     final db = await _dbService.database;
 
     final whereClauses = [
-      '${AccountKey.isDeleted} = ?',
+      '${AccountKey.isDeleted} = 0',
       ...filter.whereClauses,
     ];
 
-    final arguments = [0, ...filter.arguments];
+    final arguments = filter.arguments;
 
     final result = await db.rawQuery('''
       SELECT *
@@ -48,11 +49,14 @@ class AccountRepository {
     return accounts.firstOrNull;
   }
 
-  Future<bool> checkUserAccount() async {
+  Future<bool> checkUserAssetAccount() async {
     final db = await _dbService.database;
 
     final result = await db.rawQuery('''
-      SELECT COUNT(*) FROM $accountTable WHERE ${AccountKey.isSystem} = 0
+      SELECT COUNT(*) FROM $accountTable 
+        WHERE ${AccountKey.isSystem} = 0 
+          AND ${AccountKey.type} = '${AccountType.asset.name}'
+          AND ${AccountKey.isDeleted} = 0
     ''');
 
     final int? count = Sqflite.firstIntValue(result);

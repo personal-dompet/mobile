@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Account {
 
-@JsonKey(name: AccountKey.id) int get id;@JsonKey(name: AccountKey.code) String get code;@JsonKey(name: AccountKey.name) String get name;@JsonKey(name: AccountKey.type) AccountTypeName get type;@JsonKey(name: AccountKey.isLiquid)@BoolIntConverter() bool get isLiquid;@JsonKey(name: AccountKey.isDeleted)@BoolIntConverter() bool get isDeleted;@JsonKey(name: AccountKey.isSystem)@BoolIntConverter() bool get isSystem;@JsonKey(name: AccountKey.iconCode) int? get iconCode;@JsonKey(name: AccountKey.normalBalance) BalanceType get normalbalance;@JsonKey(name: AccountKey.balance) int get balance;@JsonKey(name: AccountKey.createdAt) int get createdAt;
+@JsonKey(name: AccountKey.id) int get id;@JsonKey(name: AccountKey.code) String get code;@JsonKey(name: AccountKey.name) String get name;@JsonKey(name: AccountKey.type) AccountType get type;@JsonKey(name: AccountKey.isLiquid)@BoolIntConverter() bool get isLiquid;@JsonKey(name: AccountKey.isDeleted)@BoolIntConverter() bool get isDeleted;@JsonKey(name: AccountKey.isSystem)@BoolIntConverter() bool get isSystem;@JsonKey(name: AccountKey.iconCode) int? get iconCode;@JsonKey(name: AccountKey.normalBalance) BalanceType get normalbalance;@JsonKey(name: AccountKey.balance) int get balance;@JsonKey(name: AccountKey.createdAt) int get createdAt;
 /// Create a copy of Account
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $AccountCopyWith<$Res>  {
   factory $AccountCopyWith(Account value, $Res Function(Account) _then) = _$AccountCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: AccountKey.id) int id,@JsonKey(name: AccountKey.code) String code,@JsonKey(name: AccountKey.name) String name,@JsonKey(name: AccountKey.type) AccountTypeName type,@JsonKey(name: AccountKey.isLiquid)@BoolIntConverter() bool isLiquid,@JsonKey(name: AccountKey.isDeleted)@BoolIntConverter() bool isDeleted,@JsonKey(name: AccountKey.isSystem)@BoolIntConverter() bool isSystem,@JsonKey(name: AccountKey.iconCode) int? iconCode,@JsonKey(name: AccountKey.normalBalance) BalanceType normalbalance,@JsonKey(name: AccountKey.balance) int balance,@JsonKey(name: AccountKey.createdAt) int createdAt
+@JsonKey(name: AccountKey.id) int id,@JsonKey(name: AccountKey.code) String code,@JsonKey(name: AccountKey.name) String name,@JsonKey(name: AccountKey.type) AccountType type,@JsonKey(name: AccountKey.isLiquid)@BoolIntConverter() bool isLiquid,@JsonKey(name: AccountKey.isDeleted)@BoolIntConverter() bool isDeleted,@JsonKey(name: AccountKey.isSystem)@BoolIntConverter() bool isSystem,@JsonKey(name: AccountKey.iconCode) int? iconCode,@JsonKey(name: AccountKey.normalBalance) BalanceType normalbalance,@JsonKey(name: AccountKey.balance) int balance,@JsonKey(name: AccountKey.createdAt) int createdAt
 });
 
 
@@ -71,7 +71,7 @@ id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as AccountTypeName,isLiquid: null == isLiquid ? _self.isLiquid : isLiquid // ignore: cast_nullable_to_non_nullable
+as AccountType,isLiquid: null == isLiquid ? _self.isLiquid : isLiquid // ignore: cast_nullable_to_non_nullable
 as bool,isDeleted: null == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
 as bool,isSystem: null == isSystem ? _self.isSystem : isSystem // ignore: cast_nullable_to_non_nullable
 as bool,iconCode: freezed == iconCode ? _self.iconCode : iconCode // ignore: cast_nullable_to_non_nullable
@@ -163,7 +163,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: AccountKey.id)  int id, @JsonKey(name: AccountKey.code)  String code, @JsonKey(name: AccountKey.name)  String name, @JsonKey(name: AccountKey.type)  AccountTypeName type, @JsonKey(name: AccountKey.isLiquid)@BoolIntConverter()  bool isLiquid, @JsonKey(name: AccountKey.isDeleted)@BoolIntConverter()  bool isDeleted, @JsonKey(name: AccountKey.isSystem)@BoolIntConverter()  bool isSystem, @JsonKey(name: AccountKey.iconCode)  int? iconCode, @JsonKey(name: AccountKey.normalBalance)  BalanceType normalbalance, @JsonKey(name: AccountKey.balance)  int balance, @JsonKey(name: AccountKey.createdAt)  int createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: AccountKey.id)  int id, @JsonKey(name: AccountKey.code)  String code, @JsonKey(name: AccountKey.name)  String name, @JsonKey(name: AccountKey.type)  AccountType type, @JsonKey(name: AccountKey.isLiquid)@BoolIntConverter()  bool isLiquid, @JsonKey(name: AccountKey.isDeleted)@BoolIntConverter()  bool isDeleted, @JsonKey(name: AccountKey.isSystem)@BoolIntConverter()  bool isSystem, @JsonKey(name: AccountKey.iconCode)  int? iconCode, @JsonKey(name: AccountKey.normalBalance)  BalanceType normalbalance, @JsonKey(name: AccountKey.balance)  int balance, @JsonKey(name: AccountKey.createdAt)  int createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Account() when $default != null:
 return $default(_that.id,_that.code,_that.name,_that.type,_that.isLiquid,_that.isDeleted,_that.isSystem,_that.iconCode,_that.normalbalance,_that.balance,_that.createdAt);case _:
@@ -184,7 +184,7 @@ return $default(_that.id,_that.code,_that.name,_that.type,_that.isLiquid,_that.i
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: AccountKey.id)  int id, @JsonKey(name: AccountKey.code)  String code, @JsonKey(name: AccountKey.name)  String name, @JsonKey(name: AccountKey.type)  AccountTypeName type, @JsonKey(name: AccountKey.isLiquid)@BoolIntConverter()  bool isLiquid, @JsonKey(name: AccountKey.isDeleted)@BoolIntConverter()  bool isDeleted, @JsonKey(name: AccountKey.isSystem)@BoolIntConverter()  bool isSystem, @JsonKey(name: AccountKey.iconCode)  int? iconCode, @JsonKey(name: AccountKey.normalBalance)  BalanceType normalbalance, @JsonKey(name: AccountKey.balance)  int balance, @JsonKey(name: AccountKey.createdAt)  int createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: AccountKey.id)  int id, @JsonKey(name: AccountKey.code)  String code, @JsonKey(name: AccountKey.name)  String name, @JsonKey(name: AccountKey.type)  AccountType type, @JsonKey(name: AccountKey.isLiquid)@BoolIntConverter()  bool isLiquid, @JsonKey(name: AccountKey.isDeleted)@BoolIntConverter()  bool isDeleted, @JsonKey(name: AccountKey.isSystem)@BoolIntConverter()  bool isSystem, @JsonKey(name: AccountKey.iconCode)  int? iconCode, @JsonKey(name: AccountKey.normalBalance)  BalanceType normalbalance, @JsonKey(name: AccountKey.balance)  int balance, @JsonKey(name: AccountKey.createdAt)  int createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _Account():
 return $default(_that.id,_that.code,_that.name,_that.type,_that.isLiquid,_that.isDeleted,_that.isSystem,_that.iconCode,_that.normalbalance,_that.balance,_that.createdAt);case _:
@@ -204,7 +204,7 @@ return $default(_that.id,_that.code,_that.name,_that.type,_that.isLiquid,_that.i
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: AccountKey.id)  int id, @JsonKey(name: AccountKey.code)  String code, @JsonKey(name: AccountKey.name)  String name, @JsonKey(name: AccountKey.type)  AccountTypeName type, @JsonKey(name: AccountKey.isLiquid)@BoolIntConverter()  bool isLiquid, @JsonKey(name: AccountKey.isDeleted)@BoolIntConverter()  bool isDeleted, @JsonKey(name: AccountKey.isSystem)@BoolIntConverter()  bool isSystem, @JsonKey(name: AccountKey.iconCode)  int? iconCode, @JsonKey(name: AccountKey.normalBalance)  BalanceType normalbalance, @JsonKey(name: AccountKey.balance)  int balance, @JsonKey(name: AccountKey.createdAt)  int createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: AccountKey.id)  int id, @JsonKey(name: AccountKey.code)  String code, @JsonKey(name: AccountKey.name)  String name, @JsonKey(name: AccountKey.type)  AccountType type, @JsonKey(name: AccountKey.isLiquid)@BoolIntConverter()  bool isLiquid, @JsonKey(name: AccountKey.isDeleted)@BoolIntConverter()  bool isDeleted, @JsonKey(name: AccountKey.isSystem)@BoolIntConverter()  bool isSystem, @JsonKey(name: AccountKey.iconCode)  int? iconCode, @JsonKey(name: AccountKey.normalBalance)  BalanceType normalbalance, @JsonKey(name: AccountKey.balance)  int balance, @JsonKey(name: AccountKey.createdAt)  int createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Account() when $default != null:
 return $default(_that.id,_that.code,_that.name,_that.type,_that.isLiquid,_that.isDeleted,_that.isSystem,_that.iconCode,_that.normalbalance,_that.balance,_that.createdAt);case _:
@@ -225,7 +225,7 @@ class _Account implements Account {
 @override@JsonKey(name: AccountKey.id) final  int id;
 @override@JsonKey(name: AccountKey.code) final  String code;
 @override@JsonKey(name: AccountKey.name) final  String name;
-@override@JsonKey(name: AccountKey.type) final  AccountTypeName type;
+@override@JsonKey(name: AccountKey.type) final  AccountType type;
 @override@JsonKey(name: AccountKey.isLiquid)@BoolIntConverter() final  bool isLiquid;
 @override@JsonKey(name: AccountKey.isDeleted)@BoolIntConverter() final  bool isDeleted;
 @override@JsonKey(name: AccountKey.isSystem)@BoolIntConverter() final  bool isSystem;
@@ -267,7 +267,7 @@ abstract mixin class _$AccountCopyWith<$Res> implements $AccountCopyWith<$Res> {
   factory _$AccountCopyWith(_Account value, $Res Function(_Account) _then) = __$AccountCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: AccountKey.id) int id,@JsonKey(name: AccountKey.code) String code,@JsonKey(name: AccountKey.name) String name,@JsonKey(name: AccountKey.type) AccountTypeName type,@JsonKey(name: AccountKey.isLiquid)@BoolIntConverter() bool isLiquid,@JsonKey(name: AccountKey.isDeleted)@BoolIntConverter() bool isDeleted,@JsonKey(name: AccountKey.isSystem)@BoolIntConverter() bool isSystem,@JsonKey(name: AccountKey.iconCode) int? iconCode,@JsonKey(name: AccountKey.normalBalance) BalanceType normalbalance,@JsonKey(name: AccountKey.balance) int balance,@JsonKey(name: AccountKey.createdAt) int createdAt
+@JsonKey(name: AccountKey.id) int id,@JsonKey(name: AccountKey.code) String code,@JsonKey(name: AccountKey.name) String name,@JsonKey(name: AccountKey.type) AccountType type,@JsonKey(name: AccountKey.isLiquid)@BoolIntConverter() bool isLiquid,@JsonKey(name: AccountKey.isDeleted)@BoolIntConverter() bool isDeleted,@JsonKey(name: AccountKey.isSystem)@BoolIntConverter() bool isSystem,@JsonKey(name: AccountKey.iconCode) int? iconCode,@JsonKey(name: AccountKey.normalBalance) BalanceType normalbalance,@JsonKey(name: AccountKey.balance) int balance,@JsonKey(name: AccountKey.createdAt) int createdAt
 });
 
 
@@ -290,7 +290,7 @@ id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as AccountTypeName,isLiquid: null == isLiquid ? _self.isLiquid : isLiquid // ignore: cast_nullable_to_non_nullable
+as AccountType,isLiquid: null == isLiquid ? _self.isLiquid : isLiquid // ignore: cast_nullable_to_non_nullable
 as bool,isDeleted: null == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
 as bool,isSystem: null == isSystem ? _self.isSystem : isSystem // ignore: cast_nullable_to_non_nullable
 as bool,iconCode: freezed == iconCode ? _self.iconCode : iconCode // ignore: cast_nullable_to_non_nullable

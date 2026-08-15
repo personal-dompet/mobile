@@ -18,8 +18,7 @@ abstract class JournalLine with _$JournalLine {
     @JsonKey(name: JournalLineKey.lineOrder) @Default(0) int lineOrder,
 
     @JsonKey(name: JournalLineKey.accountName) required String accountName,
-    @JsonKey(name: JournalLineKey.accountType)
-    required AccountTypeName accountType,
+    @JsonKey(name: JournalLineKey.accountType) required AccountType accountType,
     @JsonKey(name: JournalLineKey.accountBalance) @Default(0) int balance,
     @JsonKey(name: JournalLineKey.accountNormalBalance)
     required BalanceType accountNormalBalance,

@@ -4,7 +4,7 @@ import 'package:dompet_app/core/database/schemas/schemas.dart';
 import 'package:dompet_app/core/database/views/views.dart';
 import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/core/extensions/date.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
@@ -85,9 +85,7 @@ class TransactionRepository {
         type == .expense
             ? AccountPreset.otherExpense.code
             : AccountPreset.otherIncome.code,
-        type == .expense
-            ? AccountTypeName.expense.value
-            : AccountTypeName.income.value,
+        type == .expense ? AccountType.expense.value : AccountType.income.value,
       ],
     );
 

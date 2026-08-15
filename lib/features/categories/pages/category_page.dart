@@ -14,7 +14,7 @@ import 'package:dompet_app/core/widgets/loading_overlay.dart';
 import 'package:dompet_app/core/widgets/spinner_loading.dart';
 import 'package:dompet_app/features/accounts/cubits/account_action_cubit.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/app_configurations/cubits/app_configuration_cubit.dart';
 import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
 import 'package:dompet_app/features/categories/forms/category_form.dart';

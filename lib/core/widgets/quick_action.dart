@@ -5,7 +5,7 @@ import 'package:dompet_app/core/utils/open_add_account_bottom_sheet.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/cubits/account_action_cubit.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/assets/cubits/asset_cubit.dart';
 import 'package:dompet_app/features/transactions/forms/transaction_form.dart';
 import 'package:dompet_app/features/transactions/forms/transfer_form.dart';

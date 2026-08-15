@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
-import 'package:dompet_app/features/accounts/model/account_filter.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
+import 'package:dompet_app/features/accounts/models/account_filter.dart';
 import 'package:dompet_app/features/accounts/repositories/account_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

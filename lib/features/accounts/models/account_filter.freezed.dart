@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AccountFilter {
 
- String? get name; AccountTypeName? get type; bool? get isSystem; bool? get isLiqid;
+ String? get name; AccountType? get type; bool? get isSystem; bool? get isLiqid;
 /// Create a copy of AccountFilter
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $AccountFilterCopyWith<$Res>  {
   factory $AccountFilterCopyWith(AccountFilter value, $Res Function(AccountFilter) _then) = _$AccountFilterCopyWithImpl;
 @useResult
 $Res call({
- String? name, AccountTypeName? type, bool? isSystem, bool? isLiqid
+ String? name, AccountType? type, bool? isSystem, bool? isLiqid
 });
 
 
@@ -66,7 +66,7 @@ class _$AccountFilterCopyWithImpl<$Res>
   return _then(_self.copyWith(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as AccountTypeName?,isSystem: freezed == isSystem ? _self.isSystem : isSystem // ignore: cast_nullable_to_non_nullable
+as AccountType?,isSystem: freezed == isSystem ? _self.isSystem : isSystem // ignore: cast_nullable_to_non_nullable
 as bool?,isLiqid: freezed == isLiqid ? _self.isLiqid : isLiqid // ignore: cast_nullable_to_non_nullable
 as bool?,
   ));
@@ -153,7 +153,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  AccountTypeName? type,  bool? isSystem,  bool? isLiqid)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  AccountType? type,  bool? isSystem,  bool? isLiqid)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AccountFilter() when $default != null:
 return $default(_that.name,_that.type,_that.isSystem,_that.isLiqid);case _:
@@ -174,7 +174,7 @@ return $default(_that.name,_that.type,_that.isSystem,_that.isLiqid);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  AccountTypeName? type,  bool? isSystem,  bool? isLiqid)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  AccountType? type,  bool? isSystem,  bool? isLiqid)  $default,) {final _that = this;
 switch (_that) {
 case _AccountFilter():
 return $default(_that.name,_that.type,_that.isSystem,_that.isLiqid);case _:
@@ -194,7 +194,7 @@ return $default(_that.name,_that.type,_that.isSystem,_that.isLiqid);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  AccountTypeName? type,  bool? isSystem,  bool? isLiqid)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  AccountType? type,  bool? isSystem,  bool? isLiqid)?  $default,) {final _that = this;
 switch (_that) {
 case _AccountFilter() when $default != null:
 return $default(_that.name,_that.type,_that.isSystem,_that.isLiqid);case _:
@@ -213,7 +213,7 @@ class _AccountFilter extends AccountFilter {
   
 
 @override final  String? name;
-@override final  AccountTypeName? type;
+@override final  AccountType? type;
 @override final  bool? isSystem;
 @override final  bool? isLiqid;
 
@@ -247,7 +247,7 @@ abstract mixin class _$AccountFilterCopyWith<$Res> implements $AccountFilterCopy
   factory _$AccountFilterCopyWith(_AccountFilter value, $Res Function(_AccountFilter) _then) = __$AccountFilterCopyWithImpl;
 @override @useResult
 $Res call({
- String? name, AccountTypeName? type, bool? isSystem, bool? isLiqid
+ String? name, AccountType? type, bool? isSystem, bool? isLiqid
 });
 
 
@@ -268,7 +268,7 @@ class __$AccountFilterCopyWithImpl<$Res>
   return _then(_AccountFilter(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as AccountTypeName?,isSystem: freezed == isSystem ? _self.isSystem : isSystem // ignore: cast_nullable_to_non_nullable
+as AccountType?,isSystem: freezed == isSystem ? _self.isSystem : isSystem // ignore: cast_nullable_to_non_nullable
 as bool?,isLiqid: freezed == isLiqid ? _self.isLiqid : isLiqid // ignore: cast_nullable_to_non_nullable
 as bool?,
   ));

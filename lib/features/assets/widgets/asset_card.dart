@@ -1,7 +1,7 @@
 import 'package:dompet_app/core/extensions/icon_data.dart';
 import 'package:dompet_app/core/extensions/number.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:flutter/material.dart';
 
 class AssetCard extends StatelessWidget {

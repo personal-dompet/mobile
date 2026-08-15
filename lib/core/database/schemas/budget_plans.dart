@@ -9,14 +9,15 @@ const budgetPlanSchema =
     ${BudgetPlanKey.id} INTEGER PRIMARY KEY AUTOINCREMENT,
     ${BudgetPlanKey.accountId} INTEGER UNIQUE NOT NULL,
     ${BudgetPlanKey.amount} INTEGER NOT NULL CHECK(${BudgetPlanKey.amount} > 0),
-    ${BudgetPlanKey.frequency} TEXT NOT NULL,
-    ${BudgetPlanKey.startDate} INTEGER NOT NULL,
-    ${BudgetPlanKey.endType} TEXT NOT NULL,
-    ${BudgetPlanKey.endDate} INTEGER,
-    ${BudgetPlanKey.endAfterN} INTEGER,
-    ${BudgetPlanKey.carryPolicy} TEXT NOT NULL,
-    ${BudgetPlanKey.isActive} INTEGER NOT NULL DEFAULT 1,
     ${BudgetPlanKey.note} TEXT,
+    ${BudgetPlanKey.isDeleted} INTEGER DEFAULT 0,
+    ${BudgetPlanKey.createdAt} INTEGER DEFAULT (strftime('%s', 'now')),
     FOREIGN KEY (${BudgetPlanKey.accountId}) REFERENCES $accountTable(${AccountKey.id})
   )
+''';
+
+const budgetPlanStatusIdx =
+    '''
+  CREATE INDEX IF NOT EXISTS idx_budget_plan_status
+  ON $budgetPlanTable (${BudgetPlanKey.isDeleted});
 ''';

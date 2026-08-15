@@ -1,4 +1,4 @@
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/assets/forms/asset_selector_form.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 

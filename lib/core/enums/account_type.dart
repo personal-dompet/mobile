@@ -1,7 +1,7 @@
 import 'package:dompet_app/core/enums/balance_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-enum AccountTypeName {
+enum AccountType {
   @JsonValue('ASSET')
   asset('ASSET', '101', .debit),
   @JsonValue('LIABILITY')
@@ -17,5 +17,9 @@ enum AccountTypeName {
   final String code;
   final BalanceType balanceType;
 
-  const AccountTypeName(this.value, this.code, this.balanceType);
+  const AccountType(this.value, this.code, this.balanceType);
+
+  static List<String> get allValues {
+    return AccountType.values.map((policy) => policy.value).toList();
+  }
 }

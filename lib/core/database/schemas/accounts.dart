@@ -1,17 +1,18 @@
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
+import 'package:dompet_app/core/enums/enum.dart';
 
 const accountTable = 'accounts';
 
-const accountSchema =
+String accountSchema =
     '''
 CREATE TABLE IF NOT EXISTS $accountTable (
   ${AccountKey.id} INTEGER PRIMARY KEY AUTOINCREMENT,
   ${AccountKey.code} TEXT NOT NULL UNIQUE,
   ${AccountKey.name} TEXT NOT NULL,
-  ${AccountKey.type} TEXT NOT NULL,
-  ${AccountKey.normalBalance} TEXT NOT NULL,
+  ${AccountKey.type} TEXT NOT NULL CHECK(${AccountKey.type} IN (${AccountType.allValues.map((e) => "'$e'").join(',')})),
+  ${AccountKey.normalBalance} TEXT NOT NULL CHECK(${AccountKey.normalBalance} IN (${BalanceType.allValues.map((e) => "'$e'").join(',')})),
   ${AccountKey.isLiquid} INTEGER DEFAULT 0,
-  ${AccountKey.isSystem} INTEGER DEFAULT 1,
+  ${AccountKey.isSystem} INTEGER DEFAULT 0,
   ${AccountKey.iconCode} INTEGER,
   ${AccountKey.isDeleted} INTEGER DEFAULT 0,
   ${AccountKey.counter} INTEGER DEFAULT 0,

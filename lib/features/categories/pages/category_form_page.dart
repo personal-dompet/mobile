@@ -8,7 +8,7 @@ import 'package:dompet_app/core/widgets/dompet_text_field.dart';
 import 'package:dompet_app/core/widgets/loading_overlay.dart';
 import 'package:dompet_app/features/accounts/cubits/account_action_cubit.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/categories/forms/category_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

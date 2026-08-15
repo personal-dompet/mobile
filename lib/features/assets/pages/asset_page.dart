@@ -5,7 +5,7 @@ import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/widgets/dompet_text_field.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
-import 'package:dompet_app/features/accounts/model/account_filter.dart';
+import 'package:dompet_app/features/accounts/models/account_filter.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/assets/cubits/asset_cubit.dart';
 import 'package:dompet_app/features/assets/widgets/asset_card.dart';

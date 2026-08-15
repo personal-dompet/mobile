@@ -7,7 +7,7 @@ class CategoryForm extends FormGroup {
   CategoryForm()
     : super({
         AccountKey.name: FormControl<String>(validators: [Validators.required]),
-        AccountKey.type: FormControl<AccountTypeName>(
+        AccountKey.type: FormControl<AccountType>(
           validators: [Validators.required],
         ),
         'icon': FormControl<AccountIconOption>(),
@@ -15,12 +15,12 @@ class CategoryForm extends FormGroup {
 
   FormControl<String> get nameControl =>
       control(AccountKey.name) as FormControl<String>;
-  FormControl<AccountTypeName> get typeControl =>
-      control(AccountKey.type) as FormControl<AccountTypeName>;
+  FormControl<AccountType> get typeControl =>
+      control(AccountKey.type) as FormControl<AccountType>;
   FormControl<AccountIconOption> get iconControl =>
       control('icon') as FormControl<AccountIconOption>;
 
   String? get name => nameControl.value;
-  AccountTypeName? get type => typeControl.value;
+  AccountType? get type => typeControl.value;
   AccountIconOption? get icon => iconControl.value;
 }

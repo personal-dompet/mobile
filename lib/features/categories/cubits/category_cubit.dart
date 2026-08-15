@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dompet_app/core/enums/enum.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
-import 'package:dompet_app/features/accounts/model/account_filter.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
+import 'package:dompet_app/features/accounts/models/account_filter.dart';
 import 'package:dompet_app/features/accounts/repositories/account_repository.dart';
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -54,8 +54,8 @@ class CategoryCubit extends Cubit<CategoryState> {
   }) async {
     final filter = AccountFilter(
       type: type == TransactionType.expense
-          ? AccountTypeName.expense
-          : AccountTypeName.income,
+          ? AccountType.expense
+          : AccountType.income,
       name: keyword,
     );
 

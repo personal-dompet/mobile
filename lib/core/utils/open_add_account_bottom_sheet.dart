@@ -1,7 +1,7 @@
 import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/core/extensions/icon_data.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/assets/forms/asset_form.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';

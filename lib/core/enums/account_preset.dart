@@ -1,4 +1,4 @@
-import 'package:dompet_app/core/enums/account_type_name.dart';
+import 'package:dompet_app/core/enums/account_type.dart';
 import 'package:dompet_app/core/enums/balance_type.dart';
 import 'package:flutter/material.dart';
 
@@ -67,7 +67,7 @@ enum AccountPreset {
   otherExpense('Lain-lain', .expense, '501.0011', Icons.more_horiz_rounded);
 
   final String value;
-  final AccountTypeName type;
+  final AccountType type;
   final IconData icon;
   final String code;
 

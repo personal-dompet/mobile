@@ -1,6 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dompet_app/core/enums/account_type_name.dart';
-import 'package:dompet_app/features/accounts/model/account_filter.dart';
 import 'package:dompet_app/features/accounts/repositories/account_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -22,15 +20,10 @@ class SplashCubit extends Cubit<SplashState> {
 
   Future<void> check() async {
     emit(SplashState.loading());
-    final accountFilter = AccountFilter(
-      isSystem: false,
-      type: AccountTypeName.asset,
-    );
-
     try {
-      final result = await _accountRepository.getAccounts(accountFilter);
+      final hasAssetAccount = await _accountRepository.checkUserAssetAccount();
 
-      if (result.isEmpty) {
+      if (!hasAssetAccount) {
         emit(SplashState.needToBeSet());
         return;
       }

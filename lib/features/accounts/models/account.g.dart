@@ -16,7 +16,7 @@ _Account _$AccountFromJson(Map<String, dynamic> json) => $checkedCreate(
       name: $checkedConvert('name', (v) => v as String),
       type: $checkedConvert(
         'type',
-        (v) => $enumDecode(_$AccountTypeNameEnumMap, v),
+        (v) => $enumDecode(_$AccountTypeEnumMap, v),
       ),
       isLiquid: $checkedConvert(
         'is_liquid',
@@ -60,7 +60,7 @@ Map<String, dynamic> _$AccountToJson(_Account instance) => <String, dynamic>{
   'id': instance.id,
   'code': instance.code,
   'name': instance.name,
-  'type': _$AccountTypeNameEnumMap[instance.type]!,
+  'type': _$AccountTypeEnumMap[instance.type]!,
   'is_liquid': const BoolIntConverter().toJson(instance.isLiquid),
   'is_deleted': const BoolIntConverter().toJson(instance.isDeleted),
   'is_system': const BoolIntConverter().toJson(instance.isSystem),
@@ -70,12 +70,12 @@ Map<String, dynamic> _$AccountToJson(_Account instance) => <String, dynamic>{
   'created_at': instance.createdAt,
 };
 
-const _$AccountTypeNameEnumMap = {
-  AccountTypeName.asset: 'ASSET',
-  AccountTypeName.liability: 'LIABILITY',
-  AccountTypeName.equity: 'EQUITY',
-  AccountTypeName.income: 'INCOME',
-  AccountTypeName.expense: 'EXPENSE',
+const _$AccountTypeEnumMap = {
+  AccountType.asset: 'ASSET',
+  AccountType.liability: 'LIABILITY',
+  AccountType.equity: 'EQUITY',
+  AccountType.income: 'INCOME',
+  AccountType.expense: 'EXPENSE',
 };
 
 const _$BalanceTypeEnumMap = {

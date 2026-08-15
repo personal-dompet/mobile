@@ -1,7 +1,7 @@
 import 'package:auto_route/annotations.dart';
 import 'package:dompet_app/core/cubits/pagination_cubit.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
-import 'package:dompet_app/features/accounts/model/account.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/activities/widgets/activity_list.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/journals/models/journal_filter.dart';

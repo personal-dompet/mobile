@@ -1,16 +1,18 @@
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
+import 'package:dompet_app/features/journals/enums/journal_source.dart';
+import 'package:dompet_app/features/journals/enums/journal_status.dart';
 
 const journalEntryTable = 'journal_entries';
 
-const journalEntrySchema =
+String journalEntrySchema =
     '''
 CREATE TABLE IF NOT EXISTS $journalEntryTable (
   ${JournalEntryKey.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-  ${JournalEntryKey.entryDate} INETGER NOT NULL,
+  ${JournalEntryKey.entryDate} INTEGER NOT NULL,
   ${JournalEntryKey.description} TEXT,
   ${JournalEntryKey.reference} TEXT,
-  ${JournalEntryKey.source} TEXT NOT NULL,
-  ${JournalEntryKey.status} TEXT NOT NULL,
+  ${JournalEntryKey.source} TEXT NOT NULL CHECK(${JournalEntryKey.source} IN (${JournalSource.allValues.map((e) => "'$e'").join(',')})),
+  ${JournalEntryKey.status} TEXT NOT NULL CHECK(${JournalEntryKey.status} IN (${JournalStatus.allValues.map((e) => "'$e'").join(',')})),
   ${JournalEntryKey.metadata} TEXT,
   ${JournalEntryKey.sourceId} INTEGER,
   ${JournalEntryKey.createdAt} INTEGER DEFAULT (strftime('%s', 'now'))
