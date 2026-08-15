@@ -24,6 +24,23 @@ class DbService {
     return _database!;
   }
 
+  /// Opens a database at the given [path] without touching app storage.
+  ///
+  /// Used by tests (in-memory or temp file) and by the snapshot regeneration
+  /// script. The caller is responsible for removing any existing file.
+  Future<Database> _openDatabase(String path) {
+    return databaseFactoryFfi.openDatabase(path, options: _databaseOptions);
+  }
+
+  OpenDatabaseOptions get _databaseOptions => OpenDatabaseOptions(
+    version: 1,
+    onCreate: _onCreate,
+    onUpgrade: _onUpgrade,
+    onConfigure: (db) async {
+      await db.execute('PRAGMA foreign_keys = ON');
+    },
+  );
+
   Future<Database> _initDB(String fileName) async {
     final databaseFactory = databaseFactoryFfi;
     final appDir = await getApplicationSupportDirectory();
@@ -34,14 +51,7 @@ class DbService {
     try {
       return await databaseFactory.openDatabase(
         path,
-        options: OpenDatabaseOptions(
-          version: 1,
-          onCreate: _onCreate,
-          onUpgrade: _onUpgrade,
-          onConfigure: (db) async {
-            await db.execute('PRAGMA foreign_keys = ON');
-          },
-        ),
+        options: _databaseOptions,
       );
     } catch (e) {
       if (e.toString().contains('not a database')) {
@@ -73,7 +83,6 @@ class DbService {
     batch.execute(journalEntryStatusDateIdx);
 
     batch.execute(accountBalanceViewDefinition);
-    batch.execute(budgetTrackerViewDefinition);
 
     batch.execute(increaseAccountCounter);
     batch.execute(decreaseAccountCounter);

@@ -18,27 +18,32 @@ void main() {
     await disposeTestDbService(dbService);
   });
 
-  test('fresh database contains every schema table (incl. budget tables)',
-      () async {
-    const expectedTables = {
-      'accounts',
-      'app_configurations',
-      'journal_entries',
-      'journal_lines',
-      'budget_plans',
-      'budget_periods',
-    };
+  test(
+    'fresh database contains every schema table (incl. budget tables)',
+    () async {
+      const expectedTables = {
+        'accounts',
+        'app_configurations',
+        'journal_entries',
+        'journal_lines',
+        'budget_plans',
+        'budgets',
+      };
 
-    final rows = await db.rawQuery(
-      "SELECT name FROM sqlite_master WHERE type = 'table'",
-    );
-    final actualTables = rows.map((row) => row['name']).toSet();
+      final rows = await db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type = 'table'",
+      );
+      final actualTables = rows.map((row) => row['name']).toSet();
 
-    for (final table in expectedTables) {
-      expect(actualTables, contains(table),
-          reason: 'table $table must be created on a fresh database');
-    }
-  });
+      for (final table in expectedTables) {
+        expect(
+          actualTables,
+          contains(table),
+          reason: 'table $table must be created on a fresh database',
+        );
+      }
+    },
+  );
 
   test('fresh database exposes the account balance view under the frozen '
       'name (v_account_balances)', () async {
@@ -47,7 +52,10 @@ void main() {
     );
     final views = rows.map((row) => row['name']).toList();
 
-    expect(views, contains(accountBalanceView),
-        reason: 'view name frozen to $accountBalanceView');
+    expect(
+      views,
+      contains(accountBalanceView),
+      reason: 'view name frozen to $accountBalanceView',
+    );
   });
 }

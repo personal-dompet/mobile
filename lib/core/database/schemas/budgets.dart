@@ -1,7 +1,7 @@
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
 import 'package:dompet_app/core/database/schemas/schemas.dart';
 
-const budgetTable = 'budget_periods';
+const budgetTable = 'budgets';
 
 const budgetSchema =
     '''

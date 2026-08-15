@@ -13,7 +13,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 /// Regenerates the repo-root `dompet.db` dev snapshot so it is in schema
 /// parity with `lib/core/database/schemas/` + `views/`:
 ///
-/// - all tables (incl. `budget_plans` / `budget_periods`)
+/// - all tables (incl. `budget_plans` / `budgets`)
 /// - the `v_account_balances` view (frozen code truth)
 /// - seeded preset accounts + app configuration
 /// - the dev wallet ("Tunai") with its opening balance journal
@@ -35,7 +35,9 @@ void main() {
 
     final repoRoot = Directory.current;
     expect(
-      File('${repoRoot.path}${Platform.pathSeparator}pubspec.yaml').existsSync(),
+      File(
+        '${repoRoot.path}${Platform.pathSeparator}pubspec.yaml',
+      ).existsSync(),
       isTrue,
       reason: 'run from the repo root',
     );
@@ -68,17 +70,19 @@ void main() {
       'journal_entries',
       'journal_lines',
       'budget_plans',
-      'budget_periods',
+      'budgets',
     }) {
-      expect(tables, contains(table),
-          reason: 'snapshot must contain $table');
+      expect(tables, contains(table), reason: 'snapshot must contain $table');
     }
 
     final views = (await db.rawQuery(
       "SELECT name FROM sqlite_master WHERE type = 'view'",
     )).map((row) => row['name']).toList();
-    expect(views, contains(accountBalanceView),
-        reason: 'snapshot view must be $accountBalanceView');
+    expect(
+      views,
+      contains(accountBalanceView),
+      reason: 'snapshot view must be $accountBalanceView',
+    );
 
     final wallet = await db.query(
       accountTable,
@@ -88,10 +92,16 @@ void main() {
     );
     expect(wallet, hasLength(1), reason: 'dev wallet "Tunai" must exist');
 
-    expect(await db.query(journalEntryTable), hasLength(1),
-        reason: 'opening balance journal must exist');
-    expect(await db.query(journalLineTable), hasLength(2),
-        reason: 'opening journal must have two balanced lines');
+    expect(
+      await db.query(journalEntryTable),
+      hasLength(1),
+      reason: 'opening balance journal must exist',
+    );
+    expect(
+      await db.query(journalLineTable),
+      hasLength(2),
+      reason: 'opening journal must have two balanced lines',
+    );
 
     await dbService.close();
   });

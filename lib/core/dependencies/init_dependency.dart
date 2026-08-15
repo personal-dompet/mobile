@@ -30,9 +30,7 @@ import 'package:get_it/get_it.dart';
 final getIt = GetIt.instance;
 
 Future<void> initDependency({String? dbTestPath}) async {
-  getIt.registerLazySingleton<DbService>(
-    () => DbService(testPath: dbTestPath),
-  );
+  getIt.registerLazySingleton<DbService>(() => DbService(testPath: dbTestPath));
 
   getIt.registerLazySingleton<AccountRepository>(
     () => AccountRepository(getIt()),
@@ -75,9 +73,7 @@ Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerFactory<DashboardCubit>(
     () => DashboardCubit(getIt(), getIt(), getIt()),
   );
-  getIt.registerFactory<CategoryCubit>(
-    () => CategoryCubit(getIt()),
-  );
+  getIt.registerFactory<CategoryCubit>(() => CategoryCubit(getIt()));
   getIt.registerFactory<AssetDetailCubit>(
     () => AssetDetailCubit(getIt(), getIt()),
   );
