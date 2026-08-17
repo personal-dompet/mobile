@@ -10,6 +10,9 @@ import 'package:dompet_app/features/app_configurations/repositories/app_configur
 import 'package:dompet_app/features/assets/cubits/asset_cubit.dart';
 import 'package:dompet_app/features/assets/cubits/asset_detail_cubit.dart';
 import 'package:dompet_app/features/assets/repositories/asset_repository.dart';
+import 'package:dompet_app/features/budgets/cubits/budget_cubit.dart';
+import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
+import 'package:dompet_app/features/budgets/repositories/budget_repository.dart';
 import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
 import 'package:dompet_app/features/categories/repositories/category_repository.dart';
 import 'package:dompet_app/features/dashboard/cubits/dashboard_cubit.dart';
@@ -38,6 +41,10 @@ Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerLazySingleton<AssetRepository>(() => AssetRepository(getIt()));
   getIt.registerLazySingleton<CategoryRepository>(
     () => CategoryRepository(getIt()),
+  );
+
+  getIt.registerLazySingleton<BudgetRepository>(
+    () => BudgetRepository(getIt()),
   );
 
   getIt.registerLazySingleton<AppConfigurationRepository>(
@@ -82,6 +89,10 @@ Future<void> initDependency({String? dbTestPath}) async {
     () => AccountActionCubit(getIt(), getIt(), getIt()),
   );
   getIt.registerFactory<AssetCubit>(() => AssetCubit(getIt()));
+
+  getIt.registerFactory<BudgetCubit>(() => BudgetCubit(getIt()));
+
+  getIt.registerFactory<BudgetSignalCubit>(() => BudgetSignalCubit());
 
   getIt.registerLazySingleton<AppConfigurationCubit>(
     () => AppConfigurationCubit(getIt()),

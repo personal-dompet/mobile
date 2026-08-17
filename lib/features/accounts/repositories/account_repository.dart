@@ -55,7 +55,7 @@ class AccountRepository {
     final result = await db.rawQuery('''
       SELECT COUNT(*) FROM $accountTable 
         WHERE ${AccountKey.isSystem} = 0 
-          AND ${AccountKey.type} = '${AccountType.asset.name}'
+          AND ${AccountKey.type} = '${AccountType.asset.value}'
           AND ${AccountKey.isDeleted} = 0
     ''');
 

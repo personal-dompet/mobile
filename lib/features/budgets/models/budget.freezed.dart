@@ -217,8 +217,8 @@ return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_t
 /// @nodoc
 @JsonSerializable()
 
-class _Budget implements Budget {
-  const _Budget({@JsonKey(name: BudgetKey.id) required this.id, @JsonKey(name: BudgetKey.accountId) required this.accountId, @JsonKey(name: BudgetKey.accountName) required this.accountName, @JsonKey(name: BudgetKey.budgetedAmount) required this.budgetAmount, @JsonKey(name: BudgetKey.periodStart) required this.periodStart, @JsonKey(name: BudgetKey.periodEnd) required this.periodEnd, @JsonKey(name: BudgetKey.actualSpend) this.actualSpend = 0, @JsonKey(name: BudgetKey.carryAmount) this.carryAmount = 0, @JsonKey(name: BudgetKey.leftover) this.leftover = 0, @JsonKey(name: BudgetKey.closedAt) this.closedAt});
+class _Budget extends Budget {
+  const _Budget({@JsonKey(name: BudgetKey.id) required this.id, @JsonKey(name: BudgetKey.accountId) required this.accountId, @JsonKey(name: BudgetKey.accountName) required this.accountName, @JsonKey(name: BudgetKey.budgetedAmount) required this.budgetAmount, @JsonKey(name: BudgetKey.periodStart) required this.periodStart, @JsonKey(name: BudgetKey.periodEnd) required this.periodEnd, @JsonKey(name: BudgetKey.actualSpend) this.actualSpend = 0, @JsonKey(name: BudgetKey.carryAmount) this.carryAmount = 0, @JsonKey(name: BudgetKey.leftover) this.leftover = 0, @JsonKey(name: BudgetKey.closedAt) this.closedAt}): super._();
   factory _Budget.fromJson(Map<String, dynamic> json) => _$BudgetFromJson(json);
 
 @override@JsonKey(name: BudgetKey.id) final  int id;

@@ -10,12 +10,12 @@ String budgetTrackerViewDefinition =
 CREATE VIEW $budgetTrackerView AS
   SELECT
     $budgetTable.*,
-    $accountTable.${AccountKey.name} AS ${BudgetKey.accountName}
+    $accountTable.${AccountKey.name} AS ${BudgetKey.accountName},
     COALESCE(SUM(CASE 
       WHEN $accountTable.${AccountKey.normalBalance} = '${BalanceType.debit.value}' THEN $journalLineTable.${JournalLineKey.debitAmount}
       WHEN $accountTable.${AccountKey.normalBalance} = '${BalanceType.credit.value}' THEN $journalLineTable.${JournalLineKey.creditAmount}
       ELSE 0
-    END), 0) AS ${BudgetKey.actualSpend},
+    END), 0) AS ${BudgetKey.actualSpend}
   FROM $budgetTable
   LEFT JOIN $accountTable ON $accountTable.${AccountKey.id} = $budgetTable.${BudgetKey.accountId}
   LEFT JOIN $journalLineTable ON $journalLineTable.${JournalLineKey.accountId} = $accountTable.${AccountKey.id}

@@ -13,8 +13,15 @@ extension EpochSecond on DateTime {
 
   String get dayName => DateFormat('EEEE', 'id').format(this);
 
-  String format({bool includeDay = false, bool includeTime = false}) {
-    final List<String> patterns = ['d MMMM yyyy'];
+  String format({
+    bool includeDay = false,
+    bool hideDate = false,
+    bool includeTime = false,
+  }) {
+    final List<String> patterns = ['d', 'MMMM yyyy'];
+    if (hideDate) {
+      patterns.removeAt(0);
+    }
     if (includeDay) {
       patterns.insert(0, 'EEEE,');
     }

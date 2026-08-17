@@ -1,0 +1,137 @@
+import 'package:dompet_app/core/extensions/number.dart';
+import 'package:dompet_app/features/budgets/models/budget.dart';
+import 'package:dompet_app/features/budgets/widgets/empty_budgets.dart';
+import 'package:flutter/material.dart';
+
+class BudgetList extends StatelessWidget {
+  final List<Budget> budgets;
+  const BudgetList({super.key, required this.budgets});
+
+  @override
+  Widget build(BuildContext context) {
+    if (budgets.isEmpty) {
+      return Center(child: EmptyBudgets(center: true));
+    }
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return _BudgetCard(budget: budgets[index]);
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(height: 16);
+      },
+      itemCount: budgets.length,
+    );
+  }
+}
+
+class _BudgetCard extends StatelessWidget {
+  final Budget budget;
+  const _BudgetCard({required this.budget});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final isOverBudget = budget.useageRatio > 1;
+    final statusColor =
+        isOverBudget ? themeData.colorScheme.error : themeData.colorScheme.tertiary;
+
+    return Card(
+      clipBehavior: .antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: .stretch,
+          spacing: 8,
+          children: [
+            Row(
+              spacing: 4,
+              children: [
+                Expanded(
+                  child: Text(
+                    budget.accountName,
+                    style: themeData.textTheme.bodyMedium?.copyWith(
+                      fontWeight: .w600,
+                    ),
+                    overflow: .ellipsis,
+                  ),
+                ),
+                Text(
+                  budget.budgetAmount.currency,
+                  style: themeData.textTheme.bodyMedium?.copyWith(
+                    color: themeData.colorScheme.primary,
+                    fontWeight: .w600,
+                  ),
+                ),
+              ],
+            ),
+            Text(
+              budget.periode,
+              style: themeData.textTheme.bodySmall?.copyWith(
+                color: themeData.colorScheme.onSurface.withValues(alpha: 0.8),
+              ),
+            ),
+            _UsageBar(ratio: budget.useageRatio),
+            Row(
+              spacing: 4,
+              children: [
+                Text(
+                  'Terpakai: ${budget.actualSpend.compactCurrency}',
+                  style: themeData.textTheme.bodySmall,
+                ),
+                const Spacer(),
+                Text(
+                  'Sisa: ${budget.leftover.compactCurrency}',
+                  style: themeData.textTheme.bodySmall?.copyWith(
+                    color: isOverBudget
+                        ? themeData.colorScheme.error
+                        : themeData.colorScheme.onSurface.withValues(alpha: 0.8),
+                  ),
+                ),
+                Text(
+                  '${(budget.useageRatio * 100).round()}%',
+                  style: themeData.textTheme.bodySmall?.copyWith(
+                    color: statusColor,
+                    fontWeight: .w600,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _UsageBar extends StatelessWidget {
+  final double ratio;
+  const _UsageBar({required this.ratio});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final clamped = ratio.clamp(0.0, 1.0);
+    final fillColor =
+        ratio > 1 ? colorScheme.error : colorScheme.primary;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(3),
+      child: Stack(
+        children: [
+          Container(
+            height: 6,
+            color: colorScheme.onSurface.withValues(alpha: 0.15),
+          ),
+          FractionallySizedBox(
+            alignment: .centerLeft,
+            widthFactor: clamped,
+            child: Container(
+              height: 6,
+              color: fillColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

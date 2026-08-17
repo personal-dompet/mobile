@@ -47,7 +47,7 @@ class DbService {
     final dirPath = join(appDir.path, 'databases');
     await Directory(dirPath).create(recursive: true);
     final path = join(dirPath, fileName);
-    await databaseFactoryFfi.deleteDatabase(path);
+    // await databaseFactoryFfi.deleteDatabase(path);
     try {
       return await databaseFactory.openDatabase(
         path,
@@ -55,7 +55,7 @@ class DbService {
       );
     } catch (e) {
       if (e.toString().contains('not a database')) {
-        await deleteDatabase(path);
+        // await deleteDatabase(path);
         return await databaseFactory.openDatabase(
           path,
           options: _databaseOptions,
@@ -83,6 +83,7 @@ class DbService {
     batch.execute(journalEntryStatusDateIdx);
 
     batch.execute(accountBalanceViewDefinition);
+    batch.execute(budgetTrackerViewDefinition);
 
     batch.execute(increaseAccountCounter);
     batch.execute(decreaseAccountCounter);

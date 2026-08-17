@@ -1,4 +1,7 @@
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
+import 'package:dompet_app/core/extensions/date.dart';
+import 'package:dompet_app/core/extensions/number.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'budget.freezed.dart';
@@ -6,6 +9,7 @@ part 'budget.g.dart';
 
 @freezed
 abstract class Budget with _$Budget {
+  const Budget._();
   const factory Budget({
     @JsonKey(name: BudgetKey.id) required int id,
     @JsonKey(name: BudgetKey.accountId) required int accountId,
@@ -20,4 +24,13 @@ abstract class Budget with _$Budget {
   }) = _Budget;
 
   factory Budget.fromJson(Map<String, dynamic> json) => _$BudgetFromJson(json);
+
+  DateTime get periodStartDate => periodStart.dateTime;
+  DateTime get periodEndDate => periodEnd.dateTime;
+  double get useageRatio => actualSpend / budgetAmount;
+  String get periode => periodStartDate.format(hideDate: true);
+  bool get isOutOfPeriod {
+    final now = DateTime.now();
+    return !DateUtils.isSameMonth(now, periodEndDate);
+  }
 }
