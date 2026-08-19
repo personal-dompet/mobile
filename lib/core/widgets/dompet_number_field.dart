@@ -1,5 +1,6 @@
 import 'package:dompet_app/core/utils/dompet_input_decoration.dart';
 import 'package:dompet_app/core/utils/format_currency.dart';
+import 'package:dompet_app/core/widgets/calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -21,6 +22,7 @@ class DompetNumberField extends ReactiveFormField<int?, int?> {
   final bool autoFocus;
   final InputBorder? border;
   final FloatingLabelBehavior? floatingLabelBehavior;
+  final bool showCalculator;
 
   DompetNumberField({
     super.key,
@@ -41,6 +43,7 @@ class DompetNumberField extends ReactiveFormField<int?, int?> {
     this.showRequiredLabel = false,
     this.floatingLabelBehavior,
     this.textStyle,
+    this.showCalculator = false,
   }) : super(
          formControl: formControl,
          builder: (ReactiveFormFieldState<int?, int?> field) {
@@ -63,6 +66,7 @@ class DompetNumberField extends ReactiveFormField<int?, int?> {
              floatingLabelBehavior: floatingLabelBehavior,
              border: border,
              readOnly: readOnly,
+             showCalculator: showCalculator,
            );
          },
        );
@@ -84,6 +88,7 @@ class _AmountInput extends StatefulWidget {
   final InputBorder? border;
   final bool readOnly;
   final FloatingLabelBehavior? floatingLabelBehavior;
+  final bool showCalculator;
 
   const _AmountInput({
     required this.field,
@@ -101,6 +106,7 @@ class _AmountInput extends StatefulWidget {
     this.textStyle,
     this.floatingLabelBehavior,
     this.border = const OutlineInputBorder(),
+    this.showCalculator = false,
   });
 
   @override
@@ -173,6 +179,22 @@ class _AmountInputState extends State<_AmountInput> {
             ? Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Text('Rp'),
+              )
+            : null,
+        suffixIcon: widget.showCalculator
+            ? Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: CalculatorTriggerButton(
+                  initialValue: widget.field.value ?? 0,
+                  iconSize: 18,
+                  padding: const EdgeInsets.all(4),
+                  onValueApplied: (value) {
+                    widget.field.control
+                      ..updateValue(value)
+                      ..markAsDirty()
+                      ..markAsTouched();
+                  },
+                ),
               )
             : null,
       ),

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/states/action_state.dart';
+import 'package:dompet_app/core/widgets/calculator.dart';
 import 'package:dompet_app/core/widgets/dompet_dialog.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
@@ -200,6 +201,16 @@ class _TransactionPageState extends State<TransactionPage> {
                           },
                           child: Text('Catat banyak kategori sekaligus'),
                         ),
+
+                      if (widget.batch)
+                        TextButton(
+                          onPressed: () {
+                            providedContext.router.replace(
+                              TransactionRoute(type: widget.type),
+                            );
+                          },
+                          child: Text('Catat satu kategori'),
+                        ),
                     ],
                   ),
                 );
@@ -214,15 +225,35 @@ class _TransactionPageState extends State<TransactionPage> {
               // crossAxisAlignment: .stretch,
               spacing: 16,
               children: [
-                AmountInput(
-                  formControl: !widget.batch
-                      ? _form.categories.first.amountControl
-                      : _form.totalAmountControl,
-                  readOnly: widget.batch,
-                  errorMessage: !widget.batch
-                      ? 'Masukkan nominal ${widget.type == .expense ? 'pengeluaran' : 'pemasukan'} dulu'
-                      : null,
-                ),
+                if (!widget.batch)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: AmountInput(
+                          formControl: _form.categories.first.amountControl,
+                          errorMessage:
+                              'Masukkan nominal ${widget.type == .expense ? 'pengeluaran' : 'pemasukan'} dulu',
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      CalculatorTriggerButton(
+                        onValueApplied: (value) {
+                          final control = _form.categories.first.amountControl;
+                          control
+                            ..updateValue(value)
+                            ..markAsDirty()
+                            ..markAsTouched();
+                        },
+                      ),
+                    ],
+                  )
+                else
+                  AmountInput(
+                    formControl: _form.totalAmountControl,
+                    readOnly: true,
+                  ),
 
                 SizedBox.shrink(),
 
@@ -266,6 +297,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                         formControl: categoryForm.amountControl,
                                         border: OutlineInputBorder(),
                                         isCurrency: true,
+                                        showCalculator: true,
                                         validationMessages: {
                                           ValidationMessage.required: (error) =>
                                               'Masukkan nominal untuk kategori ini terlebih dahulu',

@@ -32,15 +32,13 @@ class BudgetPlanFormPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SafeArea(
+      body: const SafeArea(
         child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
-              child: CalculatorScreen(
-                onApply: (value) => _showApplied(context, value),
-              ),
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(
+              'Preview widget kalkulator. Tekan ikon kalkulator di kanan atas untuk membuka bottom sheet.',
+              textAlign: TextAlign.center,
             ),
           ),
         ),

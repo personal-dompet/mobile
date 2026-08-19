@@ -339,7 +339,7 @@ class Calculator {
 ///
 /// Mengembalikan nilai bulat yang dipilih user saat menekan "Terapkan",
 /// atau `null` jika sheet ditutup tanpa menerapkan.
-Future<int?> showCalculatorBottomSheet(
+Future<int?> _showCalculatorBottomSheet(
   BuildContext context, {
   int? initialValue,
 }) {
@@ -352,7 +352,7 @@ Future<int?> showCalculatorBottomSheet(
     builder: (context) {
       return SafeArea(
         top: false,
-        child: CalculatorScreen(
+        child: _CalculatorScreen(
           initialValue: initialValue,
           onApply: (value) => Navigator.of(context).pop(value),
         ),
@@ -361,15 +361,17 @@ Future<int?> showCalculatorBottomSheet(
   );
 }
 
-/// Tombol untuk membuka kalkulator di dalam bottom sheet.
+/// Tombol berstil tonal bulat untuk membuka kalkulator di dalam bottom sheet.
 ///
-/// Letakkan di samping `DompetNumberField`. Saat user menekan "Terapkan",
-/// nilai bulat hasil kalkulator dikirim melalui [onValueApplied].
+/// Saat user menekan "Terapkan", nilai bulat hasil kalkulator dikirim melalui
+/// [onValueApplied].
 class CalculatorTriggerButton extends StatelessWidget {
   final int? initialValue;
   final ValueChanged<int>? onValueApplied;
   final Color? color;
+  final Color? backgroundColor;
   final double iconSize;
+  final EdgeInsetsGeometry padding;
   final String tooltip;
 
   const CalculatorTriggerButton({
@@ -377,12 +379,14 @@ class CalculatorTriggerButton extends StatelessWidget {
     this.initialValue,
     this.onValueApplied,
     this.color,
+    this.backgroundColor,
     this.iconSize = 24,
+    this.padding = const EdgeInsets.all(10),
     this.tooltip = 'Buka kalkulator',
   });
 
   Future<void> _open(BuildContext context) async {
-    final value = await showCalculatorBottomSheet(
+    final value = await _showCalculatorBottomSheet(
       context,
       initialValue: initialValue,
     );
@@ -393,29 +397,44 @@ class CalculatorTriggerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () => _open(context),
-      icon: Icon(Icons.calculate_rounded, size: iconSize, color: color),
-      tooltip: tooltip,
+    final colorScheme = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: backgroundColor ?? colorScheme.surfaceContainerHighest,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => _open(context),
+          customBorder: const CircleBorder(),
+          child: Padding(
+            padding: padding,
+            child: Icon(
+              Icons.calculate_rounded,
+              size: iconSize,
+              color: color ?? colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
 
-class CalculatorScreen extends StatefulWidget {
+class _CalculatorScreen extends StatefulWidget {
   final int? initialValue;
   final ValueChanged<int>? onApply;
 
-  const CalculatorScreen({
-    super.key,
+  const _CalculatorScreen({
     this.initialValue,
     this.onApply,
   });
 
   @override
-  State<CalculatorScreen> createState() => _CalculatorScreenState();
+  State<_CalculatorScreen> createState() => _CalculatorScreenState();
 }
 
-class _CalculatorScreenState extends State<CalculatorScreen> {
+class _CalculatorScreenState extends State<_CalculatorScreen> {
   late Calculator _calculator;
 
   @override
@@ -498,7 +517,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           const SizedBox(height: 24),
 
           // Button Grid
-          CalculatorButtonGrid(
+          _CalculatorButtonGrid(
             onButtonPressed: _onButtonPressed,
           ),
           const SizedBox(height: 16),
@@ -527,11 +546,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 }
 
-class CalculatorButtonGrid extends StatelessWidget {
+class _CalculatorButtonGrid extends StatelessWidget {
   final Function(String) onButtonPressed;
 
-  const CalculatorButtonGrid({
-    super.key,
+  const _CalculatorButtonGrid({
     required this.onButtonPressed,
   });
 
@@ -566,7 +584,7 @@ class CalculatorButtonGrid extends StatelessWidget {
                   padding: EdgeInsets.only(
                     right: index < row.length - 1 ? 12 : 0,
                   ),
-                  child: CalculatorButton(
+                  child: _CalculatorButton(
                     value: value,
                     onPressed: () => onButtonPressed(value),
                     backgroundColor: isClear
@@ -590,14 +608,13 @@ class CalculatorButtonGrid extends StatelessWidget {
   }
 }
 
-class CalculatorButton extends StatelessWidget {
+class _CalculatorButton extends StatelessWidget {
   final String value;
   final VoidCallback onPressed;
   final Color backgroundColor;
   final Color foregroundColor;
 
-  const CalculatorButton({
-    super.key,
+  const _CalculatorButton({
     required this.value,
     required this.onPressed,
     required this.backgroundColor,
