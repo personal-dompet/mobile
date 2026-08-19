@@ -8,6 +8,14 @@ class Calculator {
   bool _displayCommitted = false; // Apakah display sudah masuk ke _expression
   bool _operationFinalized = true;
 
+  /// Ekspresi tertunda yang tampil di atas display (mis. "100 +", "300 ×").
+  /// Hanya di-set saat tombol operasi (+ - × ÷ =) ditekan.
+  String? _expressionDisplay;
+
+  /// Info ekspresi yang sedang/telah dikerjakan di atas display, atau `null`
+  /// bila belum ada operasi yang dimulai.
+  String? get expressionDisplay => _expressionDisplay;
+
   Calculator({int? initialValue}) {
     if (initialValue != null && initialValue != 0) {
       display = _formatNumber(initialValue.toString());
@@ -102,6 +110,28 @@ class Calculator {
         _isNumber(_expression[2]);
   }
 
+  /// Format token `_expression` menjadi string tampilan info,
+  /// mis. ["100", "+"] → "100 +". `%` digabung ke token sebelumnya.
+  String _formatExpressionForInfo() {
+    final parts = <String>[];
+    for (var i = 0; i < _expression.length; i++) {
+      final token = _expression[i];
+      if (token == '%') {
+        if (parts.isNotEmpty && _isNumber(_expression[i - 1])) {
+          parts[parts.length - 1] = '${parts.last}%';
+        } else {
+          parts.add('%');
+        }
+      } else {
+        parts.add(_isNumber(token) ? _formatNumber(token) : token);
+      }
+    }
+    return parts.join(' ');
+  }
+
+  /// Apakah `_expression` mengandung operator (+ - × ÷).
+  bool _hasOperator() => _expression.any(_isOperator);
+
   void input(String value) {
     if (value == 'C') {
       display = '0';
@@ -109,6 +139,7 @@ class Calculator {
       _shouldResetDisplay = false;
       _displayCommitted = false;
       _operationFinalized = true;
+      _expressionDisplay = null;
       return;
     }
 
@@ -146,6 +177,7 @@ class Calculator {
           _operationFinalized = true;
           _shouldResetDisplay = true;
           _displayCommitted = true;
+          _expressionDisplay = null;
           return;
         }
         display = _formatNumber(_formatResult(result));
@@ -161,6 +193,7 @@ class Calculator {
       } else {
         _expression.add(value);
       }
+      _expressionDisplay = _formatExpressionForInfo();
       _operationFinalized = false;
       _shouldResetDisplay = true;
       return;
@@ -230,11 +263,17 @@ class Calculator {
       return;
     }
 
+    final hadOperator = _hasOperator();
+    final expressionText = hadOperator ? _formatExpressionForInfo() : null;
     final result = _evaluate(_expression);
     if (result == null) {
       display = 'Error';
+      _expressionDisplay = null;
     } else {
       display = _formatNumber(_formatResult(result));
+      if (hadOperator) {
+        _expressionDisplay = '$expressionText =';
+      }
     }
 
     _expression.clear();
@@ -427,6 +466,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  // Info ekspresi tertunda (mis. "100 +", "300 ×", "100 + 200 =")
+                  if (_calculator.expressionDisplay != null) ...[
+                    Text(
+                      _calculator.expressionDisplay!,
+                      textAlign: TextAlign.right,
+                      style: textTheme.titleMedium?.copyWith(
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                   // Main Display
                   Text(
                     _calculator.display,

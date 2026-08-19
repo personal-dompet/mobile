@@ -150,4 +150,84 @@ void main() {
       expect(calc.display, '100');
     });
   });
+
+  group('Expression display (info di atas bilangan)', () {
+    test('kosong sebelum tombol operasi ditekan', () {
+      final calc = Calculator();
+      expect(calc.expressionDisplay, isNull);
+      for (final v in ['1', '0', '0', '2', '0', '0']) {
+        calc.input(v);
+      }
+      expect(calc.expressionDisplay, isNull);
+    });
+
+    test('100 + → "100 +", ketik 200 tetap "100 +", = → "100 + 200 ="', () {
+      final calc = Calculator();
+      for (final v in ['1', '0', '0']) {
+        calc.input(v);
+      }
+      calc.input('+');
+      expect(calc.expressionDisplay, '100 +');
+
+      for (final v in ['2', '0', '0']) {
+        calc.input(v);
+      }
+      expect(calc.expressionDisplay, '100 +');
+
+      calc.input('=');
+      expect(calc.expressionDisplay, '100 + 200 =');
+      expect(calc.display, '300');
+    });
+
+    test('rantai: 100 + 200 × → "300 ×", 5, = → "300 × 5 ="', () {
+      final calc = Calculator();
+      for (final v in ['1', '0', '0', '+', '2', '0', '0', '×']) {
+        calc.input(v);
+      }
+      expect(calc.expressionDisplay, '300 ×');
+      expect(calc.display, '300');
+
+      calc.input('5');
+      expect(calc.expressionDisplay, '300 ×');
+
+      calc.input('=');
+      expect(calc.expressionDisplay, '300 × 5 =');
+      expect(calc.display, '1.500');
+    });
+
+    test('info bertahan setelah = dan tertimpa oleh operator baru', () {
+      final calc = Calculator();
+      for (final v in ['1', '0', '0', '+', '2', '0', '0', '=']) {
+        calc.input(v);
+      }
+      expect(calc.expressionDisplay, '100 + 200 =');
+
+      calc.input('5');
+      expect(calc.expressionDisplay, '100 + 200 =');
+      calc.input('0');
+      calc.input('0');
+
+      calc.input('+');
+      expect(calc.expressionDisplay, '500 +');
+      expect(calc.display, '500');
+    });
+
+    test('C mengosongkan info', () {
+      final calc = Calculator();
+      for (final v in ['1', '0', '0', '+']) {
+        calc.input(v);
+      }
+      expect(calc.expressionDisplay, '100 +');
+      calc.input('C');
+      expect(calc.expressionDisplay, isNull);
+    });
+
+    test('= tanpa operator tidak memunculkan info', () {
+      final calc = Calculator();
+      for (final v in ['1', '0', '0', '=']) {
+        calc.input(v);
+      }
+      expect(calc.expressionDisplay, isNull);
+    });
+  });
 }
