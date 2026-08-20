@@ -1,7 +1,6 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/widgets/empty_message.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
+import 'package:dompet_app/features/budgets/utils/start_add_budget.dart';
 import 'package:flutter/material.dart';
 
 class EmptyBudgets extends StatelessWidget {
@@ -20,14 +19,7 @@ class EmptyBudgets extends StatelessWidget {
     return EmptyMessage(
       text: emptyText,
       title: 'Belum ada anggaran.',
-      onAction: () async {
-        final category = await context.router.push<Account>(
-          CategorySelectorRoute(type: .expense),
-        );
-        if (category == null || !context.mounted) return;
-        // TODO: redirect to form page
-        context.router.push(BudgetPlanFormRoute(category: category));
-      },
+      onAction: () => startAddBudget(context),
       actionText: 'Anggarkan Sekarang',
       center: center,
     );

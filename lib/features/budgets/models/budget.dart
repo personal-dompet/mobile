@@ -27,6 +27,7 @@ abstract class Budget with _$Budget {
 
   DateTime get periodStartDate => periodStart.dateTime;
   DateTime get periodEndDate => periodEnd.dateTime;
+  int get remaining => budgetAmount - actualSpend;
   double get useageRatio => actualSpend / budgetAmount;
   String get periode => periodStartDate.format(hideDate: true);
   bool get isOutOfPeriod {

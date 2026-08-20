@@ -18,9 +18,11 @@ CREATE VIEW $budgetTrackerView AS
     END), 0) AS ${BudgetKey.actualSpend}
   FROM $budgetTable
   LEFT JOIN $accountTable ON $accountTable.${AccountKey.id} = $budgetTable.${BudgetKey.accountId}
-  LEFT JOIN $journalLineTable ON $journalLineTable.${JournalLineKey.accountId} = $accountTable.${AccountKey.id}
-  LEFT JOIN $journalEntryTable ON $journalEntryTable.${JournalEntryKey.id} = $journalLineTable.${JournalLineKey.journalEntryId}
-    AND $journalEntryTable.${JournalEntryKey.entryDate} BETWEEN $budgetTable.${BudgetKey.periodStart} AND $budgetTable.${BudgetKey.periodEnd}
+  LEFT JOIN $journalEntryTable
+    ON $journalEntryTable.${JournalEntryKey.entryDate} BETWEEN $budgetTable.${BudgetKey.periodStart} AND $budgetTable.${BudgetKey.periodEnd}
     AND $journalEntryTable.${JournalEntryKey.status} = '${JournalStatus.posted.name}'
+  LEFT JOIN $journalLineTable
+    ON $journalLineTable.${JournalLineKey.journalEntryId} = $journalEntryTable.${JournalEntryKey.id}
+    AND $journalLineTable.${JournalLineKey.accountId} = $accountTable.${AccountKey.id}
   GROUP BY $budgetTable.${BudgetKey.id}, $budgetTable.${BudgetKey.accountId}
 ''';

@@ -6,6 +6,7 @@ import 'package:dompet_app/core/widgets/calculator.dart';
 import 'package:dompet_app/core/widgets/dompet_dialog.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
+import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/categories/widgets/category_field.dart';
 import 'package:dompet_app/features/transactions/cubits/transaction_cubit.dart';
 import 'package:dompet_app/features/transactions/effective_balance.dart';
@@ -186,6 +187,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             providedContext
                                 .read<ActivitySignalCubit>()
                                 .created();
+                            providedContext.read<BudgetSignalCubit>().created();
                             providedContext.maybePop(newEditedId);
                           }
                         },

@@ -30,7 +30,8 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: CategoryFormRoute.page),
     AutoRoute(page: CategoryRoute.page),
     AutoRoute(page: CategorySelectorRoute.page),
-    AutoRoute(page: BudgetPlanFormRoute.page),
+    AutoRoute(page: BudgetFormRoute.page),
+    AutoRoute(page: BudgetPlanRoute.page),
     AutoRoute(page: ActivityDetailRoute.page),
   ];
 

@@ -31,9 +31,8 @@ class _BudgetCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final isOverBudget = budget.useageRatio > 1;
-    final statusColor =
-        isOverBudget ? themeData.colorScheme.error : themeData.colorScheme.tertiary;
+    final isOverBudget = budget.remaining < 0;
+    final percent = (budget.useageRatio * 100).round();
 
     return Card(
       clipBehavior: .antiAlias,
@@ -56,9 +55,11 @@ class _BudgetCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  budget.budgetAmount.currency,
+                  budget.remaining.currency,
                   style: themeData.textTheme.bodyMedium?.copyWith(
-                    color: themeData.colorScheme.primary,
+                    color: isOverBudget
+                        ? themeData.colorScheme.error
+                        : themeData.colorScheme.primary,
                     fontWeight: .w600,
                   ),
                 ),
@@ -70,28 +71,21 @@ class _BudgetCard extends StatelessWidget {
                 color: themeData.colorScheme.onSurface.withValues(alpha: 0.8),
               ),
             ),
-            _UsageBar(ratio: budget.useageRatio),
+            _UsageBar(ratio: budget.useageRatio, isOverBudget: isOverBudget),
             Row(
               spacing: 4,
               children: [
-                Text(
-                  'Terpakai: ${budget.actualSpend.compactCurrency}',
-                  style: themeData.textTheme.bodySmall,
-                ),
-                const Spacer(),
-                Text(
-                  'Sisa: ${budget.leftover.compactCurrency}',
-                  style: themeData.textTheme.bodySmall?.copyWith(
-                    color: isOverBudget
-                        ? themeData.colorScheme.error
-                        : themeData.colorScheme.onSurface.withValues(alpha: 0.8),
+                Expanded(
+                  child: Text(
+                    'Terpakai: ${budget.actualSpend.currency} ($percent%)',
+                    style: themeData.textTheme.bodySmall,
+                    overflow: .ellipsis,
                   ),
                 ),
                 Text(
-                  '${(budget.useageRatio * 100).round()}%',
+                  budget.budgetAmount.currency,
                   style: themeData.textTheme.bodySmall?.copyWith(
-                    color: statusColor,
-                    fontWeight: .w600,
+                    color: themeData.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -105,14 +99,14 @@ class _BudgetCard extends StatelessWidget {
 
 class _UsageBar extends StatelessWidget {
   final double ratio;
-  const _UsageBar({required this.ratio});
+  final bool isOverBudget;
+  const _UsageBar({required this.ratio, required this.isOverBudget});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final clamped = ratio.clamp(0.0, 1.0);
-    final fillColor =
-        ratio > 1 ? colorScheme.error : colorScheme.primary;
+    final fillColor = isOverBudget ? colorScheme.error : colorScheme.primary;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(3),
