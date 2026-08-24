@@ -35,6 +35,11 @@ class CategoryCubit extends Cubit<CategoryState> {
     await _loadAccounts(keyword: keyword, type: type);
   }
 
+  Future<Account?> getCategoryById(int id) async {
+    final account = await _repository.getAccount(id);
+    return account;
+  }
+
   Future<void> refresh() async {
     final type = _lastType;
     if (type == null) return;

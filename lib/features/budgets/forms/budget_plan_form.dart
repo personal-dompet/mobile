@@ -1,11 +1,13 @@
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
-import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class BudgetForm extends FormGroup {
-  BudgetForm()
+class BudgetPlanForm extends FormGroup {
+  BudgetPlanForm()
     : super({
-        _FieldKey.account: FormControl<Account>(
+        BudgetPlanKey.accountId: FormControl<int>(
+          validators: [Validators.required],
+        ),
+        _FieldKey.categoryName: FormControl<String>(
           validators: [Validators.required],
         ),
         BudgetPlanKey.amount: FormControl<int>(
@@ -14,18 +16,21 @@ class BudgetForm extends FormGroup {
         BudgetPlanKey.note: FormControl<String>(),
       });
 
-  FormControl<Account> get accountControl =>
-      control(_FieldKey.account) as FormControl<Account>;
+  FormControl<int> get categoryIdControl =>
+      control(BudgetPlanKey.accountId) as FormControl<int>;
+  FormControl<String> get categoryNameControl =>
+      control(_FieldKey.categoryName) as FormControl<String>;
   FormControl<int> get amountControl =>
       control(BudgetPlanKey.amount) as FormControl<int>;
   FormControl<String> get noteControl =>
       control(BudgetPlanKey.note) as FormControl<String>;
 
-  Account? get account => accountControl.value;
+  int? get categoryId => categoryIdControl.value;
+  String? get categoryName => categoryNameControl.value;
   int get amount => amountControl.value ?? 0;
   String? get note => noteControl.value;
 }
 
 abstract class _FieldKey {
-  static const account = 'account';
+  static const categoryName = 'category_name';
 }

@@ -62,15 +62,36 @@ class BudgetRepository {
     );
   }
 
-  Future<List<Budget>> getActiveBudgets(int accountId) async {
+  Future<Budget?> getActiveBudget(int accountId) async {
     final db = await _dbService.database;
 
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
+      SELECT *
+      FROM $budgetTrackerView
+      WHERE ${BudgetKey.accountId} = ? AND ${BudgetKey.closedAt} IS NULL
+      LIMIT 1
+    ''',
+      [accountId],
+    );
+
+    if (rows.isEmpty) return null;
+
+    return Budget.fromJson(rows.first);
+  }
+
+  Future<List<Budget>> getAccountBudgets(int accountId) async {
+    final db = await _dbService.database;
+
+    final rows = await db.rawQuery(
+      '''
       SELECT *
       FROM $budgetTrackerView
       WHERE ${BudgetKey.accountId} = ? AND ${BudgetKey.closedAt} IS NULL
       ORDER BY ${BudgetKey.periodStart} DESC
-    ''', [accountId]);
+    ''',
+      [accountId],
+    );
 
     return rows.map((row) => Budget.fromJson(row)).toList();
   }

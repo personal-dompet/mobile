@@ -1,21 +1,20 @@
-import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/widgets/dompet_text_field.dart';
-import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
-import 'package:dompet_app/features/categories/widgets/category_selector.dart';
+import 'package:dompet_app/features/categories/utils/open_expense_account_selector.dart';
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class CategoryField extends StatefulWidget {
   final FormControl<int> valueControl;
   final FormControl<String> nameControl;
   final TransactionType type;
+  final bool required;
   const CategoryField({
     super.key,
     required this.valueControl,
     required this.nameControl,
     required this.type,
+    this.required = false,
   });
 
   @override
@@ -47,21 +46,11 @@ class _CategoryFieldState extends State<CategoryField> {
     widget.valueControl.unfocus();
     widget.nameControl.unfocus();
 
-    await Navigator.push(
+    await openCategorySelector(
       context,
-      MaterialPageRoute(
-        builder: (context) {
-          return BlocProvider(
-            create: (context) =>
-                getIt<CategoryCubit>()..fetch(type: widget.type),
-            child: CategorySelector(
-              idControl: widget.valueControl,
-              nameControl: widget.nameControl,
-              type: widget.type,
-            ),
-          );
-        },
-      ),
+      type: widget.type,
+      idControl: widget.valueControl,
+      nameControl: widget.nameControl,
     );
   }
 
@@ -69,7 +58,7 @@ class _CategoryFieldState extends State<CategoryField> {
   Widget build(BuildContext context) {
     return DompetTextField(
       key: widget.key,
-      label: 'Pilih Kategori (Opsional)',
+      label: 'Pilih Kategori${widget.required ? '' : ' (Opsional)'}',
       formControl: widget.nameControl,
       readOnly: true,
       suffixIcon: Icon(Icons.chevron_right_rounded),

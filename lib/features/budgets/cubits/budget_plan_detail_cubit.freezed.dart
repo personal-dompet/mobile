@@ -125,12 +125,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( BudgetPlan plan,  List<Budget> activeBudgets)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( BudgetPlan plan,  Budget? activeBudget)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BudgetPlanDetailInitial() when initial != null:
 return initial();case _BudgetPlanDetailLoading() when loading != null:
 return loading();case _BudgetPlanDetailLoaded() when loaded != null:
-return loaded(_that.plan,_that.activeBudgets);case _BudgetPlanDetailError() when error != null:
+return loaded(_that.plan,_that.activeBudget);case _BudgetPlanDetailError() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -149,12 +149,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( BudgetPlan plan,  List<Budget> activeBudgets)  loaded,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( BudgetPlan plan,  Budget? activeBudget)  loaded,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case _BudgetPlanDetailInitial():
 return initial();case _BudgetPlanDetailLoading():
 return loading();case _BudgetPlanDetailLoaded():
-return loaded(_that.plan,_that.activeBudgets);case _BudgetPlanDetailError():
+return loaded(_that.plan,_that.activeBudget);case _BudgetPlanDetailError():
 return error(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -169,12 +169,12 @@ return error(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( BudgetPlan plan,  List<Budget> activeBudgets)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( BudgetPlan plan,  Budget? activeBudget)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case _BudgetPlanDetailInitial() when initial != null:
 return initial();case _BudgetPlanDetailLoading() when loading != null:
 return loading();case _BudgetPlanDetailLoaded() when loaded != null:
-return loaded(_that.plan,_that.activeBudgets);case _BudgetPlanDetailError() when error != null:
+return loaded(_that.plan,_that.activeBudget);case _BudgetPlanDetailError() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -251,17 +251,11 @@ String toString() {
 
 
 class _BudgetPlanDetailLoaded implements BudgetPlanDetailState {
-  const _BudgetPlanDetailLoaded({required this.plan, required final  List<Budget> activeBudgets}): _activeBudgets = activeBudgets;
+  const _BudgetPlanDetailLoaded({required this.plan, this.activeBudget});
   
 
  final  BudgetPlan plan;
- final  List<Budget> _activeBudgets;
- List<Budget> get activeBudgets {
-  if (_activeBudgets is EqualUnmodifiableListView) return _activeBudgets;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_activeBudgets);
-}
-
+ final  Budget? activeBudget;
 
 /// Create a copy of BudgetPlanDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -273,16 +267,16 @@ _$BudgetPlanDetailLoadedCopyWith<_BudgetPlanDetailLoaded> get copyWith => __$Bud
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BudgetPlanDetailLoaded&&(identical(other.plan, plan) || other.plan == plan)&&const DeepCollectionEquality().equals(other._activeBudgets, _activeBudgets));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BudgetPlanDetailLoaded&&(identical(other.plan, plan) || other.plan == plan)&&(identical(other.activeBudget, activeBudget) || other.activeBudget == activeBudget));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,plan,const DeepCollectionEquality().hash(_activeBudgets));
+int get hashCode => Object.hash(runtimeType,plan,activeBudget);
 
 @override
 String toString() {
-  return 'BudgetPlanDetailState.loaded(plan: $plan, activeBudgets: $activeBudgets)';
+  return 'BudgetPlanDetailState.loaded(plan: $plan, activeBudget: $activeBudget)';
 }
 
 
@@ -293,11 +287,11 @@ abstract mixin class _$BudgetPlanDetailLoadedCopyWith<$Res> implements $BudgetPl
   factory _$BudgetPlanDetailLoadedCopyWith(_BudgetPlanDetailLoaded value, $Res Function(_BudgetPlanDetailLoaded) _then) = __$BudgetPlanDetailLoadedCopyWithImpl;
 @useResult
 $Res call({
- BudgetPlan plan, List<Budget> activeBudgets
+ BudgetPlan plan, Budget? activeBudget
 });
 
 
-$BudgetPlanCopyWith<$Res> get plan;
+$BudgetPlanCopyWith<$Res> get plan;$BudgetCopyWith<$Res>? get activeBudget;
 
 }
 /// @nodoc
@@ -310,11 +304,11 @@ class __$BudgetPlanDetailLoadedCopyWithImpl<$Res>
 
 /// Create a copy of BudgetPlanDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? plan = null,Object? activeBudgets = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? plan = null,Object? activeBudget = freezed,}) {
   return _then(_BudgetPlanDetailLoaded(
 plan: null == plan ? _self.plan : plan // ignore: cast_nullable_to_non_nullable
-as BudgetPlan,activeBudgets: null == activeBudgets ? _self._activeBudgets : activeBudgets // ignore: cast_nullable_to_non_nullable
-as List<Budget>,
+as BudgetPlan,activeBudget: freezed == activeBudget ? _self.activeBudget : activeBudget // ignore: cast_nullable_to_non_nullable
+as Budget?,
   ));
 }
 
@@ -326,6 +320,18 @@ $BudgetPlanCopyWith<$Res> get plan {
   
   return $BudgetPlanCopyWith<$Res>(_self.plan, (value) {
     return _then(_self.copyWith(plan: value));
+  });
+}/// Create a copy of BudgetPlanDetailState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BudgetCopyWith<$Res>? get activeBudget {
+    if (_self.activeBudget == null) {
+    return null;
+  }
+
+  return $BudgetCopyWith<$Res>(_self.activeBudget!, (value) {
+    return _then(_self.copyWith(activeBudget: value));
   });
 }
 }

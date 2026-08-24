@@ -17,11 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class BudgetPlanPage extends StatefulWidget {
   final Account category;
   final BudgetPlan plan;
-  const BudgetPlanPage({
-    super.key,
-    required this.category,
-    required this.plan,
-  });
+  const BudgetPlanPage({super.key, required this.category, required this.plan});
 
   @override
   State<BudgetPlanPage> createState() => _BudgetPlanPageState();
@@ -35,7 +31,7 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
   @override
   void initState() {
     super.initState();
-    _cubit = getIt<BudgetPlanDetailCubit>()..fetch(widget.category.id);
+    _cubit = getIt<BudgetPlanDetailCubit>()..fetch(widget.plan.accountId);
   }
 
   @override
@@ -75,7 +71,7 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
 
   Future<void> _edit(BudgetPlan plan) async {
     final changed = await context.router.push<bool>(
-      BudgetFormRoute(category: widget.category, plan: plan),
+      BudgetPlanFormRoute(category: widget.category, plan: plan),
     );
     if (changed == true && mounted) {
       await _refresh();
@@ -164,11 +160,11 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
                 padding: const EdgeInsets.only(top: 64),
                 child: SpinnerLoading(),
               ),
-              loaded: (plan, activeBudgets) {
+              loaded: (plan, activeBudget) {
                 return _Body(
                   category: widget.category,
                   plan: plan,
-                  activeBudgets: activeBudgets,
+                  activeBudget: activeBudget,
                   onEdit: () => _edit(plan),
                   onDelete: _delete,
                   onPrimary: (action) => _primary(context, action),
@@ -185,23 +181,23 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
 class _Body extends StatelessWidget {
   final Account category;
   final BudgetPlan plan;
-  final List<Budget> activeBudgets;
+  final Budget? activeBudget;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final ValueChanged<BudgetPlanAction> onPrimary;
   const _Body({
     required this.category,
     required this.plan,
-    required this.activeBudgets,
     required this.onEdit,
     required this.onDelete,
     required this.onPrimary,
+    this.activeBudget,
   });
 
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final action = BudgetPlanAction.of(activeBudgets);
+    final action = BudgetPlanAction.of(activeBudget);
 
     return Padding(
       padding: const EdgeInsets.all(16).copyWith(bottom: 24),
@@ -223,10 +219,7 @@ class _Body extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          OutlinedButton(
-            onPressed: onEdit,
-            child: const Text('Edit Rencana'),
-          ),
+          OutlinedButton(onPressed: onEdit, child: const Text('Edit Rencana')),
           const SizedBox(height: 8),
           TextButton(
             onPressed: onDelete,
@@ -303,10 +296,7 @@ class _PlanCard extends StatelessWidget {
             ),
             if (plan.note != null) ...[
               const Divider(),
-              Text(
-                plan.note!,
-                style: themeData.textTheme.bodyMedium,
-              ),
+              Text(plan.note!, style: themeData.textTheme.bodyMedium),
             ],
             const Divider(),
             Text(
@@ -332,7 +322,7 @@ extension _BudgetPlanActionUi on BudgetPlanAction {
   IconData get icon => switch (this) {
     BudgetPlanAction.activate => Icons.play_arrow_rounded,
     BudgetPlanAction.startMonth => Icons.event_available_rounded,
-    BudgetPlanAction.close => Icons.pause_rounded,
+    BudgetPlanAction.close => Icons.stop_rounded,
   };
 }
 

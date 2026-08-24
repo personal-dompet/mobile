@@ -9,48 +9,67 @@ import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_action_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
-import 'package:dompet_app/features/budgets/forms/budget_form.dart';
+import 'package:dompet_app/features/budgets/forms/budget_plan_form.dart';
 import 'package:dompet_app/features/budgets/models/budget_plan.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_plan_repository.dart';
-import 'package:dompet_app/features/transactions/forms/transfer_form.dart';
+import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
+import 'package:dompet_app/features/categories/widgets/category_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 @RoutePage()
-class BudgetFormPage extends StatefulWidget {
+class BudgetPlanFormPage extends StatefulWidget {
   final Account category;
   final BudgetPlan? plan;
-  const BudgetFormPage({super.key, required this.category, this.plan});
+  const BudgetPlanFormPage({super.key, required this.category, this.plan});
 
   @override
-  State<BudgetFormPage> createState() => _BudgetFormPageState();
+  State<BudgetPlanFormPage> createState() => _BudgetPlanFormPageState();
 }
 
-class _BudgetFormPageState extends State<BudgetFormPage> {
+class _BudgetPlanFormPageState extends State<BudgetPlanFormPage> {
   final _loading = LoadingOverlay();
 
-  late final BudgetForm _form;
-  late final StreamSubscription<Object?> _formStatusSub;
+  late final BudgetPlanForm _form;
+  late final StreamSubscription<int?> _categoryChangeSub;
 
   bool get _isEdit => widget.plan != null;
 
   @override
   void initState() {
     super.initState();
-    _form = BudgetForm();
-    _form.accountControl.value = widget.category;
+    _form = BudgetPlanForm();
     _form.amountControl.value = widget.plan?.amount;
     _form.noteControl.value = widget.plan?.note;
+    _form.categoryIdControl.value = widget.category.id;
+    _form.categoryNameControl.value = widget.category.name;
 
-    _formStatusSub = _form.valueChanges.listen((_) {
-      if (mounted) setState(() {});
+    _categoryChangeSub = _form.categoryIdControl.valueChanges.listen((
+      categoryId,
+    ) async {
+      debugPrint('Category ID changed to $categoryId');
+      if (categoryId == null) return;
+
+      final plan = await getIt<BudgetPlanRepository>().getByAccountId(
+        categoryId,
+      );
+      if (!mounted) return;
+
+      if (plan != null) {
+        context.router.replace(
+          BudgetPlanRoute(category: widget.category, plan: plan),
+        );
+        return;
+      }
+
+      context.router.replace(BudgetPlanFormRoute(category: widget.category));
     });
   }
 
   @override
   void dispose() {
-    _formStatusSub.cancel();
+    _categoryChangeSub.cancel();
     _form.dispose();
     super.dispose();
   }
@@ -65,23 +84,6 @@ class _BudgetFormPageState extends State<BudgetFormPage> {
         ),
       );
     }
-  }
-
-  Future<void> _changeCategory() async {
-    final account = await context.router.push<Account>(
-      CategorySelectorRoute(type: .expense, showBudgetStatus: true),
-    );
-    if (account == null || !mounted || account.id == widget.category.id) return;
-
-    final plan = await getIt<BudgetPlanRepository>().getByAccountId(account.id);
-    if (!mounted) return;
-
-    if (plan != null) {
-      context.router.replace(BudgetPlanRoute(category: account, plan: plan));
-      return;
-    }
-
-    _form.accountControl.value = account;
   }
 
   Future<void> _submit(BuildContext actionContext) async {
@@ -107,8 +109,10 @@ class _BudgetFormPageState extends State<BudgetFormPage> {
         actionContext.router.maybePop(true);
         return;
       }
-      final account = _form.account;
-      if (account == null) return;
+      final account = await getIt<CategoryCubit>().getCategoryById(
+        plan.accountId,
+      );
+      if (account == null || !context.mounted) return;
       final savedPlan = plan;
       actionContext.router.replace(
         BudgetPlanRoute(category: account, plan: savedPlan),
@@ -181,10 +185,7 @@ class _BudgetFormPageState extends State<BudgetFormPage> {
         ),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 24,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: Column(
               spacing: 16,
               children: [
@@ -213,15 +214,11 @@ class _BudgetFormPageState extends State<BudgetFormPage> {
                   ],
                 ),
 
-                DompetTextField<Account>(
-                  label: 'Kategori',
-                  formControl: _form.accountControl,
-                  valueAccessor: AccountValueAccessor(),
-                  readOnly: true,
-                  onTap: _isEdit ? null : (_) => _changeCategory(),
-                  suffixIcon: _isEdit
-                      ? null
-                      : const Icon(Icons.keyboard_arrow_down_rounded),
+                CategoryField(
+                  valueControl: _form.categoryIdControl,
+                  nameControl: _form.categoryNameControl,
+                  type: .expense,
+                  required: true,
                 ),
 
                 const SizedBox(height: 8),

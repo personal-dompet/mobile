@@ -4,6 +4,7 @@ import 'package:dompet_app/features/budgets/models/budget.dart';
 import 'package:dompet_app/features/budgets/models/budget_plan.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_plan_repository.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_repository.dart';
+import 'package:flutter/rendering.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'budget_plan_detail_cubit.freezed.dart';
@@ -13,12 +14,11 @@ enum BudgetPlanAction {
   startMonth,
   close;
 
-  static BudgetPlanAction of(List<Budget> activeBudgets) {
-    if (activeBudgets.isEmpty) return BudgetPlanAction.activate;
+  static BudgetPlanAction of(Budget? activeBudget) {
+    if (activeBudget == null) return BudgetPlanAction.activate;
     final now = DateTime.now().secondsSinceEpoch;
-    final coversToday = activeBudgets.any(
-      (budget) => budget.periodStart <= now && now <= budget.periodEnd,
-    );
+    final coversToday =
+        activeBudget.periodStart <= now && now <= activeBudget.periodEnd;
     return coversToday ? BudgetPlanAction.close : BudgetPlanAction.startMonth;
   }
 }
@@ -29,7 +29,7 @@ sealed class BudgetPlanDetailState with _$BudgetPlanDetailState {
   const factory BudgetPlanDetailState.loading() = _BudgetPlanDetailLoading;
   const factory BudgetPlanDetailState.loaded({
     required BudgetPlan plan,
-    required List<Budget> activeBudgets,
+    Budget? activeBudget,
   }) = _BudgetPlanDetailLoaded;
   const factory BudgetPlanDetailState.error({required String message}) =
       _BudgetPlanDetailError;
@@ -37,7 +37,7 @@ sealed class BudgetPlanDetailState with _$BudgetPlanDetailState {
 
 class BudgetPlanDetailCubit extends Cubit<BudgetPlanDetailState> {
   BudgetPlanDetailCubit(this._repository, this._planRepository)
-      : super(const BudgetPlanDetailState.initial());
+    : super(const BudgetPlanDetailState.initial());
 
   final BudgetRepository _repository;
   final BudgetPlanRepository _planRepository;
@@ -48,22 +48,18 @@ class BudgetPlanDetailCubit extends Cubit<BudgetPlanDetailState> {
     _accountId = accountId;
     emit(const BudgetPlanDetailState.loading());
     try {
+      debugPrint('Fetching budget plan for category with ID $accountId');
       final plan = await _planRepository.getByAccountId(accountId);
-      final activeBudgets = await _repository.getActiveBudgets(accountId);
+      final activeBudgets = await _repository.getActiveBudget(accountId);
       if (isClosed) return;
       if (plan == null) {
         emit(
-          const BudgetPlanDetailState.error(
-            message: 'Rencana tidak ditemukan',
-          ),
+          const BudgetPlanDetailState.error(message: 'Rencana tidak ditemukan'),
         );
         return;
       }
       emit(
-        BudgetPlanDetailState.loaded(
-          plan: plan,
-          activeBudgets: activeBudgets,
-        ),
+        BudgetPlanDetailState.loaded(plan: plan, activeBudget: activeBudgets),
       );
     } catch (e) {
       if (!isClosed) emit(BudgetPlanDetailState.error(message: e.toString()));
@@ -78,11 +74,12 @@ class BudgetPlanDetailCubit extends Cubit<BudgetPlanDetailState> {
     ),
   );
 
-  Future<String?> closeBudgets() => _run(
-    (accountId) => _repository.closeActiveBudgets(accountId),
-  );
+  Future<String?> closeBudgets() =>
+      _run((accountId) => _repository.closeActiveBudgets(accountId));
 
   Future<String?> closeAndStartMonth() => _run((accountId) async {
+    final activeBudget = await _repository.getActiveBudget(_accountId!);
+    if (activeBudget == null) return;
     await _repository.closeActiveBudgets(accountId);
     await _repository.createBudget(
       accountId: accountId,
@@ -91,11 +88,9 @@ class BudgetPlanDetailCubit extends Cubit<BudgetPlanDetailState> {
     );
   });
 
-  Future<String?> deletePlan() => _run(
-    (accountId) async {
-      await _planRepository.delete(accountId);
-    },
-  );
+  Future<String?> deletePlan() => _run((accountId) async {
+    await _planRepository.delete(accountId);
+  });
 
   int _loadedAmount() {
     final amount = state.maybeWhen(

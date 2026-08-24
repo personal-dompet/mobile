@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/extensions/icon_data.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
+import 'package:dompet_app/features/budgets/cubits/account_budget_status_cubit.dart';
+import 'package:dompet_app/features/budgets/models/account_budget_status.dart';
 import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
 import 'package:dompet_app/features/categories/forms/category_form.dart';
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
@@ -31,6 +34,7 @@ class CategorySelector extends StatefulWidget {
 class _CategorySelectorState extends State<CategorySelector> {
   final _searchFormControl = FormControl<String>();
   late FormGroup _form;
+  late AccountBudgetStatusCubit _accountBudgetStatusCubit;
 
   Timer? _debounce;
 
@@ -38,6 +42,7 @@ class _CategorySelectorState extends State<CategorySelector> {
   void initState() {
     super.initState();
     _form = FormGroup({'keyowrd': _searchFormControl});
+    _accountBudgetStatusCubit = getIt<AccountBudgetStatusCubit>()..fetch();
 
     _searchFormControl.valueChanges.listen((keyword) {
       _debounce?.cancel();
@@ -53,13 +58,15 @@ class _CategorySelectorState extends State<CategorySelector> {
   @override
   void dispose() {
     super.dispose();
+    _accountBudgetStatusCubit.close();
     _debounce?.cancel();
     _searchFormControl.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedColor = Theme.of(context).colorScheme.primary;
+    final themeData = Theme.of(context);
+    final selectedColor = themeData.colorScheme.primary;
     return BlocListener<AccountSignalCubit, int>(
       listener: (context, state) {
         context.read<CategoryCubit>().fetch(
@@ -129,30 +136,37 @@ class _CategorySelectorState extends State<CategorySelector> {
                                 itemCount: expenses.length,
                                 itemBuilder: (context, index) {
                                   final expense = expenses[index];
-                                  return ListTile(
-                                    title: Text(expense.name),
-                                    selected:
-                                        expense.id == accountControl.value,
-                                    selectedTileColor: selectedColor.withValues(
-                                      alpha: 0.1,
-                                    ),
-                                    leading: Icon(
-                                      expense.iconCode == null
-                                          ? Icons.receipt_rounded
-                                          : MaterialIconData.fromCode(
-                                              expense.iconCode!,
-                                            ),
-                                    ),
-                                    trailing: expense.id == accountControl.value
-                                        ? Icon(
-                                            Icons.check_rounded,
-                                            color: selectedColor,
-                                          )
-                                        : null,
-                                    onTap: () {
-                                      accountControl.value = expense.id;
-                                      widget.nameControl.value = expense.name;
-                                      Navigator.pop(context);
+                                  return BlocBuilder<
+                                    AccountBudgetStatusCubit,
+                                    AccountBudgetStatusState
+                                  >(
+                                    bloc: _accountBudgetStatusCubit,
+                                    builder: (context, status) {
+                                      return status.maybeWhen(
+                                        orElse: () => _ListTile(
+                                          expense: expense,
+                                          accountControl: accountControl,
+                                          selectedColor: selectedColor,
+                                          themeData: themeData,
+                                          nameControl: widget.nameControl,
+                                        ),
+                                        loading: () => _ListTile(
+                                          expense: expense,
+                                          accountControl: accountControl,
+                                          selectedColor: selectedColor,
+                                          themeData: themeData,
+                                          nameControl: widget.nameControl,
+                                          isLoading: true,
+                                        ),
+                                        loaded: (status) => _ListTile(
+                                          expense: expense,
+                                          accountControl: accountControl,
+                                          themeData: themeData,
+                                          nameControl: widget.nameControl,
+                                          status: status,
+                                          selectedColor: selectedColor,
+                                        ),
+                                      );
                                     },
                                   );
                                 },
@@ -163,9 +177,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                       },
                       error: (message) => Text(
                         message,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
+                        style: TextStyle(color: themeData.colorScheme.error),
                       ),
                     );
                   },
@@ -175,6 +187,102 @@ class _CategorySelectorState extends State<CategorySelector> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ListTile extends StatelessWidget {
+  final Account expense;
+  final FormControl<int> accountControl;
+  final Color selectedColor;
+  final ThemeData themeData;
+  final FormControl<String> nameControl;
+  final AccountBudgetStatus? status;
+  final bool isLoading;
+  const _ListTile({
+    required this.expense,
+    required this.accountControl,
+    required this.selectedColor,
+    required this.themeData,
+    required this.nameControl,
+    this.status,
+    this.isLoading = false,
+  });
+
+  Widget? subtitle() {
+    if (isLoading) {
+      return Text(
+        'Loading...',
+        style: themeData.textTheme.bodySmall?.copyWith(
+          fontStyle: .italic,
+          color: themeData.colorScheme.onSurface.withValues(alpha: 0.8),
+        ),
+      );
+    }
+    final hasPlan =
+        status != null && status!.planAccountIds.contains(expense.id);
+    final hasBudget =
+        status != null && status!.activeBudgetAccountIds.contains(expense.id);
+
+    if (!hasPlan && !hasBudget) {
+      return null;
+    }
+
+    return Row(
+      spacing: 8,
+      children: [
+        if (status!.planAccountIds.contains(expense.id))
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: themeData.colorScheme.primary.withValues(alpha: 0.1),
+            ),
+            child: Text(
+              'Terencana',
+              style: themeData.textTheme.bodySmall?.copyWith(
+                color: themeData.colorScheme.primary,
+              ),
+            ),
+          ),
+        if (status!.activeBudgetAccountIds.contains(expense.id))
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: themeData.colorScheme.tertiary.withValues(alpha: 0.1),
+            ),
+            child: Text(
+              'Anggaran Aktif',
+              style: themeData.textTheme.bodySmall?.copyWith(
+                color: themeData.colorScheme.tertiary,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(expense.name),
+      selected: expense.id == accountControl.value,
+      selectedTileColor: selectedColor.withValues(alpha: 0.1),
+      leading: Icon(
+        expense.iconCode == null
+            ? Icons.receipt_rounded
+            : MaterialIconData.fromCode(expense.iconCode!),
+      ),
+      trailing: expense.id == accountControl.value
+          ? Icon(Icons.check_rounded, color: selectedColor)
+          : null,
+      subtitle: subtitle(),
+      onTap: () {
+        accountControl.value = expense.id;
+        nameControl.value = expense.name;
+        Navigator.pop(context);
+      },
     );
   }
 }
