@@ -16,8 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @RoutePage()
 class BudgetPlanPage extends StatefulWidget {
   final Account category;
-  final BudgetPlan plan;
-  const BudgetPlanPage({super.key, required this.category, required this.plan});
+  const BudgetPlanPage({super.key, required this.category});
 
   @override
   State<BudgetPlanPage> createState() => _BudgetPlanPageState();
@@ -31,7 +30,7 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
   @override
   void initState() {
     super.initState();
-    _cubit = getIt<BudgetPlanDetailCubit>()..fetch(widget.plan.accountId);
+    _cubit = getIt<BudgetPlanDetailCubit>()..fetch(widget.category.id);
   }
 
   @override
@@ -46,7 +45,7 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
     required Future<String?> Function() action,
     required String loadingText,
     required String successMessage,
-    bool refreshAfter = true,
+    bool refreshAfter = false,
   }) async {
     _loading.show(context, text: loadingText);
     final error = await action();
@@ -111,26 +110,60 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
     if (mounted) context.router.maybePop(true);
   }
 
-  void _primary(BuildContext context, BudgetPlanAction action) {
+  void _primary(BuildContext context, {BudgetPlanAction? action}) {
     switch (action) {
       case BudgetPlanAction.activate:
         _runAction(
           action: _cubit.activate,
           loadingText: 'Membuat anggaran...',
           successMessage: 'Anggaran bulan ini berhasil dibuat',
-        );
-      case BudgetPlanAction.startMonth:
-        _runAction(
-          action: _cubit.closeAndStartMonth,
-          loadingText: 'Membuka anggaran bulan ini...',
-          successMessage: 'Anggaran bulan ini berhasil dibuka',
+          refreshAfter: true,
         );
       case BudgetPlanAction.close:
-        _runAction(
-          action: _cubit.closeBudgets,
-          loadingText: 'Menutup anggaran...',
-          successMessage: 'Anggaran berhasil ditutup',
-        );
+        _showCloseDialog(context);
+      case null:
+        break;
+    }
+  }
+
+  Future<void> _showCloseDialog(BuildContext context) async {
+    final shouldCreateNew = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Tutup Anggaran'),
+        content: const Text(
+          'Anggaran bulan sebelumnya akan ditutup. '
+          'Apakah Anda ingin membuka anggaran baru untuk bulan ini?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => dialogContext.router.maybePop(false),
+            child: const Text('Tidak'),
+          ),
+          FilledButton(
+            onPressed: () => dialogContext.router.maybePop(true),
+            child: const Text('Ya, Buat Baru'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldCreateNew == null || !mounted) return;
+
+    if (shouldCreateNew) {
+      await _runAction(
+        action: _cubit.closeAndStartMonth,
+        loadingText: 'Tutup anggaran lama dan buat yang baru...',
+        successMessage: 'Anggaran bulan ini berhasil dibuat',
+        refreshAfter: true,
+      );
+    } else {
+      await _runAction(
+        action: _cubit.closeBudgets,
+        loadingText: 'Menutup anggaran...',
+        successMessage: 'Anggaran berhasil ditutup',
+        refreshAfter: true,
+      );
     }
   }
 
@@ -144,8 +177,22 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
         ),
       ),
       body: SafeArea(
-        child: BlocBuilder<BudgetPlanDetailCubit, BudgetPlanDetailState>(
+        child: BlocConsumer<BudgetPlanDetailCubit, BudgetPlanDetailState>(
           bloc: _cubit,
+          listener: (context, state) {
+            state.maybeWhen(
+              loading: (plan, activeBudget) {
+                if (plan == null) {
+                  _loading.hide();
+                  return;
+                }
+                _loading.show(context);
+              },
+              orElse: () {
+                _loading.hide();
+              },
+            );
+          },
           builder: (context, state) {
             return state.maybeWhen(
               orElse: () => SizedBox.shrink(),
@@ -156,10 +203,22 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              loading: () => Padding(
-                padding: const EdgeInsets.only(top: 64),
-                child: SpinnerLoading(),
-              ),
+              loading: (plan, activeBudget) {
+                return plan == null
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 64),
+                        child: SpinnerLoading(),
+                      )
+                    : _Body(
+                        category: widget.category,
+                        plan: plan,
+                        activeBudget: activeBudget,
+                        onEdit: () => _edit(plan),
+                        onDelete: _delete,
+                        onPrimary: (action) =>
+                            _primary(context, action: action),
+                      );
+              },
               loaded: (plan, activeBudget) {
                 return _Body(
                   category: widget.category,
@@ -167,7 +226,7 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
                   activeBudget: activeBudget,
                   onEdit: () => _edit(plan),
                   onDelete: _delete,
-                  onPrimary: (action) => _primary(context, action),
+                  onPrimary: (action) => _primary(context, action: action),
                 );
               },
             );
@@ -184,7 +243,7 @@ class _Body extends StatelessWidget {
   final Budget? activeBudget;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
-  final ValueChanged<BudgetPlanAction> onPrimary;
+  final ValueChanged<BudgetPlanAction?> onPrimary;
   const _Body({
     required this.category,
     required this.plan,
@@ -211,12 +270,9 @@ class _Body extends StatelessWidget {
           _ActionHint(action: action),
           const SizedBox(height: 16),
           FilledButton.icon(
-            onPressed: () => onPrimary(action),
-            icon: Icon(action.icon),
-            label: Text(action.label),
-            style: FilledButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
+            onPressed: action != null ? () => onPrimary(action) : null,
+            icon: Icon(action?.icon),
+            label: Text(action?.label ?? 'Anggaran sedang berjalan'),
           ),
           const SizedBox(height: 8),
           OutlinedButton(onPressed: onEdit, child: const Text('Edit Rencana')),
@@ -315,19 +371,17 @@ class _PlanCard extends StatelessWidget {
 extension _BudgetPlanActionUi on BudgetPlanAction {
   String get label => switch (this) {
     BudgetPlanAction.activate => 'Aktifkan',
-    BudgetPlanAction.startMonth => 'Anggarkan Bulan Ini',
     BudgetPlanAction.close => 'Tutup Anggaran',
   };
 
   IconData get icon => switch (this) {
     BudgetPlanAction.activate => Icons.play_arrow_rounded,
-    BudgetPlanAction.startMonth => Icons.event_available_rounded,
     BudgetPlanAction.close => Icons.stop_rounded,
   };
 }
 
 class _ActionHint extends StatelessWidget {
-  final BudgetPlanAction action;
+  final BudgetPlanAction? action;
   const _ActionHint({required this.action});
 
   @override
@@ -336,10 +390,9 @@ class _ActionHint extends StatelessWidget {
     final text = switch (action) {
       BudgetPlanAction.activate =>
         'Kategori ini belum punya anggaran aktif. Aktifkan rencana untuk membuat anggaran bulan ini.',
-      BudgetPlanAction.startMonth =>
-        'Ada anggaran aktif di periode lain. Ganti ke anggaran bulan ini dari rencana ini?',
       BudgetPlanAction.close =>
         'Anggaran aktif untuk bulan ini sedang berjalan. Tutup untuk menghentikannya.',
+      null => '',
     };
     return Text(
       text,

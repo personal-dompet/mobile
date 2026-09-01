@@ -4,29 +4,29 @@ import 'package:dompet_app/features/budgets/models/budget.dart';
 import 'package:dompet_app/features/budgets/models/budget_plan.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_plan_repository.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_repository.dart';
-import 'package:flutter/rendering.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'budget_plan_detail_cubit.freezed.dart';
 
 enum BudgetPlanAction {
   activate,
-  startMonth,
   close;
 
-  static BudgetPlanAction of(Budget? activeBudget) {
+  static BudgetPlanAction? of(Budget? activeBudget) {
     if (activeBudget == null) return BudgetPlanAction.activate;
     final now = DateTime.now().secondsSinceEpoch;
-    final coversToday =
-        activeBudget.periodStart <= now && now <= activeBudget.periodEnd;
-    return coversToday ? BudgetPlanAction.close : BudgetPlanAction.startMonth;
+    final budgetExpired = now > activeBudget.periodEnd;
+    return budgetExpired ? BudgetPlanAction.close : null;
   }
 }
 
 @freezed
 sealed class BudgetPlanDetailState with _$BudgetPlanDetailState {
   const factory BudgetPlanDetailState.initial() = _BudgetPlanDetailInitial;
-  const factory BudgetPlanDetailState.loading() = _BudgetPlanDetailLoading;
+  const factory BudgetPlanDetailState.loading({
+    BudgetPlan? plan,
+    Budget? activeBudget,
+  }) = _BudgetPlanDetailLoading;
   const factory BudgetPlanDetailState.loaded({
     required BudgetPlan plan,
     Budget? activeBudget,
@@ -46,9 +46,21 @@ class BudgetPlanDetailCubit extends Cubit<BudgetPlanDetailState> {
 
   Future<void> fetch(int accountId) async {
     _accountId = accountId;
-    emit(const BudgetPlanDetailState.loading());
+    final currentPlan = state.maybeWhen(
+      loaded: (plan, _) => plan,
+      orElse: () => null,
+    );
+    final currentActiveBudget = state.maybeWhen(
+      loaded: (_, activeBudget) => activeBudget,
+      orElse: () => null,
+    );
+    emit(
+      BudgetPlanDetailState.loading(
+        activeBudget: currentActiveBudget,
+        plan: currentPlan,
+      ),
+    );
     try {
-      debugPrint('Fetching budget plan for category with ID $accountId');
       final plan = await _planRepository.getByAccountId(accountId);
       final activeBudgets = await _repository.getActiveBudget(accountId);
       if (isClosed) return;

@@ -43,6 +43,14 @@ _Account _$AccountFromJson(Map<String, dynamic> json) => $checkedCreate(
       ),
       balance: $checkedConvert('balance', (v) => (v as num?)?.toInt() ?? 0),
       createdAt: $checkedConvert('created_at', (v) => (v as num).toInt()),
+      activeBudgetCount: $checkedConvert(
+        'active_budget_count',
+        (v) => (v as num?)?.toInt() ?? 0,
+      ),
+      activeBudgetPlanCount: $checkedConvert(
+        'active_budget_plan_count',
+        (v) => (v as num?)?.toInt() ?? 0,
+      ),
     );
     return val;
   },
@@ -53,6 +61,8 @@ _Account _$AccountFromJson(Map<String, dynamic> json) => $checkedCreate(
     'iconCode': 'icon_code',
     'normalbalance': 'normal_balance',
     'createdAt': 'created_at',
+    'activeBudgetCount': 'active_budget_count',
+    'activeBudgetPlanCount': 'active_budget_plan_count',
   },
 );
 
@@ -68,6 +78,8 @@ Map<String, dynamic> _$AccountToJson(_Account instance) => <String, dynamic>{
   'normal_balance': _$BalanceTypeEnumMap[instance.normalbalance]!,
   'balance': instance.balance,
   'created_at': instance.createdAt,
+  'active_budget_count': instance.activeBudgetCount,
+  'active_budget_plan_count': instance.activeBudgetPlanCount,
 };
 
 const _$AccountTypeEnumMap = {

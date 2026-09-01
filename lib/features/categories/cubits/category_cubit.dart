@@ -26,13 +26,19 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   TransactionType? _lastType;
   String? _lastKeyword;
+  bool _lastWithBudget = false;
 
-  Future<void> fetch({String? keyword, required TransactionType type}) async {
+  Future<void> fetch({
+    String? keyword,
+    required TransactionType type,
+    bool withBudget = false,
+  }) async {
     _lastType = type;
     _lastKeyword = keyword;
+    _lastWithBudget = withBudget;
 
     emit(CategoryState.loading());
-    await _loadAccounts(keyword: keyword, type: type);
+    await _loadAccounts(keyword: keyword, type: type, withBudget: withBudget);
   }
 
   Future<Account?> getCategoryById(int id) async {
@@ -50,12 +56,17 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
 
     emit(CategoryState.refreshing(categories: currentCategories));
-    await _loadAccounts(keyword: _lastKeyword, type: type);
+    await _loadAccounts(
+      keyword: _lastKeyword,
+      type: type,
+      withBudget: _lastWithBudget,
+    );
   }
 
   Future<void> _loadAccounts({
     String? keyword,
     required TransactionType type,
+    bool withBudget = false,
   }) async {
     final filter = AccountFilter(
       type: type == TransactionType.expense
@@ -65,7 +76,10 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
 
     try {
-      final accounts = await _repository.getAccounts(filter);
+      final accounts = await _repository.getAccounts(
+        filter: filter,
+        withBudget: withBudget,
+      );
       emit(CategoryState.loaded(categories: accounts));
     } catch (e) {
       emit(CategoryState.error(message: e.toString()));

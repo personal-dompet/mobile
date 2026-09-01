@@ -23,8 +23,6 @@ class ShellPage extends StatelessWidget {
     return AutoTabsRouter(
       routes: [DashboardRoute(), ActivityRoute(), BudgetRoute(), SavingRoute()],
       builder: (context, child) {
-        debugPrint(context.tabsRouter.current.name);
-        debugPrint(DashboardRoute.name);
         return PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, result) async {

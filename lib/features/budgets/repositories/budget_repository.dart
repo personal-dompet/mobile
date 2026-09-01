@@ -121,8 +121,8 @@ class BudgetRepository {
       ''',
       [
         accountId,
-        periode.startOfMonth.secondsSinceEpoch,
-        periode.endOfMonth.secondsSinceEpoch,
+        periode.subtract(Duration(days: 31)).startOfMonth.secondsSinceEpoch,
+        periode.subtract(Duration(days: 31)).endOfMonth.secondsSinceEpoch,
         amount,
       ],
     );

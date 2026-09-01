@@ -48,22 +48,18 @@ class _BudgetPlanFormPageState extends State<BudgetPlanFormPage> {
     _categoryChangeSub = _form.categoryIdControl.valueChanges.listen((
       categoryId,
     ) async {
-      debugPrint('Category ID changed to $categoryId');
-      if (categoryId == null) return;
-
+      if (categoryId == null || categoryId == widget.category.id) return;
+      final requestedId = categoryId;
       final plan = await getIt<BudgetPlanRepository>().getByAccountId(
-        categoryId,
+        requestedId,
       );
       if (!mounted) return;
-
-      if (plan != null) {
-        context.router.replace(
-          BudgetPlanRoute(category: widget.category, plan: plan),
-        );
-        return;
-      }
-
-      context.router.replace(BudgetPlanFormRoute(category: widget.category));
+      if (_form.categoryIdControl.value != requestedId) return;
+      if (plan == null) return;
+      final account = await getIt<CategoryCubit>().getCategoryById(requestedId);
+      if (account == null || !mounted) return;
+      if (_form.categoryIdControl.value != requestedId) return;
+      context.router.replace(BudgetPlanRoute(category: account));
     });
   }
 
@@ -113,10 +109,7 @@ class _BudgetPlanFormPageState extends State<BudgetPlanFormPage> {
         plan.accountId,
       );
       if (account == null || !context.mounted) return;
-      final savedPlan = plan;
-      actionContext.router.replace(
-        BudgetPlanRoute(category: account, plan: savedPlan),
-      );
+      actionContext.router.replace(BudgetPlanRoute(category: account));
     }
   }
 
@@ -219,6 +212,8 @@ class _BudgetPlanFormPageState extends State<BudgetPlanFormPage> {
                   nameControl: _form.categoryNameControl,
                   type: .expense,
                   required: true,
+                  readOnly: _isEdit,
+                  withBudget: true,
                 ),
 
                 const SizedBox(height: 8),

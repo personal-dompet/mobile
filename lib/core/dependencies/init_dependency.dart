@@ -10,13 +10,12 @@ import 'package:dompet_app/features/app_configurations/repositories/app_configur
 import 'package:dompet_app/features/assets/cubits/asset_cubit.dart';
 import 'package:dompet_app/features/assets/cubits/asset_detail_cubit.dart';
 import 'package:dompet_app/features/assets/repositories/asset_repository.dart';
-import 'package:dompet_app/features/budgets/cubits/budget_cubit.dart';
-import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
-import 'package:dompet_app/features/budgets/cubits/account_budget_status_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_action_cubit.dart';
+import 'package:dompet_app/features/budgets/cubits/budget_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_plan_detail_cubit.dart';
-import 'package:dompet_app/features/budgets/repositories/budget_repository.dart';
+import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_plan_repository.dart';
+import 'package:dompet_app/features/budgets/repositories/budget_repository.dart';
 import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
 import 'package:dompet_app/features/categories/repositories/category_repository.dart';
 import 'package:dompet_app/features/dashboard/cubits/dashboard_cubit.dart';
@@ -102,13 +101,7 @@ Future<void> initDependency({String? dbTestPath}) async {
 
   getIt.registerFactory<BudgetSignalCubit>(() => BudgetSignalCubit());
 
-  getIt.registerFactory<BudgetActionCubit>(
-    () => BudgetActionCubit(getIt()),
-  );
-
-  getIt.registerFactory<AccountBudgetStatusCubit>(
-    () => AccountBudgetStatusCubit(getIt()),
-  );
+  getIt.registerFactory<BudgetActionCubit>(() => BudgetActionCubit(getIt()));
 
   getIt.registerFactory<BudgetPlanDetailCubit>(
     () => BudgetPlanDetailCubit(getIt(), getIt()),

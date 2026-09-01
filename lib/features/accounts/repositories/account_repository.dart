@@ -12,17 +12,35 @@ class AccountRepository {
 
   const AccountRepository(this._dbService);
 
-  Future<List<Account>> getAccounts(AccountFilter filter) async {
+  Future<List<Account>> getAccounts({
+    required AccountFilter filter,
+    bool withBudget = false,
+  }) async {
     final db = await _dbService.database;
 
     final whereClauses = [
-      '${AccountKey.isDeleted} = 0',
+      '$accountBalanceView.${AccountKey.isDeleted} = 0',
       ...filter.whereClauses,
     ];
 
     final arguments = filter.arguments;
 
-    final result = await db.rawQuery('''
+    final result = withBudget
+        ? await db.rawQuery('''
+      SELECT $accountBalanceView.*, 
+        COUNT($budgetTable.${BudgetKey.accountId}) AS ${AccountKey.activeBudgetCount},
+        COUNT($budgetPlanTable.${BudgetPlanKey.accountId}) AS ${AccountKey.activeBudgetPlanCount}
+      FROM $accountBalanceView
+      LEFT JOIN $budgetTable ON $accountBalanceView.${AccountKey.id} = $budgetTable.${BudgetKey.accountId} 
+          AND $budgetTable.${BudgetKey.closedAt} IS NULL
+      LEFT JOIN $budgetPlanTable 
+        ON $accountBalanceView.${AccountKey.id} = $budgetPlanTable.${BudgetPlanKey.accountId}
+        AND $budgetPlanTable.${BudgetPlanKey.isDeleted} = 0
+      WHERE ${whereClauses.join(' AND ')}
+      GROUP BY $accountBalanceView.${AccountKey.id}
+      ORDER BY ${AccountKey.counter} DESC, ${AccountKey.name} ASC
+    ''', arguments)
+        : await db.rawQuery('''
       SELECT *
       FROM $accountBalanceView
       WHERE ${whereClauses.join(' AND ')}

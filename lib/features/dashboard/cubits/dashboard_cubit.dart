@@ -80,7 +80,9 @@ class DashboardCubit extends Cubit<DashboardState> {
 
     try {
       final filter = AccountFilter(isLiqid: true, isSystem: true, type: .asset);
-      final presetAssetAccounts = await _accountRepository.getAccounts(filter);
+      final presetAssetAccounts = await _accountRepository.getAccounts(
+        filter: filter,
+      );
       emit(
         state.copyWith(
           presetAssetAccounts: presetAssetAccounts,

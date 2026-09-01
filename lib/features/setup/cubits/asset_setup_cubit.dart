@@ -48,7 +48,9 @@ class AssetSetupCubit extends Cubit<AssetSetupState> {
         type: .asset,
         isLiqid: true,
       );
-      final userAssets = await _accountRepository.getAccounts(userAssetFilter);
+      final userAssets = await _accountRepository.getAccounts(
+        filter: userAssetFilter,
+      );
 
       if (userAssets.isNotEmpty) {
         emit(
@@ -67,7 +69,7 @@ class AssetSetupCubit extends Cubit<AssetSetupState> {
         isLiqid: true,
       );
       final presetAssets = await _accountRepository.getAccounts(
-        presetAssetFilter,
+        filter: presetAssetFilter,
       );
 
       emit(AssetSetupState.awaitingSetup(presetAccounts: presetAssets));

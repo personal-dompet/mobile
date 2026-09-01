@@ -9,12 +9,16 @@ class CategoryField extends StatefulWidget {
   final FormControl<String> nameControl;
   final TransactionType type;
   final bool required;
+  final bool readOnly;
+  final bool withBudget;
   const CategoryField({
     super.key,
     required this.valueControl,
     required this.nameControl,
     required this.type,
     this.required = false,
+    this.readOnly = false,
+    this.withBudget = false,
   });
 
   @override
@@ -29,7 +33,7 @@ class _CategoryFieldState extends State<CategoryField> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       focusNode.addListener(() {
-        if (focusNode.hasFocus) {
+        if (focusNode.hasFocus && !widget.readOnly) {
           _openExpenseAccountSelector(context);
         }
       });
@@ -46,12 +50,16 @@ class _CategoryFieldState extends State<CategoryField> {
     widget.valueControl.unfocus();
     widget.nameControl.unfocus();
 
-    await openCategorySelector(
+    final result = await openCategorySelector(
       context,
       type: widget.type,
-      idControl: widget.valueControl,
-      nameControl: widget.nameControl,
+      selectedId: widget.valueControl.value,
+      withBudget: widget.withBudget,
     );
+    if (!context.mounted || result == null) return;
+
+    widget.valueControl.updateValue(result.account.id);
+    widget.nameControl.updateValue(result.account.name);
   }
 
   @override
@@ -61,7 +69,7 @@ class _CategoryFieldState extends State<CategoryField> {
       label: 'Pilih Kategori${widget.required ? '' : ' (Opsional)'}',
       formControl: widget.nameControl,
       readOnly: true,
-      suffixIcon: Icon(Icons.chevron_right_rounded),
+      suffixIcon: widget.readOnly ? null : Icon(Icons.chevron_right_rounded),
       hidePrefixOnEmpty: true,
       focusNode: focusNode,
     );

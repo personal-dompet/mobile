@@ -407,11 +407,10 @@ class BudgetPlanRoute extends _i21.PageRouteInfo<BudgetPlanRouteArgs> {
   BudgetPlanRoute({
     _i22.Key? key,
     required _i23.Account category,
-    required _i25.BudgetPlan plan,
     List<_i21.PageRouteInfo>? children,
   }) : super(
          BudgetPlanRoute.name,
-         args: BudgetPlanRouteArgs(key: key, category: category, plan: plan),
+         args: BudgetPlanRouteArgs(key: key, category: category),
          initialChildren: children,
        );
 
@@ -421,42 +420,32 @@ class BudgetPlanRoute extends _i21.PageRouteInfo<BudgetPlanRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<BudgetPlanRouteArgs>();
-      return _i10.BudgetPlanPage(
-        key: args.key,
-        category: args.category,
-        plan: args.plan,
-      );
+      return _i10.BudgetPlanPage(key: args.key, category: args.category);
     },
   );
 }
 
 class BudgetPlanRouteArgs {
-  const BudgetPlanRouteArgs({
-    this.key,
-    required this.category,
-    required this.plan,
-  });
+  const BudgetPlanRouteArgs({this.key, required this.category});
 
   final _i22.Key? key;
 
   final _i23.Account category;
 
-  final _i25.BudgetPlan plan;
-
   @override
   String toString() {
-    return 'BudgetPlanRouteArgs{key: $key, category: $category, plan: $plan}';
+    return 'BudgetPlanRouteArgs{key: $key, category: $category}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! BudgetPlanRouteArgs) return false;
-    return key == other.key && category == other.category && plan == other.plan;
+    return key == other.key && category == other.category;
   }
 
   @override
-  int get hashCode => key.hashCode ^ category.hashCode ^ plan.hashCode;
+  int get hashCode => key.hashCode ^ category.hashCode;
 }
 
 /// generated route for

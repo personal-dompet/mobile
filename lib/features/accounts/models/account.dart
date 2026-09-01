@@ -36,6 +36,14 @@ abstract class Account with _$Account {
     @JsonKey(name: AccountKey.balance) @Default(0) int balance,
 
     @JsonKey(name: AccountKey.createdAt) required int createdAt,
+
+    @JsonKey(name: AccountKey.activeBudgetCount)
+    @Default(0)
+    int activeBudgetCount,
+
+    @JsonKey(name: AccountKey.activeBudgetPlanCount)
+    @Default(0)
+    int activeBudgetPlanCount,
   }) = _Account;
 
   factory Account.fromJson(Map<String, dynamic> json) =>

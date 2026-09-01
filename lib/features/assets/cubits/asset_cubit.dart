@@ -26,7 +26,7 @@ class AssetCubit extends Cubit<AssetState> {
       final assetFilter = filter != null
           ? filter.copyWith(isSystem: false, isLiqid: true, type: .asset)
           : AccountFilter(isSystem: false, isLiqid: true, type: .asset);
-      final assets = await _repository.getAccounts(assetFilter);
+      final assets = await _repository.getAccounts(filter: assetFilter);
 
       emit(AssetState.loaded(assets: assets));
     } catch (e) {
@@ -39,7 +39,7 @@ class AssetCubit extends Cubit<AssetState> {
 
     try {
       final filter = AccountFilter(isSystem: true, isLiqid: true, type: .asset);
-      final assets = await _repository.getAccounts(filter);
+      final assets = await _repository.getAccounts(filter: filter);
 
       emit(AssetState.loaded(assets: assets));
     } catch (e) {

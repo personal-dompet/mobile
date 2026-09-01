@@ -12,4 +12,6 @@ abstract class AccountKey {
   static const counter = 'counter';
 
   static const balance = 'balance';
+  static const activeBudgetCount = 'active_budget_count';
+  static const activeBudgetPlanCount = 'active_budget_plan_count';
 }
