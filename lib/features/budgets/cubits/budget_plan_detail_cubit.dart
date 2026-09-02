@@ -89,7 +89,7 @@ class BudgetPlanDetailCubit extends Cubit<BudgetPlanDetailState> {
   Future<String?> closeBudgets() =>
       _run((accountId) => _repository.closeActiveBudgets(accountId));
 
-  Future<String?> closeAndStartMonth() => _run((accountId) async {
+  Future<String?> closeAndStartMonth({int carryAmount = 0}) => _run((accountId) async {
     final activeBudget = await _repository.getActiveBudget(_accountId!);
     if (activeBudget == null) return;
     await _repository.closeActiveBudgets(accountId);
@@ -97,6 +97,7 @@ class BudgetPlanDetailCubit extends Cubit<BudgetPlanDetailState> {
       accountId: accountId,
       amount: _loadedAmount(),
       periode: DateTime.now(),
+      carryAmount: carryAmount,
     );
   });
 

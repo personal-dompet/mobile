@@ -1,4 +1,5 @@
 import 'package:dompet_app/core/extensions/number.dart';
+import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/features/budgets/models/budget.dart';
 import 'package:dompet_app/features/budgets/widgets/empty_budgets.dart';
 import 'package:flutter/material.dart';
@@ -36,61 +37,66 @@ class _BudgetCard extends StatelessWidget {
 
     return Card(
       clipBehavior: .antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: .stretch,
-          spacing: 8,
-          children: [
-            Row(
-              spacing: 4,
-              children: [
-                Expanded(
-                  child: Text(
-                    budget.accountName,
+      child: InkWell(
+        onTap: () => BudgetDetailRoute(budgetId: budget.id).push(context),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: .stretch,
+            spacing: 8,
+            children: [
+              Row(
+                spacing: 4,
+                children: [
+                  Expanded(
+                    child: Text(
+                      budget.accountName,
+                      style: themeData.textTheme.bodyMedium?.copyWith(
+                        fontWeight: .w600,
+                      ),
+                      overflow: .ellipsis,
+                    ),
+                  ),
+                  Text(
+                    budget.remaining.currency,
                     style: themeData.textTheme.bodyMedium?.copyWith(
+                      color: isOverBudget
+                          ? themeData.colorScheme.error
+                          : themeData.colorScheme.primary,
                       fontWeight: .w600,
                     ),
-                    overflow: .ellipsis,
                   ),
-                ),
-                Text(
-                  budget.remaining.currency,
-                  style: themeData.textTheme.bodyMedium?.copyWith(
-                    color: isOverBudget
-                        ? themeData.colorScheme.error
-                        : themeData.colorScheme.primary,
-                    fontWeight: .w600,
-                  ),
-                ),
-              ],
-            ),
-            Text(
-              budget.periode,
-              style: themeData.textTheme.bodySmall?.copyWith(
-                color: themeData.colorScheme.onSurface.withValues(alpha: 0.8),
+                ],
               ),
-            ),
-            _UsageBar(ratio: budget.useageRatio, isOverBudget: isOverBudget),
-            Row(
-              spacing: 4,
-              children: [
-                Expanded(
-                  child: Text(
-                    'Terpakai: ${budget.actualSpend.currency} ($percent%)',
-                    style: themeData.textTheme.bodySmall,
-                    overflow: .ellipsis,
-                  ),
+              Text(
+                budget.periode,
+                style: themeData.textTheme.bodySmall?.copyWith(
+                  color: themeData.colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
-                Text(
-                  budget.budgetAmount.currency,
-                  style: themeData.textTheme.bodySmall?.copyWith(
-                    color: themeData.colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+              _UsageBar(ratio: budget.useageRatio, isOverBudget: isOverBudget),
+              Row(
+                spacing: 4,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Terpakai: ${budget.actualSpend.currency} ($percent%)',
+                      style: themeData.textTheme.bodySmall,
+                      overflow: .ellipsis,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  Text(
+                    budget.actualBudgetAmount.currency,
+                    style: themeData.textTheme.bodySmall?.copyWith(
+                      color: themeData.colorScheme.onSurface.withValues(
+                        alpha: 0.7,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -119,10 +125,7 @@ class _UsageBar extends StatelessWidget {
           FractionallySizedBox(
             alignment: .centerLeft,
             widthFactor: clamped,
-            child: Container(
-              height: 6,
-              color: fillColor,
-            ),
+            child: Container(height: 6, color: fillColor),
           ),
         ],
       ),

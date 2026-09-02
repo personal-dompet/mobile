@@ -62,6 +62,24 @@ class BudgetRepository {
     );
   }
 
+  Future<Budget?> getBudgetById(int id) async {
+    final db = await _dbService.database;
+
+    final rows = await db.rawQuery(
+      '''
+      SELECT *
+      FROM $budgetTrackerView
+      WHERE ${BudgetKey.id} = ?
+      LIMIT 1
+    ''',
+      [id],
+    );
+
+    if (rows.isEmpty) return null;
+
+    return Budget.fromJson(rows.first);
+  }
+
   Future<Budget?> getActiveBudget(int accountId) async {
     final db = await _dbService.database;
 
@@ -100,6 +118,7 @@ class BudgetRepository {
     required int accountId,
     required int amount,
     required DateTime periode,
+    int carryAmount = 0,
   }) async {
     final db = await _dbService.database;
 
@@ -112,18 +131,19 @@ class BudgetRepository {
         ${BudgetKey.budgetedAmount},
         ${BudgetKey.carryAmount},
         ${BudgetKey.leftover}
-      ) VALUES (?, ?, ?, ?, 0, 0)
+      ) VALUES (?, ?, ?, ?, ?, 0)
       ON CONFLICT(${BudgetKey.accountId}, ${BudgetKey.periodStart}) DO UPDATE SET
         ${BudgetKey.budgetedAmount} = excluded.${BudgetKey.budgetedAmount},
-        ${BudgetKey.carryAmount} = 0,
+        ${BudgetKey.carryAmount} = excluded.${BudgetKey.carryAmount},
         ${BudgetKey.leftover} = 0,
         ${BudgetKey.closedAt} = NULL
       ''',
       [
         accountId,
-        periode.subtract(Duration(days: 31)).startOfMonth.secondsSinceEpoch,
-        periode.subtract(Duration(days: 31)).endOfMonth.secondsSinceEpoch,
+        periode.startOfMonth.secondsSinceEpoch,
+        periode.endOfMonth.secondsSinceEpoch,
         amount,
+        carryAmount,
       ],
     );
   }
@@ -131,11 +151,30 @@ class BudgetRepository {
   Future<void> closeActiveBudgets(int accountId) async {
     final db = await _dbService.database;
 
-    await db.update(
-      budgetTable,
-      {BudgetKey.closedAt: DateTime.now().secondsSinceEpoch},
-      where: '${BudgetKey.accountId} = ? AND ${BudgetKey.closedAt} IS NULL',
-      whereArgs: [accountId],
-    );
+    await db.transaction((txn) async {
+      final budgetResult = await txn.rawQuery(
+        '''
+        SELECT *
+        FROM $budgetTrackerView
+        WHERE ${BudgetKey.accountId} = ? AND ${BudgetKey.closedAt} IS NULL
+        ORDER BY ${BudgetKey.periodStart} DESC
+      ''',
+        [accountId],
+      );
+
+      if (budgetResult.isEmpty) return null;
+
+      final budget = Budget.fromJson(budgetResult.first);
+
+      await txn.update(
+        budgetTable,
+        {
+          BudgetKey.closedAt: DateTime.now().secondsSinceEpoch,
+          BudgetKey.leftover: budget.remaining,
+        },
+        where: '${BudgetKey.accountId} = ? AND ${BudgetKey.closedAt} IS NULL',
+        whereArgs: [accountId],
+      );
+    });
   }
 }

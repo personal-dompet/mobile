@@ -106,6 +106,76 @@ class JournalRepository {
     );
   }
 
+  Future<List<JournalEntry>> getJournalsByFilter(JournalFilter? filter) async {
+    final db = await _dbService.database;
+
+    final clauses = [
+      '$journalEntryTable.${JournalEntryKey.source} != ?',
+      '$journalEntryTable.${JournalEntryKey.status} = ?',
+    ];
+
+    final List<dynamic> args = [
+      JournalSource.setup.value,
+      JournalStatus.posted.name,
+    ];
+
+    if (filter != null) {
+      clauses.addAll(filter.whereClauses);
+      args.addAll(filter.arguments);
+    }
+
+    final journalResults = await db.rawQuery('''
+      SELECT 
+        $journalEntryTable.${JournalEntryKey.id},
+        $journalEntryTable.${JournalEntryKey.entryDate},
+        $journalEntryTable.${JournalEntryKey.description},
+        $journalEntryTable.${JournalEntryKey.reference},
+        $journalEntryTable.${JournalEntryKey.source},
+        $journalEntryTable.${JournalEntryKey.status},
+        $journalEntryTable.${JournalEntryKey.sourceId},
+        $journalEntryTable.${JournalEntryKey.metadata},
+        json_group_array(
+          json_object(
+            '${JournalLineKey.id}', $journalLineTable.${JournalLineKey.id},
+            '${JournalLineKey.journalEntryId}', $journalLineTable.${JournalLineKey.journalEntryId},
+            '${JournalLineKey.accountId}', $journalLineTable.${JournalLineKey.accountId},
+            '${JournalLineKey.accountName}', $accountBalanceView.${AccountKey.name},
+            '${JournalLineKey.accountType}', $accountBalanceView.${AccountKey.type},
+            '${JournalLineKey.accountBalance}', $accountBalanceView.${AccountKey.balance},
+            '${JournalLineKey.accountNormalBalance}', $accountBalanceView.${AccountKey.normalBalance},
+            '${JournalLineKey.debitAmount}', $journalLineTable.${JournalLineKey.debitAmount},
+            '${JournalLineKey.creditAmount}', $journalLineTable.${JournalLineKey.creditAmount},
+            '${JournalLineKey.lineOrder}', $journalLineTable.${JournalLineKey.lineOrder},
+            '${JournalLineKey.note}', $journalLineTable.${JournalLineKey.note}
+          )
+        ) AS ${JournalEntryKey.lines}
+      FROM $journalEntryTable
+      INNER JOIN $journalLineTable ON $journalLineTable.${JournalLineKey.journalEntryId} = $journalEntryTable.${JournalEntryKey.id}
+      INNER JOIN $accountBalanceView ON $accountBalanceView.${AccountKey.id} = $journalLineTable.${JournalLineKey.accountId}
+      WHERE ${clauses.join(' AND ')}
+      GROUP BY $journalEntryTable.${JournalEntryKey.id}
+      ORDER BY $journalEntryTable.${JournalEntryKey.entryDate} DESC
+    ''', args);
+
+    final journals = journalResults.map((journalResult) {
+      final result = {...journalResult};
+
+      final List<dynamic> journalLines = jsonDecode(
+        result[JournalEntryKey.lines] as String,
+      );
+
+      result.remove(JournalEntryKey.lines);
+
+      final journal = JournalEntry.fromJson(result);
+
+      return journal.copyWith(
+        lines: journalLines.map((line) => JournalLine.fromJson(line)).toList(),
+      );
+    }).toList();
+
+    return journals;
+  }
+
   Future<JournalEntry> getJournal(int id) async {
     final db = await _dbService.database;
 

@@ -10,6 +10,8 @@ import 'package:dompet_app/features/budgets/cubits/budget_plan_detail_cubit.dart
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/budgets/models/budget.dart';
 import 'package:dompet_app/features/budgets/models/budget_plan.dart';
+import 'package:dompet_app/features/budgets/utils/close_budget_handler.dart';
+import 'package:dompet_app/features/budgets/utils/show_close_choice_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -110,60 +112,54 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
     if (mounted) context.router.maybePop(true);
   }
 
-  void _primary(BuildContext context, {BudgetPlanAction? action}) {
+  Future<void> _primary(BuildContext context, {BudgetPlanAction? action}) async {
     switch (action) {
       case BudgetPlanAction.activate:
-        _runAction(
+        await _runAction(
           action: _cubit.activate,
           loadingText: 'Membuat anggaran...',
           successMessage: 'Anggaran bulan ini berhasil dibuat',
           refreshAfter: true,
         );
+        break;
       case BudgetPlanAction.close:
-        _showCloseDialog(context);
+        final activeBudget = _cubit.state.maybeWhen(
+          loaded: (_, activeBudget) => activeBudget,
+          orElse: () => null,
+        );
+        final plan = _cubit.state.maybeWhen(
+          loaded: (plan, _) => plan,
+          orElse: () => null,
+        );
+        if (activeBudget == null || plan == null) return;
+        final decision = await getCloseDecision(
+          context: context,
+          remaining: activeBudget.remaining,
+          planAmount: plan.amount,
+          categoryName: widget.category.name,
+          periode: activeBudget.periode,
+        );
+        if (decision == null || !mounted) return;
+        if (decision.choice == CloseChoice.closeOnly) {
+          await _runAction(
+            action: _cubit.closeBudgets,
+            loadingText: 'Menutup anggaran...',
+            successMessage: 'Anggaran berhasil ditutup',
+            refreshAfter: true,
+          );
+        } else {
+          await _runAction(
+            action: () => _cubit.closeAndStartMonth(carryAmount: decision.carryAmount),
+            loadingText: decision.carryAmount > 0
+                ? 'Menutup dan membawa sisa...'
+                : 'Tutup anggaran lama dan buat yang baru...',
+            successMessage: 'Anggaran bulan ini berhasil dibuat',
+            refreshAfter: true,
+          );
+        }
+        break;
       case null:
         break;
-    }
-  }
-
-  Future<void> _showCloseDialog(BuildContext context) async {
-    final shouldCreateNew = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Tutup Anggaran'),
-        content: const Text(
-          'Anggaran bulan sebelumnya akan ditutup. '
-          'Apakah Anda ingin membuka anggaran baru untuk bulan ini?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => dialogContext.router.maybePop(false),
-            child: const Text('Tidak'),
-          ),
-          FilledButton(
-            onPressed: () => dialogContext.router.maybePop(true),
-            child: const Text('Ya, Buat Baru'),
-          ),
-        ],
-      ),
-    );
-
-    if (shouldCreateNew == null || !mounted) return;
-
-    if (shouldCreateNew) {
-      await _runAction(
-        action: _cubit.closeAndStartMonth,
-        loadingText: 'Tutup anggaran lama dan buat yang baru...',
-        successMessage: 'Anggaran bulan ini berhasil dibuat',
-        refreshAfter: true,
-      );
-    } else {
-      await _runAction(
-        action: _cubit.closeBudgets,
-        loadingText: 'Menutup anggaran...',
-        successMessage: 'Anggaran berhasil ditutup',
-        refreshAfter: true,
-      );
     }
   }
 
