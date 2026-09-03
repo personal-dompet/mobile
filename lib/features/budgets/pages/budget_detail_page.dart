@@ -68,8 +68,8 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
       text: decision.choice == CloseChoice.closeOnly
           ? 'Menutup anggaran...'
           : decision.carryAmount > 0
-              ? 'Menutup dan membawa sisa...'
-              : 'Menutup dan membuat baru...',
+          ? 'Menutup dan membawa sisa...'
+          : 'Menutup dan membuat baru...',
     );
     final String? error;
     if (decision.choice == CloseChoice.closeOnly) {
@@ -336,7 +336,9 @@ class _DetailAppBar extends StatelessWidget {
                       child: Text(
                         periodLabel,
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.6,
+                          ),
                           fontWeight: FontWeight.w500,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -368,6 +370,7 @@ class _ConditionSection extends StatelessWidget {
     final isOverPeriod = detail.daysRemaining == 0;
     final percent = (budget.useageRatio * 100).round().clamp(0, 999);
     final hasDaily = !isOverPeriod && !isOver && detail.dailyAllowance > 0;
+    final showPace = detail.paceStatus != PaceStatus.noData;
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -438,7 +441,12 @@ class _ConditionSection extends StatelessWidget {
                 ),
               ],
             ),
-            _UsageBar(ratio: budget.useageRatio, isOverBudget: isOver),
+            _UsageBar(
+              ratio: budget.useageRatio,
+              isOverBudget: isOver,
+              elapsedRatio: detail.elapsedRatio,
+              showIdeal: showPace,
+            ),
             // Baris 2: sisa + hari (satu baris, lebih ringkas)
             Row(
               spacing: 8,
@@ -472,6 +480,49 @@ class _ConditionSection extends StatelessWidget {
                 ),
               ],
             ),
+            // Ritme pengeluaran — netral, hanya jika relevan
+            if (showPace)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.45,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: theme.colorScheme.outlineVariant.withValues(
+                      alpha: 0.4,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  spacing: 6,
+                  children: [
+                    Icon(
+                      Icons.sync_rounded,
+                      size: 12,
+                      color: theme.colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.6,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '${detail.paceLabel} · ${(budget.useageRatio * 100).round().clamp(0, 999)}% terpakai dari ${(detail.elapsedRatio * 100).round().clamp(0, 100)}% periode',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.7,
+                          ),
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             // Baris 3: hint harian — hanya jika relevan, tampil soft
             if (hasDaily)
               Container(
@@ -518,7 +569,7 @@ class _ConditionSection extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'sisa harian',
+                      'saran harian',
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant.withValues(
                           alpha: 0.5,
@@ -530,11 +581,16 @@ class _ConditionSection extends StatelessWidget {
               ),
             if (isOverPeriod)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: isOver
                       ? theme.colorScheme.errorContainer.withValues(alpha: 0.35)
-                      : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+                      : theme.colorScheme.surfaceContainerHighest.withValues(
+                          alpha: 0.6,
+                        ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -547,7 +603,9 @@ class _ConditionSection extends StatelessWidget {
                       size: 16,
                       color: isOver
                           ? theme.colorScheme.error
-                          : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                          : theme.colorScheme.onSurfaceVariant.withValues(
+                              alpha: 0.7,
+                            ),
                     ),
                     Expanded(
                       child: Text(
@@ -567,10 +625,15 @@ class _ConditionSection extends StatelessWidget {
                         side: BorderSide(
                           color: theme.colorScheme.error.withValues(alpha: 0.5),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                         minimumSize: const Size(0, 32),
                         visualDensity: VisualDensity.compact,
-                        textStyle: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
+                        textStyle: theme.textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       child: const Text('Tutup'),
                     ),
@@ -590,9 +653,12 @@ class _ConditionSection extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                      text: ' termasuk ${budget.carryAmount.currency} sisa bulan lalu',
+                      text:
+                          ' termasuk ${budget.carryAmount.currency} sisa bulan lalu',
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.45),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.45,
+                        ),
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -609,27 +675,59 @@ class _ConditionSection extends StatelessWidget {
 class _UsageBar extends StatelessWidget {
   final double ratio;
   final bool isOverBudget;
-  const _UsageBar({required this.ratio, required this.isOverBudget});
+  final double? elapsedRatio;
+  final bool showIdeal;
+  const _UsageBar({
+    required this.ratio,
+    required this.isOverBudget,
+    this.elapsedRatio,
+    this.showIdeal = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final clamped = ratio.clamp(0.0, 1.0);
     final fillColor = isOverBudget ? colorScheme.error : colorScheme.primary;
+    final elapsedClamped = (elapsedRatio ?? 0).clamp(0.0, 1.0);
     return ClipRRect(
       borderRadius: BorderRadius.circular(3),
-      child: Stack(
-        children: [
-          Container(
-            height: 6,
-            color: colorScheme.onSurface.withValues(alpha: 0.15),
-          ),
-          FractionallySizedBox(
-            alignment: Alignment.centerLeft,
-            widthFactor: clamped,
-            child: Container(height: 6, color: fillColor),
-          ),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final markerLeft = constraints.maxWidth * elapsedClamped;
+          return Stack(
+            children: [
+              Container(
+                height: 6,
+                color: colorScheme.onSurface.withValues(alpha: 0.15),
+              ),
+              FractionallySizedBox(
+                alignment: Alignment.centerLeft,
+                widthFactor: clamped,
+                child: Container(height: 6, color: fillColor),
+              ),
+              if (showIdeal && elapsedRatio != null)
+                Positioned(
+                  left: (markerLeft - 1).clamp(0, constraints.maxWidth - 2),
+                  top: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 2,
+                    decoration: BoxDecoration(
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.9,
+                      ),
+                      borderRadius: BorderRadius.circular(1),
+                      border: Border.all(
+                        color: colorScheme.surface.withValues(alpha: 0.9),
+                        width: 0.5,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -658,15 +756,6 @@ class _StatsSection extends StatelessWidget {
             value: '${detail.transactionCount}',
           ),
         ),
-        Expanded(
-          child: _StatCard(
-            label: 'Rata-rata',
-            value: detail.averageSpend == 0
-                ? '-'
-                : detail.averageSpend.currency,
-            subLabel: detail.transactionCount == 0 ? null : '/ trx',
-          ),
-        ),
       ],
     );
   }
@@ -675,14 +764,8 @@ class _StatsSection extends StatelessWidget {
 class _StatCard extends StatelessWidget {
   final String label;
   final String value;
-  final String? subLabel;
   final Color? valueColor;
-  const _StatCard({
-    required this.label,
-    required this.value,
-    this.subLabel,
-    this.valueColor,
-  });
+  const _StatCard({required this.label, required this.value, this.valueColor});
 
   @override
   Widget build(BuildContext context) {
@@ -717,13 +800,6 @@ class _StatCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (subLabel != null)
-                  Text(
-                    subLabel!,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                    ),
-                  ),
               ],
             ),
           ],

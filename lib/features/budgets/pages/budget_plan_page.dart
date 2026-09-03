@@ -112,7 +112,10 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
     if (mounted) context.router.maybePop(true);
   }
 
-  Future<void> _primary(BuildContext context, {BudgetPlanAction? action}) async {
+  Future<void> _primary(
+    BuildContext context, {
+    BudgetPlanAction? action,
+  }) async {
     switch (action) {
       case BudgetPlanAction.activate:
         await _runAction(
@@ -149,7 +152,8 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
           );
         } else {
           await _runAction(
-            action: () => _cubit.closeAndStartMonth(carryAmount: decision.carryAmount),
+            action: () =>
+                _cubit.closeAndStartMonth(carryAmount: decision.carryAmount),
             loadingText: decision.carryAmount > 0
                 ? 'Menutup dan membawa sisa...'
                 : 'Tutup anggaran lama dan buat yang baru...',
