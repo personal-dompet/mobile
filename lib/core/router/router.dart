@@ -33,6 +33,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: BudgetPlanRoute.page),
     AutoRoute(page: BudgetDetailRoute.page),
     AutoRoute(page: ActivityDetailRoute.page),
+    AutoRoute(page: SettingsRoute.page),
   ];
 
   @override

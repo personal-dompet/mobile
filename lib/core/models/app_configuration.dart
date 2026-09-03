@@ -3,9 +3,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'app_configuration.freezed.dart';
 part 'app_configuration.g.dart';
 
+enum AppThemeMode { system, light, dark }
+
 @freezed
 abstract class AppConfiguration with _$AppConfiguration {
-  factory AppConfiguration({required AppHint hint}) = _AppConfiguration;
+  factory AppConfiguration({
+    required AppHint hint,
+    @Default(AppThemeMode.system) AppThemeMode themeMode,
+  }) = _AppConfiguration;
 
   factory AppConfiguration.fromJson(Map<String, dynamic> json) =>
       _$AppConfigurationFromJson(json);

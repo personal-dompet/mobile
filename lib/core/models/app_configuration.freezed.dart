@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppConfiguration {
 
- AppHint get hint;
+ AppHint get hint; AppThemeMode get themeMode;
 /// Create a copy of AppConfiguration
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AppConfigurationCopyWith<AppConfiguration> get copyWith => _$AppConfigurationCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppConfiguration&&(identical(other.hint, hint) || other.hint == hint));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppConfiguration&&(identical(other.hint, hint) || other.hint == hint)&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,hint);
+int get hashCode => Object.hash(runtimeType,hint,themeMode);
 
 @override
 String toString() {
-  return 'AppConfiguration(hint: $hint)';
+  return 'AppConfiguration(hint: $hint, themeMode: $themeMode)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AppConfigurationCopyWith<$Res>  {
   factory $AppConfigurationCopyWith(AppConfiguration value, $Res Function(AppConfiguration) _then) = _$AppConfigurationCopyWithImpl;
 @useResult
 $Res call({
- AppHint hint
+ AppHint hint, AppThemeMode themeMode
 });
 
 
@@ -65,10 +65,11 @@ class _$AppConfigurationCopyWithImpl<$Res>
 
 /// Create a copy of AppConfiguration
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? hint = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? hint = null,Object? themeMode = null,}) {
   return _then(_self.copyWith(
 hint: null == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
-as AppHint,
+as AppHint,themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
+as AppThemeMode,
   ));
 }
 /// Create a copy of AppConfiguration
@@ -162,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AppHint hint)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AppHint hint,  AppThemeMode themeMode)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppConfiguration() when $default != null:
-return $default(_that.hint);case _:
+return $default(_that.hint,_that.themeMode);case _:
   return orElse();
 
 }
@@ -183,10 +184,10 @@ return $default(_that.hint);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AppHint hint)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AppHint hint,  AppThemeMode themeMode)  $default,) {final _that = this;
 switch (_that) {
 case _AppConfiguration():
-return $default(_that.hint);case _:
+return $default(_that.hint,_that.themeMode);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +204,10 @@ return $default(_that.hint);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AppHint hint)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AppHint hint,  AppThemeMode themeMode)?  $default,) {final _that = this;
 switch (_that) {
 case _AppConfiguration() when $default != null:
-return $default(_that.hint);case _:
+return $default(_that.hint,_that.themeMode);case _:
   return null;
 
 }
@@ -218,10 +219,11 @@ return $default(_that.hint);case _:
 @JsonSerializable()
 
 class _AppConfiguration implements AppConfiguration {
-   _AppConfiguration({required this.hint});
+   _AppConfiguration({required this.hint, this.themeMode = AppThemeMode.system});
   factory _AppConfiguration.fromJson(Map<String, dynamic> json) => _$AppConfigurationFromJson(json);
 
 @override final  AppHint hint;
+@override@JsonKey() final  AppThemeMode themeMode;
 
 /// Create a copy of AppConfiguration
 /// with the given fields replaced by the non-null parameter values.
@@ -236,16 +238,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppConfiguration&&(identical(other.hint, hint) || other.hint == hint));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppConfiguration&&(identical(other.hint, hint) || other.hint == hint)&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,hint);
+int get hashCode => Object.hash(runtimeType,hint,themeMode);
 
 @override
 String toString() {
-  return 'AppConfiguration(hint: $hint)';
+  return 'AppConfiguration(hint: $hint, themeMode: $themeMode)';
 }
 
 
@@ -256,7 +258,7 @@ abstract mixin class _$AppConfigurationCopyWith<$Res> implements $AppConfigurati
   factory _$AppConfigurationCopyWith(_AppConfiguration value, $Res Function(_AppConfiguration) _then) = __$AppConfigurationCopyWithImpl;
 @override @useResult
 $Res call({
- AppHint hint
+ AppHint hint, AppThemeMode themeMode
 });
 
 
@@ -273,10 +275,11 @@ class __$AppConfigurationCopyWithImpl<$Res>
 
 /// Create a copy of AppConfiguration
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? hint = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? hint = null,Object? themeMode = null,}) {
   return _then(_AppConfiguration(
 hint: null == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
-as AppHint,
+as AppHint,themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
+as AppThemeMode,
   ));
 }
 

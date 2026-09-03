@@ -13,14 +13,15 @@ class ShellPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-      ),
-    );
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return AutoTabsRouter(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+      ),
+      child: AutoTabsRouter(
       routes: [DashboardRoute(), ActivityRoute(), BudgetRoute(), SavingRoute()],
       builder: (context, child) {
         return PopScope(
@@ -71,6 +72,7 @@ class ShellPage extends StatelessWidget {
           ),
         );
       },
+      ),
     );
   }
 }
@@ -115,7 +117,7 @@ class __NavigationDrawerState extends State<_NavigationDrawer> {
         label: 'Pengaturan',
         iconData: Icons.settings_rounded,
         onTap: () {
-          //
+          context.router.push(const SettingsRoute());
         },
       ),
     ];

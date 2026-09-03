@@ -13,12 +13,27 @@ _AppConfiguration _$AppConfigurationFromJson(Map<String, dynamic> json) =>
           'hint',
           (v) => AppHint.fromJson(v as Map<String, dynamic>),
         ),
+        themeMode: $checkedConvert(
+          'themeMode',
+          (v) =>
+              $enumDecodeNullable(_$AppThemeModeEnumMap, v) ??
+              AppThemeMode.system,
+        ),
       );
       return val;
     });
 
 Map<String, dynamic> _$AppConfigurationToJson(_AppConfiguration instance) =>
-    <String, dynamic>{'hint': instance.hint};
+    <String, dynamic>{
+      'hint': instance.hint,
+      'themeMode': _$AppThemeModeEnumMap[instance.themeMode]!,
+    };
+
+const _$AppThemeModeEnumMap = {
+  AppThemeMode.system: 'system',
+  AppThemeMode.light: 'light',
+  AppThemeMode.dark: 'dark',
+};
 
 _AppHint _$AppHintFromJson(Map<String, dynamic> json) =>
     $checkedCreate('_AppHint', json, ($checkedConvert) {
