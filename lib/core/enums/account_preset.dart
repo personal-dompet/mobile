@@ -9,6 +9,7 @@ enum AccountPreset {
   eWallet('E-Wallet', .asset, '101.0003', Icons.phone_android_rounded),
   receivable('Piutang', .asset, '101.0004', Icons.call_received_rounded),
   investment('Investasi', .asset, '101.0005', Icons.trending_up_rounded),
+  savingPocket('Kantong Tabungan', .asset, '101.0006', Icons.savings_rounded),
 
   // --- LIABILITY (201) ---
   delayedBill(

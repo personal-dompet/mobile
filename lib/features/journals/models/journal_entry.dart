@@ -54,6 +54,13 @@ abstract class JournalEntry with _$JournalEntry {
     if (source == .billPayment) {
       return .billPayment;
     }
+    if (source == .saving) {
+      // Alokasi (asset->pocket) tampil sebagai transfer,
+      // spend dari pocket tampil sebagai expense.
+      final hasExpense = lines.any((line) => line.accountType == .expense);
+      if (hasExpense) return .expense;
+      return .transfer;
+    }
     if (source == .transaction && !isIncome) {
       return .expense;
     }

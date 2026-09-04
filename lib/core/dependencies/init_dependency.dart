@@ -17,8 +17,13 @@ import 'package:dompet_app/features/budgets/cubits/budget_plan_detail_cubit.dart
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_plan_repository.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_repository.dart';
+import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
 import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
 import 'package:dompet_app/features/categories/repositories/category_repository.dart';
+import 'package:dompet_app/features/savings/cubits/saving_action_cubit.dart';
+import 'package:dompet_app/features/savings/cubits/saving_cubit.dart';
+import 'package:dompet_app/features/savings/cubits/saving_detail_cubit.dart';
+import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:dompet_app/features/dashboard/cubits/dashboard_cubit.dart';
 import 'package:dompet_app/features/dashboard/repositories/dashboard_repository.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
@@ -53,6 +58,10 @@ Future<void> initDependency({String? dbTestPath}) async {
 
   getIt.registerLazySingleton<BudgetPlanRepository>(
     () => BudgetPlanRepository(getIt()),
+  );
+
+  getIt.registerLazySingleton<SavingRepository>(
+    () => SavingRepository(getIt()),
   );
 
   getIt.registerLazySingleton<AppConfigurationRepository>(
@@ -111,6 +120,14 @@ Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerFactory<BudgetDetailCubit>(
     () => BudgetDetailCubit(getIt(), getIt(), getIt()),
   );
+
+  getIt.registerFactory<SavingCubit>(() => SavingCubit(getIt()));
+
+  getIt.registerFactory<SavingSignalCubit>(() => SavingSignalCubit());
+
+  getIt.registerFactory<SavingActionCubit>(() => SavingActionCubit(getIt()));
+
+  getIt.registerFactory<SavingDetailCubit>(() => SavingDetailCubit(getIt()));
 
   getIt.registerLazySingleton<AppConfigurationCubit>(
     () => AppConfigurationCubit(getIt()),

@@ -28,6 +28,7 @@ void main() {
         'journal_lines',
         'budget_plans',
         'budgets',
+        'saving_plans',
       };
 
       final rows = await db.rawQuery(
@@ -56,6 +57,12 @@ void main() {
       views,
       contains(accountBalanceView),
       reason: 'view name frozen to $accountBalanceView',
+    );
+
+    expect(
+      views,
+      contains(savingTrackerView),
+      reason: 'view name frozen to $savingTrackerView',
     );
   });
 }

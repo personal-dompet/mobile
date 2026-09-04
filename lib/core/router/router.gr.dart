@@ -9,18 +9,18 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i23;
-import 'package:dompet_app/features/accounts/models/account.dart' as _i25;
+import 'package:auto_route/auto_route.dart' as _i27;
+import 'package:dompet_app/features/accounts/models/account.dart' as _i29;
 import 'package:dompet_app/features/activities/pages/activity_detail_page.dart'
     as _i1;
 import 'package:dompet_app/features/activities/pages/activity_page.dart' as _i2;
-import 'package:dompet_app/features/assets/forms/asset_form.dart' as _i26;
+import 'package:dompet_app/features/assets/forms/asset_form.dart' as _i30;
 import 'package:dompet_app/features/assets/pages/asset_activity_page.dart'
     as _i3;
 import 'package:dompet_app/features/assets/pages/asset_detail_page.dart' as _i4;
 import 'package:dompet_app/features/assets/pages/asset_form_page.dart' as _i5;
 import 'package:dompet_app/features/assets/pages/asset_page.dart' as _i6;
-import 'package:dompet_app/features/budgets/models/budget_plan.dart' as _i27;
+import 'package:dompet_app/features/budgets/models/budget_plan.dart' as _i31;
 import 'package:dompet_app/features/budgets/pages/budget_detail_page.dart'
     as _i8;
 import 'package:dompet_app/features/budgets/pages/budget_page.dart' as _i9;
@@ -29,41 +29,50 @@ import 'package:dompet_app/features/budgets/pages/budget_plan_form_page.dart'
 import 'package:dompet_app/features/budgets/pages/budget_plan_page.dart'
     as _i11;
 import 'package:dompet_app/features/categories/forms/category_form.dart'
-    as _i28;
+    as _i32;
 import 'package:dompet_app/features/categories/pages/category_form_page.dart'
     as _i12;
 import 'package:dompet_app/features/categories/pages/category_page.dart'
     as _i13;
 import 'package:dompet_app/features/dashboard/pages/dashboard_page.dart'
     as _i14;
-import 'package:dompet_app/features/dashboard/pages/shell_page.dart' as _i18;
-import 'package:dompet_app/features/savings/pages/saving_page.dart' as _i16;
-import 'package:dompet_app/features/settings/pages/settings_page.dart' as _i17;
+import 'package:dompet_app/features/dashboard/pages/shell_page.dart' as _i22;
+import 'package:dompet_app/features/savings/models/saving_plan.dart' as _i34;
+import 'package:dompet_app/features/savings/pages/saving_allocation_page.dart'
+    as _i16;
+import 'package:dompet_app/features/savings/pages/saving_detail_page.dart'
+    as _i17;
+import 'package:dompet_app/features/savings/pages/saving_form_page.dart'
+    as _i18;
+import 'package:dompet_app/features/savings/pages/saving_page.dart' as _i19;
+import 'package:dompet_app/features/savings/pages/saving_spend_page.dart'
+    as _i20;
+import 'package:dompet_app/features/settings/pages/settings_page.dart' as _i21;
 import 'package:dompet_app/features/setup/pages/initial_setup_page.dart'
     as _i15;
-import 'package:dompet_app/features/setup/pages/wallet_setup_page.dart' as _i22;
-import 'package:dompet_app/features/splash/pages/splash_page.dart' as _i19;
+import 'package:dompet_app/features/setup/pages/wallet_setup_page.dart' as _i26;
+import 'package:dompet_app/features/splash/pages/splash_page.dart' as _i23;
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart'
-    as _i29;
+    as _i33;
 import 'package:dompet_app/features/transactions/forms/transaction_form.dart'
-    as _i30;
+    as _i35;
 import 'package:dompet_app/features/transactions/forms/transfer_form.dart'
-    as _i31;
+    as _i36;
 import 'package:dompet_app/features/transactions/pages/balance_adjustment_page.dart'
     as _i7;
 import 'package:dompet_app/features/transactions/pages/transaction_page.dart'
-    as _i20;
+    as _i24;
 import 'package:dompet_app/features/transactions/pages/transfer_page.dart'
-    as _i21;
-import 'package:flutter/material.dart' as _i24;
+    as _i25;
+import 'package:flutter/material.dart' as _i28;
 
 /// generated route for
 /// [_i1.ActivityDetailPage]
-class ActivityDetailRoute extends _i23.PageRouteInfo<ActivityDetailRouteArgs> {
+class ActivityDetailRoute extends _i27.PageRouteInfo<ActivityDetailRouteArgs> {
   ActivityDetailRoute({
-    _i24.Key? key,
+    _i28.Key? key,
     required int id,
-    List<_i23.PageRouteInfo>? children,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          ActivityDetailRoute.name,
          args: ActivityDetailRouteArgs(key: key, id: id),
@@ -72,7 +81,7 @@ class ActivityDetailRoute extends _i23.PageRouteInfo<ActivityDetailRouteArgs> {
 
   static const String name = 'ActivityDetailRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<ActivityDetailRouteArgs>();
@@ -84,7 +93,7 @@ class ActivityDetailRoute extends _i23.PageRouteInfo<ActivityDetailRouteArgs> {
 class ActivityDetailRouteArgs {
   const ActivityDetailRouteArgs({this.key, required this.id});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
   final int id;
 
@@ -106,13 +115,13 @@ class ActivityDetailRouteArgs {
 
 /// generated route for
 /// [_i2.ActivityPage]
-class ActivityRoute extends _i23.PageRouteInfo<void> {
-  const ActivityRoute({List<_i23.PageRouteInfo>? children})
+class ActivityRoute extends _i27.PageRouteInfo<void> {
+  const ActivityRoute({List<_i27.PageRouteInfo>? children})
     : super(ActivityRoute.name, initialChildren: children);
 
   static const String name = 'ActivityRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       return const _i2.ActivityPage();
@@ -122,11 +131,11 @@ class ActivityRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.AssetActivityPage]
-class AssetActivityRoute extends _i23.PageRouteInfo<AssetActivityRouteArgs> {
+class AssetActivityRoute extends _i27.PageRouteInfo<AssetActivityRouteArgs> {
   AssetActivityRoute({
-    _i24.Key? key,
-    required _i25.Account account,
-    List<_i23.PageRouteInfo>? children,
+    _i28.Key? key,
+    required _i29.Account account,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          AssetActivityRoute.name,
          args: AssetActivityRouteArgs(key: key, account: account),
@@ -135,7 +144,7 @@ class AssetActivityRoute extends _i23.PageRouteInfo<AssetActivityRouteArgs> {
 
   static const String name = 'AssetActivityRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<AssetActivityRouteArgs>();
@@ -147,9 +156,9 @@ class AssetActivityRoute extends _i23.PageRouteInfo<AssetActivityRouteArgs> {
 class AssetActivityRouteArgs {
   const AssetActivityRouteArgs({this.key, required this.account});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
-  final _i25.Account account;
+  final _i29.Account account;
 
   @override
   String toString() {
@@ -169,11 +178,11 @@ class AssetActivityRouteArgs {
 
 /// generated route for
 /// [_i4.AssetDetailPage]
-class AssetDetailRoute extends _i23.PageRouteInfo<AssetDetailRouteArgs> {
+class AssetDetailRoute extends _i27.PageRouteInfo<AssetDetailRouteArgs> {
   AssetDetailRoute({
-    _i24.Key? key,
+    _i28.Key? key,
     required int id,
-    List<_i23.PageRouteInfo>? children,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          AssetDetailRoute.name,
          args: AssetDetailRouteArgs(key: key, id: id),
@@ -182,7 +191,7 @@ class AssetDetailRoute extends _i23.PageRouteInfo<AssetDetailRouteArgs> {
 
   static const String name = 'AssetDetailRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<AssetDetailRouteArgs>();
@@ -194,7 +203,7 @@ class AssetDetailRoute extends _i23.PageRouteInfo<AssetDetailRouteArgs> {
 class AssetDetailRouteArgs {
   const AssetDetailRouteArgs({this.key, required this.id});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
   final int id;
 
@@ -216,12 +225,12 @@ class AssetDetailRouteArgs {
 
 /// generated route for
 /// [_i5.AssetFormPage]
-class AssetFormRoute extends _i23.PageRouteInfo<AssetFormRouteArgs> {
+class AssetFormRoute extends _i27.PageRouteInfo<AssetFormRouteArgs> {
   AssetFormRoute({
-    _i24.Key? key,
-    _i26.AssetForm? form,
+    _i28.Key? key,
+    _i30.AssetForm? form,
     int? id,
-    List<_i23.PageRouteInfo>? children,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          AssetFormRoute.name,
          args: AssetFormRouteArgs(key: key, form: form, id: id),
@@ -230,7 +239,7 @@ class AssetFormRoute extends _i23.PageRouteInfo<AssetFormRouteArgs> {
 
   static const String name = 'AssetFormRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<AssetFormRouteArgs>(
@@ -244,9 +253,9 @@ class AssetFormRoute extends _i23.PageRouteInfo<AssetFormRouteArgs> {
 class AssetFormRouteArgs {
   const AssetFormRouteArgs({this.key, this.form, this.id});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
-  final _i26.AssetForm? form;
+  final _i30.AssetForm? form;
 
   final int? id;
 
@@ -268,13 +277,13 @@ class AssetFormRouteArgs {
 
 /// generated route for
 /// [_i6.AssetPage]
-class AssetRoute extends _i23.PageRouteInfo<void> {
-  const AssetRoute({List<_i23.PageRouteInfo>? children})
+class AssetRoute extends _i27.PageRouteInfo<void> {
+  const AssetRoute({List<_i27.PageRouteInfo>? children})
     : super(AssetRoute.name, initialChildren: children);
 
   static const String name = 'AssetRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       return const _i6.AssetPage();
@@ -285,11 +294,11 @@ class AssetRoute extends _i23.PageRouteInfo<void> {
 /// generated route for
 /// [_i7.BalanceAdjustmentPage]
 class BalanceAdjustmentRoute
-    extends _i23.PageRouteInfo<BalanceAdjustmentRouteArgs> {
+    extends _i27.PageRouteInfo<BalanceAdjustmentRouteArgs> {
   BalanceAdjustmentRoute({
-    _i24.Key? key,
-    required _i25.Account account,
-    List<_i23.PageRouteInfo>? children,
+    _i28.Key? key,
+    required _i29.Account account,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          BalanceAdjustmentRoute.name,
          args: BalanceAdjustmentRouteArgs(key: key, account: account),
@@ -298,7 +307,7 @@ class BalanceAdjustmentRoute
 
   static const String name = 'BalanceAdjustmentRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<BalanceAdjustmentRouteArgs>();
@@ -310,9 +319,9 @@ class BalanceAdjustmentRoute
 class BalanceAdjustmentRouteArgs {
   const BalanceAdjustmentRouteArgs({this.key, required this.account});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
-  final _i25.Account account;
+  final _i29.Account account;
 
   @override
   String toString() {
@@ -332,11 +341,11 @@ class BalanceAdjustmentRouteArgs {
 
 /// generated route for
 /// [_i8.BudgetDetailPage]
-class BudgetDetailRoute extends _i23.PageRouteInfo<BudgetDetailRouteArgs> {
+class BudgetDetailRoute extends _i27.PageRouteInfo<BudgetDetailRouteArgs> {
   BudgetDetailRoute({
-    _i24.Key? key,
+    _i28.Key? key,
     required int budgetId,
-    List<_i23.PageRouteInfo>? children,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          BudgetDetailRoute.name,
          args: BudgetDetailRouteArgs(key: key, budgetId: budgetId),
@@ -345,7 +354,7 @@ class BudgetDetailRoute extends _i23.PageRouteInfo<BudgetDetailRouteArgs> {
 
   static const String name = 'BudgetDetailRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<BudgetDetailRouteArgs>();
@@ -357,7 +366,7 @@ class BudgetDetailRoute extends _i23.PageRouteInfo<BudgetDetailRouteArgs> {
 class BudgetDetailRouteArgs {
   const BudgetDetailRouteArgs({this.key, required this.budgetId});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
   final int budgetId;
 
@@ -379,13 +388,13 @@ class BudgetDetailRouteArgs {
 
 /// generated route for
 /// [_i9.BudgetPage]
-class BudgetRoute extends _i23.PageRouteInfo<void> {
-  const BudgetRoute({List<_i23.PageRouteInfo>? children})
+class BudgetRoute extends _i27.PageRouteInfo<void> {
+  const BudgetRoute({List<_i27.PageRouteInfo>? children})
     : super(BudgetRoute.name, initialChildren: children);
 
   static const String name = 'BudgetRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       return const _i9.BudgetPage();
@@ -395,12 +404,12 @@ class BudgetRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.BudgetPlanFormPage]
-class BudgetPlanFormRoute extends _i23.PageRouteInfo<BudgetPlanFormRouteArgs> {
+class BudgetPlanFormRoute extends _i27.PageRouteInfo<BudgetPlanFormRouteArgs> {
   BudgetPlanFormRoute({
-    _i24.Key? key,
-    required _i25.Account category,
-    _i27.BudgetPlan? plan,
-    List<_i23.PageRouteInfo>? children,
+    _i28.Key? key,
+    required _i29.Account category,
+    _i31.BudgetPlan? plan,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          BudgetPlanFormRoute.name,
          args: BudgetPlanFormRouteArgs(
@@ -413,7 +422,7 @@ class BudgetPlanFormRoute extends _i23.PageRouteInfo<BudgetPlanFormRouteArgs> {
 
   static const String name = 'BudgetPlanFormRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<BudgetPlanFormRouteArgs>();
@@ -429,11 +438,11 @@ class BudgetPlanFormRoute extends _i23.PageRouteInfo<BudgetPlanFormRouteArgs> {
 class BudgetPlanFormRouteArgs {
   const BudgetPlanFormRouteArgs({this.key, required this.category, this.plan});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
-  final _i25.Account category;
+  final _i29.Account category;
 
-  final _i27.BudgetPlan? plan;
+  final _i31.BudgetPlan? plan;
 
   @override
   String toString() {
@@ -453,11 +462,11 @@ class BudgetPlanFormRouteArgs {
 
 /// generated route for
 /// [_i11.BudgetPlanPage]
-class BudgetPlanRoute extends _i23.PageRouteInfo<BudgetPlanRouteArgs> {
+class BudgetPlanRoute extends _i27.PageRouteInfo<BudgetPlanRouteArgs> {
   BudgetPlanRoute({
-    _i24.Key? key,
-    required _i25.Account category,
-    List<_i23.PageRouteInfo>? children,
+    _i28.Key? key,
+    required _i29.Account category,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          BudgetPlanRoute.name,
          args: BudgetPlanRouteArgs(key: key, category: category),
@@ -466,7 +475,7 @@ class BudgetPlanRoute extends _i23.PageRouteInfo<BudgetPlanRouteArgs> {
 
   static const String name = 'BudgetPlanRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<BudgetPlanRouteArgs>();
@@ -478,9 +487,9 @@ class BudgetPlanRoute extends _i23.PageRouteInfo<BudgetPlanRouteArgs> {
 class BudgetPlanRouteArgs {
   const BudgetPlanRouteArgs({this.key, required this.category});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
-  final _i25.Account category;
+  final _i29.Account category;
 
   @override
   String toString() {
@@ -500,12 +509,12 @@ class BudgetPlanRouteArgs {
 
 /// generated route for
 /// [_i12.CategoryFormPage]
-class CategoryFormRoute extends _i23.PageRouteInfo<CategoryFormRouteArgs> {
+class CategoryFormRoute extends _i27.PageRouteInfo<CategoryFormRouteArgs> {
   CategoryFormRoute({
-    _i24.Key? key,
-    required _i28.CategoryForm form,
+    _i28.Key? key,
+    required _i32.CategoryForm form,
     int? id,
-    List<_i23.PageRouteInfo>? children,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          CategoryFormRoute.name,
          args: CategoryFormRouteArgs(key: key, form: form, id: id),
@@ -514,7 +523,7 @@ class CategoryFormRoute extends _i23.PageRouteInfo<CategoryFormRouteArgs> {
 
   static const String name = 'CategoryFormRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<CategoryFormRouteArgs>();
@@ -526,9 +535,9 @@ class CategoryFormRoute extends _i23.PageRouteInfo<CategoryFormRouteArgs> {
 class CategoryFormRouteArgs {
   const CategoryFormRouteArgs({this.key, required this.form, this.id});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
-  final _i28.CategoryForm form;
+  final _i32.CategoryForm form;
 
   final int? id;
 
@@ -550,11 +559,11 @@ class CategoryFormRouteArgs {
 
 /// generated route for
 /// [_i13.CategoryPage]
-class CategoryRoute extends _i23.PageRouteInfo<CategoryRouteArgs> {
+class CategoryRoute extends _i27.PageRouteInfo<CategoryRouteArgs> {
   CategoryRoute({
-    _i24.Key? key,
-    required _i29.TransactionType type,
-    List<_i23.PageRouteInfo>? children,
+    _i28.Key? key,
+    required _i33.TransactionType type,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          CategoryRoute.name,
          args: CategoryRouteArgs(key: key, type: type),
@@ -563,7 +572,7 @@ class CategoryRoute extends _i23.PageRouteInfo<CategoryRouteArgs> {
 
   static const String name = 'CategoryRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<CategoryRouteArgs>();
@@ -575,9 +584,9 @@ class CategoryRoute extends _i23.PageRouteInfo<CategoryRouteArgs> {
 class CategoryRouteArgs {
   const CategoryRouteArgs({this.key, required this.type});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
-  final _i29.TransactionType type;
+  final _i33.TransactionType type;
 
   @override
   String toString() {
@@ -597,13 +606,13 @@ class CategoryRouteArgs {
 
 /// generated route for
 /// [_i14.DashboardPage]
-class DashboardRoute extends _i23.PageRouteInfo<void> {
-  const DashboardRoute({List<_i23.PageRouteInfo>? children})
+class DashboardRoute extends _i27.PageRouteInfo<void> {
+  const DashboardRoute({List<_i27.PageRouteInfo>? children})
     : super(DashboardRoute.name, initialChildren: children);
 
   static const String name = 'DashboardRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       return const _i14.DashboardPage();
@@ -613,13 +622,13 @@ class DashboardRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i15.InitialSetupPage]
-class InitialSetupRoute extends _i23.PageRouteInfo<void> {
-  const InitialSetupRoute({List<_i23.PageRouteInfo>? children})
+class InitialSetupRoute extends _i27.PageRouteInfo<void> {
+  const InitialSetupRoute({List<_i27.PageRouteInfo>? children})
     : super(InitialSetupRoute.name, initialChildren: children);
 
   static const String name = 'InitialSetupRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       return const _i15.InitialSetupPage();
@@ -628,79 +637,287 @@ class InitialSetupRoute extends _i23.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i16.SavingPage]
-class SavingRoute extends _i23.PageRouteInfo<void> {
-  const SavingRoute({List<_i23.PageRouteInfo>? children})
+/// [_i16.SavingAllocationPage]
+class SavingAllocationRoute
+    extends _i27.PageRouteInfo<SavingAllocationRouteArgs> {
+  SavingAllocationRoute({
+    _i28.Key? key,
+    required int accountId,
+    bool isWithdraw = false,
+    List<_i27.PageRouteInfo>? children,
+  }) : super(
+         SavingAllocationRoute.name,
+         args: SavingAllocationRouteArgs(
+           key: key,
+           accountId: accountId,
+           isWithdraw: isWithdraw,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'SavingAllocationRoute';
+
+  static _i27.PageInfo page = _i27.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<SavingAllocationRouteArgs>();
+      return _i16.SavingAllocationPage(
+        key: args.key,
+        accountId: args.accountId,
+        isWithdraw: args.isWithdraw,
+      );
+    },
+  );
+}
+
+class SavingAllocationRouteArgs {
+  const SavingAllocationRouteArgs({
+    this.key,
+    required this.accountId,
+    this.isWithdraw = false,
+  });
+
+  final _i28.Key? key;
+
+  final int accountId;
+
+  final bool isWithdraw;
+
+  @override
+  String toString() {
+    return 'SavingAllocationRouteArgs{key: $key, accountId: $accountId, isWithdraw: $isWithdraw}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SavingAllocationRouteArgs) return false;
+    return key == other.key &&
+        accountId == other.accountId &&
+        isWithdraw == other.isWithdraw;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ accountId.hashCode ^ isWithdraw.hashCode;
+}
+
+/// generated route for
+/// [_i17.SavingDetailPage]
+class SavingDetailRoute extends _i27.PageRouteInfo<SavingDetailRouteArgs> {
+  SavingDetailRoute({
+    _i28.Key? key,
+    required int accountId,
+    List<_i27.PageRouteInfo>? children,
+  }) : super(
+         SavingDetailRoute.name,
+         args: SavingDetailRouteArgs(key: key, accountId: accountId),
+         initialChildren: children,
+       );
+
+  static const String name = 'SavingDetailRoute';
+
+  static _i27.PageInfo page = _i27.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<SavingDetailRouteArgs>();
+      return _i17.SavingDetailPage(key: args.key, accountId: args.accountId);
+    },
+  );
+}
+
+class SavingDetailRouteArgs {
+  const SavingDetailRouteArgs({this.key, required this.accountId});
+
+  final _i28.Key? key;
+
+  final int accountId;
+
+  @override
+  String toString() {
+    return 'SavingDetailRouteArgs{key: $key, accountId: $accountId}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SavingDetailRouteArgs) return false;
+    return key == other.key && accountId == other.accountId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ accountId.hashCode;
+}
+
+/// generated route for
+/// [_i18.SavingFormPage]
+class SavingFormRoute extends _i27.PageRouteInfo<SavingFormRouteArgs> {
+  SavingFormRoute({
+    _i28.Key? key,
+    _i34.SavingPlan? plan,
+    List<_i27.PageRouteInfo>? children,
+  }) : super(
+         SavingFormRoute.name,
+         args: SavingFormRouteArgs(key: key, plan: plan),
+         initialChildren: children,
+       );
+
+  static const String name = 'SavingFormRoute';
+
+  static _i27.PageInfo page = _i27.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<SavingFormRouteArgs>(
+        orElse: () => const SavingFormRouteArgs(),
+      );
+      return _i18.SavingFormPage(key: args.key, plan: args.plan);
+    },
+  );
+}
+
+class SavingFormRouteArgs {
+  const SavingFormRouteArgs({this.key, this.plan});
+
+  final _i28.Key? key;
+
+  final _i34.SavingPlan? plan;
+
+  @override
+  String toString() {
+    return 'SavingFormRouteArgs{key: $key, plan: $plan}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SavingFormRouteArgs) return false;
+    return key == other.key && plan == other.plan;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ plan.hashCode;
+}
+
+/// generated route for
+/// [_i19.SavingPage]
+class SavingRoute extends _i27.PageRouteInfo<void> {
+  const SavingRoute({List<_i27.PageRouteInfo>? children})
     : super(SavingRoute.name, initialChildren: children);
 
   static const String name = 'SavingRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
-      return const _i16.SavingPage();
+      return const _i19.SavingPage();
     },
   );
 }
 
 /// generated route for
-/// [_i17.SettingsPage]
-class SettingsRoute extends _i23.PageRouteInfo<void> {
-  const SettingsRoute({List<_i23.PageRouteInfo>? children})
+/// [_i20.SavingSpendPage]
+class SavingSpendRoute extends _i27.PageRouteInfo<SavingSpendRouteArgs> {
+  SavingSpendRoute({
+    _i28.Key? key,
+    required int accountId,
+    List<_i27.PageRouteInfo>? children,
+  }) : super(
+         SavingSpendRoute.name,
+         args: SavingSpendRouteArgs(key: key, accountId: accountId),
+         initialChildren: children,
+       );
+
+  static const String name = 'SavingSpendRoute';
+
+  static _i27.PageInfo page = _i27.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<SavingSpendRouteArgs>();
+      return _i20.SavingSpendPage(key: args.key, accountId: args.accountId);
+    },
+  );
+}
+
+class SavingSpendRouteArgs {
+  const SavingSpendRouteArgs({this.key, required this.accountId});
+
+  final _i28.Key? key;
+
+  final int accountId;
+
+  @override
+  String toString() {
+    return 'SavingSpendRouteArgs{key: $key, accountId: $accountId}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SavingSpendRouteArgs) return false;
+    return key == other.key && accountId == other.accountId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ accountId.hashCode;
+}
+
+/// generated route for
+/// [_i21.SettingsPage]
+class SettingsRoute extends _i27.PageRouteInfo<void> {
+  const SettingsRoute({List<_i27.PageRouteInfo>? children})
     : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
-      return const _i17.SettingsPage();
+      return const _i21.SettingsPage();
     },
   );
 }
 
 /// generated route for
-/// [_i18.ShellPage]
-class ShellRoute extends _i23.PageRouteInfo<void> {
-  const ShellRoute({List<_i23.PageRouteInfo>? children})
+/// [_i22.ShellPage]
+class ShellRoute extends _i27.PageRouteInfo<void> {
+  const ShellRoute({List<_i27.PageRouteInfo>? children})
     : super(ShellRoute.name, initialChildren: children);
 
   static const String name = 'ShellRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
-      return const _i18.ShellPage();
+      return const _i22.ShellPage();
     },
   );
 }
 
 /// generated route for
-/// [_i19.SplashPage]
-class SplashRoute extends _i23.PageRouteInfo<void> {
-  const SplashRoute({List<_i23.PageRouteInfo>? children})
+/// [_i23.SplashPage]
+class SplashRoute extends _i27.PageRouteInfo<void> {
+  const SplashRoute({List<_i27.PageRouteInfo>? children})
     : super(SplashRoute.name, initialChildren: children);
 
   static const String name = 'SplashRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
-      return const _i19.SplashPage();
+      return const _i23.SplashPage();
     },
   );
 }
 
 /// generated route for
-/// [_i20.TransactionPage]
-class TransactionRoute extends _i23.PageRouteInfo<TransactionRouteArgs> {
+/// [_i24.TransactionPage]
+class TransactionRoute extends _i27.PageRouteInfo<TransactionRouteArgs> {
   TransactionRoute({
-    _i24.Key? key,
-    required _i29.TransactionType type,
+    _i28.Key? key,
+    required _i33.TransactionType type,
     bool batch = false,
-    _i30.TransactionForm? form,
+    _i35.TransactionForm? form,
     int? id,
-    List<_i23.PageRouteInfo>? children,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          TransactionRoute.name,
          args: TransactionRouteArgs(
@@ -715,11 +932,11 @@ class TransactionRoute extends _i23.PageRouteInfo<TransactionRouteArgs> {
 
   static const String name = 'TransactionRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<TransactionRouteArgs>();
-      return _i20.TransactionPage(
+      return _i24.TransactionPage(
         key: args.key,
         type: args.type,
         batch: args.batch,
@@ -739,13 +956,13 @@ class TransactionRouteArgs {
     this.id,
   });
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
-  final _i29.TransactionType type;
+  final _i33.TransactionType type;
 
   final bool batch;
 
-  final _i30.TransactionForm? form;
+  final _i35.TransactionForm? form;
 
   final int? id;
 
@@ -775,13 +992,13 @@ class TransactionRouteArgs {
 }
 
 /// generated route for
-/// [_i21.TransferPage]
-class TransferRoute extends _i23.PageRouteInfo<TransferRouteArgs> {
+/// [_i25.TransferPage]
+class TransferRoute extends _i27.PageRouteInfo<TransferRouteArgs> {
   TransferRoute({
-    _i24.Key? key,
-    _i31.TransferForm? form,
+    _i28.Key? key,
+    _i36.TransferForm? form,
     int? id,
-    List<_i23.PageRouteInfo>? children,
+    List<_i27.PageRouteInfo>? children,
   }) : super(
          TransferRoute.name,
          args: TransferRouteArgs(key: key, form: form, id: id),
@@ -790,13 +1007,13 @@ class TransferRoute extends _i23.PageRouteInfo<TransferRouteArgs> {
 
   static const String name = 'TransferRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<TransferRouteArgs>(
         orElse: () => const TransferRouteArgs(),
       );
-      return _i21.TransferPage(key: args.key, form: args.form, id: args.id);
+      return _i25.TransferPage(key: args.key, form: args.form, id: args.id);
     },
   );
 }
@@ -804,9 +1021,9 @@ class TransferRoute extends _i23.PageRouteInfo<TransferRouteArgs> {
 class TransferRouteArgs {
   const TransferRouteArgs({this.key, this.form, this.id});
 
-  final _i24.Key? key;
+  final _i28.Key? key;
 
-  final _i31.TransferForm? form;
+  final _i36.TransferForm? form;
 
   final int? id;
 
@@ -827,17 +1044,17 @@ class TransferRouteArgs {
 }
 
 /// generated route for
-/// [_i22.WalletSetupPage]
-class WalletSetupRoute extends _i23.PageRouteInfo<void> {
-  const WalletSetupRoute({List<_i23.PageRouteInfo>? children})
+/// [_i26.WalletSetupPage]
+class WalletSetupRoute extends _i27.PageRouteInfo<void> {
+  const WalletSetupRoute({List<_i27.PageRouteInfo>? children})
     : super(WalletSetupRoute.name, initialChildren: children);
 
   static const String name = 'WalletSetupRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i27.PageInfo page = _i27.PageInfo(
     name,
     builder: (data) {
-      return const _i22.WalletSetupPage();
+      return const _i26.WalletSetupPage();
     },
   );
 }

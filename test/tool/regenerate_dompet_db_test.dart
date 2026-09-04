@@ -13,8 +13,9 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 /// Regenerates the repo-root `dompet.db` dev snapshot so it is in schema
 /// parity with `lib/core/database/schemas/` + `views/`:
 ///
-/// - all tables (incl. `budget_plans` / `budgets`)
+/// - all tables (incl. `budget_plans` / `budgets` / `saving_plans`)
 /// - the `v_account_balances` view (frozen code truth)
+/// - the `v_saving_tracker` view
 /// - seeded preset accounts + app configuration
 /// - the dev wallet ("Tunai") with its opening balance journal
 ///   (same flow as wallet creation during onboarding)
@@ -71,6 +72,7 @@ void main() {
       'journal_lines',
       'budget_plans',
       'budgets',
+      'saving_plans',
     }) {
       expect(tables, contains(table), reason: 'snapshot must contain $table');
     }
@@ -82,6 +84,11 @@ void main() {
       views,
       contains(accountBalanceView),
       reason: 'snapshot view must be $accountBalanceView',
+    );
+    expect(
+      views,
+      contains(savingTrackerView),
+      reason: 'snapshot view must be $savingTrackerView',
     );
 
     final wallet = await db.query(

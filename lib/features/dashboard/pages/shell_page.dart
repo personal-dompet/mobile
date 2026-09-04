@@ -3,6 +3,7 @@ import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/widgets/dompet_dialog.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/budgets/widgets/budget_fab.dart';
+import 'package:dompet_app/features/savings/widgets/saving_fab.dart';
 import 'package:dompet_app/features/dashboard/widgets/greeting_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,9 +62,12 @@ class ShellPage extends StatelessWidget {
             body: child,
             floatingActionButton: Builder(
               builder: (context) {
-                final isBudgetTab =
-                    context.tabsRouter.current.name == BudgetRoute.name;
-                return isBudgetTab ? const BudgetFab() : const DompetFab();
+                final current = context.tabsRouter.current.name;
+                return switch (current) {
+                  BudgetRoute.name => const BudgetFab(),
+                  SavingRoute.name => const SavingFab(),
+                  _ => const DompetFab(),
+                };
               },
             ),
             floatingActionButtonLocation: .centerDocked,

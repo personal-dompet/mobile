@@ -9,6 +9,7 @@ import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/app_configurations/cubits/app_configuration_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
+import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => getIt<AccountSignalCubit>()),
         BlocProvider(create: (context) => getIt<AppConfigurationCubit>()),
         BlocProvider(create: (context) => getIt<BudgetSignalCubit>()),
+        BlocProvider(create: (context) => getIt<SavingSignalCubit>()),
       ],
       child: BlocBuilder<AppConfigurationCubit, AppConfiguration?>(
         builder: (context, appConfig) {

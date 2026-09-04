@@ -12,7 +12,9 @@ enum JournalSource {
   @JsonValue('bill_payment')
   billPayment('bill_payment'),
   @JsonValue('adjustment')
-  adjustment('adjustment');
+  adjustment('adjustment'),
+  @JsonValue('saving')
+  saving('saving');
 
   final String value;
 

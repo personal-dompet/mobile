@@ -62,6 +62,7 @@ const _$JournalSourceEnumMap = {
   JournalSource.billGenerated: 'bill_generated',
   JournalSource.billPayment: 'bill_payment',
   JournalSource.adjustment: 'adjustment',
+  JournalSource.saving: 'saving',
 };
 
 const _$JournalStatusEnumMap = {

@@ -72,6 +72,7 @@ class DbService {
     batch.execute(appConfigurationSchema);
     batch.execute(budgetPlanSchema);
     batch.execute(budgetSchema);
+    batch.execute(savingPlanSchema);
     batch.execute(journalEntrySchema);
     batch.execute(journalLineSchema);
 
@@ -81,9 +82,12 @@ class DbService {
     batch.execute(journalLineEntryIdx);
     batch.execute(journalLineAccountIdIdx);
     batch.execute(journalEntryStatusDateIdx);
+    batch.execute(savingPlanAccountIdx);
+    batch.execute(savingPlanStatusIdx);
 
     batch.execute(accountBalanceViewDefinition);
     batch.execute(budgetTrackerViewDefinition);
+    batch.execute(savingTrackerViewDefinition);
 
     batch.execute(increaseAccountCounter);
     batch.execute(decreaseAccountCounter);
