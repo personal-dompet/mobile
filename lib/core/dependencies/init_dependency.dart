@@ -1,5 +1,6 @@
 import 'package:dompet_app/core/cubits/pagination_cubit.dart';
 import 'package:dompet_app/core/database/db_service.dart';
+import 'package:dompet_app/core/network/connectivity_cubit.dart';
 import 'package:dompet_app/features/accounts/cubits/account_action_cubit.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/accounts/repositories/account_repository.dart';
@@ -43,6 +44,7 @@ import 'package:dompet_app/features/backup/services/drive_backup_service.dart';
 import 'package:dompet_app/features/transactions/repositories/balance_adjustment_repository.dart';
 import 'package:dompet_app/features/transactions/repositories/transaction_repository.dart';
 import 'package:dompet_app/features/transactions/repositories/transfer_repository.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -94,6 +96,12 @@ Future<void> initDependency({String? dbTestPath}) async {
 
   getIt.registerLazySingleton<ReportRepository>(
     () => ReportRepository(getIt()),
+  );
+
+  // Connectivity awareness (offline-first app, backup/restore needs internet)
+  getIt.registerLazySingleton<Connectivity>(() => Connectivity());
+  getIt.registerFactory<ConnectivityCubit>(
+    () => ConnectivityCubit(connectivity: getIt()),
   );
 
   // Backup & Restore (Google Drive appDataFolder)

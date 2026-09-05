@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/models/app_configuration.dart';
+import 'package:dompet_app/core/network/connectivity_cubit.dart';
 import 'package:dompet_app/core/router/router.dart';
 import 'package:dompet_app/core/theme/app_theme.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
@@ -26,9 +27,7 @@ void main() {
     // Pre-initialize Google Sign-In (no UI). Safe to ignore errors.
     try {
       await getIt<BackupAuthService>().ensureInitialized();
-    } catch (error) {
-      debugPrint('[MAIN] $error');
-    }
+    } catch (_) {}
     await initializeDateFormatting('id');
     runApp(MyApp());
   }, (error, stackTrace) => debugPrint('Error: $error, Trace: $stackTrace'));
@@ -43,6 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => getIt<ConnectivityCubit>()..init()),
         BlocProvider(create: (context) => getIt<ActivitySignalCubit>()),
         BlocProvider(create: (context) => getIt<AccountSignalCubit>()),
         BlocProvider(create: (context) => getIt<AppConfigurationCubit>()),

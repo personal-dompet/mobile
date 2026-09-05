@@ -3,8 +3,8 @@ import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/widgets/spinner_loading.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/reports/cubits/report_cubit.dart';
-import 'package:dompet_app/features/reports/models/report_period.dart';
 import 'package:dompet_app/features/reports/models/report_insight.dart';
+import 'package:dompet_app/features/reports/models/report_period.dart';
 import 'package:dompet_app/features/reports/widgets/budget_section_card.dart';
 import 'package:dompet_app/features/reports/widgets/cashflow_bar.dart';
 import 'package:dompet_app/features/reports/widgets/category_spending_card.dart';
@@ -57,9 +57,8 @@ class ReportPage extends StatelessWidget {
                                 textAlign: TextAlign.center,
                               ),
                               FilledButton(
-                                onPressed: () => context
-                                    .read<ReportCubit>()
-                                    .refresh(),
+                                onPressed: () =>
+                                    context.read<ReportCubit>().refresh(),
                                 child: const Text('Coba lagi'),
                               ),
                             ],
@@ -68,8 +67,7 @@ class ReportPage extends StatelessWidget {
                       ),
                       _ => _LoadedBody(
                         state: state,
-                        isRefreshing:
-                            state.status == ReportStatus.refreshing,
+                        isRefreshing: state.status == ReportStatus.refreshing,
                       ),
                     };
                   },

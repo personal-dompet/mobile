@@ -8,10 +8,7 @@ import 'package:dompet_app/features/reports/models/monthly_summary.dart';
 /// - sekarang juga nol -> 0% (tidak ada perubahan)
 /// - sekarang > 0 -> null (tidak terdefinisi, jangan tampilkan angka menyesatkan)
 class PeriodComparison {
-  const PeriodComparison({
-    required this.current,
-    required this.previous,
-  });
+  const PeriodComparison({required this.current, required this.previous});
 
   final MonthlySummary current;
   final MonthlySummary previous;
@@ -21,15 +18,11 @@ class PeriodComparison {
     return (current - previous) / previous * 100;
   }
 
-  double? get incomeChangePercent => changePercent(
-    current: current.income,
-    previous: previous.income,
-  );
+  double? get incomeChangePercent =>
+      changePercent(current: current.income, previous: previous.income);
 
-  double? get expenseChangePercent => changePercent(
-    current: current.expense,
-    previous: previous.expense,
-  );
+  double? get expenseChangePercent =>
+      changePercent(current: current.expense, previous: previous.expense);
 
   double? get netChangePercent =>
       changePercent(current: current.net, previous: previous.net);
@@ -38,7 +31,7 @@ class PeriodComparison {
   /// Null jika persen tidak terdefinisi (periode lalu kosong).
   static String? changeLabel(double? percent) {
     if (percent == null) return null;
-    if (percent == 0) return 'sama seperti bulan lalu';
+    if (percent == 0) return 'tetap';
     final rounded = percent.abs().round();
     return '${percent < 0 ? 'turun' : 'naik'} $rounded%';
   }
@@ -49,5 +42,6 @@ class PeriodComparison {
     if (previous.expense == 0) return null;
     return changeLabel(expenseChangePercent);
   }
+
   String? get incomeLabel => changeLabel(incomeChangePercent);
 }

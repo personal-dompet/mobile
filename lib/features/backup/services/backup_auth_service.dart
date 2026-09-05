@@ -1,5 +1,4 @@
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as gapis;
 
@@ -23,7 +22,7 @@ class BackupAuthService {
   final String serverClientId;
 
   BackupAuthService({String? serverClientId})
-      : serverClientId = serverClientId ?? BackupConfig.serverClientId;
+    : serverClientId = serverClientId ?? BackupConfig.serverClientId;
 
   bool _initialized = false;
   GoogleSignInAccount? _currentAccount;
@@ -51,8 +50,7 @@ class BackupAuthService {
       if (maybeAccount != null) {
         _currentAccount = await maybeAccount;
       }
-    } catch (error) {
-      debugPrint('[BackupAuthService] $error');
+    } catch (_) {
       // No previous session or error → stay signed out
       _currentAccount = null;
     }

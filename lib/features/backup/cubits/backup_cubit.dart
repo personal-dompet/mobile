@@ -7,7 +7,6 @@ import 'package:dompet_app/features/backup/repositories/backup_repository.dart';
 import 'package:dompet_app/features/backup/services/backup_auth_service.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class BackupCubit extends Cubit<BackupState> {
@@ -27,7 +26,7 @@ class BackupCubit extends Cubit<BackupState> {
     this._savingSignal,
   ) : super(const BackupState());
 
-  Future<void> init() async {
+  Future<void> init({bool promptSignIn = true}) async {
     emit(state.copyWith(isLoadingMeta: true));
     try {
       await _authService.ensureInitialized();
@@ -41,6 +40,14 @@ class BackupCubit extends Cubit<BackupState> {
         clearAccountEmail: email == null,
       ),
     );
+
+    // Passive mode (e.g. setup page): don't trigger interactive sign-in
+    // when there is no previous session; the user logs in via an
+    // explicit button instead.
+    if (!promptSignIn && !_authService.isSignedIn) {
+      emit(state.copyWith(isLoadingMeta: false));
+      return;
+    }
 
     try {
       final meta = await _repository.getLastBackupMeta();
@@ -92,7 +99,6 @@ class BackupCubit extends Cubit<BackupState> {
       // Allow snackbar to show success, then reset to initial after delay?
       // Keep success state until next action; UI will handle.
     } on GoogleSignInException catch (e) {
-      debugPrint('[GoogleSignInException] $e');
       final msg = _mapSignInError(e);
       // Canceled is not an error to show as failure snackbar maybe
       if (e.code == GoogleSignInExceptionCode.canceled) {
@@ -101,7 +107,6 @@ class BackupCubit extends Cubit<BackupState> {
       }
       emit(state.copyWith(action: ActionState.error(message: msg)));
     } catch (e) {
-      debugPrint(e.toString());
       emit(
         state.copyWith(action: ActionState.error(message: _friendlyError(e))),
       );
@@ -133,6 +138,50 @@ class BackupCubit extends Cubit<BackupState> {
           isLoadingMeta: false,
         ),
       );
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        emit(state.copyWith(action: const ActionState.initial()));
+        return;
+      }
+      emit(
+        state.copyWith(action: ActionState.error(message: _mapSignInError(e))),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(action: ActionState.error(message: _friendlyError(e))),
+      );
+    }
+  }
+
+  /// Interactive sign-in (call from user gesture) then refresh backup meta.
+  ///
+  /// Used by the setup page: fresh installs are signed out, so login must
+  /// happen via an explicit button before we can check for a backup.
+  /// Cancelled logins quietly return to [ActionState.initial].
+  Future<void> signInAndRefreshMeta() async {
+    emit(state.copyWith(action: const ActionState.loading()));
+    try {
+      final acc = await _authService.authenticate();
+      emit(state.copyWith(isSignedIn: true, accountEmail: acc.email));
+
+      try {
+        final meta = await _repository.getLastBackupMeta();
+        emit(
+          state.copyWith(
+            lastBackup: meta,
+            clearLastBackup: meta == null,
+            isLoadingMeta: false,
+            action: const ActionState.initial(),
+          ),
+        );
+      } catch (_) {
+        emit(
+          state.copyWith(
+            isLoadingMeta: false,
+            action: const ActionState.initial(),
+          ),
+        );
+      }
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
         emit(state.copyWith(action: const ActionState.initial()));

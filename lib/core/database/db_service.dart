@@ -100,7 +100,24 @@ class DbService {
 
       // Check SQLite magic header: "SQLite format 3\x00"
       final header = await file.openRead(0, 16).first;
-      const expected = [83, 81, 76, 105, 116, 101, 32, 102, 111, 114, 109, 97, 116, 32, 51, 0];
+      const expected = [
+        83,
+        81,
+        76,
+        105,
+        116,
+        101,
+        32,
+        102,
+        111,
+        114,
+        109,
+        97,
+        116,
+        32,
+        51,
+        0,
+      ];
       if (header.length < 16) return false;
       for (var i = 0; i < 16; i++) {
         if (header[i] != expected[i]) return false;
