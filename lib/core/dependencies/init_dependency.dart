@@ -34,6 +34,10 @@ import 'package:dompet_app/features/splash/cubits/splash_cubit.dart';
 import 'package:dompet_app/features/transactions/cubits/balance_adjustment_cubit.dart';
 import 'package:dompet_app/features/transactions/cubits/transaction_cubit.dart';
 import 'package:dompet_app/features/transactions/cubits/transfer_cubit.dart';
+import 'package:dompet_app/features/backup/cubits/backup_cubit.dart';
+import 'package:dompet_app/features/backup/repositories/backup_repository.dart';
+import 'package:dompet_app/features/backup/services/backup_auth_service.dart';
+import 'package:dompet_app/features/backup/services/drive_backup_service.dart';
 import 'package:dompet_app/features/transactions/repositories/balance_adjustment_repository.dart';
 import 'package:dompet_app/features/transactions/repositories/transaction_repository.dart';
 import 'package:dompet_app/features/transactions/repositories/transfer_repository.dart';
@@ -86,6 +90,15 @@ Future<void> initDependency({String? dbTestPath}) async {
     () => DashboardRepository(getIt()),
   );
 
+  // Backup & Restore (Google Drive appDataFolder)
+  getIt.registerLazySingleton<BackupAuthService>(() => BackupAuthService());
+  getIt.registerLazySingleton<DriveBackupService>(
+    () => DriveBackupService(getIt()),
+  );
+  getIt.registerLazySingleton<BackupRepository>(
+    () => BackupRepository(getIt(), getIt()),
+  );
+
   getIt.registerFactory<PaginationCubit<JournalEntry, JournalFilter>>(
     () => PaginationCubit(fetcher: getIt<JournalRepository>().getJournals),
   );
@@ -101,7 +114,7 @@ Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerFactory<AssetDetailCubit>(
     () => AssetDetailCubit(getIt(), getIt()),
   );
-  getIt.registerFactory<AccountSignalCubit>(() => AccountSignalCubit());
+  getIt.registerLazySingleton<AccountSignalCubit>(() => AccountSignalCubit());
   getIt.registerFactory<AccountActionCubit>(
     () => AccountActionCubit(getIt(), getIt(), getIt()),
   );
@@ -109,7 +122,7 @@ Future<void> initDependency({String? dbTestPath}) async {
 
   getIt.registerFactory<BudgetCubit>(() => BudgetCubit(getIt()));
 
-  getIt.registerFactory<BudgetSignalCubit>(() => BudgetSignalCubit());
+  getIt.registerLazySingleton<BudgetSignalCubit>(() => BudgetSignalCubit());
 
   getIt.registerFactory<BudgetActionCubit>(() => BudgetActionCubit(getIt()));
 
@@ -123,7 +136,7 @@ Future<void> initDependency({String? dbTestPath}) async {
 
   getIt.registerFactory<SavingCubit>(() => SavingCubit(getIt()));
 
-  getIt.registerFactory<SavingSignalCubit>(() => SavingSignalCubit());
+  getIt.registerLazySingleton<SavingSignalCubit>(() => SavingSignalCubit());
 
   getIt.registerFactory<SavingActionCubit>(() => SavingActionCubit(getIt()));
 
@@ -137,8 +150,12 @@ Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerFactory<BalanceAdjustmentCubit>(
     () => BalanceAdjustmentCubit(getIt()),
   );
-  getIt.registerFactory<ActivitySignalCubit>(() => ActivitySignalCubit());
+  getIt.registerLazySingleton<ActivitySignalCubit>(() => ActivitySignalCubit());
   getIt.registerFactory<ActivityDetailCubit>(
     () => ActivityDetailCubit(getIt()),
+  );
+
+  getIt.registerFactory<BackupCubit>(
+    () => BackupCubit(getIt(), getIt(), getIt(), getIt(), getIt(), getIt()),
   );
 }

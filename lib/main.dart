@@ -8,6 +8,7 @@ import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/app_configurations/cubits/app_configuration_cubit.dart';
+import 'package:dompet_app/features/backup/services/backup_auth_service.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,12 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     sqfliteFfiInit();
     await initDependency();
+    // Pre-initialize Google Sign-In (no UI). Safe to ignore errors.
+    try {
+      await getIt<BackupAuthService>().ensureInitialized();
+    } catch (error) {
+      debugPrint('[MAIN] $error');
+    }
     await initializeDateFormatting('id');
     runApp(MyApp());
   }, (error, stackTrace) => debugPrint('Error: $error, Trace: $stackTrace'));

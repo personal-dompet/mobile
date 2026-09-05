@@ -9,6 +9,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DbService {
+  static const String dbFileName = 'dompet.db';
+
   Database? _database;
 
   final String? _testPath;
@@ -20,8 +22,107 @@ class DbService {
     final testPath = _testPath;
     _database = await (testPath != null
         ? _openDatabase(testPath)
-        : _initDB('dompet.db'));
+        : _initDB(dbFileName));
     return _database!;
+  }
+
+  /// Returns absolute path to the underlying database file.
+  ///
+  /// For in-memory databases returns [inMemoryDatabasePath].
+  Future<String> getDatabasePath() async {
+    final testPath = _testPath;
+    if (testPath != null) return testPath;
+    final appDir = await getApplicationSupportDirectory();
+    return join(appDir.path, 'databases', dbFileName);
+  }
+
+  /// Returns the database [File] handle for the current path.
+  Future<File> getDatabaseFile() async {
+    final path = await getDatabasePath();
+    return File(path);
+  }
+
+  /// Flushes WAL into main db file. Must be called before copying file.
+  Future<void> checkpoint() async {
+    final db = _database;
+    if (db != null) {
+      try {
+        await db.execute('PRAGMA wal_checkpoint(FULL)');
+      } catch (_) {}
+    } else {
+      // No open connection → nothing to checkpoint, file is already consistent
+      // if app was closed cleanly. Try to open briefly if file exists.
+      final path = await getDatabasePath();
+      if (path == inMemoryDatabasePath) return;
+      final file = File(path);
+      if (!await file.exists()) return;
+      // Open, checkpoint, close
+      try {
+        final tmpDb = await databaseFactoryFfi.openDatabase(
+          path,
+          options: OpenDatabaseOptions(
+            onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
+          ),
+        );
+        await tmpDb.execute('PRAGMA wal_checkpoint(FULL)');
+        await tmpDb.close();
+      } catch (_) {}
+    }
+  }
+
+  /// Reopens database after [close]. Useful after a file-level restore.
+  Future<Database> reopen() async {
+    if (_database != null) return _database!;
+    return database;
+  }
+
+  /// Checks integrity of the currently opened database.
+  Future<bool> verifyIntegrity() async {
+    try {
+      final db = await database;
+      final result = await db.rawQuery('PRAGMA integrity_check');
+      if (result.isEmpty) return false;
+      final value = result.first.values.first as String?;
+      return value == 'ok';
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Checks integrity of a database file at [path] without affecting current [database].
+  ///
+  /// Verifies SQLite header and runs `PRAGMA integrity_check` in a temporary connection.
+  Future<bool> verifyFileIntegrity(String path) async {
+    try {
+      final file = File(path);
+      if (!await file.exists()) return false;
+      if (await file.length() < 100) return false;
+
+      // Check SQLite magic header: "SQLite format 3\x00"
+      final header = await file.openRead(0, 16).first;
+      const expected = [83, 81, 76, 105, 116, 101, 32, 102, 111, 114, 109, 97, 116, 32, 51, 0];
+      if (header.length < 16) return false;
+      for (var i = 0; i < 16; i++) {
+        if (header[i] != expected[i]) return false;
+      }
+
+      // Run integrity_check on a temporary connection
+      Database? tmpDb;
+      try {
+        tmpDb = await databaseFactoryFfi.openDatabase(
+          path,
+          options: OpenDatabaseOptions(readOnly: true),
+        );
+        final result = await tmpDb.rawQuery('PRAGMA integrity_check');
+        if (result.isEmpty) return false;
+        final value = result.first.values.first as String?;
+        return value == 'ok';
+      } finally {
+        await tmpDb?.close();
+      }
+    } catch (_) {
+      return false;
+    }
   }
 
   /// Opens a database at the given [path] without touching app storage.
