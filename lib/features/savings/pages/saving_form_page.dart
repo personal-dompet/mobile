@@ -194,6 +194,7 @@ class _SavingFormPageState extends State<SavingFormPage> {
                 DompetDatePicker(
                   formControl: _form.targetDateControl,
                   label: 'Tanggal Target (Opsional)',
+                  lastDate: DateTime.now(),
                   showClearIcon: true,
                 ),
 

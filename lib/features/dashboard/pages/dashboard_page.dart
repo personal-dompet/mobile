@@ -7,6 +7,7 @@ import 'package:dompet_app/features/dashboard/widgets/balance_card.dart';
 import 'package:dompet_app/features/dashboard/widgets/quick_action_section.dart';
 import 'package:dompet_app/features/dashboard/widgets/recent_activity_section.dart';
 import 'package:dompet_app/features/dashboard/widgets/today_summary.dart';
+import 'package:dompet_app/features/reports/widgets/monthly_report_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,6 +46,8 @@ class DashboardPage extends StatelessWidget {
                     BalanceCard(),
 
                     QuickActionSection(),
+
+                    MonthlyReportCard(),
 
                     Column(
                       mainAxisSize: .min,

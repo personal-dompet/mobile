@@ -10,6 +10,13 @@ abstract final class AppTheme {
       tertiary: Colors.green.shade300,
       tertiaryContainer: Colors.green.shade600,
       onTertiary: Colors.green.shade900,
+      // Merah default M3 (#BA1A1A) terlalu menyala untuk nada Dompet yang
+      // tenang — merah di sini juga dipakai untuk konteks netral seperti
+      // label pengeluaran, bukan hanya error. Dilunakkan satu tingkat.
+      error: Colors.red.shade400,
+      onError: Colors.white,
+      errorContainer: Colors.red.shade50,
+      onErrorContainer: Colors.red.shade900,
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(padding: EdgeInsets.all(0)),
@@ -51,6 +58,11 @@ abstract final class AppTheme {
       tertiary: Colors.green.shade300,
       tertiaryContainer: Colors.green.shade600,
       onTertiary: Colors.green.shade900,
+      // Varian gelap ikut dilunakkan agar konsisten dengan light.
+      error: Colors.red.shade300,
+      onError: Colors.red.shade900,
+      errorContainer: const Color(0xFF5C1F1B),
+      onErrorContainer: Colors.red.shade100,
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(padding: EdgeInsets.all(0)),

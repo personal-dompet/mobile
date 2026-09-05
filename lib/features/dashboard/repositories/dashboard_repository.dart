@@ -54,7 +54,7 @@ class DashboardRepository {
         ON $journalLineTable.${JournalLineKey.journalEntryId} = $journalEntryTable.${JournalEntryKey.id}
       INNER JOIN $accountTable 
         ON $journalLineTable.${JournalLineKey.accountId} = $accountTable.${AccountKey.id}
-      WHERE $journalEntryTable.${JournalEntryKey.source} = ?
+      WHERE $journalEntryTable.${JournalEntryKey.source} IN (?, ?)
         AND $journalEntryTable.${JournalEntryKey.status} = ?
         AND ($journalEntryTable.${JournalEntryKey.entryDate} BETWEEN ? AND ?)
     ''',
@@ -62,6 +62,10 @@ class DashboardRepository {
         AccountType.income.value,
         AccountType.expense.value,
         JournalSource.transaction.value,
+        // Jurnal tabungan tidak menyentuh akun INCOME; satu-satunya
+        // sentuhan ke akun EXPENSE adalah SPEND (belanja dari pocket),
+        // sehingga belanja dari tabungan ikut terhitung di sini.
+        JournalSource.saving.value,
         JournalStatus.posted.name,
         startDate.secondsSinceEpoch,
         endDate.secondsSinceEpoch,

@@ -118,6 +118,13 @@ class __NavigationDrawerState extends State<_NavigationDrawer> {
         },
       ),
       _Menu(
+        label: 'Laporan',
+        iconData: Icons.assessment_rounded,
+        onTap: () {
+          context.router.push(const ReportRoute());
+        },
+      ),
+      _Menu(
         label: 'Pengaturan',
         iconData: Icons.settings_rounded,
         onTap: () {

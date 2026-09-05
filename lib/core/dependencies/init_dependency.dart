@@ -26,6 +26,8 @@ import 'package:dompet_app/features/savings/cubits/saving_detail_cubit.dart';
 import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:dompet_app/features/dashboard/cubits/dashboard_cubit.dart';
 import 'package:dompet_app/features/dashboard/repositories/dashboard_repository.dart';
+import 'package:dompet_app/features/reports/cubits/report_cubit.dart';
+import 'package:dompet_app/features/reports/repositories/report_repository.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/journals/models/journal_filter.dart';
 import 'package:dompet_app/features/journals/repositories/journal_repository.dart';
@@ -90,6 +92,10 @@ Future<void> initDependency({String? dbTestPath}) async {
     () => DashboardRepository(getIt()),
   );
 
+  getIt.registerLazySingleton<ReportRepository>(
+    () => ReportRepository(getIt()),
+  );
+
   // Backup & Restore (Google Drive appDataFolder)
   getIt.registerLazySingleton<BackupAuthService>(() => BackupAuthService());
   getIt.registerLazySingleton<DriveBackupService>(
@@ -110,6 +116,7 @@ Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerFactory<DashboardCubit>(
     () => DashboardCubit(getIt(), getIt(), getIt()),
   );
+  getIt.registerFactory<ReportCubit>(() => ReportCubit(getIt(), getIt()));
   getIt.registerFactory<CategoryCubit>(() => CategoryCubit(getIt()));
   getIt.registerFactory<AssetDetailCubit>(
     () => AssetDetailCubit(getIt(), getIt()),

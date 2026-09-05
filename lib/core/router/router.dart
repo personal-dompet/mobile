@@ -38,6 +38,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SavingSpendRoute.page),
     AutoRoute(page: ActivityDetailRoute.page),
     AutoRoute(page: SettingsRoute.page),
+    AutoRoute(page: ReportRoute.page),
   ];
 
   @override

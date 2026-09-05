@@ -6,6 +6,7 @@ import 'package:dompet_app/core/extensions/date.dart';
 import 'package:dompet_app/features/budgets/models/account_budget_status.dart';
 import 'package:dompet_app/features/budgets/models/budget.dart';
 import 'package:dompet_app/features/budgets/models/budget_filter.dart';
+import 'package:dompet_app/features/reports/models/report_period.dart';
 
 class BudgetRepository {
   final DbService _dbService;
@@ -96,6 +97,31 @@ class BudgetRepository {
     if (rows.isEmpty) return null;
 
     return Budget.fromJson(rows.first);
+  }
+
+  /// Anggaran yang periodenya tepat sebulan [period] (termasuk yang sudah
+  /// ditutup, agar histori tetap bisa dilaporkan).
+  ///
+  /// Anggaran selalu dibuat sebulan penuh ([createBudget] memakai
+  /// start/endOfMonth), jadi pencocokan exact aman dari periode parsial.
+  /// [Budget.actualSpend] dihitung view dari jurnal posted pada periode
+  /// tersebut — konsisten dengan definisi expense laporan
+  /// (satu-satunya sumber yang menyentuh akun expense saat ini adalah
+  /// transaction + saving spend).
+  Future<List<Budget>> getBudgetsForMonth(ReportPeriod period) async {
+    final db = await _dbService.database;
+
+    final rows = await db.rawQuery(
+      '''
+      SELECT *
+      FROM $budgetTrackerView
+      WHERE ${BudgetKey.periodStart} = ? AND ${BudgetKey.periodEnd} = ?
+      ORDER BY ${BudgetKey.accountName} ASC
+    ''',
+      [period.startEpoch, period.endEpoch],
+    );
+
+    return rows.map((row) => Budget.fromJson(row)).toList();
   }
 
   Future<List<Budget>> getAccountBudgets(int accountId) async {
