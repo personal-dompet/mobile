@@ -174,7 +174,7 @@ void main() {
     expect(insight.showNeedRate, isFalse);
     expect(
       insight.deadlineDurationLabel,
-      'kurang dari sebulan lagi',
+      'kurang dari sebulan menuju target',
     );
     // ETA: 8jt ÷ 1jt/bulan = 8 bulan = 240 hari.
     expect(insight.monthsElapsed, 2);
@@ -332,7 +332,7 @@ void main() {
     expect(insight.daysRemaining, 30);
     expect(insight.neededPerMonth, 10);
     expect(insight.showNeedRate, isTrue);
-    expect(insight.deadlineDurationLabel, 'sekitar 1 bulan lagi');
+    expect(insight.deadlineDurationLabel, 'sekitar 1 bulan menuju target');
   });
 
   test('alokasi melebihi target tetap dihitung (overshoot ditoleransi)', () {
@@ -494,7 +494,10 @@ void main() {
     expect(insight.neededPerMonth, 33334);
     expect(insight.showNeededPerMonth, isTrue);
     expect(insight.showNeedRate, isFalse);
-    expect(insight.deadlineDurationLabel, 'kurang dari sebulan lagi');
+    expect(
+      insight.deadlineDurationLabel,
+      'kurang dari sebulan menuju target',
+    );
   });
 
   test('REGRESI kasus 2: target 10k alokasi Rp2, tenggat 27 hari', () {
@@ -516,6 +519,6 @@ void main() {
     expect(insight.remaining, 9998);
     expect(insight.neededPerMonth, 11109);
     expect(insight.showNeedRate, isFalse);
-    expect(insight.deadlineDurationLabel, 'kurang dari sebulan lagi');
+    expect(insight.deadlineDurationLabel, 'kurang dari sebulan menuju target');
   });
 }

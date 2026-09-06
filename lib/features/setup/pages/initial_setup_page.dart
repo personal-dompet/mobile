@@ -39,7 +39,7 @@ class _InitialSetupViewState extends State<_InitialSetupView> {
   final _loadingOverlay = LoadingOverlay();
 
   String _formatBackupTime(DateTime? dt) {
-    if (dt == null) return 'Belum ada backup';
+    if (dt == null) return 'Belum ada cadangan';
     final fmt = DateFormat('d MMM yyyy, HH:mm', 'id');
     return fmt.format(dt);
   }
@@ -61,7 +61,7 @@ class _InitialSetupViewState extends State<_InitialSetupView> {
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => DompetDialog(
-        title: 'Pulihkan Backup?',
+        title: 'Pulihkan Cadangan?',
         subtitle:
             'Data dari Google Drive akan dipulihkan ke perangkat ini dan setup akan dilewati. Lanjutkan?',
         confirmationText: 'Pulihkan',
@@ -123,7 +123,7 @@ class _InitialSetupViewState extends State<_InitialSetupView> {
                       ),
                     ),
                     Text(
-                      'Dompet membantu mencatat pemasukan, pengeluaran, dan budget harian dengan cara yang sederhana.',
+                      'Dompet membantu mencatat pemasukan, pengeluaran, dan mengatur anggaran dengan cara yang sederhana.',
                       style: themeData.textTheme.bodyMedium,
                     ),
                   ],
@@ -134,7 +134,7 @@ class _InitialSetupViewState extends State<_InitialSetupView> {
                   headline: 'Catat dengan sederhana',
                   icon: Icons.receipt_rounded,
                   subtext:
-                      'Pemasukan dan pengeluaran dicatat tanpa proses yang membingungkan.',
+                      'Catat pemasukan dan pengeluaran tanpa langkah yang rumit.',
                 ),
 
                 _featurePreview(
@@ -164,9 +164,9 @@ class _InitialSetupViewState extends State<_InitialSetupView> {
                         if (backupState.isLoadingMeta) {
                           return _restoreCard(
                             context,
-                            headline: 'Memeriksa backup...',
+                            headline: 'Memeriksa cadangan...',
                             subtext:
-                                'Menghubungkan ke Google Drive untuk mencari backup Dompet.',
+                                'Menghubungkan ke Google Drive untuk mencari cadangan Dompet.',
                             trailing: const SizedBox(
                               width: double.infinity,
                               child: Center(
@@ -187,7 +187,7 @@ class _InitialSetupViewState extends State<_InitialSetupView> {
                             context,
                             headline: 'Punya data sebelumnya?',
                             subtext:
-                                'Hubungkan akun Google untuk memeriksa backup Dompet di Google Drive dan lewati setup.',
+                                'Hubungkan akun Google untuk memeriksa cadangan Dompet di Google Drive dan lewati setup.',
                             trailing: SizedBox(
                               width: double.infinity,
                               child: FilledButton.icon(
@@ -207,9 +207,9 @@ class _InitialSetupViewState extends State<_InitialSetupView> {
                         if (meta == null) {
                           return _restoreCard(
                             context,
-                            headline: 'Tidak ada backup ditemukan',
+                            headline: 'Tidak ada cadangan ditemukan',
                             subtext:
-                                'Akun ${backupState.accountEmail ?? 'ini'} belum memiliki backup Dompet di Google Drive.',
+                                'Akun ${backupState.accountEmail ?? 'ini'} belum memiliki cadangan Dompet di Google Drive.',
                             trailing: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -242,9 +242,9 @@ class _InitialSetupViewState extends State<_InitialSetupView> {
 
                         return _restoreCard(
                           context,
-                          headline: 'Backup ditemukan',
+                          headline: 'Cadangan ditemukan',
                           subtext:
-                              '${backupState.accountEmail ?? 'Google Drive'}\n${_formatBackupTime(meta.updatedAt)} • ${_formatSize(meta.sizeBytes)}',
+                              'Ada cadangan Dompet dari akun Google ini.\n${_formatBackupTime(meta.updatedAt)} • ${_formatSize(meta.sizeBytes)}',
                           trailing: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -259,7 +259,7 @@ class _InitialSetupViewState extends State<_InitialSetupView> {
                                         context.read<BackupCubit>().restore();
                                       },
                                 icon: const Icon(Icons.cloud_download_rounded),
-                                label: const Text('Pulihkan Backup'),
+                                label: const Text('Pulihkan Cadangan'),
                               ),
                               TextButton.icon(
                                 onPressed: _isProcessing(backupState)

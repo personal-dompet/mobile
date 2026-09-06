@@ -108,7 +108,8 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
           title: const Text('Hapus target?'),
           content: Text(
             'Target "${plan.accountName}" akan dihapus. '
-            'Riwayat alokasi tidak terpengaruh.',
+            'Riwayat alokasi tidak terpengaruh. '
+            'Transaksi yang sudah dicatat tidak akan ikut dihapus.',
           ),
           actions: [
             TextButton(
@@ -848,7 +849,7 @@ class _ProjectionHero extends StatelessWidget {
                   spacing: 2,
                   children: [
                     Text(
-                      'Perlu ${insight.neededPerMonth!.currency}/bulan',
+                      'Saran alokasi ${insight.neededPerMonth!.currency}/bulan',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -932,6 +933,23 @@ class _HistorySection extends StatelessWidget {
     final theme = Theme.of(context);
     final activities = detail.activities;
     final now = DateTime.now();
+    // Saldo berjalan setelah tiap aktivitas (tertua → terbaru), agar riwayat
+    // terbaca sebagai timeline: alokasi menambah, tarik/belanja mengurangi.
+    final balanceAfter = <int, int>{};
+    {
+      final chronological = [...activities]
+        ..sort((a, b) => a.entryDate.compareTo(b.entryDate));
+      var running = 0;
+      for (final journal in chronological) {
+        final line = journal.lines
+            .where((l) => l.accountId == detail.plan.accountId)
+            .firstOrNull;
+        if (line != null) {
+          running += line.debitAmount - line.creditAmount;
+          balanceAfter[journal.id] = running;
+        }
+      }
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -973,10 +991,31 @@ class _HistorySection extends StatelessWidget {
                   ),
                 ),
               ),
-              ActivityItem(:final activity) => ActivityItemTile(
-                activity: activity,
-                hideDate: true,
-                accountId: detail.plan.accountId,
+              ActivityItem(:final activity) => Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ActivityItemTile(
+                    activity: activity,
+                    hideDate: true,
+                    accountId: detail.plan.accountId,
+                  ),
+                  if (balanceAfter[activity.id] != null)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 16,
+                        bottom: 4,
+                      ),
+                      child: Text(
+                        'Terkumpul ${balanceAfter[activity.id]!.currency}',
+                        textAlign: TextAlign.end,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.55,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
               ActivitySpacing(:final height) => SizedBox(height: height),
             };

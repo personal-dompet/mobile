@@ -8,8 +8,8 @@ import 'package:dompet_app/features/reports/models/report_period.dart';
 /// - pengeluaran = SUM(debit) pada akun bertipe EXPENSE
 ///   (`source` transaction + saving, sehingga belanja langsung
 ///   dari pocket tabungan ikut terhitung)
-/// - ditabung neto = topup − withdraw pocket pada periode ini
-///   (baris terpisah: alokasi tabungan BUKAN pengeluaran,
+/// - dialokasikan neto = topup − withdraw − spend pocket pada periode ini
+///   (baris terpisah: alokasi target BUKAN pengeluaran,
 ///   tapi menjelaskan selisih vs perubahan Total Uang)
 ///
 /// Jurnal transfer / penyesuaian / saldo awal tidak bocor ke angka mana pun.
@@ -41,12 +41,12 @@ class MonthlySummary {
 
   int get net => income - expense;
 
-  /// Delta saldo pocket = topup − withdraw − spend.
-  /// Dengan definisi ini rekonsiliasi ke uang aktif bersifat exact
+  /// Delta saldo target = topup − withdraw − spend.
+  /// Dengan definisi ini rekonsiliasi ke uang tersedia bersifat exact
   /// terhadap arus yang dimodelkan: liquidChange = net − netSaving.
   int get netSaving => savingTopup - savingWithdraw - savingSpend;
 
-  /// Rekonsiliasi ke Beranda: perubahan uang aktif ≈ net − netSaving.
+  /// Rekonsiliasi ke Beranda: perubahan uang yang tersedia ≈ net − netSaving.
   /// Tanda ≈ karena transfer/penyesuaian/tagihan juga menggerakkan
   /// saldo likuid di luar metrik ini.
   int get liquidChange => net - netSaving;

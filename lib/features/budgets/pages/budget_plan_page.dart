@@ -121,7 +121,8 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
         await _runAction(
           action: _cubit.activate,
           loadingText: 'Membuat anggaran...',
-          successMessage: 'Anggaran bulan ini berhasil dibuat',
+          successMessage:
+              'Anggaran ${widget.category.name} berhasil dibuat untuk bulan ini',
           refreshAfter: true,
         );
         break;
@@ -157,7 +158,8 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
             loadingText: decision.carryAmount > 0
                 ? 'Menutup dan membawa sisa...'
                 : 'Tutup anggaran lama dan buat yang baru...',
-            successMessage: 'Anggaran bulan ini berhasil dibuat',
+            successMessage:
+                'Anggaran ${widget.category.name} berhasil dibuat untuk bulan ini',
             refreshAfter: true,
           );
         }
@@ -389,7 +391,7 @@ class _ActionHint extends StatelessWidget {
     final themeData = Theme.of(context);
     final text = switch (action) {
       BudgetPlanAction.activate =>
-        'Kategori ini belum punya anggaran aktif. Aktifkan rencana untuk membuat anggaran bulan ini.',
+        'Rencana adalah template bulanan untuk kategori ini. Aktifkan untuk membuat anggaran bulan ini.',
       BudgetPlanAction.close =>
         'Anggaran aktif untuk bulan ini sedang berjalan. Tutup untuk menghentikannya.',
       null => '',

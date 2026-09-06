@@ -114,14 +114,15 @@ class SavingInsight {
   bool get showProjection => projectedDate != null && etaDays != null;
 
   /// Sisa waktu menuju deadline dalam bulanan: hari ini -> 'Tenggat bulan
-  /// ini', di bawah sebulan -> 'kurang dari sebulan lagi', selebihnya ->
-  /// 'sekitar N bulan lagi'. Null jika tanpa deadline atau sudah lewat.
+  /// ini', di bawah sebulan -> 'kurang dari sebulan menuju target',
+  /// selebihnya -> 'sekitar N bulan menuju target'. Null jika tanpa
+  /// deadline atau sudah lewat.
   String? get deadlineDurationLabel {
     final days = daysRemaining;
     if (days == null || days <= 0) return null;
     if (days == 1 && isDueToday) return 'Tenggat bulan ini';
-    if (days < 30) return 'kurang dari sebulan lagi';
-    return 'sekitar ${(days / 30).round().clamp(1, 600)} bulan lagi';
+    if (days < 30) return 'kurang dari sebulan menuju target';
+    return 'sekitar ${(days / 30).round().clamp(1, 600)} bulan menuju target';
   }
 
   /// Estimasi kasar durasi menuju tercapai, selalu dalam bulanan:

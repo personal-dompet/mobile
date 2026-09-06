@@ -2,13 +2,14 @@ import 'package:dompet_app/core/extensions/number.dart';
 import 'package:dompet_app/features/reports/models/monthly_summary.dart';
 import 'package:flutter/material.dart';
 
-/// Baris "Ditabung (neto)": alokasi ke pocket − penarikan kembali.
+/// Baris "Dialokasikan ke target": alokasi ke target − penarikan kembali.
 ///
-/// BUKAN pengeluaran — uangnya masih milik pengguna, hanya terkunci di
-/// pocket non-likuid (keluar dari Total Uang Beranda). Kartu ini menjelaskan
-/// selisih antara net laporan dan perubahan uang aktif.
+/// BUKAN pengeluaran — uangnya masih milik pengguna, hanya dipindahkan ke
+/// target non-cair (keluar dari Total Uang Beranda). Kartu ini menjelaskan
+/// selisih antara selisih pemasukan-pengeluaran laporan dan perubahan
+/// uang yang tersedia.
 ///
-/// Disembunyikan (SizedBox.shrink) bila tidak ada aktivitas tabungan
+/// Disembunyikan (SizedBox.shrink) bila tidak ada aktivitas alokasi
 /// pada periode ini agar UI tetap minimal.
 class SavingAllocationCard extends StatelessWidget {
   const SavingAllocationCard({super.key, required this.summary});
@@ -21,10 +22,10 @@ class SavingAllocationCard extends StatelessWidget {
 
     final theme = Theme.of(context);
     final parts = [
-      'Masuk pocket ${summary.savingTopup.compactCurrency}',
-      'Kembali cair ${summary.savingWithdraw.compactCurrency}',
+      'Alokasi ${summary.savingTopup.compactCurrency}',
+      'Ditarik kembali ${summary.savingWithdraw.compactCurrency}',
       if (summary.savingSpend > 0)
-        'Belanja dari pocket ${summary.savingSpend.compactCurrency}',
+        'Belanja dari target ${summary.savingSpend.compactCurrency}',
     ];
     return Card(
       child: Padding(
@@ -41,7 +42,7 @@ class SavingAllocationCard extends StatelessWidget {
                   color: theme.colorScheme.primary,
                 ),
                 Text(
-                  'Ditabung (neto)',
+                  'Dialokasikan ke target',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -65,7 +66,7 @@ class SavingAllocationCard extends StatelessWidget {
               style: theme.textTheme.bodySmall,
             ),
             Text(
-              'Perubahan uang aktif ≈ ${summary.liquidChange.compactCurrency}',
+              'Uang yang tersedia berubah ${summary.liquidChange.compactCurrency}',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),

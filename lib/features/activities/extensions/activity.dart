@@ -62,7 +62,7 @@ extension Activity on JournalEntry {
     return switch (_savingTx) {
       SavingTxType.withdraw => 'Tarik dana dari $pocket ke $counter',
       SavingTxType.spend => 'Belanja $counter dari $pocket',
-      _ => 'Alokasi dana dari $counter ke $pocket',
+      _ => 'Alokasi dari $counter ke $pocket',
     };
   }
 
@@ -128,8 +128,8 @@ extension Activity on JournalEntry {
         SavingTxType.withdraw => 'Tarik dana dari $pocket',
         SavingTxType.spend when isPocket => 'Belanja $counter',
         SavingTxType.spend => 'Belanja $counter dari $pocket',
-        _ when isPocket => 'Alokasi dana dari $counter',
-        _ => 'Alokasi dana ke $pocket',
+        _ when isPocket => 'Alokasi dari $counter',
+        _ => 'Alokasi ke $pocket',
       };
     }
     return _title;

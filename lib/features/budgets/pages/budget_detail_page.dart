@@ -91,8 +91,8 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
       DompetSnackbar(
         context,
         message: decision.choice == CloseChoice.closeOnly
-            ? 'Anggaran berhasil ditutup'
-            : 'Anggaran bulan ini berhasil dibuat',
+            ? 'Anggaran ${detail.category.name} berhasil ditutup'
+            : 'Anggaran ${detail.category.name} ${detail.budget.actualBudgetAmount.currency} untuk ${detail.budget.periode} berhasil dibuat',
         snackBarType: .success,
       ),
     );
@@ -455,7 +455,7 @@ class _ConditionSection extends StatelessWidget {
                   child: Text(
                     isOver
                         ? 'Melebihi ${budget.remaining.abs().currency}'
-                        : '${budget.remaining.currency} tersisa',
+                        : '${budget.remaining.currency} tersisa dari anggaran bulan ini',
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: isOver
@@ -509,15 +509,27 @@ class _ConditionSection extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: Text(
-                        '${detail.paceLabel} · ${(budget.useageRatio * 100).round().clamp(0, 999)}% terpakai dari ${(detail.elapsedRatio * 100).round().clamp(0, 100)}% periode',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant.withValues(
-                            alpha: 0.7,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 2,
+                        children: [
+                          Text(
+                            detail.paceLabel,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant
+                                  .withValues(alpha: 0.8),
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                          fontWeight: FontWeight.w500,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                          Text(
+                            'Terpakai ${(budget.useageRatio * 100).round().clamp(0, 999)}%, bulan sudah berjalan ${(detail.elapsedRatio * 100).round().clamp(0, 100)}%',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant
+                                  .withValues(alpha: 0.7),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -547,33 +559,25 @@ class _ConditionSection extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: detail.dailyAllowance.currency,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 2,
+                        children: [
+                          Text(
+                            'Saran pengeluaran per hari',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant
+                                  .withValues(alpha: 0.6),
                             ),
-                            TextSpan(
-                              text: ' / hari',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant
-                                    .withValues(alpha: 0.6),
-                              ),
+                          ),
+                          Text(
+                            '${detail.dailyAllowance.currency} / hari',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: theme.colorScheme.onSurfaceVariant,
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Text(
-                      'saran harian',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant.withValues(
-                          alpha: 0.5,
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

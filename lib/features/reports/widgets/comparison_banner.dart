@@ -19,7 +19,7 @@ class ComparisonBanner extends StatelessWidget {
     final isDown = (change ?? 0) < 0;
 
     final text = label == null
-        ? 'Belum ada data bulan lalu untuk perbandingan.'
+        ? 'Belum ada data bulan lalu untuk dibandingkan.'
         : (change == 0
               ? 'Pengeluaran sama seperti bulan lalu.'
               : 'Pengeluaran $label dibanding bulan lalu.');

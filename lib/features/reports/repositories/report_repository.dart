@@ -22,8 +22,8 @@ import 'package:dompet_app/features/reports/models/report_period.dart';
 ///   pocket) — sehingga topup/withdraw otomatis berkontribusi 0.
 /// - Transfer/adjustment/setup/bill dikecualikan agar tidak menggelembungkan
 ///   pemasukan/pengeluaran.
-/// - Alokasi tabungan (topup − withdraw) dihitung terpisah sebagai baris
-///   "Ditabung (neto)": BUKAN pengeluaran, tapi penjelas selisih antara
+/// - Alokasi target (topup − withdraw − spend) dihitung terpisah sebagai baris
+///   "Dialokasikan ke target": BUKAN pengeluaran, tapi penjelas selisih antara
 ///   net laporan dan perubahan Total Uang di Beranda.
 class ReportRepository {
   final DbService _dbService;

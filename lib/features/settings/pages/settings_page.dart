@@ -37,7 +37,7 @@ class _SettingsViewState extends State<_SettingsView> {
   final _loadingOverlay = LoadingOverlay();
 
   String _formatBackupTime(DateTime? dt) {
-    if (dt == null) return 'Belum ada backup';
+    if (dt == null) return 'Belum ada cadangan';
     final fmt = DateFormat('d MMM yyyy, HH:mm', 'id');
     return fmt.format(dt);
   }
@@ -59,7 +59,7 @@ class _SettingsViewState extends State<_SettingsView> {
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => DompetDialog(
-        title: 'Pulihkan Backup?',
+        title: 'Pulihkan Cadangan?',
         subtitle:
             'Data saat ini akan diganti dengan data dari Google Drive. Tindakan ini tidak dapat dibatalkan. Lanjutkan?',
         confirmationText: 'Pulihkan',
@@ -75,9 +75,9 @@ class _SettingsViewState extends State<_SettingsView> {
     final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => DompetDialog(
-        title: 'Timpa Backup?',
+        title: 'Timpa Cadangan?',
         subtitle:
-            'Backup yang ada di Google Drive ($backupInfo) akan diganti dengan data saat ini. Tindakan ini tidak dapat dibatalkan. Lanjutkan?',
+            'Cadangan yang ada di Google Drive ($backupInfo) akan diganti dengan data saat ini. Tindakan ini tidak dapat dibatalkan. Lanjutkan?',
         confirmationText: 'Cadangkan',
         cancellationText: 'Batal',
         onCancel: () => Navigator.of(ctx).pop(false),
@@ -237,7 +237,7 @@ class _SettingsViewState extends State<_SettingsView> {
                                       ),
                                       Expanded(
                                         child: Text(
-                                          'Tidak ada koneksi internet. Backup dan restore membutuhkan koneksi internet.',
+                                          'Tidak ada koneksi internet. Pencadangan dan pemulihan membutuhkan koneksi internet.',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall
@@ -280,14 +280,14 @@ class _SettingsViewState extends State<_SettingsView> {
                             ),
                             ListTile(
                               leading: const Icon(Icons.history_rounded),
-                              title: const Text('Backup terakhir'),
+                              title: const Text('Cadangan terakhir'),
                               subtitle: Text(
                                 !isOnline && meta == null
                                     ? 'Perlu koneksi internet untuk memeriksa'
                                     : isLoadingMeta
                                     ? 'Memuat...'
                                     : meta == null
-                                    ? 'Belum ada backup'
+                                    ? 'Belum ada cadangan'
                                     : '${_formatBackupTime(meta.updatedAt)} • ${_formatSize(meta.sizeBytes)}',
                               ),
                             ),
@@ -349,7 +349,7 @@ class _SettingsViewState extends State<_SettingsView> {
                                         context.read<BackupCubit>().restore();
                                       },
                                 icon: const Icon(Icons.cloud_download_rounded),
-                                label: const Text('Pulihkan Backup'),
+                                label: const Text('Pulihkan Cadangan'),
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -358,7 +358,7 @@ class _SettingsViewState extends State<_SettingsView> {
                                 horizontal: 16,
                               ),
                               child: Text(
-                                'Backup disimpan di folder privat aplikasi di Google Drive dari akun yang digunakan untuk login. Hanya 1 backup terbaru yang disimpan.',
+                                'Cadangan disimpan di folder privat aplikasi di Google Drive dari akun yang digunakan untuk login. Hanya 1 cadangan terbaru yang disimpan.',
                                 style: Theme.of(context).textTheme.bodySmall
                                     ?.copyWith(
                                       color: Theme.of(context)

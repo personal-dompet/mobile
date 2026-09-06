@@ -45,7 +45,7 @@ void main() {
       expect(insights.single.message, contains('Belum ada transaksi'));
     });
 
-    test('surplus + di bawah rata-rata + kategori + pemasukan naik + tabungan', () {
+    test('surplus + di bawah rata-rata + kategori + pemasukan naik + alokasi target', () {
       final current = _summary(
         period: _sep,
         income: 8000000,
@@ -79,14 +79,14 @@ void main() {
           contains('di bawah rata-rata'),
           contains('Makanan'),
           contains('Pemasukan naik'),
-          contains('terkunci di tabungan'),
+          contains('dialokasikan ke target'),
         ],
       );
       expect(insights[0].kind, InsightKind.positive);
       expect(insights[2].kind, InsightKind.info);
     });
 
-    test('defisit + di atas rata-rata', () {
+    test('pengeluaran melebihi pemasukan + di atas rata-rata', () {
       final current = _summary(period: _sep, income: 3000000, expense: 5000000);
       final previous = _summary(period: _aug, income: 8000000, expense: 4000000);
       final insights = ReportInsight.generate(
@@ -97,7 +97,7 @@ void main() {
       );
 
       expect(insights[0].kind, InsightKind.negative);
-      expect(insights[0].message, contains('defisit'));
+      expect(insights[0].message, contains('Pengeluaran melebihi pemasukan'));
       expect(insights[1].message, contains('di atas rata-rata'));
       // Pemasukan turun 62%.
       expect(insights.any((e) => e.message.contains('Pemasukan turun')), isTrue);
@@ -120,7 +120,7 @@ void main() {
       );
     });
 
-    test('tanpa aktivitas tabungan -> tanpa pesan tabungan', () {
+    test('tanpa aktivitas alokasi -> tanpa pesan target', () {
       final current = _summary(period: _sep, income: 5000000, expense: 1000000);
       final insights = ReportInsight.generate(
         current: current,
@@ -132,7 +132,7 @@ void main() {
         categories: const [],
       );
       expect(
-        insights.any((e) => e.message.contains('tabungan')),
+        insights.any((e) => e.message.contains('dialokasikan')),
         isFalse,
       );
     });

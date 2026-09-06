@@ -203,7 +203,7 @@ void main() {
       expect(summary.savingWithdraw, 0);
       expect(summary.savingSpend, 0);
       expect(summary.netSaving, 2000000);
-      // 8jt − 5jt − 2jt terkunci = +1jt perubahan uang aktif.
+      // 8jt − 5jt − 2jt dialokasikan = +1jt perubahan uang yang tersedia.
       expect(summary.liquidChange, 1000000);
     });
 

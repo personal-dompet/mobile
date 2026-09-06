@@ -79,12 +79,12 @@ void main() {
     });
 
     test('judul global deskriptif, bukan Tanpa keterangan', () {
-      expect(topup.title(), 'Alokasi dana dari Tunai ke VGA');
+      expect(topup.title(), 'Alokasi dari Tunai ke VGA');
     });
 
     test('judul per akun mengikuti sisi', () {
-      expect(topup.title(accountId: cashId), 'Alokasi dana ke VGA');
-      expect(topup.title(accountId: pocketId), 'Alokasi dana dari Tunai');
+      expect(topup.title(accountId: cashId), 'Alokasi ke VGA');
+      expect(topup.title(accountId: pocketId), 'Alokasi dari Tunai');
     });
 
     test('tanda nominal mengikuti sisi', () {

@@ -14,12 +14,12 @@ enum InsightKind { positive, negative, info }
 ///
 /// Aturan (berurutan berdasarkan pentingnya):
 /// 1. Bulan kosong -> satu pesan ajakan mencatat.
-/// 2. Surplus/defisit bulan berjalan.
+/// 2. Pengeluaran vs pemasukan bulan berjalan.
 /// 3. Pengeluaran vs rata-rata bulan-bulan sebelumnya yang ada aktivitas
 ///    (maksimal 3, dari [trend] tanpa bulan berjalan).
 /// 4. Kategori pengeluaran terbesar.
 /// 5. Perubahan pemasukan vs bulan lalu.
-/// 6. Uang yang terkunci di tabungan.
+/// 6. Uang yang dialokasikan ke target.
 class ReportInsight {
   const ReportInsight({required this.kind, required this.message});
 
@@ -56,7 +56,7 @@ class ReportInsight {
         ReportInsight(
           kind: InsightKind.negative,
           message:
-              'Bulan ini defisit ${(-current.net).compactCurrency} — pengeluaran melebihi pemasukan.',
+              'Pengeluaran melebihi pemasukan ${(-current.net).compactCurrency} bulan ini.',
         ),
       );
     }
@@ -101,7 +101,7 @@ class ReportInsight {
         ReportInsight(
           kind: InsightKind.info,
           message:
-              '${current.netSaving.compactCurrency} terkunci di tabungan bulan ini.',
+              '${current.netSaving.compactCurrency} dialokasikan ke target bulan ini.',
         ),
       );
     }
