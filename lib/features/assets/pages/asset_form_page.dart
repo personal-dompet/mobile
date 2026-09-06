@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dompet_app/core/constants/keys/key.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/states/action_state.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
@@ -95,6 +96,7 @@ class _AssetFormPageState extends State<AssetFormPage> {
                       spacing: 12,
                       children: [
                         DompetDropdownField(
+                          key: TestKeys.assetFormType,
                           formControl: _form.codeControl,
                           items: presetAccounts.map((account) {
                             return DropdownMenuItem(
@@ -111,6 +113,7 @@ class _AssetFormPageState extends State<AssetFormPage> {
                           readOnly: presetAccounts.isEmpty,
                         ),
                         DompetTextField(
+                          key: TestKeys.assetFormName,
                           label: 'Nama Dompet',
                           formControl: _form.nameControl,
                           placeholder: 'Contoh: Dompet Utama',
@@ -122,6 +125,7 @@ class _AssetFormPageState extends State<AssetFormPage> {
                         ),
                         if (!isEdit)
                           DompetNumberField(
+                            key: TestKeys.assetFormBalance,
                             labelText: 'Saldo saat ini (Opsional)',
                             formControl: _form.balanceControl,
                             border: OutlineInputBorder(),
@@ -138,6 +142,7 @@ class _AssetFormPageState extends State<AssetFormPage> {
               child: Builder(
                 builder: (providedContext) {
                   return FilledButton(
+                    key: TestKeys.assetFormSave,
                     onPressed: () async {
                       _form.markAllAsTouched();
                       if (_form.valid) {

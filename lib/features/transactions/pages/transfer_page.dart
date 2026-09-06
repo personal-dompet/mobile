@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dompet_app/core/constants/keys/key.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/states/action_state.dart';
 import 'package:dompet_app/core/widgets/dompet_dialog.dart';
@@ -108,6 +109,7 @@ class _TransferPageState extends State<TransferPage> {
                     crossAxisAlignment: .stretch,
                     children: [
                       FilledButton(
+                        key: TestKeys.transferSave,
                         onPressed: () async {
                           _form.markAllAsTouched();
 
@@ -160,6 +162,7 @@ class _TransferPageState extends State<TransferPage> {
               spacing: 16,
               children: [
                 AmountInput(
+                  key: TestKeys.transferAmount,
                   formControl: _form.amountControl,
                   errorMessage: 'Masukkan nominalnya dulu',
                 ),
@@ -174,6 +177,7 @@ class _TransferPageState extends State<TransferPage> {
                     final accountDestinationId =
                         accountDestinationIdControl.value;
                     return AssetSelector(
+                      key: TestKeys.transferSource,
                       accountSelectorForm: _form.sourceForm,
                       label: 'Dari Dompet',
                       disabledAssetId: accountDestinationId,
@@ -182,6 +186,7 @@ class _TransferPageState extends State<TransferPage> {
                 ),
 
                 FilledButton.tonalIcon(
+                  key: TestKeys.transferSwap,
                   onPressed: () {
                     final sourceId = _form.sourceForm.id;
                     final sourceName = _form.sourceForm.name;
@@ -212,6 +217,7 @@ class _TransferPageState extends State<TransferPage> {
                     final accountSourceIdControl = control as FormControl<int>;
                     final accountSourceId = accountSourceIdControl.value;
                     return AssetSelector(
+                      key: TestKeys.transferDestination,
                       accountSelectorForm: _form.destinationForm,
                       label: 'Ke Dompet',
                       disabledAssetId: accountSourceId,

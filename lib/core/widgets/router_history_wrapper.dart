@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:navigation_history_observer/navigation_history_observer.dart';
 
@@ -11,16 +13,26 @@ class RouterHistoryWrapper extends StatefulWidget {
 
 class _RouterHistoryWrapperState extends State<RouterHistoryWrapper> {
   final NavigationHistoryObserver historyObserver = NavigationHistoryObserver();
+  StreamSubscription? _historySub;
 
   @override
   void initState() {
     super.initState();
 
-    historyObserver.historyChangeStream.listen(
-      (change) => setState(() {
-        debugPrint(historyObserver.history.toString());
-      }),
+    _historySub = historyObserver.historyChangeStream.listen(
+      (change) {
+        if (!mounted) return;
+        setState(() {
+          debugPrint(historyObserver.history.toString());
+        });
+      },
     );
+  }
+
+  @override
+  void dispose() {
+    _historySub?.cancel();
+    super.dispose();
   }
 
   @override

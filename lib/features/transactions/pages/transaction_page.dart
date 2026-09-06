@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dompet_app/core/constants/keys/key.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/states/action_state.dart';
@@ -136,6 +137,7 @@ class _TransactionPageState extends State<TransactionPage> {
                     spacing: 8,
                     children: [
                       FilledButton(
+                        key: TestKeys.transactionSave,
                         onPressed: () async {
                           _form.markAllAsTouched();
 
@@ -234,6 +236,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       Flexible(
                         fit: FlexFit.loose,
                         child: AmountInput(
+                          key: TestKeys.transactionAmount,
                           formControl: _form.categories.first.amountControl,
                           errorMessage:
                               'Masukkan nominal ${widget.type == .expense ? 'pengeluaran' : 'pemasukan'} dulu',
@@ -352,6 +355,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
 
                 AssetSelector(
+                  key: TestKeys.transactionAsset,
                   accountSelectorForm: _form.assetForm,
                   label: 'Pilih Dompet',
                 ),

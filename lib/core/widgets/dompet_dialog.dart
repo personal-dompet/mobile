@@ -1,3 +1,4 @@
+import 'package:dompet_app/core/constants/keys/key.dart';
 import 'package:flutter/material.dart';
 
 class DompetDialog extends StatelessWidget {
@@ -47,6 +48,7 @@ class DompetDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
+                    key: TestKeys.dialogCancel,
                     style: TextButton.styleFrom(
                       foregroundColor: Theme.of(context).dividerColor,
                     ),
@@ -55,6 +57,7 @@ class DompetDialog extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   FilledButton(
+                    key: TestKeys.dialogConfirm,
                     onPressed: onConfirm,
                     child: Text(confirmationText),
                   ),

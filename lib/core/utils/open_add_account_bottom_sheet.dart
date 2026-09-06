@@ -1,4 +1,5 @@
 import 'package:dompet_app/core/enums/enum.dart';
+import 'package:dompet_app/core/constants/keys/key.dart';
 import 'package:dompet_app/core/extensions/icon_data.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
@@ -77,6 +78,7 @@ Future<AssetForm?> openAddAccountBottomSheet(
                       children: [
                         if (presetAccounts != null && presetAccounts.isNotEmpty)
                           DompetDropdownField(
+                            key: TestKeys.addAccountType,
                             formControl: form.codeControl,
                             items: presetAccounts.map((account) {
                               return DropdownMenuItem(
@@ -92,6 +94,7 @@ Future<AssetForm?> openAddAccountBottomSheet(
                             },
                           ),
                         DompetTextField(
+                          key: TestKeys.addAccountName,
                           label: 'Nama Dompet',
                           formControl: form.nameControl,
                           placeholder: placeholder,
@@ -102,6 +105,7 @@ Future<AssetForm?> openAddAccountBottomSheet(
                           },
                         ),
                         DompetNumberField(
+                          key: TestKeys.addAccountBalance,
                           labelText: 'Saldo saat ini (Opsional)',
                           formControl: form.balanceControl,
                           border: OutlineInputBorder(),
@@ -114,6 +118,7 @@ Future<AssetForm?> openAddAccountBottomSheet(
                       spacing: 16,
                       children: [
                         TextButton(
+                          key: TestKeys.addAccountCancel,
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -125,6 +130,7 @@ Future<AssetForm?> openAddAccountBottomSheet(
                           ),
                         ),
                         FilledButton(
+                          key: TestKeys.addAccountSave,
                           onPressed: () {
                             form.markAllAsTouched();
                             if (form.valid) {
