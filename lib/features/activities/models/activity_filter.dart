@@ -64,9 +64,9 @@ abstract class ActivityFilter with _$ActivityFilter {
 
     if (type != null && type != .expense && type != .income && type != .all) {
       args.add(switch (type) {
-        .adjustment => JournalSource.adjustment.name,
-        .billPayment => JournalSource.billPayment.name,
-        .transfer => JournalSource.transfer.name,
+        .adjustment => JournalSource.adjustment.value,
+        .billPayment => JournalSource.billPayment.value,
+        .transfer => JournalSource.transfer.value,
         _ => JournalSource.transaction.value,
       });
     }

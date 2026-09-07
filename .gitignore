@@ -46,7 +46,6 @@ app.*.map.json
 /android/app/release
 
 *.db
-DOCUMENT.md
 
 # Local dart-define secrets (opsi B backup). Lihat env.example.json.
 env.json
