@@ -138,6 +138,8 @@ class SavingActionCubit extends Cubit<ActionState> {
     }
   }
 
+  /// FIX-09: belanja hybrid — `assetId` dompet perantara wajib,
+  /// `categoryId` opsional (null → fallback Lain-Lain di repo, Q7).
   Future<int?> spend({
     required SavingSpendForm form,
     String successMessage = 'Pengeluaran berhasil dicatat',
@@ -146,15 +148,16 @@ class SavingActionCubit extends Cubit<ActionState> {
 
     try {
       final pocketId = form.pocketId;
-      final categoryId = form.categoryId;
+      final assetId = form.assetId;
       final amount = form.amount;
-      if (pocketId == null || categoryId == null || amount == null) {
+      if (pocketId == null || assetId == null || amount == null) {
         throw Exception('Terjadi kesalahan data pada aplikasi');
       }
 
       final journalId = await _repository.spend(
         pocketId: pocketId,
-        categoryId: categoryId,
+        assetId: assetId,
+        categoryId: form.categoryId,
         amount: amount,
         note: form.note,
         date: form.date,

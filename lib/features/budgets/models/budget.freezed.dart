@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Budget {
 
-@JsonKey(name: BudgetKey.id) int get id;@JsonKey(name: BudgetKey.accountId) int get accountId;@JsonKey(name: BudgetKey.accountName) String get accountName;@JsonKey(name: BudgetKey.budgetedAmount) int get budgetAmount;@JsonKey(name: BudgetKey.periodStart) int get periodStart;@JsonKey(name: BudgetKey.periodEnd) int get periodEnd;@JsonKey(name: BudgetKey.actualSpend) int get actualSpend;@JsonKey(name: BudgetKey.carryAmount) int get carryAmount;@JsonKey(name: BudgetKey.leftover) int get leftover;@JsonKey(name: BudgetKey.closedAt) int? get closedAt;
+@JsonKey(name: BudgetKey.id) int get id;@JsonKey(name: BudgetKey.accountId) int get accountId;@JsonKey(name: BudgetKey.accountName) String get accountName;@JsonKey(name: BudgetKey.budgetedAmount) int get budgetAmount;@JsonKey(name: BudgetKey.periodStart) int get periodStart;@JsonKey(name: BudgetKey.periodEnd) int get periodEnd;@JsonKey(name: BudgetKey.actualSpend) int get actualSpend;@JsonKey(name: BudgetKey.categoryArchived) bool get categoryArchived;@JsonKey(name: BudgetKey.carryAmount) int get carryAmount;@JsonKey(name: BudgetKey.leftover) int get leftover;@JsonKey(name: BudgetKey.closedAt) int? get closedAt;
 /// Create a copy of Budget
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $BudgetCopyWith<Budget> get copyWith => _$BudgetCopyWithImpl<Budget>(this as Bud
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Budget&&(identical(other.id, id) || other.id == id)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.accountName, accountName) || other.accountName == accountName)&&(identical(other.budgetAmount, budgetAmount) || other.budgetAmount == budgetAmount)&&(identical(other.periodStart, periodStart) || other.periodStart == periodStart)&&(identical(other.periodEnd, periodEnd) || other.periodEnd == periodEnd)&&(identical(other.actualSpend, actualSpend) || other.actualSpend == actualSpend)&&(identical(other.carryAmount, carryAmount) || other.carryAmount == carryAmount)&&(identical(other.leftover, leftover) || other.leftover == leftover)&&(identical(other.closedAt, closedAt) || other.closedAt == closedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Budget&&(identical(other.id, id) || other.id == id)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.accountName, accountName) || other.accountName == accountName)&&(identical(other.budgetAmount, budgetAmount) || other.budgetAmount == budgetAmount)&&(identical(other.periodStart, periodStart) || other.periodStart == periodStart)&&(identical(other.periodEnd, periodEnd) || other.periodEnd == periodEnd)&&(identical(other.actualSpend, actualSpend) || other.actualSpend == actualSpend)&&(identical(other.categoryArchived, categoryArchived) || other.categoryArchived == categoryArchived)&&(identical(other.carryAmount, carryAmount) || other.carryAmount == carryAmount)&&(identical(other.leftover, leftover) || other.leftover == leftover)&&(identical(other.closedAt, closedAt) || other.closedAt == closedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,accountId,accountName,budgetAmount,periodStart,periodEnd,actualSpend,carryAmount,leftover,closedAt);
+int get hashCode => Object.hash(runtimeType,id,accountId,accountName,budgetAmount,periodStart,periodEnd,actualSpend,categoryArchived,carryAmount,leftover,closedAt);
 
 @override
 String toString() {
-  return 'Budget(id: $id, accountId: $accountId, accountName: $accountName, budgetAmount: $budgetAmount, periodStart: $periodStart, periodEnd: $periodEnd, actualSpend: $actualSpend, carryAmount: $carryAmount, leftover: $leftover, closedAt: $closedAt)';
+  return 'Budget(id: $id, accountId: $accountId, accountName: $accountName, budgetAmount: $budgetAmount, periodStart: $periodStart, periodEnd: $periodEnd, actualSpend: $actualSpend, categoryArchived: $categoryArchived, carryAmount: $carryAmount, leftover: $leftover, closedAt: $closedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $BudgetCopyWith<$Res>  {
   factory $BudgetCopyWith(Budget value, $Res Function(Budget) _then) = _$BudgetCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: BudgetKey.id) int id,@JsonKey(name: BudgetKey.accountId) int accountId,@JsonKey(name: BudgetKey.accountName) String accountName,@JsonKey(name: BudgetKey.budgetedAmount) int budgetAmount,@JsonKey(name: BudgetKey.periodStart) int periodStart,@JsonKey(name: BudgetKey.periodEnd) int periodEnd,@JsonKey(name: BudgetKey.actualSpend) int actualSpend,@JsonKey(name: BudgetKey.carryAmount) int carryAmount,@JsonKey(name: BudgetKey.leftover) int leftover,@JsonKey(name: BudgetKey.closedAt) int? closedAt
+@JsonKey(name: BudgetKey.id) int id,@JsonKey(name: BudgetKey.accountId) int accountId,@JsonKey(name: BudgetKey.accountName) String accountName,@JsonKey(name: BudgetKey.budgetedAmount) int budgetAmount,@JsonKey(name: BudgetKey.periodStart) int periodStart,@JsonKey(name: BudgetKey.periodEnd) int periodEnd,@JsonKey(name: BudgetKey.actualSpend) int actualSpend,@JsonKey(name: BudgetKey.categoryArchived) bool categoryArchived,@JsonKey(name: BudgetKey.carryAmount) int carryAmount,@JsonKey(name: BudgetKey.leftover) int leftover,@JsonKey(name: BudgetKey.closedAt) int? closedAt
 });
 
 
@@ -65,7 +65,7 @@ class _$BudgetCopyWithImpl<$Res>
 
 /// Create a copy of Budget
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? accountId = null,Object? accountName = null,Object? budgetAmount = null,Object? periodStart = null,Object? periodEnd = null,Object? actualSpend = null,Object? carryAmount = null,Object? leftover = null,Object? closedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? accountId = null,Object? accountName = null,Object? budgetAmount = null,Object? periodStart = null,Object? periodEnd = null,Object? actualSpend = null,Object? categoryArchived = null,Object? carryAmount = null,Object? leftover = null,Object? closedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,accountId: null == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,8 @@ as String,budgetAmount: null == budgetAmount ? _self.budgetAmount : budgetAmount
 as int,periodStart: null == periodStart ? _self.periodStart : periodStart // ignore: cast_nullable_to_non_nullable
 as int,periodEnd: null == periodEnd ? _self.periodEnd : periodEnd // ignore: cast_nullable_to_non_nullable
 as int,actualSpend: null == actualSpend ? _self.actualSpend : actualSpend // ignore: cast_nullable_to_non_nullable
-as int,carryAmount: null == carryAmount ? _self.carryAmount : carryAmount // ignore: cast_nullable_to_non_nullable
+as int,categoryArchived: null == categoryArchived ? _self.categoryArchived : categoryArchived // ignore: cast_nullable_to_non_nullable
+as bool,carryAmount: null == carryAmount ? _self.carryAmount : carryAmount // ignore: cast_nullable_to_non_nullable
 as int,leftover: null == leftover ? _self.leftover : leftover // ignore: cast_nullable_to_non_nullable
 as int,closedAt: freezed == closedAt ? _self.closedAt : closedAt // ignore: cast_nullable_to_non_nullable
 as int?,
@@ -162,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: BudgetKey.id)  int id, @JsonKey(name: BudgetKey.accountId)  int accountId, @JsonKey(name: BudgetKey.accountName)  String accountName, @JsonKey(name: BudgetKey.budgetedAmount)  int budgetAmount, @JsonKey(name: BudgetKey.periodStart)  int periodStart, @JsonKey(name: BudgetKey.periodEnd)  int periodEnd, @JsonKey(name: BudgetKey.actualSpend)  int actualSpend, @JsonKey(name: BudgetKey.carryAmount)  int carryAmount, @JsonKey(name: BudgetKey.leftover)  int leftover, @JsonKey(name: BudgetKey.closedAt)  int? closedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: BudgetKey.id)  int id, @JsonKey(name: BudgetKey.accountId)  int accountId, @JsonKey(name: BudgetKey.accountName)  String accountName, @JsonKey(name: BudgetKey.budgetedAmount)  int budgetAmount, @JsonKey(name: BudgetKey.periodStart)  int periodStart, @JsonKey(name: BudgetKey.periodEnd)  int periodEnd, @JsonKey(name: BudgetKey.actualSpend)  int actualSpend, @JsonKey(name: BudgetKey.categoryArchived)  bool categoryArchived, @JsonKey(name: BudgetKey.carryAmount)  int carryAmount, @JsonKey(name: BudgetKey.leftover)  int leftover, @JsonKey(name: BudgetKey.closedAt)  int? closedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Budget() when $default != null:
-return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_that.periodStart,_that.periodEnd,_that.actualSpend,_that.carryAmount,_that.leftover,_that.closedAt);case _:
+return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_that.periodStart,_that.periodEnd,_that.actualSpend,_that.categoryArchived,_that.carryAmount,_that.leftover,_that.closedAt);case _:
   return orElse();
 
 }
@@ -183,10 +184,10 @@ return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: BudgetKey.id)  int id, @JsonKey(name: BudgetKey.accountId)  int accountId, @JsonKey(name: BudgetKey.accountName)  String accountName, @JsonKey(name: BudgetKey.budgetedAmount)  int budgetAmount, @JsonKey(name: BudgetKey.periodStart)  int periodStart, @JsonKey(name: BudgetKey.periodEnd)  int periodEnd, @JsonKey(name: BudgetKey.actualSpend)  int actualSpend, @JsonKey(name: BudgetKey.carryAmount)  int carryAmount, @JsonKey(name: BudgetKey.leftover)  int leftover, @JsonKey(name: BudgetKey.closedAt)  int? closedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: BudgetKey.id)  int id, @JsonKey(name: BudgetKey.accountId)  int accountId, @JsonKey(name: BudgetKey.accountName)  String accountName, @JsonKey(name: BudgetKey.budgetedAmount)  int budgetAmount, @JsonKey(name: BudgetKey.periodStart)  int periodStart, @JsonKey(name: BudgetKey.periodEnd)  int periodEnd, @JsonKey(name: BudgetKey.actualSpend)  int actualSpend, @JsonKey(name: BudgetKey.categoryArchived)  bool categoryArchived, @JsonKey(name: BudgetKey.carryAmount)  int carryAmount, @JsonKey(name: BudgetKey.leftover)  int leftover, @JsonKey(name: BudgetKey.closedAt)  int? closedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Budget():
-return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_that.periodStart,_that.periodEnd,_that.actualSpend,_that.carryAmount,_that.leftover,_that.closedAt);case _:
+return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_that.periodStart,_that.periodEnd,_that.actualSpend,_that.categoryArchived,_that.carryAmount,_that.leftover,_that.closedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +204,10 @@ return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: BudgetKey.id)  int id, @JsonKey(name: BudgetKey.accountId)  int accountId, @JsonKey(name: BudgetKey.accountName)  String accountName, @JsonKey(name: BudgetKey.budgetedAmount)  int budgetAmount, @JsonKey(name: BudgetKey.periodStart)  int periodStart, @JsonKey(name: BudgetKey.periodEnd)  int periodEnd, @JsonKey(name: BudgetKey.actualSpend)  int actualSpend, @JsonKey(name: BudgetKey.carryAmount)  int carryAmount, @JsonKey(name: BudgetKey.leftover)  int leftover, @JsonKey(name: BudgetKey.closedAt)  int? closedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: BudgetKey.id)  int id, @JsonKey(name: BudgetKey.accountId)  int accountId, @JsonKey(name: BudgetKey.accountName)  String accountName, @JsonKey(name: BudgetKey.budgetedAmount)  int budgetAmount, @JsonKey(name: BudgetKey.periodStart)  int periodStart, @JsonKey(name: BudgetKey.periodEnd)  int periodEnd, @JsonKey(name: BudgetKey.actualSpend)  int actualSpend, @JsonKey(name: BudgetKey.categoryArchived)  bool categoryArchived, @JsonKey(name: BudgetKey.carryAmount)  int carryAmount, @JsonKey(name: BudgetKey.leftover)  int leftover, @JsonKey(name: BudgetKey.closedAt)  int? closedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Budget() when $default != null:
-return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_that.periodStart,_that.periodEnd,_that.actualSpend,_that.carryAmount,_that.leftover,_that.closedAt);case _:
+return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_that.periodStart,_that.periodEnd,_that.actualSpend,_that.categoryArchived,_that.carryAmount,_that.leftover,_that.closedAt);case _:
   return null;
 
 }
@@ -218,7 +219,7 @@ return $default(_that.id,_that.accountId,_that.accountName,_that.budgetAmount,_t
 @JsonSerializable()
 
 class _Budget extends Budget {
-  const _Budget({@JsonKey(name: BudgetKey.id) required this.id, @JsonKey(name: BudgetKey.accountId) required this.accountId, @JsonKey(name: BudgetKey.accountName) required this.accountName, @JsonKey(name: BudgetKey.budgetedAmount) required this.budgetAmount, @JsonKey(name: BudgetKey.periodStart) required this.periodStart, @JsonKey(name: BudgetKey.periodEnd) required this.periodEnd, @JsonKey(name: BudgetKey.actualSpend) this.actualSpend = 0, @JsonKey(name: BudgetKey.carryAmount) this.carryAmount = 0, @JsonKey(name: BudgetKey.leftover) this.leftover = 0, @JsonKey(name: BudgetKey.closedAt) this.closedAt}): super._();
+  const _Budget({@JsonKey(name: BudgetKey.id) required this.id, @JsonKey(name: BudgetKey.accountId) required this.accountId, @JsonKey(name: BudgetKey.accountName) required this.accountName, @JsonKey(name: BudgetKey.budgetedAmount) required this.budgetAmount, @JsonKey(name: BudgetKey.periodStart) required this.periodStart, @JsonKey(name: BudgetKey.periodEnd) required this.periodEnd, @JsonKey(name: BudgetKey.actualSpend) this.actualSpend = 0, @JsonKey(name: BudgetKey.categoryArchived) this.categoryArchived = false, @JsonKey(name: BudgetKey.carryAmount) this.carryAmount = 0, @JsonKey(name: BudgetKey.leftover) this.leftover = 0, @JsonKey(name: BudgetKey.closedAt) this.closedAt}): super._();
   factory _Budget.fromJson(Map<String, dynamic> json) => _$BudgetFromJson(json);
 
 @override@JsonKey(name: BudgetKey.id) final  int id;
@@ -228,6 +229,7 @@ class _Budget extends Budget {
 @override@JsonKey(name: BudgetKey.periodStart) final  int periodStart;
 @override@JsonKey(name: BudgetKey.periodEnd) final  int periodEnd;
 @override@JsonKey(name: BudgetKey.actualSpend) final  int actualSpend;
+@override@JsonKey(name: BudgetKey.categoryArchived) final  bool categoryArchived;
 @override@JsonKey(name: BudgetKey.carryAmount) final  int carryAmount;
 @override@JsonKey(name: BudgetKey.leftover) final  int leftover;
 @override@JsonKey(name: BudgetKey.closedAt) final  int? closedAt;
@@ -245,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Budget&&(identical(other.id, id) || other.id == id)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.accountName, accountName) || other.accountName == accountName)&&(identical(other.budgetAmount, budgetAmount) || other.budgetAmount == budgetAmount)&&(identical(other.periodStart, periodStart) || other.periodStart == periodStart)&&(identical(other.periodEnd, periodEnd) || other.periodEnd == periodEnd)&&(identical(other.actualSpend, actualSpend) || other.actualSpend == actualSpend)&&(identical(other.carryAmount, carryAmount) || other.carryAmount == carryAmount)&&(identical(other.leftover, leftover) || other.leftover == leftover)&&(identical(other.closedAt, closedAt) || other.closedAt == closedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Budget&&(identical(other.id, id) || other.id == id)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.accountName, accountName) || other.accountName == accountName)&&(identical(other.budgetAmount, budgetAmount) || other.budgetAmount == budgetAmount)&&(identical(other.periodStart, periodStart) || other.periodStart == periodStart)&&(identical(other.periodEnd, periodEnd) || other.periodEnd == periodEnd)&&(identical(other.actualSpend, actualSpend) || other.actualSpend == actualSpend)&&(identical(other.categoryArchived, categoryArchived) || other.categoryArchived == categoryArchived)&&(identical(other.carryAmount, carryAmount) || other.carryAmount == carryAmount)&&(identical(other.leftover, leftover) || other.leftover == leftover)&&(identical(other.closedAt, closedAt) || other.closedAt == closedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,accountId,accountName,budgetAmount,periodStart,periodEnd,actualSpend,carryAmount,leftover,closedAt);
+int get hashCode => Object.hash(runtimeType,id,accountId,accountName,budgetAmount,periodStart,periodEnd,actualSpend,categoryArchived,carryAmount,leftover,closedAt);
 
 @override
 String toString() {
-  return 'Budget(id: $id, accountId: $accountId, accountName: $accountName, budgetAmount: $budgetAmount, periodStart: $periodStart, periodEnd: $periodEnd, actualSpend: $actualSpend, carryAmount: $carryAmount, leftover: $leftover, closedAt: $closedAt)';
+  return 'Budget(id: $id, accountId: $accountId, accountName: $accountName, budgetAmount: $budgetAmount, periodStart: $periodStart, periodEnd: $periodEnd, actualSpend: $actualSpend, categoryArchived: $categoryArchived, carryAmount: $carryAmount, leftover: $leftover, closedAt: $closedAt)';
 }
 
 
@@ -265,7 +267,7 @@ abstract mixin class _$BudgetCopyWith<$Res> implements $BudgetCopyWith<$Res> {
   factory _$BudgetCopyWith(_Budget value, $Res Function(_Budget) _then) = __$BudgetCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: BudgetKey.id) int id,@JsonKey(name: BudgetKey.accountId) int accountId,@JsonKey(name: BudgetKey.accountName) String accountName,@JsonKey(name: BudgetKey.budgetedAmount) int budgetAmount,@JsonKey(name: BudgetKey.periodStart) int periodStart,@JsonKey(name: BudgetKey.periodEnd) int periodEnd,@JsonKey(name: BudgetKey.actualSpend) int actualSpend,@JsonKey(name: BudgetKey.carryAmount) int carryAmount,@JsonKey(name: BudgetKey.leftover) int leftover,@JsonKey(name: BudgetKey.closedAt) int? closedAt
+@JsonKey(name: BudgetKey.id) int id,@JsonKey(name: BudgetKey.accountId) int accountId,@JsonKey(name: BudgetKey.accountName) String accountName,@JsonKey(name: BudgetKey.budgetedAmount) int budgetAmount,@JsonKey(name: BudgetKey.periodStart) int periodStart,@JsonKey(name: BudgetKey.periodEnd) int periodEnd,@JsonKey(name: BudgetKey.actualSpend) int actualSpend,@JsonKey(name: BudgetKey.categoryArchived) bool categoryArchived,@JsonKey(name: BudgetKey.carryAmount) int carryAmount,@JsonKey(name: BudgetKey.leftover) int leftover,@JsonKey(name: BudgetKey.closedAt) int? closedAt
 });
 
 
@@ -282,7 +284,7 @@ class __$BudgetCopyWithImpl<$Res>
 
 /// Create a copy of Budget
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? accountId = null,Object? accountName = null,Object? budgetAmount = null,Object? periodStart = null,Object? periodEnd = null,Object? actualSpend = null,Object? carryAmount = null,Object? leftover = null,Object? closedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? accountId = null,Object? accountName = null,Object? budgetAmount = null,Object? periodStart = null,Object? periodEnd = null,Object? actualSpend = null,Object? categoryArchived = null,Object? carryAmount = null,Object? leftover = null,Object? closedAt = freezed,}) {
   return _then(_Budget(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,accountId: null == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
@@ -291,7 +293,8 @@ as String,budgetAmount: null == budgetAmount ? _self.budgetAmount : budgetAmount
 as int,periodStart: null == periodStart ? _self.periodStart : periodStart // ignore: cast_nullable_to_non_nullable
 as int,periodEnd: null == periodEnd ? _self.periodEnd : periodEnd // ignore: cast_nullable_to_non_nullable
 as int,actualSpend: null == actualSpend ? _self.actualSpend : actualSpend // ignore: cast_nullable_to_non_nullable
-as int,carryAmount: null == carryAmount ? _self.carryAmount : carryAmount // ignore: cast_nullable_to_non_nullable
+as int,categoryArchived: null == categoryArchived ? _self.categoryArchived : categoryArchived // ignore: cast_nullable_to_non_nullable
+as bool,carryAmount: null == carryAmount ? _self.carryAmount : carryAmount // ignore: cast_nullable_to_non_nullable
 as int,leftover: null == leftover ? _self.leftover : leftover // ignore: cast_nullable_to_non_nullable
 as int,closedAt: freezed == closedAt ? _self.closedAt : closedAt // ignore: cast_nullable_to_non_nullable
 as int?,

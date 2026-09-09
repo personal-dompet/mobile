@@ -4,10 +4,13 @@ import 'package:dompet_app/core/states/action_state.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
+import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/categories/widgets/category_field.dart';
 import 'package:dompet_app/features/savings/cubits/saving_action_cubit.dart';
 import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:dompet_app/features/savings/forms/saving_spend_form.dart';
+import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
+import 'package:dompet_app/features/savings/widgets/pocket_balance_hint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -70,6 +73,9 @@ class _SavingSpendPageState extends State<SavingSpendPage> {
       actionContext.read<SavingSignalCubit>().created();
       actionContext.read<AccountSignalCubit>().created();
       actionContext.read<ActivitySignalCubit>().created();
+      // FIX-09/ISSUE-15: Jurnal 2 menyentuh akun expense — anggaran yang
+      // melacak kategorinya harus segar (list + detail listen sinyal ini).
+      actionContext.read<BudgetSignalCubit>().created();
       actionContext.router.maybePop(true);
     }
   }
@@ -143,16 +149,35 @@ class _SavingSpendPageState extends State<SavingSpendPage> {
             child: Column(
               spacing: 16,
               children: [
+                // FIX-10 (IMP-6, Q18): info terkumpul kini dari state detail.
+                FutureBuilder(
+                  future: getIt<SavingRepository>().getByAccountId(
+                    widget.accountId,
+                  ),
+                  builder: (context, snapshot) {
+                    final balance = snapshot.data?.balance;
+                    if (balance == null) return const SizedBox.shrink();
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: PocketBalanceHint(balance: balance),
+                    );
+                  },
+                ),
                 AmountInput(
                   formControl: _form.amountControl,
                   errorMessage: 'Masukkan nominalnya dulu',
                 ),
                 SizedBox.shrink(),
+                AssetSelector(
+                  accountSelectorForm: _form.assetForm,
+                  label: 'Dari Dompet',
+                ),
+                SizedBox.shrink(),
+                // FIX-09: kategori opsional — kosong = fallback Lain-Lain.
                 CategoryField(
                   valueControl: _form.categoryIdControl,
                   nameControl: _form.categoryNameControl,
                   type: .expense,
-                  required: true,
                 ),
                 SizedBox.shrink(),
                 DompetTextField(

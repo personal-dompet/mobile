@@ -7,6 +7,8 @@ import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart
 import 'package:dompet_app/features/savings/cubits/saving_action_cubit.dart';
 import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:dompet_app/features/savings/forms/saving_allocation_form.dart';
+import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
+import 'package:dompet_app/features/savings/widgets/pocket_balance_hint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -145,6 +147,22 @@ class _SavingAllocationPageState extends State<SavingAllocationPage> {
             child: Column(
               spacing: 16,
               children: [
+                // FIX-10 (IMP-6, Q18): info terkumpul hanya relevan saat
+                // penarikan (batas = saldo pocket); alokasi dibatasi dompet.
+                if (_isWithdraw)
+                  FutureBuilder(
+                    future: getIt<SavingRepository>().getByAccountId(
+                      widget.accountId,
+                    ),
+                    builder: (context, snapshot) {
+                      final balance = snapshot.data?.balance;
+                      if (balance == null) return const SizedBox.shrink();
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: PocketBalanceHint(balance: balance),
+                      );
+                    },
+                  ),
                 AmountInput(
                   formControl: _form.amountControl,
                   errorMessage: 'Masukkan nominalnya dulu',

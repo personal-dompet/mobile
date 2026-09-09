@@ -1,15 +1,30 @@
 import 'package:dompet_app/core/extensions/number.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/features/budgets/models/budget.dart';
+import 'package:dompet_app/features/budgets/widgets/archived_category_badge.dart';
+import 'package:dompet_app/core/widgets/dompet_empty_search.dart';
 import 'package:dompet_app/features/budgets/widgets/empty_budgets.dart';
 import 'package:flutter/material.dart';
 
 class BudgetList extends StatelessWidget {
   final List<Budget> budgets;
-  const BudgetList({super.key, required this.budgets});
+  // FIX-13: bedakan kosong-karena-search vs belum-ada-data (Q14 A).
+  final bool isSearching;
+  final VoidCallback? onResetSearch;
+  const BudgetList({
+    super.key,
+    required this.budgets,
+    this.isSearching = false,
+    this.onResetSearch,
+  });
 
   @override
   Widget build(BuildContext context) {
+    if (budgets.isEmpty && isSearching) {
+      return Center(
+        child: DompetEmptySearch(subject: 'anggaran', onReset: onResetSearch),
+      );
+    }
     if (budgets.isEmpty) {
       return Center(child: EmptyBudgets(center: true));
     }
@@ -57,6 +72,11 @@ class _BudgetCard extends StatelessWidget {
                       overflow: .ellipsis,
                     ),
                   ),
+                  // FIX-12: anggaran arsip tetap aktif — beri penanda.
+                  if (budget.categoryArchived)
+                    ArchivedCategoryBadge(
+                      categoryName: budget.accountName,
+                    ),
                   Text(
                     budget.remaining.currency,
                     style: themeData.textTheme.bodyMedium?.copyWith(

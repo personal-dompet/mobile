@@ -5,6 +5,7 @@ import 'package:dompet_app/core/widgets/spinner_loading.dart';
 import 'package:dompet_app/features/app_configurations/cubits/app_configuration_cubit.dart';
 import 'package:dompet_app/features/splash/cubits/splash_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
@@ -13,14 +14,21 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return BlocProvider(
       create: (context) {
         context.read<AppConfigurationCubit>().init();
         return getIt<SplashCubit>()..check();
       },
-      child: Scaffold(
-        body: SafeArea(
-          child: BlocConsumer<SplashCubit, SplashState>(
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+        ),
+        child: Scaffold(
+          body: SafeArea(
+            child: BlocConsumer<SplashCubit, SplashState>(
             listener: (providedContext, state) {
               state.maybeWhen(
                 orElse: () {},
@@ -56,6 +64,7 @@ class SplashPage extends StatelessWidget {
               );
             },
           ),
+        ),
         ),
       ),
     );

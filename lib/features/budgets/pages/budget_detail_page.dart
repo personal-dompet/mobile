@@ -12,6 +12,7 @@ import 'package:dompet_app/features/activities/widgets/empty_activities.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_detail_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/budgets/models/budget_detail.dart';
+import 'package:dompet_app/features/budgets/widgets/archived_category_badge.dart';
 import 'package:dompet_app/features/budgets/utils/close_budget_handler.dart';
 import 'package:dompet_app/features/budgets/utils/show_close_choice_dialog.dart';
 import 'package:flutter/material.dart';
@@ -379,6 +380,14 @@ class _ConditionSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 12,
           children: [
+            // FIX-12: kategori diarsip — anggaran tetap aktif, beri penanda.
+            if (detail.category.isDeleted)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: ArchivedCategoryBadge(
+                  categoryName: detail.category.name,
+                ),
+              ),
             // Baris 1: nominal / nominal + percent pill (tanpa kata "terpakai"/"dari")
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,

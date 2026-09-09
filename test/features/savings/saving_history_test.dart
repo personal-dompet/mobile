@@ -93,6 +93,7 @@ void main() {
     );
     await repository.spend(
       pocketId: plan.accountId,
+      assetId: cashId,
       categoryId: foodId,
       amount: 50000,
       date: DateTime(2026, 9, 3, 10),

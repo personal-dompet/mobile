@@ -176,4 +176,59 @@ class ReportRepository {
       );
     }).toList();
   }
+
+  /// Pemasukan per kategori pada [period], urut terbesar dulu.
+  ///
+  /// Cermin [getExpenseByCategory]: jurnal transaction + saving sehingga
+  /// konsisten dengan [getMonthlySummary]. Jurnal tabungan tak pernah
+  /// menyentuh akun INCOME (topup/withdraw kontribusi 0), dan `setup`
+  /// dikecualikan agar saldo awal tak menggelembungkan pemasukan (FIX-06).
+  Future<List<CategorySpending>> getIncomeByCategory(
+    ReportPeriod period,
+  ) async {
+    final db = await _dbService.database;
+
+    final rows = await db.rawQuery(
+      '''
+      SELECT
+        $accountTable.${AccountKey.id} AS account_id,
+        $accountTable.${AccountKey.name} AS account_name,
+        SUM($journalLineTable.${JournalLineKey.creditAmount}) AS amount
+      FROM $journalEntryTable
+      INNER JOIN $journalLineTable
+        ON $journalLineTable.${JournalLineKey.journalEntryId} = $journalEntryTable.${JournalEntryKey.id}
+      INNER JOIN $accountTable
+        ON $journalLineTable.${JournalLineKey.accountId} = $accountTable.${AccountKey.id}
+      WHERE $journalEntryTable.${JournalEntryKey.source} IN (?, ?)
+        AND $journalEntryTable.${JournalEntryKey.status} = ?
+        AND ($journalEntryTable.${JournalEntryKey.entryDate} BETWEEN ? AND ?)
+        AND $accountTable.${AccountKey.type} = ?
+      GROUP BY $accountTable.${AccountKey.id}, $accountTable.${AccountKey.name}
+      ORDER BY amount DESC
+      ''',
+      [
+        JournalSource.transaction.value,
+        JournalSource.saving.value,
+        JournalStatus.posted.name,
+        period.startEpoch,
+        period.endEpoch,
+        AccountType.income.value,
+      ],
+    );
+
+    final total = rows.fold<int>(
+      0,
+      (sum, row) => sum + ((row['amount'] as num?)?.toInt() ?? 0),
+    );
+
+    return rows.map((row) {
+      final amount = (row['amount'] as num?)?.toInt() ?? 0;
+      return CategorySpending(
+        accountId: (row['account_id'] as num?)?.toInt() ?? 0,
+        name: row['account_name'] as String? ?? '-',
+        amount: amount,
+        percentage: total == 0 ? 0 : amount / total * 100,
+      );
+    }).toList();
+  }
 }

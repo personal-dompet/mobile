@@ -1,3 +1,4 @@
+import 'package:dompet_app/core/validators/dompet_amount_validators.dart';
 import 'package:dompet_app/features/assets/forms/asset_selector_form.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -100,7 +101,9 @@ class TransactionCategoryForm extends FormGroup {
     : super({
         _FieldKey.categoryId: FormControl<int>(),
         _FieldKey.categoryName: FormControl<String>(),
-        _FieldKey.amount: FormControl<int>(validators: [Validators.required]),
+        _FieldKey.amount: FormControl<int>(
+          validators: DompetAmountValidators.min1(),
+        ),
         _FieldKey.note: FormControl<String>(),
       });
 

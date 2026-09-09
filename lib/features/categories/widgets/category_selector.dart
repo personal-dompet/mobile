@@ -60,6 +60,20 @@ class _CategorySelectorState extends State<CategorySelector> {
     _searchFormControl.dispose();
   }
 
+  // FIX-13: clear reset field + fetch ulang eksplisit tanpa keyword (Q13 A).
+  void _clearSearch() {
+    _debounce?.cancel();
+    context.read<CategoryCubit>().fetch(
+      type: widget.type,
+      withBudget: widget.withBudget,
+    );
+  }
+
+  bool get _isSearching {
+    final keyword = _searchFormControl.value;
+    return keyword != null && keyword.isNotEmpty;
+  }
+
   void _onSelect(BuildContext context, {required Account account}) {
     context.router.maybePop((
       account: account,
@@ -95,7 +109,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                   );
 
                   if (!context.mounted || category == null) return;
-                  context.router.maybePop();
+                  _onSelect(context, account: category);
                 },
                 icon: Icon(Icons.add_rounded),
                 color: Theme.of(context).colorScheme.primary,
@@ -116,6 +130,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                     formControl: _searchFormControl,
                     textInputAction: .search,
                     clearable: true,
+                    onClear: _clearSearch,
                   ),
                 ),
                 BlocBuilder<CategoryCubit, CategoryState>(
@@ -129,6 +144,21 @@ class _CategorySelectorState extends State<CategorySelector> {
                         );
                       },
                       loaded: (expenses) {
+                        // FIX-13: hasil kosong saat mencari tampilkan empty
+                        // state + reset, bukan list blank (Q14 A).
+                        if (expenses.isEmpty && _isSearching) {
+                          return Expanded(
+                            child: Center(
+                              child: DompetEmptySearch(
+                                subject: 'kategori',
+                                onReset: () {
+                                  _searchFormControl.reset();
+                                  _clearSearch();
+                                },
+                              ),
+                            ),
+                          );
+                        }
                         return ValueListenableBuilder(
                           valueListenable: _selectedIdNotifier,
                           builder: (context, selectedId, _) {

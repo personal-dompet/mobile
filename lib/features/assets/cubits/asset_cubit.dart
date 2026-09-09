@@ -34,6 +34,24 @@ class AssetCubit extends Cubit<AssetState> {
     }
   }
 
+  /// FIX-14 (IMP-2): grid arsip mirror grid aktif.
+  Future<void> fetchArchived({AccountFilter? filter}) async {
+    emit(AssetState.loading());
+
+    try {
+      final assetFilter = filter != null
+          ? filter.copyWith(isSystem: false, isLiqid: true, type: .asset)
+          : AccountFilter(isSystem: false, isLiqid: true, type: .asset);
+      final assets = await _repository.getArchivedAccounts(
+        filter: assetFilter,
+      );
+
+      emit(AssetState.loaded(assets: assets));
+    } catch (e) {
+      emit(AssetState.error(message: e.toString()));
+    }
+  }
+
   Future<void> getPresetAssets() async {
     emit(AssetState.loading());
 

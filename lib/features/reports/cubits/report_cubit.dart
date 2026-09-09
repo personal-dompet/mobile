@@ -25,6 +25,7 @@ class ReportState {
     this.summary,
     this.comparison,
     this.categorySpending = const [],
+    this.categoryIncome = const [],
     this.budgetSpending = const [],
     this.trend = const [],
     this.errorMessage,
@@ -35,6 +36,9 @@ class ReportState {
   final MonthlySummary? summary;
   final PeriodComparison? comparison;
   final List<CategorySpending> categorySpending;
+  // FIX-06: pemasukan per kategori (state terpisah agar cache/refresh
+  // expense tak tercampur).
+  final List<CategorySpending> categoryIncome;
 
   /// Anggaran vs aktual bulan laporan (lihat [BudgetSpending]).
   final List<BudgetSpending> budgetSpending;
@@ -49,6 +53,7 @@ class ReportState {
     MonthlySummary? summary,
     PeriodComparison? comparison,
     List<CategorySpending>? categorySpending,
+    List<CategorySpending>? categoryIncome,
     List<BudgetSpending>? budgetSpending,
     List<MonthlySummary>? trend,
     String? errorMessage,
@@ -59,6 +64,7 @@ class ReportState {
       summary: summary ?? this.summary,
       comparison: comparison ?? this.comparison,
       categorySpending: categorySpending ?? this.categorySpending,
+      categoryIncome: categoryIncome ?? this.categoryIncome,
       budgetSpending: budgetSpending ?? this.budgetSpending,
       trend: trend ?? this.trend,
       errorMessage: errorMessage,
@@ -190,12 +196,15 @@ class ReportCubit extends Cubit<ReportState> {
       _repository.getTrend(period),
       _budgetRepository.getBudgetsForMonth(period),
       _repository.getExpenseByCategory(period.previous),
+      // FIX-06: income per kategori dibayar bersama agar konsisten.
+      _repository.getIncomeByCategory(period),
     ]);
     final comparison = results[0] as PeriodComparison;
     final categories = results[1] as List<CategorySpending>;
     final trend = results[2] as List<MonthlySummary>;
     final budgets = results[3] as List<Budget>;
     final previousCategories = results[4] as List<CategorySpending>;
+    final categoryIncome = results[5] as List<CategorySpending>;
     final previousByAccount = {
       for (final item in previousCategories) item.accountId: item.amount,
     };
@@ -203,6 +212,7 @@ class ReportCubit extends Cubit<ReportState> {
       summary: comparison.current,
       comparison: comparison,
       categorySpending: categories,
+      categoryIncome: categoryIncome,
       trend: trend,
       budgetSpending: [
         for (final budget in budgets)
@@ -235,6 +245,7 @@ class _MonthData {
     required this.summary,
     required this.comparison,
     required this.categorySpending,
+    required this.categoryIncome,
     required this.trend,
     required this.budgetSpending,
   });
@@ -242,6 +253,7 @@ class _MonthData {
   final MonthlySummary summary;
   final PeriodComparison comparison;
   final List<CategorySpending> categorySpending;
+  final List<CategorySpending> categoryIncome;
   final List<MonthlySummary> trend;
   final List<BudgetSpending> budgetSpending;
 
@@ -251,6 +263,7 @@ class _MonthData {
       summary: summary,
       comparison: comparison,
       categorySpending: categorySpending,
+      categoryIncome: categoryIncome,
       trend: trend,
       budgetSpending: budgetSpending,
       errorMessage: null,

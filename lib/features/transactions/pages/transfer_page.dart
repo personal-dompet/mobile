@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dompet_app/core/constants/keys/key.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
+import 'package:dompet_app/core/extensions/number.dart';
 import 'package:dompet_app/core/states/action_state.dart';
 import 'package:dompet_app/core/widgets/dompet_dialog.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
@@ -27,6 +28,7 @@ class _TransferPageState extends State<TransferPage> {
   late TransferForm _form;
 
   int _previousAmount = 0;
+  int? _previousSourceId;
 
   @override
   void initState() {
@@ -34,20 +36,28 @@ class _TransferPageState extends State<TransferPage> {
     _form = widget.form ?? TransferForm();
     if (isEdit) {
       _previousAmount = _form.amount ?? 0;
+      // Q4: sumber awal dicatat; bila user ganti dompet sumber,
+      // previous tidak dihitung (efektif = saldo live sumber baru).
+      _previousSourceId = _form.accountSourceId;
     }
   }
 
   bool get isEdit => widget.id != null;
 
-  Future<bool?> _insufficientBalanceConfirmation(BuildContext context) async {
+  /// FIX-07 (IMP-1, Q3): dialog persetujuan 2 jurnal dengan angka selisih.
+  Future<bool?> _insufficientBalanceConfirmation(
+    BuildContext context, {
+    required int shortfall,
+    required int totalAmount,
+  }) async {
     return await showDialog<bool>(
       context: context,
       builder: (context) {
         return DompetDialog(
-          title: 'Saldo mungkin menjadi negatif',
+          title: 'Saldo tidak cukup',
           subtitle:
-              'Nominal yang dipindahkan lebih besar dari saldo yang tersedia di ${_form.accountSourceName ?? 'dompet asal'}. Transfer tetap dapat disimpan.',
-          confirmationText: 'Tetap Simpan',
+              'Saldo ${_form.accountSourceName ?? 'dompet ini'} kurang ${shortfall.currency}. Untuk mencatat pengeluaran sebesar ${totalAmount.currency}, saldo akan disesuaikan terlebih dahulu sebesar ${shortfall.currency}.',
+          confirmationText: 'Lanjut',
           onCancel: () {
             Navigator.of(context).pop(false);
           },
@@ -114,12 +124,19 @@ class _TransferPageState extends State<TransferPage> {
                           _form.markAllAsTouched();
 
                           if (_form.valid) {
-                            final balance =
-                                _form.accountSourceBalance! + _previousAmount;
-                            if (_form.amount! > balance) {
+                            // FIX-07 + Q4: previous hanya bila sumber tak berganti.
+                            final effectiveSource =
+                                isEdit &&
+                                    _previousSourceId != null &&
+                                    _previousSourceId == _form.accountSourceId
+                                ? _form.accountSourceBalance! + _previousAmount
+                                : _form.accountSourceBalance!;
+                            if (_form.amount! > effectiveSource) {
                               final result =
                                   await _insufficientBalanceConfirmation(
                                     context,
+                                    shortfall: _form.amount! - effectiveSource,
+                                    totalAmount: _form.amount!,
                                   );
 
                               if (result != true) return;
@@ -129,13 +146,20 @@ class _TransferPageState extends State<TransferPage> {
 
                             int? newEditedId;
                             if (isEdit) {
+                              // FIX-07: void + penyesuaian selisih + catat baru,
+                              // atomik di repo (re-check saldo live di txn).
                               newEditedId = await providedContext
                                   .read<TransferCubit>()
-                                  .updateTransfer(form: _form, id: widget.id!);
+                                  .updateTransferAuto(
+                                    form: _form,
+                                    id: widget.id!,
+                                    previousAmount: _previousAmount,
+                                    previousSourceId: _previousSourceId,
+                                  );
                             } else {
                               await providedContext
                                   .read<TransferCubit>()
-                                  .transferBalance(form: _form);
+                                  .transferBalanceAuto(form: _form);
                             }
 
                             if (!providedContext.mounted) return;

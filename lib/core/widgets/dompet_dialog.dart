@@ -5,18 +5,18 @@ class DompetDialog extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String confirmationText;
-  final String cancellationText;
+  final String? cancellationText;
   final VoidCallback onConfirm;
-  final VoidCallback onCancel;
+  final VoidCallback? onCancel;
 
   const DompetDialog({
     super.key,
     required this.title,
-    required this.onCancel,
     required this.onConfirm,
     this.subtitle,
     this.confirmationText = 'Konfirmasi',
-    this.cancellationText = 'Batal',
+    this.cancellationText,
+    this.onCancel,
   });
 
   @override
@@ -47,14 +47,15 @@ class DompetDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    key: TestKeys.dialogCancel,
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).dividerColor,
+                  if (cancellationText != null && onCancel != null)
+                    TextButton(
+                      key: TestKeys.dialogCancel,
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(context).dividerColor,
+                      ),
+                      onPressed: onCancel,
+                      child: Text(cancellationText!),
                     ),
-                    onPressed: onCancel,
-                    child: Text(cancellationText),
-                  ),
                   const SizedBox(width: 8),
                   FilledButton(
                     key: TestKeys.dialogConfirm,

@@ -27,10 +27,15 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: AssetDetailRoute.page),
     AutoRoute(page: AssetActivityRoute.page),
     AutoRoute(page: AssetFormRoute.page),
+    // FIX-14 (IMP-2/IMP-3): halaman arsip. Push biasa (bukan
+    // replaceAll) agar back stack FIX-03 tak jebol.
+    AutoRoute(page: AssetArchivedRoute.page),
     AutoRoute(page: CategoryFormRoute.page),
     AutoRoute(page: CategoryRoute.page),
+    AutoRoute(page: CategoryArchivedRoute.page),
     AutoRoute(page: BudgetPlanFormRoute.page),
     AutoRoute(page: BudgetPlanRoute.page),
+    AutoRoute(page: BudgetPlanListRoute.page),
     AutoRoute(page: BudgetDetailRoute.page),
     AutoRoute(page: SavingDetailRoute.page),
     AutoRoute(page: SavingFormRoute.page),

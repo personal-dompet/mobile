@@ -258,7 +258,7 @@ class _SettingsViewState extends State<_SettingsView> {
                               subtitle: Text(
                                 isSignedIn
                                     ? (email ?? 'Terhubung')
-                                    : 'Belum terhubung ke Google',
+                                    : 'Belum ada akun masuk',
                               ),
                               trailing: isLoadingMeta
                                   ? const SizedBox(
@@ -286,8 +286,10 @@ class _SettingsViewState extends State<_SettingsView> {
                                     ? 'Perlu koneksi internet untuk memeriksa'
                                     : isLoadingMeta
                                     ? 'Memuat...'
+                                    : !isSignedIn
+                                    ? 'Belum ada akun masuk'
                                     : meta == null
-                                    ? 'Belum ada cadangan'
+                                    ? 'Belum ada cadangan di akun ini'
                                     : '${_formatBackupTime(meta.updatedAt)} • ${_formatSize(meta.sizeBytes)}',
                               ),
                             ),

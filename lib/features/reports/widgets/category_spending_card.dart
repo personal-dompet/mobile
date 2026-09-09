@@ -7,9 +7,18 @@ import 'package:flutter/material.dart';
 /// Sengaja bukan pie chart: lebih nyaman dibaca saat kategorinya banyak.
 /// Menampilkan 6 teratas + agregat "Lainnya".
 class CategorySpendingCard extends StatelessWidget {
-  const CategorySpendingCard({super.key, required this.items});
+  // FIX-06: judul + teks kosong diparametrisasi agar satu komponen
+  // dipakai untuk expense dan income dengan gaya yang sama.
+  const CategorySpendingCard({
+    super.key,
+    required this.items,
+    this.title = 'Pengeluaran per kategori',
+    this.emptyText = 'Belum ada pengeluaran bulan ini.',
+  });
 
   final List<CategorySpending> items;
+  final String title;
+  final String emptyText;
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +31,14 @@ class CategorySpendingCard extends StatelessWidget {
           spacing: 12,
           children: [
             Text(
-              'Pengeluaran per kategori',
+              title,
               style: theme.textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.w700,
               ),
             ),
             if (items.isEmpty)
               Text(
-                'Belum ada pengeluaran bulan ini.',
+                emptyText,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.outline,
                 ),

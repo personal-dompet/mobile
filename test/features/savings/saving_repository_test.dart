@@ -137,14 +137,46 @@ void main() {
     await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
     await repository.spend(
       pocketId: plan.accountId,
+      assetId: cashId,
       categoryId: foodId,
       amount: 500000,
     );
 
     expect(await balanceOf(plan.accountId), 500000);
     expect(await balanceOf(cashId), 9000000,
-        reason: 'spend tidak memotong asset yang sudah dialokasikan');
+        reason: 'spend hybrid: Jurnal 1 isi dompet, Jurnal 2 pakai — neto 0');
     expect(await balanceOf(foodId), 500000);
+  });
+
+  test('spend tanpa kategori fallback ke Lain-Lain (Q7)', () async {
+    final cashId = await accountIdByCode(AccountPreset.cash.code);
+    await fundAsset(cashId, 10000000);
+
+    final plan = await repository.createPocket(name: 'VGA');
+    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
+    final journalId = await repository.spend(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 300000,
+    );
+
+    expect(await balanceOf(plan.accountId), 700000);
+    expect(await balanceOf(cashId), 9000000,
+        reason: 'hybrid neto dompet 0');
+
+    final otherId = await accountIdByCode(AccountPreset.otherExpense.code);
+    final lines = await db.query(
+      journalLineTable,
+      where: '${JournalLineKey.journalEntryId} = ?',
+      whereArgs: [journalId],
+    );
+    expect(
+      lines.any((l) =>
+          l[JournalLineKey.accountId] == otherId &&
+          (l[JournalLineKey.debitAmount] as num).toInt() == 300000),
+      isTrue,
+      reason: 'Jurnal 2 debit Lain-Lain',
+    );
   });
 
   test('withdraw mengembalikan dana ke asset cair', () async {
@@ -170,7 +202,7 @@ void main() {
 
     final plan = await repository.createPocket(name: 'VGA');
     await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
-    await repository.spend(pocketId: plan.accountId, categoryId: foodId, amount: 200000);
+    await repository.spend(pocketId: plan.accountId, assetId: cashId, categoryId: foodId, amount: 200000);
     await repository.withdraw(pocketId: plan.accountId, assetId: cashId, amount: 100000);
 
     final rows = await db.rawQuery('''

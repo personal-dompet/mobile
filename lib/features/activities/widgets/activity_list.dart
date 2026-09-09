@@ -73,6 +73,12 @@ class _ActivityListState extends State<ActivityList> {
     );
   }
 
+  // FIX-13: clear reset field + fetch ulang eksplisit tanpa keyword (Q13 A).
+  void _clearSearch() {
+    _debounce?.cancel();
+    _fetch(_filterForm.filter);
+  }
+
   String _groupLabel(DateTime date) {
     final diff = date.difference(now).inDays.abs();
     if (diff > 6) return date.format();
@@ -111,6 +117,7 @@ class _ActivityListState extends State<ActivityList> {
                       formControl: _filterForm.descriptionControl,
                       textInputAction: .search,
                       clearable: true,
+                      onClear: _clearSearch,
                     ),
                   ),
                   SizedBox(

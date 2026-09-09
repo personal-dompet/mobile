@@ -8,6 +8,7 @@ import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/activities/cubits/activity_detail_cubit.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/activities/extensions/activity_detail.dart';
+import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/journals/models/journal_line.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +118,11 @@ class _DetailContentState extends State<_DetailContent> {
             crossAxisAlignment: .stretch,
             spacing: 8,
             children: [
-              if (widget.activity.type != .adjustment)
+              // FIX-04: saldo awal read-only — tak ada form edit yang valid
+              // (toTransactionForm tak punya baris kategori income/expense).
+              // FIX-03/ISSUE-8: profile tombol di bawah tidak diubah.
+              if (widget.activity.type != .adjustment &&
+                  widget.activity.source != JournalSource.setup)
                 FilledButton(
                   onPressed: () async {
                     final batch =
@@ -128,34 +133,44 @@ class _DetailContentState extends State<_DetailContent> {
                       case .all:
                       case .billPayment:
                       case .expense:
-                        final result = await TransactionRoute(
-                          type: .expense,
-                          id: widget.activity.id,
-                          form: widget.activity.toTransactionForm(),
-                          batch: batch,
-                        ).push<int>(context);
+                        // FIX-03/ISSUE-8: push via context.router agar
+                        // scope sama dengan replace di bawah (root).
+                        // push extension + replace beda scope bisa
+                        // buang ShellRoute dari stack.
+                        final result = await context.router.push<int>(
+                          TransactionRoute(
+                            type: .expense,
+                            id: widget.activity.id,
+                            form: widget.activity.toTransactionForm(),
+                            batch: batch,
+                          ),
+                        );
                         if (result != null && context.mounted) {
                           context.router.replace(
                             ActivityDetailRoute(id: result),
                           );
                         }
                       case .income:
-                        final result = await TransactionRoute(
-                          type: .income,
-                          id: widget.activity.id,
-                          form: widget.activity.toTransactionForm(),
-                          batch: batch,
-                        ).push<int>(context);
+                        final result = await context.router.push<int>(
+                          TransactionRoute(
+                            type: .income,
+                            id: widget.activity.id,
+                            form: widget.activity.toTransactionForm(),
+                            batch: batch,
+                          ),
+                        );
                         if (result != null && context.mounted) {
                           context.router.replace(
                             ActivityDetailRoute(id: result),
                           );
                         }
                       case .transfer:
-                        final result = await TransferRoute(
-                          id: widget.activity.id,
-                          form: widget.activity.toTransferForm(),
-                        ).push<int>(context);
+                        final result = await context.router.push<int>(
+                          TransferRoute(
+                            id: widget.activity.id,
+                            form: widget.activity.toTransferForm(),
+                          ),
+                        );
                         if (result != null && context.mounted) {
                           context.router.replace(
                             ActivityDetailRoute(id: result),

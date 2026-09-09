@@ -18,6 +18,8 @@ abstract class Budget with _$Budget {
     @JsonKey(name: BudgetKey.periodStart) required int periodStart,
     @JsonKey(name: BudgetKey.periodEnd) required int periodEnd,
     @JsonKey(name: BudgetKey.actualSpend) @Default(0) int actualSpend,
+    @JsonKey(name: BudgetKey.categoryArchived) @Default(false)
+    bool categoryArchived,
     @JsonKey(name: BudgetKey.carryAmount) @Default(0) int carryAmount,
     @JsonKey(name: BudgetKey.leftover) @Default(0) int leftover,
     @JsonKey(name: BudgetKey.closedAt) int? closedAt,

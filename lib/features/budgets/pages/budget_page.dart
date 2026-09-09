@@ -37,6 +37,17 @@ class _BudgetPageState extends State<BudgetPage> {
     });
   }
 
+  // FIX-13: clear reset field + fetch ulang eksplisit tanpa keyword (Q13 A).
+  void _clearSearch() {
+    _debounce?.cancel();
+    _budgetCubit.fetch();
+  }
+
+  bool get _isSearching {
+    final keyword = _keywordControl.value;
+    return keyword != null && keyword.isNotEmpty;
+  }
+
   @override
   void dispose() {
     _debounce?.cancel();
@@ -66,6 +77,7 @@ class _BudgetPageState extends State<BudgetPage> {
                   formControl: _keywordControl,
                   textInputAction: .search,
                   clearable: true,
+                  onClear: _clearSearch,
                 ),
                 Expanded(
                   child: BlocBuilder<BudgetCubit, BudgetState>(
@@ -89,10 +101,24 @@ class _BudgetPageState extends State<BudgetPage> {
                           );
                         },
                         loaded: (budgets) {
-                          return BudgetList(budgets: budgets);
+                          return BudgetList(
+                            budgets: budgets,
+                            isSearching: _isSearching,
+                            onResetSearch: () {
+                              _keywordControl.reset();
+                              _clearSearch();
+                            },
+                          );
                         },
                         refreshing: (budgets) {
-                          return BudgetList(budgets: budgets);
+                          return BudgetList(
+                            budgets: budgets,
+                            isSearching: _isSearching,
+                            onResetSearch: () {
+                              _keywordControl.reset();
+                              _clearSearch();
+                            },
+                          );
                         },
                       );
                     },

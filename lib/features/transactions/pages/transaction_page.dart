@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dompet_app/core/constants/keys/key.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
+import 'package:dompet_app/core/extensions/number.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/states/action_state.dart';
 import 'package:dompet_app/core/widgets/calculator.dart';
@@ -55,15 +56,21 @@ class _TransactionPageState extends State<TransactionPage> {
 
   bool get isEdit => widget.id != null;
 
-  Future<bool?> _insufficientBalanceConfirmation(BuildContext context) async {
+  /// FIX-07 (IMP-1, Q3): dialog persetujuan 2 jurnal dengan angka selisih.
+  /// Setuju = catat Jurnal 1 penyesuaian selisih + Jurnal 2 transaksi biasa.
+  Future<bool?> _insufficientBalanceConfirmation(
+    BuildContext context, {
+    required int shortfall,
+    required int totalAmount,
+  }) async {
     return await showDialog<bool>(
       context: context,
       builder: (context) {
         return DompetDialog(
-          title: 'Saldo mungkin menjadi negatif',
+          title: 'Saldo tidak cukup',
           subtitle:
-              'Nominal yang dicatat lebih besar dari saldo yang tersedia di ${_form.assetName ?? 'dompet ini'}. Transaksi tetap dapat disimpan.',
-          confirmationText: 'Tetap Simpan',
+              'Saldo ${_form.assetName ?? 'dompet ini'} kurang ${shortfall.currency}. Untuk mencatat pengeluaran sebesar ${totalAmount.currency}, saldo akan disesuaikan terlebih dahulu sebesar ${shortfall.currency}.',
+          confirmationText: 'Lanjut',
           onCancel: () {
             Navigator.of(context).pop(false);
           },
@@ -160,6 +167,8 @@ class _TransactionPageState extends State<TransactionPage> {
                               final result =
                                   await _insufficientBalanceConfirmation(
                                     context,
+                                    shortfall: totalAmount - effectiveBalance,
+                                    totalAmount: totalAmount,
                                   );
 
                               if (result != true) return;
@@ -169,17 +178,21 @@ class _TransactionPageState extends State<TransactionPage> {
 
                             int? newEditedId;
                             if (isEdit) {
+                              // FIX-07: void + penyesuaian selisih + catat baru,
+                              // atomik di repo (re-check saldo live di txn).
                               newEditedId = await providedContext
                                   .read<TransactionCubit>()
-                                  .updateTransaction(
+                                  .updateTransactionAuto(
                                     id: widget.id!,
                                     form: _form,
                                     type: widget.type,
+                                    previousAmount: _previousAmount,
+                                    previousAssetId: _previousAssetId,
                                   );
                             } else {
                               await providedContext
                                   .read<TransactionCubit>()
-                                  .recordTransaction(
+                                  .recordTransactionAuto(
                                     form: _form,
                                     type: widget.type,
                                   );

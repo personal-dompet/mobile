@@ -362,9 +362,30 @@ class SavingRepository {
     });
   }
 
+  /// FIX-09 (IMP-7 opsi B + ISSUE 15): Belanja = Tarik + Pengeluaran,
+  /// 2 jurnal atomik dalam satu `db.transaction`.
+  ///
+  /// - Jurnal 1 tarik: debit dompet, credit pocket (`source=saving`,
+  ///   metadata SPEND + flag `hybrid`). Masuk histori pocket dengan judul
+  ///   "Belanja", baris `saving_spend` laporan (kontribusi expense 0 —
+  ///   tak sentuh akun expense, ikut pola topup/withdraw existing).
+  ///   Flag `hybrid` sengaja netral (tanpa substring TOPUP/WITHDRAW/SPEND)
+  ///   agar query laporan `LIKE` tak double-count.
+  /// - Jurnal 2 keluar: debit expense, credit dompet (`source=transaction`,
+  ///   Q6; metadata `spend_expense` + `pocket_id`). Inilah yang dihitung
+  ///   laporan per-kategori dan `v_budget_tracker.actualSpend`, sehingga
+  ///   list + detail anggaran segar bersama (TC-BGT-011).
+  /// - `categoryId` opsional: kosong → fallback akun expense `Lain-Lain`
+  ///   (Q7: cari by code, buat bila tak ada).
+  /// - Hanya pocket yang divalidasi kecukupannya (Q8: dompet perantara boleh
+  ///   0 — Jurnal 1 mengisinya dulu, neto dompet 0).
+  ///
+  /// Gagal di jurnal mana pun = rollback total (tak ada jurnal parsial).
+  /// Mengembalikan id Jurnal 2 (jurnal expense).
   Future<int> spend({
     required int pocketId,
-    required int categoryId,
+    required int assetId,
+    int? categoryId,
     required int amount,
     String? note,
     DateTime? date,
@@ -377,12 +398,14 @@ class SavingRepository {
 
     return db.transaction((txn) async {
       await _assertActivePocket(txn, pocketId);
-      await _assertExpenseCategory(txn, categoryId);
+      await _assertLiquidAsset(txn, assetId);
+      final expenseId = await _resolveSpendCategory(txn, categoryId);
       await _assertSufficientBalance(txn, pocketId, amount);
 
       final entryDate = (date ?? DateTime.now()).secondsSinceEpoch;
 
-      final journalEntryId = await txn.rawInsert(
+      // Jurnal 1: tarik pocket -> dompet.
+      final withdrawId = await txn.rawInsert(
         '''
         INSERT INTO $journalEntryTable (
           ${JournalEntryKey.description},
@@ -400,6 +423,7 @@ class SavingRepository {
           jsonEncode({
             'saving_tx': SavingTxType.spend.value,
             'pocket_id': pocketId,
+            'hybrid': true,
           }),
         ],
       );
@@ -419,13 +443,13 @@ class SavingRepository {
           pocketId,
           amount,
           0,
-          journalEntryId,
+          withdrawId,
           0,
           note,
-          categoryId,
+          assetId,
           0,
           amount,
-          journalEntryId,
+          withdrawId,
           1,
           note,
         ],
@@ -435,10 +459,108 @@ class SavingRepository {
         journalEntryTable,
         {JournalEntryKey.status: JournalStatus.posted.name},
         where: '${JournalEntryKey.id} = ?',
-        whereArgs: [journalEntryId],
+        whereArgs: [withdrawId],
       );
 
-      return journalEntryId;
+      // Jurnal 2: pengeluaran dompet -> kategori expense.
+      final expenseJournalId = await txn.rawInsert(
+        '''
+        INSERT INTO $journalEntryTable (
+          ${JournalEntryKey.description},
+          ${JournalEntryKey.entryDate},
+          ${JournalEntryKey.source},
+          ${JournalEntryKey.status},
+          ${JournalEntryKey.metadata}
+        ) VALUES (?,?,?,?,?)
+      ''',
+        [
+          note,
+          entryDate,
+          JournalSource.transaction.value,
+          JournalStatus.draft.name,
+          jsonEncode({
+            'hybrid_expense': true,
+            'pocket_id': pocketId,
+          }),
+        ],
+      );
+
+      await txn.rawInsert(
+        '''
+        INSERT INTO $journalLineTable (
+          ${JournalLineKey.accountId},
+          ${JournalLineKey.creditAmount},
+          ${JournalLineKey.debitAmount},
+          ${JournalLineKey.journalEntryId},
+          ${JournalLineKey.lineOrder},
+          ${JournalLineKey.note}
+        ) VALUES (?,?,?,?,?,?), (?,?,?,?,?,?)
+      ''',
+        [
+          expenseId,
+          0,
+          amount,
+          expenseJournalId,
+          0,
+          note,
+          assetId,
+          amount,
+          0,
+          expenseJournalId,
+          1,
+          note,
+        ],
+      );
+
+      await txn.update(
+        journalEntryTable,
+        {JournalEntryKey.status: JournalStatus.posted.name},
+        where: '${JournalEntryKey.id} = ?',
+        whereArgs: [expenseJournalId],
+      );
+
+      return expenseJournalId;
+    });
+  }
+
+  /// Q7: kategori belanja opsional. Bila diisi, validasi seperti dulu;
+  /// bila kosong, fallback ke akun expense `Lain-Lain` (cari by code,
+  /// pulihkan bila terarsip, buat bila belum ada).
+  Future<int> _resolveSpendCategory(Transaction txn, int? categoryId) async {
+    if (categoryId != null) {
+      await _assertExpenseCategory(txn, categoryId);
+      return categoryId;
+    }
+
+    final code = AccountPreset.otherExpense.code;
+    final existing = await txn.query(
+      accountTable,
+      where: '${AccountKey.code} = ? AND ${AccountKey.type} = ?',
+      whereArgs: [code, AccountType.expense.value],
+      limit: 1,
+    );
+    if (existing.isNotEmpty) {
+      final row = existing.first;
+      final id = row[AccountKey.id] as int;
+      if ((row[AccountKey.isDeleted] as num?)?.toInt() == 1) {
+        await txn.update(
+          accountTable,
+          {AccountKey.isDeleted: 0},
+          where: '${AccountKey.id} = ?',
+          whereArgs: [id],
+        );
+      }
+      return id;
+    }
+
+    return txn.insert(accountTable, {
+      AccountKey.code: code,
+      AccountKey.name: AccountPreset.otherExpense.value,
+      AccountKey.iconCode: AccountPreset.otherExpense.icon.codePoint,
+      AccountKey.normalBalance: AccountType.expense.balanceType.value,
+      AccountKey.type: AccountType.expense.value,
+      AccountKey.isLiquid: 0,
+      AccountKey.isSystem: 0,
     });
   }
 

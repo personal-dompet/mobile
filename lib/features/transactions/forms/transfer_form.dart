@@ -1,3 +1,4 @@
+import 'package:dompet_app/core/validators/dompet_amount_validators.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/assets/forms/asset_selector_form.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -8,14 +9,7 @@ class TransferForm extends FormGroup {
         _FieldKey.source: AssetSelectorForm(),
         _FieldKey.destination: AssetSelectorForm(),
         _FieldKey.amount: FormControl<int>(
-          validators: [
-            Validators.required,
-            Validators.number(
-              allowedDecimals: 0,
-              allowNull: true,
-              allowNegatives: false,
-            ),
-          ],
+          validators: DompetAmountValidators.min1(),
         ),
         _FieldKey.note: FormControl<String>(),
         _FieldKey.date: FormControl<DateTime>(value: DateTime.now()),

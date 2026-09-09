@@ -14,6 +14,7 @@ import 'package:dompet_app/features/savings/repositories/saving_repository.dart'
 import 'package:dompet_app/features/reports/models/report_period.dart';
 import 'package:dompet_app/features/reports/repositories/report_repository.dart';
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
+import 'package:dompet_app/features/transactions/exceptions/no_op_balance_adjustment_exception.dart';
 import 'package:dompet_app/features/transactions/forms/balance_adjustment_form.dart';
 import 'package:dompet_app/features/transactions/forms/transaction_form.dart';
 import 'package:dompet_app/features/transactions/forms/transfer_form.dart';
@@ -364,19 +365,23 @@ void main() {
     expect(await totalUang(), t0);
   });
 
-  test('TC-ADJ-003 sesuaikan sama (selisih 0) tak ubah saldo', () async {
+  test('TC-ADJ-003 sesuaikan sama (selisih 0) no-op tanpa jurnal',
+      () async {
+    // UPDATE TC2-ADJ-001 (IMP-4): selisih 0 = no-op, bukan jurnal Rp0.
     final base = await seedBaseData();
     final t0 = await totalUang();
     final beforeId = await lastPostedJournalId();
 
     final bca = await getIt<AccountRepository>().getAccount(base.bca.id);
-    await getIt<BalanceAdjustmentRepository>().adjustBalance(
-      form: adjustmentForm(account: bca!, actualBalance: 5000000),
+    await expectLater(
+      getIt<BalanceAdjustmentRepository>().adjustBalance(
+        form: adjustmentForm(account: bca!, actualBalance: 5000000),
+      ),
+      throwsA(isA<NoOpBalanceAdjustmentException>()),
     );
 
-    // Tetap buat jurnal penyesuaian Rp0 ...
-    expect(await lastPostedJournalId(), greaterThan(beforeId));
-    // ... tanpa perubahan saldo & Total.
+    // Tanpa jurnal baru, tanpa perubahan saldo & Total.
+    expect(await lastPostedJournalId(), beforeId);
     expect(await balanceOf(base.bca.id), 5000000);
     expect(await totalUang(), t0);
   });
@@ -547,6 +552,7 @@ void main() {
     await getIt<SavingRepository>().spend(
       pocketId: base.target.accountId,
       categoryId: base.makanId,
+        assetId: base.bca.id,
       amount: 30000,
     );
     summary = await getIt<DashboardRepository>().getTransactionSummary();

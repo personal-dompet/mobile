@@ -4,9 +4,11 @@ import 'package:dompet_app/core/extensions/icon_data.dart';
 import 'package:dompet_app/core/models/app_configuration.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/widgets/dompet_dialog.dart';
+import 'package:dompet_app/core/widgets/dompet_empty_search.dart';
 import 'package:dompet_app/features/accounts/cubits/account_action_cubit.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
+import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/app_configurations/cubits/app_configuration_cubit.dart';
 import 'package:dompet_app/features/categories/forms/category_form.dart';
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
@@ -18,11 +20,16 @@ class CategoryGroupedList extends StatelessWidget {
   final List<Account> categories;
   final TransactionType type;
   final VoidCallback onCreate;
+  // FIX-13: kosong-karena-search tampilkan empty search (Q14 A).
+  final bool isSearching;
+  final VoidCallback? onResetSearch;
   const CategoryGroupedList({
     super.key,
     required this.categories,
     required this.type,
     required this.onCreate,
+    this.isSearching = false,
+    this.onResetSearch,
   });
 
   List<Account> get systemCategories =>
@@ -35,6 +42,16 @@ class CategoryGroupedList extends StatelessWidget {
     return BlocBuilder<AppConfigurationCubit, AppConfiguration?>(
       builder: (context, state) {
         if (state == null) return SizedBox.shrink();
+        // FIX-13: pencarian tanpa hasil jangan tampilkan section kosong
+        // yang menyesatkan ("Belum ada kategori baru").
+        if (categories.isEmpty && isSearching) {
+          return Center(
+            child: DompetEmptySearch(
+              subject: 'kategori',
+              onReset: onResetSearch,
+            ),
+          );
+        }
         final config = state;
         final isCategoryHintClosed = config.hint.categorySwipeHint;
 
@@ -226,6 +243,12 @@ class CategoryGroupedList extends StatelessWidget {
                                   }
                                   providedContext
                                       .read<AccountSignalCubit>()
+                                      .created();
+                                  // TC2-BGT-001: kategori diarsip mengubah flag
+                                  // categoryArchived di list anggaran aktif —
+                                  // segarkan list + rencana via sinyal budget.
+                                  providedContext
+                                      .read<BudgetSignalCubit>()
                                       .created();
                                 },
                                 backgroundColor: Theme.of(

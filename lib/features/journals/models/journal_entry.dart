@@ -51,6 +51,12 @@ abstract class JournalEntry with _$JournalEntry {
     if (source == .transfer) {
       return .transfer;
     }
+    // FIX-04: jurnal saldo awal tampil sebagai pemasukan di semua
+    // list aktivitas (prefix `+`, warna success), tapi query agregat
+    // (ringkasan/laporan/budget) tetap mengecualikan `setup`.
+    if (source == .setup) {
+      return .income;
+    }
     if (source == .billPayment) {
       return .billPayment;
     }

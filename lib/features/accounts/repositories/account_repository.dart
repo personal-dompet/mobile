@@ -50,6 +50,29 @@ class AccountRepository {
     return result.map((e) => Account.fromJson(e)).toList();
   }
 
+  /// FIX-14 (IMP-2/IMP-3): list akun arsip (isDeleted=1), mirror
+  /// [getAccounts] tapi sisi arsip. Dipakai grid dompet arsip +
+  /// list kategori arsip. List aktif tak tersentuh (tetap =0).
+  Future<List<Account>> getArchivedAccounts({
+    required AccountFilter filter,
+  }) async {
+    final db = await _dbService.database;
+
+    final whereClauses = [
+      '$accountBalanceView.${AccountKey.isDeleted} = 1',
+      ...filter.whereClauses,
+    ];
+
+    final result = await db.rawQuery('''
+      SELECT *
+      FROM $accountBalanceView
+      WHERE ${whereClauses.join(' AND ')}
+      ORDER BY ${AccountKey.counter} DESC, ${AccountKey.name} ASC
+    ''', filter.arguments);
+
+    return result.map((e) => Account.fromJson(e)).toList();
+  }
+
   Future<Account?> getAccount(int id) async {
     final db = await _dbService.database;
 

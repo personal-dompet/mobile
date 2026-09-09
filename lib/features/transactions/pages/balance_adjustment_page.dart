@@ -6,6 +6,7 @@ import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/transactions/cubits/balance_adjustment_cubit.dart';
+import 'package:dompet_app/features/transactions/exceptions/no_op_balance_adjustment_exception.dart';
 import 'package:dompet_app/features/transactions/forms/balance_adjustment_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,15 +63,28 @@ class _BalanceAdjustmentPageState extends State<BalanceAdjustmentPage> {
                     ),
                   );
                 },
+                // FIX-08 UI (di atas FIX-15): no-op tanpa jurnal -> pop +
+                // snackbar info "Tidak ada perubahan saldo" (Q17 A),
+                // tanpa ActivitySignal. Sukses asli tetap pop(true) + signal.
                 success: (message) {
                   _loading.hide();
+                  final isNoOp =
+                      message ==
+                      const NoOpBalanceAdjustmentException().toString();
                   ScaffoldMessenger.of(context).showSnackBar(
                     DompetSnackbar(
                       context,
-                      message: message,
-                      snackBarType: .success,
+                      message: isNoOp ? 'Tidak ada perubahan saldo' : message,
+                      snackBarType: isNoOp ? .info : .success,
                     ),
                   );
+                  if (isNoOp) {
+                    context.maybePop();
+                    return;
+                  }
+                  if (!context.mounted) return;
+                  context.read<ActivitySignalCubit>().created();
+                  context.maybePop(true);
                 },
               );
             },
@@ -87,16 +101,13 @@ class _BalanceAdjustmentPageState extends State<BalanceAdjustmentPage> {
                         onPressed: () async {
                           _form.markAllAsTouched();
 
+                          // Pop + signal ditangani listener di atas agar
+                          // kasus no-op (tanpa jurnal) tak ikut kirim signal
+                          // dan kasus error tak ikut pop.
                           if (_form.valid) {
                             await providedContext
                                 .read<BalanceAdjustmentCubit>()
                                 .adjustBalance(_form);
-
-                            if (!providedContext.mounted) return;
-                            providedContext
-                                .read<ActivitySignalCubit>()
-                                .created();
-                            providedContext.maybePop(true);
                           }
                         },
                         child: Text('Simpan'),

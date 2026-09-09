@@ -60,6 +60,9 @@ class AmountInput extends StatelessWidget {
                   floatingLabelBehavior: .always,
                   validationMessages: {
                     ValidationMessage.required: (error) => errorMessage ?? '',
+                    // FIX-01: uniform min-1 message for all nominal fields.
+                    ValidationMessage.min: (error) =>
+                        'Nominal harus lebih dari 0',
                   },
                 ),
               ),

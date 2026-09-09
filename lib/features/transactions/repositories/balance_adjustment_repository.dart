@@ -9,6 +9,7 @@ import 'package:dompet_app/core/extensions/date.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
+import 'package:dompet_app/features/transactions/exceptions/no_op_balance_adjustment_exception.dart';
 import 'package:dompet_app/features/transactions/forms/balance_adjustment_form.dart';
 import 'package:dompet_app/features/transactions/models/balance_adjustment.dart';
 
@@ -57,6 +58,12 @@ class BalanceAdjustmentRepository {
         currentBalance: form.amount ?? 0,
         previousBalance: assetAccount.balance,
       );
+
+      // FIX-01/08 repo-guard: a zero difference must never produce a
+      // journal. The UI turns this into an info snackbar (FIX-15 styling).
+      if (balanceAdjustment.difference == 0) {
+        throw const NoOpBalanceAdjustmentException();
+      }
 
       final journalEntryId = await txn.insert(journalEntryTable, {
         JournalEntryKey.entryDate: now.secondsSinceEpoch,

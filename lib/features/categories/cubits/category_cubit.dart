@@ -41,6 +41,29 @@ class CategoryCubit extends Cubit<CategoryState> {
     await _loadAccounts(keyword: keyword, type: type, withBudget: withBudget);
   }
 
+  /// FIX-14 (IMP-3): list arsip mirror list aktif, per tipe.
+  Future<void> fetchArchived({
+    String? keyword,
+    required TransactionType type,
+  }) async {
+    emit(CategoryState.loading());
+    try {
+      final filter = AccountFilter(
+        type: type == TransactionType.expense
+            ? AccountType.expense
+            : AccountType.income,
+        name: keyword,
+      );
+      final accounts = await _repository.getArchivedAccounts(filter: filter);
+      // Sistem tak bisa diarsipkan user; tampilkan hanya buatan user
+      // agar konsisten dengan section "Kategori Saya" di list aktif.
+      final userOnly = accounts.where((a) => !a.isSystem).toList();
+      emit(CategoryState.loaded(categories: userOnly));
+    } catch (e) {
+      emit(CategoryState.error(message: e.toString()));
+    }
+  }
+
   Future<Account?> getCategoryById(int id) async {
     final account = await _repository.getAccount(id);
     return account;

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
+import 'package:dompet_app/core/widgets/dompet_empty_search.dart';
 import 'package:dompet_app/core/widgets/dompet_text_field.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/accounts/models/account_filter.dart';
@@ -53,6 +54,18 @@ class _AssetAccountPageState extends State<_AssetAccountPage> {
     context.read<AssetCubit>().fetch(filter: filter);
   }
 
+  // FIX-13: tombol clear reset field + fetch ulang eksplisit tanpa
+  // keyword (tanpa tunggu debounce). Fokus dipertahankan (Q13 A).
+  void _clearSearch() {
+    _debounce?.cancel();
+    _fetch(null);
+  }
+
+  bool get _isSearching {
+    final keyword = _keywordControl.value;
+    return keyword != null && keyword.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -72,6 +85,15 @@ class _AssetAccountPageState extends State<_AssetAccountPage> {
         appBar: AppBar(
           title: Text('Dompet'),
           actions: [
+            IconButton(
+              // FIX-14 (IMP-2): entry grid arsip via AppBar.
+              onPressed: () {
+                context.router.push(AssetArchivedRoute());
+              },
+              icon: Icon(Icons.archive_outlined),
+              tooltip: 'Dompet diarsipkan',
+              color: Theme.of(context).colorScheme.primary,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: IconButton(
@@ -100,6 +122,7 @@ class _AssetAccountPageState extends State<_AssetAccountPage> {
                           placeholder: 'Cari nama dompet...',
                           textInputAction: .search,
                           clearable: true,
+                          onClear: _clearSearch,
                         ),
                       ),
                     ),
@@ -120,7 +143,21 @@ class _AssetAccountPageState extends State<_AssetAccountPage> {
                         ),
                       ),
                     ),
-                    loaded: (assets) => SliverPadding(
+                    // FIX-13 (ISSUE 4): pencarian tanpa hasil tampilkan
+                    // empty state, bukan blank. Q14 A.
+                    loaded: (assets) => assets.isEmpty && _isSearching
+                        ? SliverFillRemaining(
+                            child: Center(
+                              child: DompetEmptySearch(
+                                subject: 'dompet',
+                                onReset: () {
+                                  _keywordControl.reset();
+                                  _clearSearch();
+                                },
+                              ),
+                            ),
+                          )
+                        : SliverPadding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       sliver: SliverGrid.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

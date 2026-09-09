@@ -11,6 +11,8 @@ extension ActivityDetail on JournalEntry {
       .transaction =>
         type == .income ? 'Detail Pemasukan' : 'Detail Pengeluaran',
       .transfer => 'Detail Pindah Dana',
+      // FIX-04: judul detail saldo awal.
+      .setup => 'Detail Saldo Awal',
       _ => 'Detail Aktivitas',
     };
   }

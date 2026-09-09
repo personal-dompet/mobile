@@ -837,14 +837,14 @@
 - **Integration test**: ✅
 - **Manual test**: ✅
 
-### TC-ADJ-003 — Sesuaikan sama (selisih 0) [E]
+### TC-ADJ-003 — Sesuaikan sama (selisih 0) [E] — UPDATE TC2-ADJ-001 (no-op, bukan jurnal 0)
 - **Prakondisi:** BCA Rp1.000.000.
 - **Langkah:**
   1. Input sama persis Rp1.000.000 → Simpan.
-- **Ekspektasi:** Berhasil (tetap buat jurnal 0) tanpa perubahan saldo.
+- **Ekspektasi:** Tanpa jurnal baru, pop ke detail, snackbar info primary `Tidak ada perubahan saldo` (bukan error merah, bukan jurnal Rp0).
 - **Efek samping:**
   - Saldo & Total tetap
-  - ada entri aktivitas penyesuaian Rp0.
+  - journal count tetap, tanpa entri aktivitas baru.
 - **Integration test**: ✅
 - **Manual test**: PENDING
 

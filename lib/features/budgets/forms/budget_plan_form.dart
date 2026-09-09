@@ -1,4 +1,5 @@
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
+import 'package:dompet_app/core/validators/dompet_amount_validators.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class BudgetPlanForm extends FormGroup {
@@ -11,7 +12,7 @@ class BudgetPlanForm extends FormGroup {
           validators: [Validators.required],
         ),
         BudgetPlanKey.amount: FormControl<int>(
-          validators: [Validators.required],
+          validators: DompetAmountValidators.min1(),
         ),
         BudgetPlanKey.note: FormControl<String>(),
       });

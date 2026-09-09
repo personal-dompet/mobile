@@ -37,6 +37,17 @@ class _SavingPageState extends State<SavingPage> {
     });
   }
 
+  // FIX-13: clear reset field + fetch ulang eksplisit tanpa keyword (Q13 A).
+  void _clearSearch() {
+    _debounce?.cancel();
+    _savingCubit.fetch();
+  }
+
+  bool get _isSearching {
+    final keyword = _keywordControl.value;
+    return keyword != null && keyword.isNotEmpty;
+  }
+
   @override
   void dispose() {
     _debounce?.cancel();
@@ -66,6 +77,7 @@ class _SavingPageState extends State<SavingPage> {
                   formControl: _keywordControl,
                   textInputAction: .search,
                   clearable: true,
+                  onClear: _clearSearch,
                 ),
                 Expanded(
                   child: BlocBuilder<SavingCubit, SavingState>(
@@ -89,10 +101,24 @@ class _SavingPageState extends State<SavingPage> {
                           );
                         },
                         loaded: (plans) {
-                          return SavingList(plans: plans);
+                          return SavingList(
+                            plans: plans,
+                            isSearching: _isSearching,
+                            onResetSearch: () {
+                              _keywordControl.reset();
+                              _clearSearch();
+                            },
+                          );
                         },
                         refreshing: (plans) {
-                          return SavingList(plans: plans);
+                          return SavingList(
+                            plans: plans,
+                            isSearching: _isSearching,
+                            onResetSearch: () {
+                              _keywordControl.reset();
+                              _clearSearch();
+                            },
+                          );
                         },
                       );
                     },

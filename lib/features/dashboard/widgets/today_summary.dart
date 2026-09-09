@@ -14,8 +14,6 @@ class TodaySummary extends StatelessWidget {
         return previous.summaryStatus != current.summaryStatus;
       },
       builder: (context, state) {
-        final isEmpty =
-            state.summary.expense == 0 && state.summary.income == 0;
         return Column(
           mainAxisSize: .min,
           crossAxisAlignment: .stretch,
@@ -25,13 +23,7 @@ class TodaySummary extends StatelessWidget {
               'Ringkasan Hari Ini',
               style: themeData.textTheme.bodyLarge?.copyWith(fontWeight: .w700),
             ),
-            if (isEmpty)
-              Text(
-                'Belum ada transaksi hari ini.',
-                style: themeData.textTheme.bodySmall?.copyWith(
-                  color: themeData.colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
-              ),
+            // FIX-05: teks kosong dihapus — dua card 0 tetap tampil.
             Row(
               spacing: 8,
               children: [

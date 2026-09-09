@@ -7,7 +7,6 @@ import 'package:dompet_app/core/database/views/views.dart';
 import 'package:dompet_app/core/models/pagination.dart';
 import 'package:dompet_app/core/models/pagination_meta.dart';
 import 'package:dompet_app/core/models/pagination_result.dart';
-import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/journals/models/journal_filter.dart';
@@ -24,15 +23,14 @@ class JournalRepository {
   }) async {
     final db = await _dbService.database;
 
+    // FIX-04: sertakan jurnal `setup` (saldo awal) di semua list
+    // aktivitas. Agregat (dashboard summary, report, budget) punya query
+    // sendiri yang tetap mengecualikan `setup`.
     final clauses = [
-      '$journalEntryTable.${JournalEntryKey.source} != ?',
       '$journalEntryTable.${JournalEntryKey.status} = ?',
     ];
 
-    final List<dynamic> args = [
-      JournalSource.setup.value,
-      JournalStatus.posted.name,
-    ];
+    final List<dynamic> args = [JournalStatus.posted.name];
 
     if (filter != null) {
       clauses.addAll(filter.whereClauses);
@@ -109,15 +107,12 @@ class JournalRepository {
   Future<List<JournalEntry>> getJournalsByFilter(JournalFilter? filter) async {
     final db = await _dbService.database;
 
+    // FIX-04: sama seperti getJournals — sertakan `setup`.
     final clauses = [
-      '$journalEntryTable.${JournalEntryKey.source} != ?',
       '$journalEntryTable.${JournalEntryKey.status} = ?',
     ];
 
-    final List<dynamic> args = [
-      JournalSource.setup.value,
-      JournalStatus.posted.name,
-    ];
+    final List<dynamic> args = [JournalStatus.posted.name];
 
     if (filter != null) {
       clauses.addAll(filter.whereClauses);

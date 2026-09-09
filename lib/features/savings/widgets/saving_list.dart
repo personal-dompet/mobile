@@ -1,16 +1,30 @@
 import 'package:dompet_app/core/extensions/icon_data.dart';
 import 'package:dompet_app/core/extensions/number.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
+import 'package:dompet_app/core/widgets/dompet_empty_search.dart';
 import 'package:dompet_app/features/savings/models/saving_plan.dart';
 import 'package:dompet_app/features/savings/widgets/empty_savings.dart';
 import 'package:flutter/material.dart';
 
 class SavingList extends StatelessWidget {
   final List<SavingPlan> plans;
-  const SavingList({super.key, required this.plans});
+  // FIX-13: bedakan kosong-karena-search vs belum-ada-data (Q14 A).
+  final bool isSearching;
+  final VoidCallback? onResetSearch;
+  const SavingList({
+    super.key,
+    required this.plans,
+    this.isSearching = false,
+    this.onResetSearch,
+  });
 
   @override
   Widget build(BuildContext context) {
+    if (plans.isEmpty && isSearching) {
+      return Center(
+        child: DompetEmptySearch(subject: 'target', onReset: onResetSearch),
+      );
+    }
     if (plans.isEmpty) {
       return Center(child: EmptySavings(center: true));
     }

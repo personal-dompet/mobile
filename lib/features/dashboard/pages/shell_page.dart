@@ -3,8 +3,8 @@ import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/widgets/dompet_dialog.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/budgets/widgets/budget_fab.dart';
-import 'package:dompet_app/features/savings/widgets/saving_fab.dart';
 import 'package:dompet_app/features/dashboard/widgets/greeting_text.dart';
+import 'package:dompet_app/features/savings/widgets/saving_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -23,60 +23,89 @@ class ShellPage extends StatelessWidget {
         statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
       child: AutoTabsRouter(
-      routes: [DashboardRoute(), ActivityRoute(), BudgetRoute(), SavingRoute()],
-      builder: (context, child) {
-        return PopScope(
-          canPop: false,
-          onPopInvokedWithResult: (didPop, result) async {
-            if (didPop) return;
+        routes: [
+          DashboardRoute(),
+          ActivityRoute(),
+          BudgetRoute(),
+          SavingRoute(),
+        ],
+        builder: (context, child) {
+          return PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, result) async {
+              if (didPop) return;
 
-            final navigator = Navigator.of(context);
+              final navigator = Navigator.of(context);
 
-            if (navigator.canPop()) {
-              navigator.pop(result);
-              return;
-            }
+              if (navigator.canPop()) {
+                navigator.pop(result);
+                return;
+              }
 
-            final shouldExit = await showDialog<bool>(
-              context: context,
-              builder: (context) {
-                return DompetDialog(
-                  title: 'Tutup aplikasi?',
-                  onCancel: () {
-                    Navigator.pop(context, false);
-                  },
-                  onConfirm: () {
-                    Navigator.pop(context, true);
-                  },
-                  confirmationText: 'Ya, Tutup',
-                );
-              },
-            );
+              final shouldExit = await showDialog<bool>(
+                context: context,
+                builder: (context) {
+                  return DompetDialog(
+                    title: 'Tutup aplikasi?',
+                    onCancel: () {
+                      Navigator.pop(context, false);
+                    },
+                    onConfirm: () {
+                      Navigator.pop(context, true);
+                    },
+                    confirmationText: 'Ya, Tutup',
+                  );
+                },
+              );
 
-            if (shouldExit == true) {
-              await SystemNavigator.pop();
-            }
-          },
-          child: Scaffold(
-            appBar: AppBar(title: _AppBarTitle()),
-            body: child,
-            floatingActionButton: Builder(
-              builder: (context) {
-                final current = context.tabsRouter.current.name;
-                return switch (current) {
-                  BudgetRoute.name => const BudgetFab(),
-                  SavingRoute.name => const SavingFab(),
-                  _ => const DompetFab(),
-                };
-              },
+              if (shouldExit == true) {
+                await SystemNavigator.pop();
+              }
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: _AppBarTitle(),
+                actions: const [_BudgetPlanButton()],
+              ),
+              body: child,
+              floatingActionButton: Builder(
+                builder: (context) {
+                  final current = context.tabsRouter.current.name;
+                  return switch (current) {
+                    BudgetRoute.name => const BudgetFab(),
+                    SavingRoute.name => const SavingFab(),
+                    _ => const DompetFab(),
+                  };
+                },
+              ),
+              floatingActionButtonLocation: .centerDocked,
+              bottomNavigationBar: DompetBottomBar(),
+              drawer: _NavigationDrawer(),
             ),
-            floatingActionButtonLocation: .centerDocked,
-            bottomNavigationBar: DompetBottomBar(),
-            drawer: _NavigationDrawer(),
-          ),
-        );
-      },
+          );
+        },
       ),
+    );
+  }
+}
+
+/// FIX-12 (IMP-9): jalan masuk list rencana anggaran.
+/// Hanya tampil di tab Anggaran agar AppBar tab lain tak berubah.
+class _BudgetPlanButton extends StatelessWidget {
+  const _BudgetPlanButton();
+
+  @override
+  Widget build(BuildContext context) {
+    // WATCH (bukan read): subscribe ke TabsRouterScope agar rebuild
+    // saat pindah tab. context.tabsRouter hanya read sehingga
+    // current.name stale dan tombol tak pernah muncul (TC2-BGT-002).
+    if (context.watchTabsRouter.current.name != BudgetRoute.name) {
+      return const SizedBox.shrink();
+    }
+    return IconButton(
+      tooltip: 'Rencana anggaran',
+      icon: const Icon(Icons.calendar_month_rounded),
+      onPressed: () => context.router.push(const BudgetPlanListRoute()),
     );
   }
 }
@@ -172,7 +201,8 @@ class _AppBarTitle extends StatelessWidget {
     final String title = switch (context.tabsRouter.current.name) {
       ActivityRoute.name => 'Aktivitas',
       BudgetRoute.name => 'Anggaran',
-      SavingRoute.name => 'Tabungan',
+      // FIX-13 (ISSUE 3): judul tabungan adalah "Target".
+      SavingRoute.name => 'Target',
       _ => '',
     };
 

@@ -197,6 +197,8 @@ class BackupCubit extends Cubit<BackupState> {
     }
   }
 
+  /// FIX-02: signing out must drop the cached backup meta (ISSUE 16) so a
+  /// later login (ISSUE 17) or the signed-out UI never shows stale data.
   Future<void> signOut() async {
     try {
       await _authService.signOut();
@@ -205,6 +207,8 @@ class BackupCubit extends Cubit<BackupState> {
       state.copyWith(
         isSignedIn: false,
         clearAccountEmail: true,
+        clearLastBackup: true,
+        isLoadingMeta: false,
         action: const ActionState.initial(),
       ),
     );

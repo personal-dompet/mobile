@@ -1,4 +1,5 @@
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
+import 'package:dompet_app/core/validators/dompet_amount_validators.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class SavingPlanForm extends FormGroup {
@@ -9,13 +10,8 @@ class SavingPlanForm extends FormGroup {
         ),
         AccountKey.iconCode: FormControl<int>(),
         SavingPlanKey.targetAmount: FormControl<int>(
-          validators: [
-            Validators.number(
-              allowedDecimals: 0,
-              allowNull: true,
-              allowNegatives: false,
-            ),
-          ],
+          // Optional field: null stays valid, a filled value must be >= 1.
+          validators: DompetAmountValidators.min1(required: false),
         ),
         SavingPlanKey.targetDate: FormControl<DateTime>(),
         SavingPlanKey.note: FormControl<String>(),

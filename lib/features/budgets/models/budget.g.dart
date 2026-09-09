@@ -24,6 +24,10 @@ _Budget _$BudgetFromJson(Map<String, dynamic> json) => $checkedCreate(
         'actual_spend',
         (v) => (v as num?)?.toInt() ?? 0,
       ),
+      categoryArchived: $checkedConvert(
+        'category_archived',
+        (v) => v as bool? ?? false,
+      ),
       carryAmount: $checkedConvert(
         'carry_amount',
         (v) => (v as num?)?.toInt() ?? 0,
@@ -40,6 +44,7 @@ _Budget _$BudgetFromJson(Map<String, dynamic> json) => $checkedCreate(
     'periodStart': 'period_start',
     'periodEnd': 'period_end',
     'actualSpend': 'actual_spend',
+    'categoryArchived': 'category_archived',
     'carryAmount': 'carry_amount',
     'closedAt': 'closed_at',
   },
@@ -53,6 +58,7 @@ Map<String, dynamic> _$BudgetToJson(_Budget instance) => <String, dynamic>{
   'period_start': instance.periodStart,
   'period_end': instance.periodEnd,
   'actual_spend': instance.actualSpend,
+  'category_archived': instance.categoryArchived,
   'carry_amount': instance.carryAmount,
   'leftover': instance.leftover,
   'closed_at': ?instance.closedAt,

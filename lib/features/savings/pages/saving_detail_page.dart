@@ -991,31 +991,15 @@ class _HistorySection extends StatelessWidget {
                   ),
                 ),
               ),
-              ActivityItem(:final activity) => Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ActivityItemTile(
-                    activity: activity,
-                    hideDate: true,
-                    accountId: detail.plan.accountId,
-                  ),
-                  if (balanceAfter[activity.id] != null)
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        right: 16,
-                        bottom: 4,
-                      ),
-                      child: Text(
-                        'Terkumpul ${balanceAfter[activity.id]!.currency}',
-                        textAlign: TextAlign.end,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(
-                            alpha: 0.55,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
+              ActivityItem(:final activity) => ActivityItemTile(
+                activity: activity,
+                hideDate: true,
+                accountId: detail.plan.accountId,
+                // FIX-10 (ISSUE 13): Terkumpul di dalam card, di bawah
+                // nominal, sejajar keterangan waktu.
+                footerTrailing: balanceAfter[activity.id] != null
+                    ? 'Terkumpul ${balanceAfter[activity.id]!.currency}'
+                    : null,
               ),
               ActivitySpacing(:final height) => SizedBox(height: height),
             };

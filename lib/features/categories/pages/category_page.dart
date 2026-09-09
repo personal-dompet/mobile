@@ -56,6 +56,17 @@ class _CategoryPageState extends State<CategoryPage> {
     super.dispose();
   }
 
+  // FIX-13: clear reset field + fetch ulang eksplisit tanpa keyword (Q13 A).
+  void _clearSearch() {
+    _debounce?.cancel();
+    _categoryAccountCubit.fetch(type: widget.type);
+  }
+
+  bool get _isSearching {
+    final keyword = _keywordControl.value;
+    return keyword != null && keyword.isNotEmpty;
+  }
+
   Future<void> _createCategory() async {
     final form = CategoryForm();
     form.typeControl.updateValue(widget.type == .expense ? .expense : .income);
@@ -112,6 +123,17 @@ class _CategoryPageState extends State<CategoryPage> {
                 'Kategori ${widget.type == .expense ? 'Pengeluaran' : 'Pemasukan'}',
               ),
               actions: [
+                IconButton(
+                  // FIX-14 (IMP-3): entry list arsip via AppBar.
+                  onPressed: () {
+                    context.router.push(
+                      CategoryArchivedRoute(type: widget.type),
+                    );
+                  },
+                  icon: Icon(Icons.archive_outlined),
+                  tooltip: 'Kategori diarsipkan',
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: IconButton(
@@ -133,6 +155,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       formControl: _keywordControl,
                       textInputAction: .search,
                       clearable: true,
+                      onClear: _clearSearch,
                     ),
                     Expanded(
                       child: BlocBuilder<CategoryCubit, CategoryState>(
@@ -160,6 +183,11 @@ class _CategoryPageState extends State<CategoryPage> {
                                 categories: categories,
                                 onCreate: _createCategory,
                                 type: widget.type,
+                                isSearching: _isSearching,
+                                onResetSearch: () {
+                                  _keywordControl.reset();
+                                  _clearSearch();
+                                },
                               );
                             },
                             refreshing: (categories) {
@@ -167,6 +195,11 @@ class _CategoryPageState extends State<CategoryPage> {
                                 categories: categories,
                                 onCreate: _createCategory,
                                 type: widget.type,
+                                isSearching: _isSearching,
+                                onResetSearch: () {
+                                  _keywordControl.reset();
+                                  _clearSearch();
+                                },
                               );
                             },
                           );

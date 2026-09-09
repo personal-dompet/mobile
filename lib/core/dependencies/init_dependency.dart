@@ -15,6 +15,7 @@ import 'package:dompet_app/features/budgets/cubits/budget_action_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_detail_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_plan_detail_cubit.dart';
+import 'package:dompet_app/features/budgets/cubits/budget_plan_list_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_plan_repository.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_repository.dart';
@@ -144,6 +145,8 @@ Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerFactory<BudgetPlanDetailCubit>(
     () => BudgetPlanDetailCubit(getIt(), getIt()),
   );
+
+  getIt.registerFactory<BudgetPlanListCubit>(() => BudgetPlanListCubit(getIt()));
 
   getIt.registerFactory<BudgetDetailCubit>(
     () => BudgetDetailCubit(getIt(), getIt(), getIt()),

@@ -183,6 +183,7 @@ void main() {
       await getIt<SavingRepository>().spend(
         pocketId: pocketId,
         categoryId: base.makanId,
+        assetId: base.bca.id,
         amount: 30000,
       );
       expect(await balanceOf(pocketId), 120000);
@@ -203,6 +204,7 @@ void main() {
         () => getIt<SavingRepository>().spend(
           pocketId: pocketId,
           categoryId: base.makanId,
+        assetId: base.bca.id,
           amount: 200000,
         ),
         throwsException,
@@ -278,6 +280,7 @@ void main() {
       await getIt<SavingRepository>().spend(
         pocketId: pocket.accountId,
         categoryId: base.makanId,
+        assetId: base.bca.id,
         amount: 30000,
       );
       makan = await getIt<BudgetRepository>().getActiveBudget(base.makanId);
@@ -402,6 +405,7 @@ void main() {
     final spendId = await getIt<SavingRepository>().spend(
       pocketId: pocketId,
       categoryId: base.makanId,
+        assetId: base.bca.id,
       amount: 10000,
     );
     expect(await totalUang(), t0 + 30000);
@@ -468,6 +472,7 @@ void main() {
       () => getIt<SavingRepository>().spend(
         pocketId: base.target.accountId,
         categoryId: 999999,
+        assetId: base.bca.id,
         amount: 10000,
       ),
       throwsException,

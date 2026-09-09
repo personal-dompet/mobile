@@ -123,6 +123,12 @@ class _LoadedBody extends StatelessWidget {
             SavingAllocationCard(summary: summary),
             CashflowBar(summary: summary),
             CategorySpendingCard(items: state.categorySpending),
+            // FIX-06: card pemasukan per kategori, gaya sama dengan expense.
+            CategorySpendingCard(
+              items: state.categoryIncome,
+              title: 'Pemasukan per kategori',
+              emptyText: 'Belum ada pemasukan bulan ini.',
+            ),
             BudgetSectionCard(items: state.budgetSpending),
             TrendCard(trend: state.trend),
           ],

@@ -284,6 +284,21 @@ BalanceAdjustmentForm adjustmentForm({
   return form;
 }
 
+/// Flush event queue agar recompute total otomatis TransactionForm stabil
+/// sebelum repo menegaskan nominal.
+///
+/// Konteks (post-mortem TC2 di device): `_listenToTotalAmount` menghitung
+/// ulang total dari event array secara async. Tanpa flush, `record*` yang
+/// dipanggil sinkron-segera setelah bentuk form bisa membaca transient
+/// sum=0 dan gagal `Nominal harus lebih dari 0` padahal input valid.
+/// Setelah flush, tak ada event array tertunda, lalu total eksplisit
+/// dikunci ulang sehingga deterministik.
+Future<void> settleFormTotal(TransactionForm form, int total) async {
+  await Future<void>.delayed(Duration.zero);
+  await Future<void>.delayed(Duration.zero);
+  form.totalAmountControl.updateValue(total);
+}
+
 /// Id jurnal posted terbaru (untuk dihapus/void pada uji hapus).
 Future<int> lastPostedJournalId() async {
   final db = await getIt<DbService>().database;
@@ -307,15 +322,17 @@ Future<void> recordIncome({
   required int amount,
   String? note,
 }) async {
+  final form = singleCategoryForm(
+    assetId: assetId,
+    assetName: assetName,
+    assetBalance: assetBalance,
+    categoryId: categoryId,
+    amount: amount,
+    note: note,
+  );
+  await settleFormTotal(form, amount);
   await getIt<TransactionRepository>().recordTransaction(
-    form: singleCategoryForm(
-      assetId: assetId,
-      assetName: assetName,
-      assetBalance: assetBalance,
-      categoryId: categoryId,
-      amount: amount,
-      note: note,
-    ),
+    form: form,
     type: TransactionType.income,
   );
 }
@@ -328,15 +345,17 @@ Future<void> recordExpense({
   required int amount,
   String? note,
 }) async {
+  final form = singleCategoryForm(
+    assetId: assetId,
+    assetName: assetName,
+    assetBalance: assetBalance,
+    categoryId: categoryId,
+    amount: amount,
+    note: note,
+  );
+  await settleFormTotal(form, amount);
   await getIt<TransactionRepository>().recordTransaction(
-    form: singleCategoryForm(
-      assetId: assetId,
-      assetName: assetName,
-      assetBalance: assetBalance,
-      categoryId: categoryId,
-      amount: amount,
-      note: note,
-    ),
+    form: form,
     type: TransactionType.expense,
   );
 }

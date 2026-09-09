@@ -19,6 +19,11 @@ class DompetTextField<T> extends StatelessWidget {
   final bool showRequiredLabel;
   final bool readOnly;
   final bool clearable;
+  /// FIX-13: dipanggil setelah `reset()` saat tombol clear ditekan.
+  /// Halaman search mengisinya dengan fetch eksplisit tanpa keyword
+  /// (mis. `() => _budgetCubit.fetch()`), tanpa mengandalkan debounce.
+  /// Fokus tidak diubah agar user bisa langsung mengetik lagi (Q13 A).
+  final VoidCallback? onClear;
   final ControlValueAccessor<T, String>? valueAccessor;
 
   const DompetTextField({
@@ -39,6 +44,7 @@ class DompetTextField<T> extends StatelessWidget {
     this.readOnly = false,
     this.showRequiredLabel = false,
     this.clearable = false,
+    this.onClear,
     this.suffixIcon,
   });
 
@@ -89,15 +95,26 @@ class DompetTextField<T> extends StatelessWidget {
         helperText: helper,
         isRequired: showRequiredLabel && isRequired,
         placeholder: placeholder,
-        suffixIcon:
-            clearable &&
-                (formControl.value != null ||
-                    (formControl.value is String &&
-                        (formControl.value as String).isNotEmpty))
-            ? IconButton(
-                icon: Icon(Icons.clear),
-                onPressed: () {
-                  formControl.reset();
+        // FIX-13: predicate `&&` (dulu `||` sehingga `""` tetap
+        // dianggap ada), rebuild reaktif agar tombol muncul/hilang live,
+        // dan `onClear` picu fetch ulang eksplisit tanpa keyword.
+        suffixIcon: clearable
+            ? ReactiveValueListenableBuilder(
+                formControl: formControl,
+                builder: (context, control, _) {
+                  final value = control.value;
+                  final hasValue =
+                      value != null &&
+                      (value is! String || value.isNotEmpty);
+                  if (!hasValue) return suffixIcon ?? SizedBox.shrink();
+                  return IconButton(
+                    tooltip: 'Bersihkan pencarian',
+                    icon: Icon(Icons.clear),
+                    onPressed: () {
+                      formControl.reset();
+                      onClear?.call();
+                    },
+                  );
                 },
               )
             : suffixIcon,

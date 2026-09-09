@@ -12,4 +12,8 @@ abstract class BudgetKey {
   // Relasi
   static const accountName = 'account_name';
   static const actualSpend = 'actual_spend';
+
+  /// FIX-12: bukan kolom DB — diisi repo dari accounts.is_deleted agar
+  /// badge arsip tampil tanpa migrasi view.
+  static const categoryArchived = 'category_archived';
 }

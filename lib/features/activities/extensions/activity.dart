@@ -78,6 +78,9 @@ extension Activity on JournalEntry {
   }
 
   String get _title {
+    // FIX-04: label baku saldo awal (abaikan deskripsi historis
+    // 'Konfigurasi saldo awal' agar konsisten di semua list).
+    if (source == .setup) return 'Saldo awal';
     if (description?.trim().isNotEmpty == true) return description!.trim();
     return switch (source) {
       .adjustment => 'Penyesuaian saldo',
@@ -90,6 +93,7 @@ extension Activity on JournalEntry {
       .transfer =>
         'Pindah dana dari ${assetLines.lastOrNull?.accountName ?? 'Dompet'} ke ${assetLines.firstOrNull?.accountName ?? 'Dompet'}',
       .saving => _savingTitle,
+      .setup => 'Saldo awal',
       _ => 'Tanpa keterangan',
     };
   }

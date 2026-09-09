@@ -7,6 +7,7 @@ import 'package:dompet_app/features/budgets/models/account_budget_status.dart';
 import 'package:dompet_app/features/budgets/models/budget.dart';
 import 'package:dompet_app/features/budgets/models/budget_filter.dart';
 import 'package:dompet_app/features/reports/models/report_period.dart';
+import 'package:sqflite/sqflite.dart';
 
 class BudgetRepository {
   final DbService _dbService;
@@ -35,7 +36,7 @@ class BudgetRepository {
         .map((budget) => Budget.fromJson(budget))
         .toList();
 
-    return budgets;
+    return _withArchivedFlags(db, budgets);
   }
 
   Future<AccountBudgetStatus> getAccountStatuses() async {
@@ -78,7 +79,34 @@ class BudgetRepository {
 
     if (rows.isEmpty) return null;
 
-    return Budget.fromJson(rows.first);
+    // FIX-12: getBudgetById dipakai halaman detail — flag arsip ikut.
+    final enriched = await _withArchivedFlags(db, [
+      Budget.fromJson(rows.first),
+    ]);
+    return enriched.first;
+  }
+
+  /// FIX-12: tandai budget yang kategorinya sudah diarsipkan.
+  /// View tetap LEFT JOIN sehingga baris arsip tak hilang (tanpa migrasi
+  /// view); flag diambil dari accounts.is_deleted dalam panggilan sama.
+  Future<List<Budget>> _withArchivedFlags(
+    Database db,
+    List<Budget> budgets,
+  ) async {
+    if (budgets.isEmpty) return budgets;
+    final rows = await db.query(
+      accountTable,
+      columns: [AccountKey.id],
+      where: '${AccountKey.isDeleted} = 1',
+    );
+    if (rows.isEmpty) return budgets;
+    final archived = rows.map((row) => row[AccountKey.id] as int).toSet();
+    return [
+      for (final budget in budgets)
+        archived.contains(budget.accountId)
+            ? budget.copyWith(categoryArchived: true)
+            : budget,
+    ];
   }
 
   Future<Budget?> getActiveBudget(int accountId) async {
@@ -96,7 +124,11 @@ class BudgetRepository {
 
     if (rows.isEmpty) return null;
 
-    return Budget.fromJson(rows.first);
+    // FIX-12: flag arsip ikut seperti getBudgetById.
+    final enriched = await _withArchivedFlags(db, [
+      Budget.fromJson(rows.first),
+    ]);
+    return enriched.first;
   }
 
   /// Anggaran yang periodenya tepat sebulan [period] (termasuk yang sudah
@@ -121,7 +153,10 @@ class BudgetRepository {
       [period.startEpoch, period.endEpoch],
     );
 
-    return rows.map((row) => Budget.fromJson(row)).toList();
+    return _withArchivedFlags(
+      db,
+      rows.map((row) => Budget.fromJson(row)).toList(),
+    );
   }
 
   Future<List<Budget>> getAccountBudgets(int accountId) async {
@@ -137,7 +172,10 @@ class BudgetRepository {
       [accountId],
     );
 
-    return rows.map((row) => Budget.fromJson(row)).toList();
+    return _withArchivedFlags(
+      db,
+      rows.map((row) => Budget.fromJson(row)).toList(),
+    );
   }
 
   Future<int> createBudget({
@@ -146,6 +184,11 @@ class BudgetRepository {
     required DateTime periode,
     int carryAmount = 0,
   }) async {
+    // FIX-01: min 1 global (TC-BGT-005).
+    if (amount <= 0) {
+      throw Exception('Nominal harus lebih dari 0');
+    }
+
     final db = await _dbService.database;
 
     return await db.rawInsert(
