@@ -5,10 +5,10 @@
 > Bahasa UI ikut `DOCUMENT.md` + kode: **Tagihan**, **Tagihan Rutin**, **Tagihan Tertunda**, **Buat Tagihan Rutin**, **Jadwal Ditagih**, **Jadwal Jatuh Tempo**, **Banyak Tagihan**, **Catat Pembayaran**, **Bayar dari Target**, **Dana Sisihan**, **Samakan**.
 > Cara pakai: jalankan berurutan (§1 → §7). Setiap TC mencatat saldo dompet (`S0`), Total Uang (`T0`), total tertunda banner (`P0`), dan journal count sebelum aksi saldo.
 >
-> Status otomatisasi (`integration_test/bill_flow_test.dart` — 25 test hijau di device via `flutter test integration_test/bill_flow_test.dart`, plus unit `test/features/bills/`):
+> Status otomatisasi (`integration_test/bill_flow_test.dart` — 26 test hijau di device via `flutter test integration_test/bill_flow_test.dart`, plus unit `test/features/bills/` + `test/features/splash/splash_cubit_test.dart`):
 > `✅` = logika + efek samping (saldo / Total Uang / banner tertunda / anggaran / laporan) terverifikasi otomatis dan lolos.
 > `-` = masih manual. Teks snackbar, layout, dialog, dan interaksi UI murni (schedule picker, bottom sheet, switch/stepper, navigasi) tetap dicek manual meski TC bertanda ✅.
-> Cakupan: 61 dari 73 TC bertanda ✅. Belum otomatis (12 TC UI-murni): TC-BLP-007 (pemilih kategori expense-only), TC-BLP-011 (reset jadwal), TC-BLP-013 (picker 2 tahap), TC-BLP-017 (firstDate berakhir), TC-BLL-009 (dialog batal hapus), TC-BIL-013/014 (sheet tanpa dompet / tutup sheet), TC-SNK-001/003 (dialog + CTA sisihan), TC-SNK-007 (tombol disabled), TC-BINT-002 (tab Shell), TC-BSCH-006 (offline).
+> Cakupan: 62 dari 74 TC bertanda ✅. Belum otomatis (12 TC UI-murni): TC-BLP-007 (pemilih kategori expense-only), TC-BLP-011 (reset jadwal), TC-BLP-013 (picker 2 tahap), TC-BLP-017 (firstDate berakhir), TC-BLL-009 (dialog batal hapus), TC-BIL-013/014 (sheet tanpa dompet / tutup sheet), TC-SNK-001/003 (dialog + CTA sisihan), TC-SNK-007 (tombol disabled), TC-BINT-002 (tab Shell), TC-BSCH-006 (offline).
 > Perbaikan kode dari temuan automation: TC-BINT-006 (void payment kini mengembalikan bill ke unpaid — `JournalRepository.deleteJournal`), TC-BINT-007 (tombol `Perbaiki` disembunyikan untuk payment Tagihan — form expense hasil mapping kosong), TC-BINT-009 (detail jurnal `bill_generated` tak lagi crash + full read-only — tanpa `Perbaiki`/`Hapus`), TC-BINT-010 (J1 bayar-dari-Target bawa `bill_id` di metadata + terkunci di UI + void cascade J1+J2/buka kunci bill).
 
 **Setup data dasar (sama 0001 + Tagihan):**
@@ -339,6 +339,16 @@
   1. Buka daftar + detail tagihan tsb.
   2. Cek seksi daftar (harus di `Perlu Dibayar`) dan label badge.
 - **Ekspektasi:** Masuk `Perlu Dibayar` (aturan `isOverdueAt`). Label badge mengikuti cabang status tersimpan — catat label aktual yang tampil vs ekspektasi `Terlambat` bila berbeda, laporkan sebagai temuan UI (status `overdue` turunan waktu, tidak tersimpan di DB).
+- **Integration test**: ✅
+- **Manual test**: -
+
+### TC-BIL-020 — Sync tagihan saat buka aplikasi (splash) [P]
+- **Prakondisi:** Plan bulanan tanpa tagihan periode ini, billed bulan ini sudah lewat (mis. Ditagih Tanggal 5, kini Tanggal 20). User belum buka halaman Tagihan sama sekali. Catat `P0`, journal count `bill_generated`.
+- **Langkah:**
+  1. Tutup lalu buka ulang aplikasi (jalankan `SplashCubit.check()`).
+  2. Cek daftar Tagihan + banner `Tagihan tertunda` tanpa membuka halaman Tagihan dulu.
+- **Ekspektasi:** Splash `alreadySet` + 1 tagihan `unpaid` periode `yyyy-MM` kini langsung terbuat + 1 jurnal `bill_generated` posted. Banner `P0 + nominal`, Total Uang & saldo dompet tetap (akrual). Idempoten: splash kedua tanpa periode baru → 0 tersentuh.
+- **Efek samping:** Bila sync gagal → splash `error` (blokir navigasi, bukan diam-diam lolos) agar ketahuan saat testing. Bila belum ada dompet (`needToBeSet`) → sync tidak jalan.
 - **Integration test**: ✅
 - **Manual test**: -
 

@@ -338,6 +338,7 @@ void main() {
     test('DB lama tanpa name tetap terbuka + baris terbawa', () async {
       final dir = await Directory.systemTemp.createTemp('bill_migrate');
       final path = p.join(dir.path, 'dompet.db');
+      DbService? migrated;
       try {
         final oldDb = await databaseFactoryFfi.openDatabase(
           path,
@@ -360,8 +361,9 @@ void main() {
         });
         await oldDb.close();
 
-        final migrated = DbService(testPath: path);
-        final db = await migrated.database;
+        final migratedDb = DbService(testPath: path);
+        migrated = migratedDb;
+        final db = await migratedDb.database;
         final info = await db.rawQuery('PRAGMA table_info($billPlanTable)');
         expect(
           info.map((c) => c['name']),
@@ -370,8 +372,55 @@ void main() {
         final rows = await db.query(billPlanTable);
         expect(rows, hasLength(1));
         expect(rows.first[BillPlanKey.name], '');
-        await migrated.close();
+        await migratedDb.close();
+        migrated = null;
       } finally {
+        // Tutup dulu sebelum hapus: bila expect di atas gagal, koneksi yang
+        // masih terbuka mengunci file di Windows dan menutupi error aslinya.
+        await migrated?.close();
+        await dir.delete(recursive: true);
+      }
+    });
+
+    test('DB v1 skema penuh (sudah ada name) tetap terbuka + tanpa dobel',
+        () async {
+      final dir = await Directory.systemTemp.createTemp('bill_migrate_full');
+      final path = p.join(dir.path, 'dompet.db');
+      DbService? migrated;
+      try {
+        final oldDb = await databaseFactoryFfi.openDatabase(
+          path,
+          options: OpenDatabaseOptions(
+            version: 1,
+            onCreate: (db, version) async {
+              await db.execute(billPlanSchema);
+            },
+          ),
+        );
+        await oldDb.insert(billPlanTable, {
+          BillPlanKey.accountId: 1,
+          BillPlanKey.name: 'Listrik',
+          BillPlanKey.amount: 100000,
+          BillPlanKey.period: 'monthly',
+          BillPlanKey.billedSchedule: '5',
+          BillPlanKey.dueDateSchedule: '10',
+        });
+        await oldDb.close();
+
+        migrated = DbService(testPath: path);
+        final db = await migrated.database;
+        final info = await db.rawQuery('PRAGMA table_info($billPlanTable)');
+        expect(
+          info.where((c) => c['name'] == BillPlanKey.name),
+          hasLength(1),
+        );
+        final rows = await db.query(billPlanTable);
+        expect(rows, hasLength(1));
+        expect(rows.first[BillPlanKey.name], 'Listrik');
+        await migrated.close();
+        migrated = null;
+      } finally {
+        await migrated?.close();
         await dir.delete(recursive: true);
       }
     });

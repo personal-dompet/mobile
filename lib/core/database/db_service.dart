@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dompet_app/core/constants/field_keys/field_key.dart';
 import 'package:dompet_app/core/database/schemas/schemas.dart';
 import 'package:dompet_app/core/database/seeders/seeders.dart';
 import 'package:dompet_app/core/database/triggers/account_counter_trigger.dart';
@@ -151,7 +152,7 @@ class DbService {
   }
 
   OpenDatabaseOptions get _databaseOptions => OpenDatabaseOptions(
-    version: 1,
+    version: 2,
     onCreate: _onCreate,
     onUpgrade: _onUpgrade,
     onConfigure: (db) async {
@@ -225,7 +226,18 @@ class DbService {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // run migration scripts per version
+    // v1→v2: kolom name pada bill_plans. Idempoten: DB v1 asli (skema penuh)
+    // sudah punya name → lewati agar upgrade instalasi lama tidak gagal.
+    if (oldVersion < 2) {
+      final info = await db.rawQuery('PRAGMA table_info($billPlanTable)');
+      final hasName = info.any((c) => c['name'] == BillPlanKey.name);
+      if (!hasName) {
+        await db.execute(
+          'ALTER TABLE $billPlanTable '
+          'ADD COLUMN ${BillPlanKey.name} TEXT NOT NULL DEFAULT \'\'',
+        );
+      }
+    }
   }
 
   Future<void> close() async {

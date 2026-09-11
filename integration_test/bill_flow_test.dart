@@ -26,6 +26,7 @@ import 'package:dompet_app/features/journals/repositories/journal_repository.dar
 import 'package:dompet_app/features/reports/models/report_period.dart';
 import 'package:dompet_app/features/reports/repositories/report_repository.dart';
 import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
+import 'package:dompet_app/features/splash/cubits/splash_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -39,7 +40,7 @@ import 'helpers/fixture.dart';
 /// Menggabungkan (docs/0003_TEST_CASE.md):
 /// - TC-BLP-001 s.d. TC-BLP-010, TC-BLP-012, TC-BLP-014/015/016/018
 /// - TC-BLL-001 s.d. TC-BLL-008
-/// - TC-BIL-001 s.d. TC-BIL-012, TC-BIL-015/016/017/018
+/// - TC-BIL-001 s.d. TC-BIL-012, TC-BIL-015/016/017/018/020
 /// - TC-SNK-002/004/005/006/008/009/011 (+ TC-SNK-010 via jalur repo sama)
 /// - TC-BINT-001/003/004/005/006/007/008/009/010
 /// - TC-BSCH-001 s.d. TC-BSCH-005
@@ -1313,6 +1314,55 @@ void main() {
     // cabang unpaid → 'Belum dibayar', bukan 'Terlambat'.
     await shows(BillStatus.unpaid.value, sec - 5 * day, sec - day,
         'Belum dibayar');
+  });
+
+  test('TC-BIL-020 splash memicu sync tanpa buka halaman Tagihan', () async {
+    final base = await seedBaseData();
+    final t0 = await totalUang();
+    final bcaSeed = await balanceOf(base.bca.id);
+
+    // Plan periode berjalan, billed hari ini — tanpa menyentuh BillCubit.
+    await monthlyPlan(accountId: base.makanId);
+    expect(await bills().getPendingTotal(), 0);
+    expect(
+      await journalCount(source: JournalSource.billGenerated.value),
+      0,
+    );
+
+    // Buka aplikasi = SplashCubit.check() (tanpa fetch BillCubit).
+    final splash = getIt<SplashCubit>();
+    await splash.check();
+    expect(
+      splash.state,
+      const SplashState.alreadySet(),
+    );
+    await splash.close();
+
+    // Efek samping akrual: 1 unpaid + 1 jurnal, saldo/Total tetap.
+    final actives = await bills().getActiveBills();
+    expect(actives, hasLength(1));
+    expect(actives.single.status, BillStatus.unpaid.value);
+    expect(
+      await journalCount(
+        source: JournalSource.billGenerated.value,
+        sourceId: actives.single.id,
+      ),
+      1,
+    );
+    expect(await bills().getPendingTotal(), 100000);
+    expect(await totalUang(), t0);
+    expect(await balanceOf(base.bca.id), bcaSeed);
+
+    // Idempoten: splash kedua tanpa periode baru → tanpa bill/jurnal baru.
+    final splash2 = getIt<SplashCubit>();
+    await splash2.check();
+    expect(splash2.state, const SplashState.alreadySet());
+    await splash2.close();
+    expect(await bills().getActiveBills(), hasLength(1));
+    expect(
+      await journalCount(source: JournalSource.billGenerated.value),
+      1,
+    );
   });
 }
 

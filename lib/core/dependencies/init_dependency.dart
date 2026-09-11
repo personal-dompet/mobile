@@ -131,7 +131,7 @@ Future<void> initDependency({String? dbTestPath}) async {
     () => PaginationCubit(fetcher: getIt<BillRepository>().getBills),
   );
 
-  getIt.registerFactory<SplashCubit>(() => SplashCubit(getIt()));
+  getIt.registerFactory<SplashCubit>(() => SplashCubit(getIt(), getIt()));
   getIt.registerFactory<AssetSetupCubit>(
     () => AssetSetupCubit(getIt(), getIt()),
   );
