@@ -51,9 +51,7 @@ void main() {
 
   /// Danai asset cair via jurnal setup (debit asset, credit saldo awal).
   Future<void> fundAsset(int assetId, int amount) async {
-    final initialId = await accountIdByCode(
-      AccountPreset.intialBalance.code,
-    );
+    final initialId = await accountIdByCode(AccountPreset.intialBalance.code);
     final entryId = await db.insert(journalEntryTable, {
       JournalEntryKey.entryDate:
           DateTime(2026, 1, 1).millisecondsSinceEpoch ~/ 1000,
@@ -77,36 +75,42 @@ void main() {
     });
   }
 
-  test('createPocket menyimpan 1 row saving_plans + akun ASSET non-liquid',
-      () async {
-    final plan = await repository.createPocket(
-      name: 'VGA',
-      targetAmount: 5000000,
-    );
+  test(
+    'createPocket menyimpan 1 row saving_plans + akun ASSET non-liquid',
+    () async {
+      final plan = await repository.createPocket(
+        name: 'VGA',
+        targetAmount: 5000000,
+      );
 
-    expect(plan.accountName, 'VGA');
-    expect(plan.balance, 0);
-    expect(plan.targetAmount, 5000000);
+      expect(plan.accountName, 'VGA');
+      expect(plan.balance, 0);
+      expect(plan.targetAmount, 5000000);
 
-    final accountRows = await db.query(
-      accountTable,
-      where: '${AccountKey.id} = ?',
-      whereArgs: [plan.accountId],
-    );
-    expect(accountRows.first[AccountKey.type], AccountType.asset.value);
-    expect(accountRows.first[AccountKey.isLiquid], 0);
-    expect(
-      (accountRows.first[AccountKey.code] as String).startsWith('101.0006'),
-      isTrue,
-    );
-  });
+      final accountRows = await db.query(
+        accountTable,
+        where: '${AccountKey.id} = ?',
+        whereArgs: [plan.accountId],
+      );
+      expect(accountRows.first[AccountKey.type], AccountType.asset.value);
+      expect(accountRows.first[AccountKey.isLiquid], 0);
+      expect(
+        (accountRows.first[AccountKey.code] as String).startsWith('101.0006'),
+        isTrue,
+      );
+    },
+  );
 
   test('topup mengurangi asset cair dan menambah pocket (balance)', () async {
     final cashId = await accountIdByCode(AccountPreset.cash.code);
     await fundAsset(cashId, 10000000);
 
     final plan = await repository.createPocket(name: 'VGA');
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
 
     expect(await balanceOf(cashId), 9000000);
     expect(await balanceOf(plan.accountId), 1000000);
@@ -119,13 +123,24 @@ void main() {
     await fundAsset(bankId, 5000000);
 
     final plan = await repository.createPocket(name: 'VGA');
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
-    await repository.topup(pocketId: plan.accountId, assetId: bankId, amount: 2000000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: bankId,
+      amount: 2000000,
+    );
 
     expect(await balanceOf(plan.accountId), 3000000);
 
     final pockets = await repository.getPockets(const SavingFilter());
-    expect(pockets.firstWhere((p) => p.accountId == plan.accountId).balance, 3000000);
+    expect(
+      pockets.firstWhere((p) => p.accountId == plan.accountId).balance,
+      3000000,
+    );
   });
 
   test('spend mengurangi pocket saja, asset cair tidak tersentuh', () async {
@@ -134,7 +149,11 @@ void main() {
     await fundAsset(cashId, 10000000);
 
     final plan = await repository.createPocket(name: 'VGA');
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
     await repository.spend(
       pocketId: plan.accountId,
       assetId: cashId,
@@ -143,8 +162,11 @@ void main() {
     );
 
     expect(await balanceOf(plan.accountId), 500000);
-    expect(await balanceOf(cashId), 9000000,
-        reason: 'spend hybrid: Jurnal 1 isi dompet, Jurnal 2 pakai — neto 0');
+    expect(
+      await balanceOf(cashId),
+      9000000,
+      reason: 'spend hybrid: Jurnal 1 isi dompet, Jurnal 2 pakai — neto 0',
+    );
     expect(await balanceOf(foodId), 500000);
   });
 
@@ -153,7 +175,11 @@ void main() {
     await fundAsset(cashId, 10000000);
 
     final plan = await repository.createPocket(name: 'VGA');
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
     final journalId = await repository.spend(
       pocketId: plan.accountId,
       assetId: cashId,
@@ -161,8 +187,7 @@ void main() {
     );
 
     expect(await balanceOf(plan.accountId), 700000);
-    expect(await balanceOf(cashId), 9000000,
-        reason: 'hybrid neto dompet 0');
+    expect(await balanceOf(cashId), 9000000, reason: 'hybrid neto dompet 0');
 
     final otherId = await accountIdByCode(AccountPreset.otherExpense.code);
     final lines = await db.query(
@@ -171,9 +196,11 @@ void main() {
       whereArgs: [journalId],
     );
     expect(
-      lines.any((l) =>
-          l[JournalLineKey.accountId] == otherId &&
-          (l[JournalLineKey.debitAmount] as num).toInt() == 300000),
+      lines.any(
+        (l) =>
+            l[JournalLineKey.accountId] == otherId &&
+            (l[JournalLineKey.debitAmount] as num).toInt() == 300000,
+      ),
       isTrue,
       reason: 'Jurnal 2 debit Lain-Lain',
     );
@@ -184,7 +211,11 @@ void main() {
     await fundAsset(cashId, 10000000);
 
     final plan = await repository.createPocket(name: 'VGA');
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
     await repository.withdraw(
       pocketId: plan.accountId,
       assetId: cashId,
@@ -201,9 +232,22 @@ void main() {
     await fundAsset(cashId, 10000000);
 
     final plan = await repository.createPocket(name: 'VGA');
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
-    await repository.spend(pocketId: plan.accountId, assetId: cashId, categoryId: foodId, amount: 200000);
-    await repository.withdraw(pocketId: plan.accountId, assetId: cashId, amount: 100000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
+    await repository.spend(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      categoryId: foodId,
+      amount: 200000,
+    );
+    await repository.withdraw(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 100000,
+    );
 
     final rows = await db.rawQuery('''
       SELECT
@@ -215,9 +259,12 @@ void main() {
     ''');
 
     for (final row in rows) {
-      expect(row['total_debit'], row['total_credit'],
-          reason:
-              'journal entry ${row[JournalLineKey.journalEntryId]} must balance');
+      expect(
+        row['total_debit'],
+        row['total_credit'],
+        reason:
+            'journal entry ${row[JournalLineKey.journalEntryId]} must balance',
+      );
     }
   });
 
@@ -229,7 +276,11 @@ void main() {
       name: 'VGA',
       targetAmount: 5000000,
     );
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
 
     final fetched = await repository.getByAccountId(plan.accountId);
     expect(fetched!.progress, closeTo(0.2, 0.0001));
@@ -251,7 +302,11 @@ void main() {
     await fundAsset(cashId, 10000000);
 
     final plan = await repository.createPocket(name: 'VGA');
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
     await repository.delete(plan.accountId);
 
     final deleted = await repository.getByAccountId(plan.accountId);
@@ -267,19 +322,19 @@ void main() {
     );
   });
 
-  test('getPockets dengan filter status ACTIVE (path SavingCubit)', () async {
+  test('getPockets dengan filter status active (path SavingCubit)', () async {
     await repository.createPocket(name: 'VGA');
     await repository.createPocket(name: 'Liburan');
 
     final active = await repository.getPockets(
-      const SavingFilter(status: 'ACTIVE'),
+      const SavingFilter(status: 'active'),
     );
     expect(active, hasLength(2));
 
     await repository.delete(active.first.accountId);
 
     final activeAfter = await repository.getPockets(
-      const SavingFilter(status: 'ACTIVE'),
+      const SavingFilter(status: 'active'),
     );
     expect(activeAfter, hasLength(1));
   });
@@ -289,7 +344,7 @@ void main() {
     await repository.createPocket(name: 'Liburan Bali');
 
     final result = await repository.getPockets(
-      const SavingFilter(accountName: 'vga', status: 'ACTIVE'),
+      const SavingFilter(accountName: 'vga', status: 'active'),
     );
     expect(result, hasLength(1));
     expect(result.first.accountName, 'VGA RTX');
@@ -303,7 +358,11 @@ void main() {
       name: 'VGA',
       targetAmount: 1000000,
     );
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
 
     final journalId = await repository.deleteWithWithdraw(
       accountId: plan.accountId,
@@ -319,13 +378,16 @@ void main() {
     expect(deleted, isNull);
 
     // Jurnal penghapus tetap seimbang.
-    final rows = await db.rawQuery('''
+    final rows = await db.rawQuery(
+      '''
       SELECT
         SUM(${JournalLineKey.debitAmount}) AS total_debit,
         SUM(${JournalLineKey.creditAmount}) AS total_credit
       FROM $journalLineTable
       WHERE ${JournalLineKey.journalEntryId} = ?
-    ''', [journalId]);
+    ''',
+      [journalId],
+    );
     expect(rows.first['total_debit'], rows.first['total_credit']);
     expect(rows.first['total_debit'], 1000000);
   });
@@ -366,8 +428,16 @@ void main() {
       name: 'VGA',
       targetAmount: 1000000,
     );
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 1000000);
-    await repository.topup(pocketId: plan.accountId, assetId: cashId, amount: 200000);
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 1000000,
+    );
+    await repository.topup(
+      pocketId: plan.accountId,
+      assetId: cashId,
+      amount: 200000,
+    );
 
     expect(await balanceOf(plan.accountId), 1200000);
 

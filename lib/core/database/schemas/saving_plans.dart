@@ -11,7 +11,7 @@ const savingPlanSchema =
     ${SavingPlanKey.targetAmount} INTEGER CHECK(${SavingPlanKey.targetAmount} IS NULL OR ${SavingPlanKey.targetAmount} > 0),
     ${SavingPlanKey.targetDate} INTEGER,
     ${SavingPlanKey.note} TEXT,
-    ${SavingPlanKey.status} TEXT NOT NULL DEFAULT 'ACTIVE' CHECK(${SavingPlanKey.status} IN ('ACTIVE','COMPLETED')),
+    ${SavingPlanKey.status} TEXT NOT NULL DEFAULT 'active' CHECK(${SavingPlanKey.status} IN ('active','completed')),
     ${SavingPlanKey.isDeleted} INTEGER DEFAULT 0,
     ${SavingPlanKey.createdAt} INTEGER DEFAULT (strftime('%s', 'now')),
     FOREIGN KEY (${SavingPlanKey.accountId}) REFERENCES $accountTable(${AccountKey.id})

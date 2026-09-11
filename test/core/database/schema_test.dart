@@ -19,7 +19,7 @@ void main() {
   });
 
   test(
-    'fresh database contains every schema table (incl. budget tables)',
+    'fresh database contains every schema table (incl. budget + bill tables)',
     () async {
       const expectedTables = {
         'accounts',
@@ -29,6 +29,8 @@ void main() {
         'budget_plans',
         'budgets',
         'saving_plans',
+        'bill_plans',
+        'bills',
       };
 
       final rows = await db.rawQuery(

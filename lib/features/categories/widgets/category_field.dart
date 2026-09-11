@@ -11,6 +11,7 @@ class CategoryField extends StatefulWidget {
   final bool required;
   final bool readOnly;
   final bool withBudget;
+  final Map<String, String Function(Object)>? validationMessages;
   const CategoryField({
     super.key,
     required this.valueControl,
@@ -19,6 +20,7 @@ class CategoryField extends StatefulWidget {
     this.required = false,
     this.readOnly = false,
     this.withBudget = false,
+    this.validationMessages,
   });
 
   @override
@@ -68,6 +70,7 @@ class _CategoryFieldState extends State<CategoryField> {
       key: widget.key,
       label: 'Pilih Kategori${widget.required ? '' : ' (Opsional)'}',
       formControl: widget.nameControl,
+      validationMessages: widget.validationMessages,
       readOnly: true,
       suffixIcon: widget.readOnly ? null : Icon(Icons.chevron_right_rounded),
       hidePrefixOnEmpty: true,

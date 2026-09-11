@@ -6,12 +6,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 /// `{"saving_tx":"TOPUP",...}`, bukan kolom DB tersendiri.
 /// Single source of truth saldo tetap `v_account_balances`.
 enum SavingTxType {
-  @JsonValue('TOPUP')
-  topup('TOPUP'),
-  @JsonValue('WITHDRAW')
-  withdraw('WITHDRAW'),
-  @JsonValue('SPEND')
-  spend('SPEND');
+  @JsonValue('topup')
+  topup('topup'),
+  @JsonValue('withdraw')
+  withdraw('withdraw'),
+  @JsonValue('spend')
+  spend('spend');
 
   final String value;
 

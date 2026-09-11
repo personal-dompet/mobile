@@ -23,7 +23,7 @@ class SavingCubit extends Cubit<SavingState> {
   SavingCubit(this._repository) : super(const SavingState.initial());
 
   String? _lastKeyword;
-  String _lastStatus = 'ACTIVE';
+  String _lastStatus = 'active';
 
   Future<void> fetch({String? keyword, String? status}) async {
     _lastKeyword = keyword;

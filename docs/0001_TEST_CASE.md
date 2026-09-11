@@ -1336,12 +1336,12 @@
 - **Integration test**: -
 - **Manual test**: ✅
 
-### TC-TRG-027 — Target selesai/COMPLETED tidak auto [E]
+### TC-TRG-027 — Target selesai/completed tidak auto [E]
 - **Prakondisi:** Target tercapai (TC-TRG-018).
 - **Langkah:**
   1. Cek list Tabungan & DB status.
 - **Ekspektasi:**
-  - Tetap `ACTIVE` di list (tidak ada auto-COMPLETED/close)
+  - Tetap `active` di list (tidak ada auto-completed/close)
   - hanya tampilan `Target tercapai`.
 - **Integration test**: -
 - **Manual test**: ✅

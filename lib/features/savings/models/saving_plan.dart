@@ -17,7 +17,7 @@ abstract class SavingPlan with _$SavingPlan {
     @JsonKey(name: SavingPlanKey.targetAmount) int? targetAmount,
     @JsonKey(name: SavingPlanKey.targetDate) int? targetDate,
     @JsonKey(name: SavingPlanKey.note) String? note,
-    @JsonKey(name: SavingPlanKey.status) @Default('ACTIVE') String status,
+    @JsonKey(name: SavingPlanKey.status) @Default('active') String status,
     @JsonKey(name: SavingPlanKey.balance) @Default(0) int balance,
     @JsonKey(name: SavingPlanKey.progress) double? progress,
     @JsonKey(name: SavingPlanKey.createdAt) @Default(0) int createdAt,

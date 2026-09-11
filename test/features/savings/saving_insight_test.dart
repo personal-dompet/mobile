@@ -16,7 +16,7 @@ SavingPlan _plan({
   int balance = 0,
   int? targetAmount = 10000000,
   DateTime? targetDate,
-  String status = 'ACTIVE',
+  String status = 'active',
   required DateTime createdAt,
 }) {
   return SavingPlan(
@@ -108,11 +108,7 @@ void main() {
   final created = DateTime(2026, 8, 26); // 10 hari lalu (inklusif = 10)
 
   test('tanpa nominal tujuan -> noTarget, hanya kecepatan', () {
-    final plan = _plan(
-      targetAmount: null,
-      balance: 500000,
-      createdAt: created,
-    );
+    final plan = _plan(targetAmount: null, balance: 500000, createdAt: created);
     final journals = [
       _topup(id: 1, pocketId: 100, amount: 300000, date: DateTime(2026, 8, 27)),
       _topup(id: 2, pocketId: 100, amount: 200000, date: DateTime(2026, 9, 1)),
@@ -160,7 +156,12 @@ void main() {
       createdAt: created,
     );
     final journals = [
-      _topup(id: 1, pocketId: 100, amount: 1000000, date: DateTime(2026, 8, 27)),
+      _topup(
+        id: 1,
+        pocketId: 100,
+        amount: 1000000,
+        date: DateTime(2026, 8, 27),
+      ),
       _topup(id: 2, pocketId: 100, amount: 1000000, date: DateTime(2026, 9, 1)),
     ];
     final insight = SavingInsight.compute(
@@ -172,10 +173,7 @@ void main() {
     expect(insight.daysRemaining, 11);
     expect(insight.neededPerMonth, (8000000 * 30 / 11).ceil());
     expect(insight.showNeedRate, isFalse);
-    expect(
-      insight.deadlineDurationLabel,
-      'kurang dari sebulan menuju target',
-    );
+    expect(insight.deadlineDurationLabel, 'kurang dari sebulan menuju target');
     // ETA: 8jt ÷ 1jt/bulan = 8 bulan = 240 hari.
     expect(insight.monthsElapsed, 2);
     expect(insight.avgPerMonth, 1000000);
@@ -370,7 +368,12 @@ void main() {
       createdAt: created,
     );
     final journals = [
-      _topup(id: 1, pocketId: 100, amount: 1000000, date: DateTime(2026, 8, 27)),
+      _topup(
+        id: 1,
+        pocketId: 100,
+        amount: 1000000,
+        date: DateTime(2026, 8, 27),
+      ),
       _topup(id: 2, pocketId: 100, amount: 1000000, date: DateTime(2026, 9, 1)),
     ];
     final insight = SavingInsight.compute(
@@ -494,10 +497,7 @@ void main() {
     expect(insight.neededPerMonth, 33334);
     expect(insight.showNeededPerMonth, isTrue);
     expect(insight.showNeedRate, isFalse);
-    expect(
-      insight.deadlineDurationLabel,
-      'kurang dari sebulan menuju target',
-    );
+    expect(insight.deadlineDurationLabel, 'kurang dari sebulan menuju target');
   });
 
   test('REGRESI kasus 2: target 10k alokasi Rp2, tenggat 27 hari', () {

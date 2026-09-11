@@ -2,16 +2,16 @@ import 'package:dompet_app/core/enums/balance_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 enum AccountType {
-  @JsonValue('ASSET')
-  asset('ASSET', '101', .debit),
-  @JsonValue('LIABILITY')
-  liability('LIABILITY', '201', .credit),
-  @JsonValue('EQUITY')
-  equity('EQUITY', '301', .credit),
-  @JsonValue('INCOME')
-  income('INCOME', '401', .credit),
-  @JsonValue('EXPENSE')
-  expense('EXPENSE', '501', .debit);
+  @JsonValue('asset')
+  asset('asset', '101', .debit),
+  @JsonValue('liability')
+  liability('liability', '201', .credit),
+  @JsonValue('equity')
+  equity('equity', '301', .credit),
+  @JsonValue('income')
+  income('income', '401', .credit),
+  @JsonValue('expense')
+  expense('expense', '501', .debit);
 
   final String value;
   final String code;

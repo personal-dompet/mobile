@@ -3,10 +3,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 /// Status pocket tabungan. `close` manual oleh user, tidak otomatis
 /// saat target tercapai.
 enum SavingStatus {
-  @JsonValue('ACTIVE')
-  active('ACTIVE'),
-  @JsonValue('COMPLETED')
-  completed('COMPLETED');
+  @JsonValue('active')
+  active('active'),
+  @JsonValue('completed')
+  completed('completed');
 
   final String value;
 

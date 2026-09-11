@@ -1,5 +1,7 @@
 export 'account.dart';
 export 'app_configuration.dart';
+export 'bill.dart';
+export 'bill_plan.dart';
 export 'budget.dart';
 export 'budget_plan.dart';
 export 'journal_entry.dart';

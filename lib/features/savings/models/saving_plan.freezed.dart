@@ -220,7 +220,7 @@ return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_th
 @JsonSerializable()
 
 class _SavingPlan extends SavingPlan {
-  const _SavingPlan({@JsonKey(name: SavingPlanKey.id) required this.id, @JsonKey(name: SavingPlanKey.accountId) required this.accountId, @JsonKey(name: SavingPlanKey.accountCode) required this.accountCode, @JsonKey(name: SavingPlanKey.accountName) required this.accountName, @JsonKey(name: SavingPlanKey.iconCode) this.iconCode, @JsonKey(name: SavingPlanKey.targetAmount) this.targetAmount, @JsonKey(name: SavingPlanKey.targetDate) this.targetDate, @JsonKey(name: SavingPlanKey.note) this.note, @JsonKey(name: SavingPlanKey.status) this.status = 'ACTIVE', @JsonKey(name: SavingPlanKey.balance) this.balance = 0, @JsonKey(name: SavingPlanKey.progress) this.progress, @JsonKey(name: SavingPlanKey.createdAt) this.createdAt = 0}): super._();
+  const _SavingPlan({@JsonKey(name: SavingPlanKey.id) required this.id, @JsonKey(name: SavingPlanKey.accountId) required this.accountId, @JsonKey(name: SavingPlanKey.accountCode) required this.accountCode, @JsonKey(name: SavingPlanKey.accountName) required this.accountName, @JsonKey(name: SavingPlanKey.iconCode) this.iconCode, @JsonKey(name: SavingPlanKey.targetAmount) this.targetAmount, @JsonKey(name: SavingPlanKey.targetDate) this.targetDate, @JsonKey(name: SavingPlanKey.note) this.note, @JsonKey(name: SavingPlanKey.status) this.status = 'active', @JsonKey(name: SavingPlanKey.balance) this.balance = 0, @JsonKey(name: SavingPlanKey.progress) this.progress, @JsonKey(name: SavingPlanKey.createdAt) this.createdAt = 0}): super._();
   factory _SavingPlan.fromJson(Map<String, dynamic> json) => _$SavingPlanFromJson(json);
 
 @override@JsonKey(name: SavingPlanKey.id) final  int id;

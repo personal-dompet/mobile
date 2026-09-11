@@ -60,6 +60,12 @@ abstract class JournalEntry with _$JournalEntry {
     if (source == .billPayment) {
       return .billPayment;
     }
+    // Tagihan ditagih: akrual beban (Dr beban / Kr Tagihan Tertunda).
+    // Tampil sebagai pengeluaran di aktivitas; agregat dashboard/laporan
+    // tetap mengecualikannya via filter source.
+    if (source == .billGenerated) {
+      return .expense;
+    }
     if (source == .saving) {
       // Alokasi (asset->pocket) tampil sebagai transfer,
       // spend dari pocket tampil sebagai expense.

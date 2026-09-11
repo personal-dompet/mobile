@@ -12,6 +12,13 @@ import 'package:dompet_app/features/assets/cubits/asset_cubit.dart';
 import 'package:dompet_app/features/assets/cubits/asset_detail_cubit.dart';
 import 'package:dompet_app/features/assets/repositories/asset_repository.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_action_cubit.dart';
+import 'package:dompet_app/features/bills/cubits/bill_detail_cubit.dart';
+import 'package:dompet_app/features/bills/cubits/bill_cubit.dart';import 'package:dompet_app/features/bills/cubits/bill_plan_action_cubit.dart';
+import 'package:dompet_app/features/bills/cubits/bill_plan_detail_cubit.dart';
+import 'package:dompet_app/features/bills/cubits/bill_plan_list_cubit.dart';
+import 'package:dompet_app/features/bills/cubits/bill_signal_cubit.dart';
+import 'package:dompet_app/features/bills/repositories/bill_plan_repository.dart';
+import 'package:dompet_app/features/bills/repositories/bill_repository.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_detail_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_plan_detail_cubit.dart';
@@ -139,6 +146,25 @@ Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerFactory<BudgetCubit>(() => BudgetCubit(getIt()));
 
   getIt.registerLazySingleton<BudgetSignalCubit>(() => BudgetSignalCubit());
+
+  getIt.registerLazySingleton<BillPlanRepository>(
+    () => BillPlanRepository(getIt()),
+  );
+  getIt.registerLazySingleton<BillRepository>(() => BillRepository(getIt()));
+  getIt.registerLazySingleton<BillSignalCubit>(() => BillSignalCubit());
+  getIt.registerFactory<BillPlanActionCubit>(
+    () => BillPlanActionCubit(getIt()),
+  );
+  getIt.registerFactory<BillPlanListCubit>(
+    () => BillPlanListCubit(getIt()),
+  );
+  getIt.registerFactory<BillPlanDetailCubit>(
+    () => BillPlanDetailCubit(getIt(), getIt(), getIt()),
+  );
+  getIt.registerFactory<BillDetailCubit>(
+    () => BillDetailCubit(getIt(), getIt(), getIt()),
+  );
+  getIt.registerFactory<BillCubit>(() => BillCubit(getIt()));
 
   getIt.registerFactory<BudgetActionCubit>(() => BudgetActionCubit(getIt()));
 

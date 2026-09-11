@@ -6,6 +6,7 @@ import 'package:dompet_app/features/savings/forms/saving_plan_form.dart';
 import 'package:dompet_app/features/savings/forms/saving_spend_form.dart';
 import 'package:dompet_app/features/savings/models/saving_plan.dart';
 import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
+import 'package:flutter/material.dart';
 
 class SavingActionCubit extends Cubit<ActionState> {
   SavingActionCubit(this._repository) : super(const ActionState.initial());
@@ -39,6 +40,7 @@ class SavingActionCubit extends Cubit<ActionState> {
       emit(ActionState.success(message: successMessage));
       return plan;
     } catch (e) {
+      debugPrint(e.toString());
       emit(ActionState.error(message: e.toString()));
       return null;
     }

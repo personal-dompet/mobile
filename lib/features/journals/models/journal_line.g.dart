@@ -76,14 +76,14 @@ Map<String, dynamic> _$JournalLineToJson(_JournalLine instance) =>
     };
 
 const _$AccountTypeEnumMap = {
-  AccountType.asset: 'ASSET',
-  AccountType.liability: 'LIABILITY',
-  AccountType.equity: 'EQUITY',
-  AccountType.income: 'INCOME',
-  AccountType.expense: 'EXPENSE',
+  AccountType.asset: 'asset',
+  AccountType.liability: 'liability',
+  AccountType.equity: 'equity',
+  AccountType.income: 'income',
+  AccountType.expense: 'expense',
 };
 
 const _$BalanceTypeEnumMap = {
-  BalanceType.debit: 'DEBIT',
-  BalanceType.credit: 'CREDIT',
+  BalanceType.debit: 'debit',
+  BalanceType.credit: 'credit',
 };

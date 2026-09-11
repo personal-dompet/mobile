@@ -4,6 +4,7 @@ import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/dashboard/cubits/dashboard_cubit.dart';
 import 'package:dompet_app/features/dashboard/widgets/balance_card.dart';
+import 'package:dompet_app/features/dashboard/widgets/pending_bills_banner.dart';
 import 'package:dompet_app/features/dashboard/widgets/quick_action_section.dart';
 import 'package:dompet_app/features/dashboard/widgets/recent_activity_section.dart';
 import 'package:dompet_app/features/dashboard/widgets/today_summary.dart';
@@ -44,6 +45,8 @@ class DashboardPage extends StatelessWidget {
                   spacing: 24,
                   children: [
                     BalanceCard(),
+
+                    PendingBillsBanner(),
 
                     QuickActionSection(),
 

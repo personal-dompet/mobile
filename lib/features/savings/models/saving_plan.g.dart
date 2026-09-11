@@ -22,7 +22,7 @@ _SavingPlan _$SavingPlanFromJson(Map<String, dynamic> json) => $checkedCreate(
       ),
       targetDate: $checkedConvert('target_date', (v) => (v as num?)?.toInt()),
       note: $checkedConvert('note', (v) => v as String?),
-      status: $checkedConvert('status', (v) => v as String? ?? 'ACTIVE'),
+      status: $checkedConvert('status', (v) => v as String? ?? 'active'),
       balance: $checkedConvert('balance', (v) => (v as num?)?.toInt() ?? 0),
       progress: $checkedConvert('progress', (v) => (v as num?)?.toDouble()),
       createdAt: $checkedConvert(

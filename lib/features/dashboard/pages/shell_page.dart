@@ -147,6 +147,13 @@ class __NavigationDrawerState extends State<_NavigationDrawer> {
         },
       ),
       _Menu(
+        label: 'Tagihan',
+        iconData: Icons.receipt_long_rounded,
+        onTap: () {
+          context.router.push(const BillRoute());
+        },
+      ),
+      _Menu(
         label: 'Laporan',
         iconData: Icons.assessment_rounded,
         onTap: () {
