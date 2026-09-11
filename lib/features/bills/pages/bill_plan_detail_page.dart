@@ -12,6 +12,8 @@ import 'package:dompet_app/features/bills/models/bill_plan.dart';
 import 'package:dompet_app/features/bills/models/bill_plan_detail.dart';
 import 'package:dompet_app/features/bills/utils/bill_schedule.dart';
 import 'package:dompet_app/features/bills/widgets/bill_tile.dart';
+import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
+import 'package:dompet_app/features/savings/models/saving_plan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -201,6 +203,7 @@ class _Body extends StatelessWidget {
         children: [
           _PlanHeader(detail: detail),
           _PlanCard(detail: detail),
+          _SinkingFundSection(detail: detail),
           _HistorySection(detail: detail),
         ],
       ),
@@ -355,8 +358,196 @@ class _MetaRow extends StatelessWidget {
   }
 }
 
-class _HistorySection extends StatelessWidget {
+/// Dana sisihan tahunan: progres target ter-link, tombol buat baru,
+/// dan peringatan+aksi samakan saat nominal berubah.
+class _SinkingFundSection extends StatelessWidget {
   final BillPlanDetail detail;
+  const _SinkingFundSection({required this.detail});
+
+  @override
+  Widget build(BuildContext context) {
+    if (detail.plan.period != BillPlanPeriodEnum.yearly.name) {
+      return const SizedBox.shrink();
+    }
+    final target = detail.linkedTarget;
+    if (target == null) return _CreateTargetButton(detail: detail);
+    return _LinkedTargetCard(detail: detail, target: target);
+  }
+}
+
+class _CreateTargetButton extends StatelessWidget {
+  final BillPlanDetail detail;
+  const _CreateTargetButton({required this.detail});
+
+  Future<void> _create(BuildContext context) async {
+    final cubit = context.read<BillPlanDetailCubit>();
+    final occ = cubit.upcomingOccurrence();
+    if (occ == null) return;
+    final created = await context.router.push<bool>(
+      SavingFormRoute(
+        prefillName: 'Dana ${detail.plan.name}',
+        prefillAmount: detail.plan.amount,
+        prefillDate: occ.dueDate,
+        prefillNote: 'Sisihan ${detail.plan.name}',
+        linkBillPlanId: detail.plan.id,
+        linkBillPeriod: occ.label,
+      ),
+    );
+    if (created == true && context.mounted) {
+      context.read<BillSignalCubit>().created();
+      await cubit.refresh();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 8,
+          children: [
+            Row(
+              spacing: 8,
+              children: [
+                Icon(
+                  Icons.savings_outlined,
+                  color: themeData.colorScheme.primary,
+                ),
+                Expanded(
+                  child: Text(
+                    'Sisihkan dana tiap bulan agar ringan saat jatuh tempo.',
+                    style: themeData.textTheme.bodyMedium,
+                  ),
+                ),
+              ],
+            ),
+            OutlinedButton.icon(
+              onPressed: () => _create(context),
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('Buat Target Sisihan'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LinkedTargetCard extends StatelessWidget {
+  final BillPlanDetail detail;
+  final SavingPlan target;
+  const _LinkedTargetCard({required this.detail, required this.target});
+
+  Future<void> _sync(BuildContext context) async {
+    final cubit = context.read<BillPlanDetailCubit>();
+    final error = await cubit.syncTargetAmount();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      DompetSnackbar(
+        context,
+        message: error ?? 'Target disamakan dengan nominal tagihan',
+        snackBarType: error == null ? .success : .error,
+      ),
+    );
+    if (error == null) {
+      context.read<SavingSignalCubit>().created();
+      context.read<BillSignalCubit>().created();
+    }
+  }
+
+  /// Kebutuhan sisihan per bulan hingga tanggal target (kalender).
+  int? _neededPerMonth() {
+    if (!target.hasTarget) return null;
+    final remaining = target.remaining;
+    if (remaining <= 0 || target.targetDateTime == null) return null;
+    final now = DateTime.now();
+    final due = target.targetDateTime!;
+    final months = ((due.year - now.year) * 12 + (due.month - now.month) + 1)
+        .clamp(1, 120);
+    return (remaining / months).ceil();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final ratio = target.progressRatio?.clamp(0.0, 1.0);
+    final needed = _neededPerMonth();
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.router.push(
+          SavingDetailRoute(accountId: target.accountId),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 8,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Dana Sisihan'
+                      '${target.billPeriod == null ? '' : ' • ${target.billPeriod}'}',
+                      style: themeData.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: themeData.colorScheme.primary,
+                  ),
+                ],
+              ),
+              if (ratio != null)
+                LinearProgressIndicator(value: ratio),
+              Text(
+                target.progressLabel,
+                style: themeData.textTheme.titleMedium?.copyWith(
+                  color: themeData.colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              if (needed != null)
+                Text(
+                  'Sisa ${target.remaining.currency} • ±${needed.currency}/bulan',
+                  style: themeData.textTheme.bodySmall,
+                ),
+              if (detail.isTargetAmountStale) ...[
+                const Divider(),
+                Row(
+                  spacing: 8,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Nominal tagihan berubah menjadi ${detail.plan.amount.currency}.',
+                        style: themeData.textTheme.bodySmall?.copyWith(
+                          color: themeData.colorScheme.error,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => _sync(context),
+                      child: const Text('Samakan'),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HistorySection extends StatelessWidget {  final BillPlanDetail detail;
   const _HistorySection({required this.detail});
 
   @override

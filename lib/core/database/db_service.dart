@@ -151,7 +151,7 @@ class DbService {
   }
 
   OpenDatabaseOptions get _databaseOptions => OpenDatabaseOptions(
-    version: 3,
+    version: 1,
     onCreate: _onCreate,
     onUpgrade: _onUpgrade,
     onConfigure: (db) async {
@@ -206,6 +206,8 @@ class DbService {
     batch.execute(billPlanStatusIdx);
     batch.execute(billStatusIdx);
     batch.execute(savingPlanAccountIdx);
+    batch.execute(savingPlanBillPlanIdx);
+    batch.execute(savingPlanBillOccurrenceIdx);
     batch.execute(savingPlanStatusIdx);
 
     batch.execute(accountBalanceViewDefinition);
@@ -224,18 +226,6 @@ class DbService {
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     // run migration scripts per version
-    if (oldVersion < 2) {
-      await db.execute(
-        'ALTER TABLE $billPlanTable ADD COLUMN name TEXT NOT NULL DEFAULT \'\'',
-      );
-    }
-    if (oldVersion < 3) {
-      // View v_account_balances membandingkan normal_balance = 'DEBIT'
-      // (huruf besar) padahal DB menyimpan 'debit' (huruf kecil) sehingga
-      // saldo akun DEBIT-normal (aset/beban) terbalik tandanya.
-      await db.execute('DROP VIEW IF EXISTS $accountBalanceView');
-      await db.execute(accountBalanceViewDefinition);
-    }
   }
 
   Future<void> close() async {

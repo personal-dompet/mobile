@@ -2,15 +2,18 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/extensions/date.dart';
 import 'package:dompet_app/core/extensions/number.dart';
+import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/assets/forms/asset_selector_form.dart';
 import 'package:dompet_app/features/bills/cubits/bill_detail_cubit.dart';
 import 'package:dompet_app/features/bills/cubits/bill_signal_cubit.dart';
+import 'package:dompet_app/features/bills/enums/bill_plan_period_enum.dart';
 import 'package:dompet_app/features/bills/enums/bill_status.dart';
 import 'package:dompet_app/features/bills/models/bill.dart';
 import 'package:dompet_app/features/bills/models/bill_detail.dart';
+import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -73,6 +76,71 @@ class _BillDetailPageState extends State<BillDetailPage> {
     await _cubit.refresh();
   }
 
+  Future<void> _createTarget(BillDetail detail) async {
+    final bill = detail.bill;
+    final due = DateTime.fromMillisecondsSinceEpoch(bill.dueDate * 1000);
+    final created = await context.router.push<bool>(
+      SavingFormRoute(
+        prefillName: 'Dana ${detail.plan.name}',
+        prefillAmount: bill.amount,
+        prefillDate: due,
+        prefillNote: 'Sisihan ${detail.plan.name}',
+        linkBillPlanId: bill.billPlanId,
+        linkBillPeriod: bill.billPeriod,
+      ),
+    );
+    if (created == true && mounted) {
+      context.read<BillSignalCubit>().created();
+      context.read<SavingSignalCubit>().created();
+      context.read<AccountSignalCubit>().created();
+      await _cubit.refresh();
+    }
+  }
+
+  /// Tawarkan target sisihan hanya untuk tagihan tahunan yang
+  /// kemunculannya belum punya target.
+  bool _canOfferTarget(BillDetail detail) =>
+      detail.plan.period == BillPlanPeriodEnum.yearly.name &&
+      detail.linkedTarget == null;
+
+  Future<void> _payFromPocket(BillDetail detail) async {
+    final target = detail.linkedTarget;
+    if (target == null) return;
+    final assetId = await showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => _PaySheet(amount: detail.bill.amount),
+    );
+    if (assetId == null || !mounted) return;
+
+    _loading.show(context, text: 'Membayar dari target...');
+    final error = await _cubit.payBillFromPocket(
+      pocketId: target.accountId,
+      assetId: assetId,
+    );
+    _loading.hide();
+    if (!mounted) return;
+
+    if (error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        DompetSnackbar(context, message: error, snackBarType: .error),
+      );
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      DompetSnackbar(
+        context,
+        message: 'Tagihan dibayar dari ${target.accountName}',
+        snackBarType: .success,
+      ),
+    );
+    context.read<BillSignalCubit>().created();
+    context.read<AccountSignalCubit>().created();
+    context.read<ActivitySignalCubit>().created();
+    context.read<SavingSignalCubit>().created();
+    await _cubit.refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<BillSignalCubit, int>(
@@ -114,11 +182,23 @@ class _BillDetailPageState extends State<BillDetailPage> {
                 return _DetailScaffold(
                   detail: detail,
                   onPay: () => _pay(detail),
+                  onPayFromPocket: detail.linkedTarget == null
+                      ? null
+                      : () => _payFromPocket(detail),
+                  onCreateTarget: _canOfferTarget(detail)
+                      ? () => _createTarget(detail)
+                      : null,
                 );
               },
               loaded: (detail) => _DetailScaffold(
                 detail: detail,
                 onPay: () => _pay(detail),
+                onPayFromPocket: detail.linkedTarget == null
+                    ? null
+                    : () => _payFromPocket(detail),
+                onCreateTarget: _canOfferTarget(detail)
+                    ? () => _createTarget(detail)
+                    : null,
               ),
             );
           },
@@ -131,11 +211,19 @@ class _BillDetailPageState extends State<BillDetailPage> {
 class _DetailScaffold extends StatelessWidget {
   final BillDetail detail;
   final VoidCallback onPay;
-  const _DetailScaffold({required this.detail, required this.onPay});
+  final VoidCallback? onPayFromPocket;
+  final VoidCallback? onCreateTarget;
+  const _DetailScaffold({
+    required this.detail,
+    required this.onPay,
+    this.onPayFromPocket,
+    this.onCreateTarget,
+  });
 
   @override
   Widget build(BuildContext context) {
     final bill = detail.bill;
+    final onCreateTarget = this.onCreateTarget;
     return Scaffold(
       appBar: AppBar(title: const Text('Detail Tagihan')),
       body: SafeArea(
@@ -146,6 +234,8 @@ class _DetailScaffold extends StatelessWidget {
             spacing: 16,
             children: [
               _BillCard(detail: detail),
+              if (onCreateTarget != null)
+                _CreateTargetCta(onCreate: onCreateTarget),
               _HistorySection(detail: detail),
             ],
           ),
@@ -155,14 +245,67 @@ class _DetailScaffold extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16).copyWith(bottom: 24),
           child: bill.canPay
-              ? FilledButton.icon(
-                  onPressed: onPay,
-                  icon: const Icon(Icons.check_rounded),
-                  label: Text('Catat Pembayaran • ${bill.amount.currency}'),
+              ? _PayButtons(
+                  detail: detail,
+                  onPay: onPay,
+                  onPayFromPocket: onPayFromPocket,
                 )
               : _StatusBanner(detail: detail),
         ),
       ),
+    );
+  }
+}
+
+/// Tombol bayar: dari target (bila ter-link) + dari dompet.
+class _PayButtons extends StatelessWidget {
+  final BillDetail detail;
+  final VoidCallback onPay;
+  final VoidCallback? onPayFromPocket;
+  const _PayButtons({
+    required this.detail,
+    required this.onPay,
+    this.onPayFromPocket,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bill = detail.bill;
+    final target = detail.linkedTarget;
+    final fromPocket = onPayFromPocket;
+    if (target == null || fromPocket == null) {
+      return FilledButton.icon(
+        onPressed: onPay,
+        icon: const Icon(Icons.check_rounded),
+        label: Text('Catat Pembayaran • ${bill.amount.currency}'),
+      );
+    }
+    final themeData = Theme.of(context);
+    final enough = target.balance >= bill.amount;
+    return Column(
+      mainAxisSize: .min,
+      crossAxisAlignment: .stretch,
+      spacing: 8,
+      children: [
+        FilledButton.icon(
+          onPressed: enough ? fromPocket : null,
+          icon: const Icon(Icons.savings_outlined),
+          label: Text('Bayar dari Target • ${bill.amount.currency}'),
+        ),
+        if (!enough)
+          Text(
+            'Saldo ${target.accountName} ${target.balance.currency} belum cukup.',
+            style: themeData.textTheme.bodySmall?.copyWith(
+              color: themeData.colorScheme.error,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        OutlinedButton.icon(
+          onPressed: onPay,
+          icon: const Icon(Icons.wallet_outlined),
+          label: const Text('Bayar dari Dompet'),
+        ),
+      ],
     );
   }
 }
@@ -318,6 +461,49 @@ class _StatusChip extends StatelessWidget {
         style: theme.textTheme.labelSmall?.copyWith(
           color: color,
           fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+/// Ajakan membuat target sisihan untuk tagihan tahunan tanpa target.
+class _CreateTargetCta extends StatelessWidget {
+  final VoidCallback onCreate;
+  const _CreateTargetCta({required this.onCreate});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 8,
+          children: [
+            Row(
+              spacing: 8,
+              children: [
+                Icon(
+                  Icons.savings_outlined,
+                  color: themeData.colorScheme.primary,
+                ),
+                Expanded(
+                  child: Text(
+                    'Sisihkan dana tiap bulan agar ringan saat jatuh tempo.',
+                    style: themeData.textTheme.bodyMedium,
+                  ),
+                ),
+              ],
+            ),
+            OutlinedButton.icon(
+              onPressed: onCreate,
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('Buat Target Sisihan'),
+            ),
+          ],
         ),
       ),
     );

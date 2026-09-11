@@ -84,6 +84,45 @@ class SavingRepository {
     return SavingPlan.fromJson(rows.first);
   }
 
+  /// Target sisihan untuk satu kemunculan tagihan rutin
+  /// ([billPlanId] + [billPeriod], mis. tahun "2026").
+  /// Null bila belum ada — pemanggil memutuskan tawar/buat baru.
+  Future<SavingPlan?> getLinkedTarget(int billPlanId, String billPeriod) async {
+    final db = await _dbService.database;
+
+    final rows = await db.rawQuery(
+      '''
+      SELECT *
+      FROM $savingTrackerView
+      WHERE ${SavingPlanKey.billPlanId} = ?
+        AND ${SavingPlanKey.billPeriod} = ?
+      LIMIT 1
+    ''',
+      [billPlanId, billPeriod],
+    );
+
+    if (rows.isEmpty) return null;
+    return SavingPlan.fromJson(rows.first);
+  }
+
+  /// Seluruh target sisihan satu tagihan rutin lintas periode,
+  /// terbaru dulu (untuk histori di detail tagihan rutin).
+  Future<List<SavingPlan>> getTargetsForPlan(int billPlanId) async {
+    final db = await _dbService.database;
+
+    final rows = await db.rawQuery(
+      '''
+      SELECT *
+      FROM $savingTrackerView
+      WHERE ${SavingPlanKey.billPlanId} = ?
+      ORDER BY ${SavingPlanKey.billPeriod} DESC
+    ''',
+      [billPlanId],
+    );
+
+    return rows.map((row) => SavingPlan.fromJson(row)).toList();
+  }
+
   /// Riwayat jurnal pocket (alokasi/tarik/belanja) untuk Detail Target.
   ///
   /// Filter `source = saving` + `status = posted` + ada line dengan
@@ -157,6 +196,8 @@ class SavingRepository {
     int? initialAssetId,
     int? initialAmount,
     DateTime? date,
+    int? billPlanId,
+    String? billPeriod,
   }) async {
     final trimmedName = name.trim();
     if (trimmedName.isEmpty) {
@@ -217,15 +258,19 @@ class SavingRepository {
           ${SavingPlanKey.accountId},
           ${SavingPlanKey.targetAmount},
           ${SavingPlanKey.targetDate},
+          ${SavingPlanKey.billPlanId},
+          ${SavingPlanKey.billPeriod},
           ${SavingPlanKey.note},
           ${SavingPlanKey.status},
           ${SavingPlanKey.isDeleted}
-        ) VALUES (?,?,?,?,?,0)
+        ) VALUES (?,?,?,?,?,?,?,0)
       ''',
         [
           newAccountId,
           targetAmount,
           targetDate,
+          billPlanId,
+          billPeriod,
           note,
           SavingStatus.active.value,
         ],
@@ -297,6 +342,41 @@ class SavingRepository {
         accountTable,
         {AccountKey.name: trimmedName, AccountKey.iconCode: iconCode},
         where: '${AccountKey.id} = ?',
+        whereArgs: [accountId],
+      );
+    });
+
+    return getByAccountId(accountId);
+  }
+
+  /// Samakan nominal target dengan nominal tagihan terkini (satu kolom).
+  /// Dipakai tombol "Samakan dengan tagihan" saat nominal plan berubah.
+  Future<SavingPlan?> updateTargetAmount({
+    required int accountId,
+    required int targetAmount,
+  }) async {
+    if (targetAmount <= 0) {
+      throw Exception('Target harus lebih dari 0');
+    }
+
+    final db = await _dbService.database;
+
+    await db.transaction((txn) async {
+      final existing = await txn.query(
+        savingPlanTable,
+        where:
+            '${SavingPlanKey.accountId} = ? AND ${SavingPlanKey.isDeleted} = 0',
+        whereArgs: [accountId],
+        limit: 1,
+      );
+      if (existing.isEmpty) {
+        throw Exception('Target tidak ditemukan');
+      }
+
+      await txn.update(
+        savingPlanTable,
+        {SavingPlanKey.targetAmount: targetAmount},
+        where: '${SavingPlanKey.accountId} = ?',
         whereArgs: [accountId],
       );
     });
@@ -398,6 +478,7 @@ class SavingRepository {
 
     return db.transaction((txn) async {
       await _assertActivePocket(txn, pocketId);
+      await _assertNotBillSinkingFund(txn, pocketId);
       await _assertLiquidAsset(txn, assetId);
       final expenseId = await _resolveSpendCategory(txn, categoryId);
       await _assertSufficientBalance(txn, pocketId, amount);
@@ -779,6 +860,27 @@ class SavingRepository {
     );
     if (rows.isEmpty) {
       throw Exception('Target tidak ditemukan atau sudah ditutup');
+    }
+  }
+
+  /// Target sisihan tagihan rutin tak boleh dibelanjakan langsung:
+  /// keluar dana hanya via Tarik atau Bayar Tagihan agar tagihan
+  /// terlunasi lewat jurnal bill_payment (bukan expense biasa).
+  Future<void> _assertNotBillSinkingFund(
+    Transaction txn,
+    int pocketId,
+  ) async {
+    final rows = await txn.query(
+      savingPlanTable,
+      columns: [SavingPlanKey.billPlanId],
+      where: '${SavingPlanKey.accountId} = ?',
+      whereArgs: [pocketId],
+      limit: 1,
+    );
+    if (rows.isNotEmpty && rows.first[SavingPlanKey.billPlanId] != null) {
+      throw Exception(
+        'Target sisihan tagihan tidak bisa dibelanjakan, gunakan Bayar Tagihan',
+      );
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
 import 'package:dompet_app/core/database/db_service.dart';
 import 'package:dompet_app/core/database/schemas/schemas.dart';
@@ -17,6 +19,8 @@ import 'package:dompet_app/features/bills/utils/bill_schedule.dart';
 import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
+import 'package:dompet_app/features/savings/enums/saving_status.dart';
+import 'package:dompet_app/features/savings/enums/saving_tx_type.dart';
 import 'package:dompet_app/features/transactions/repositories/overspend_adjustment.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -76,6 +80,21 @@ class BillRepository {
       billTable,
       where: '${BillKey.id} = ? AND ${BillKey.isDeleted} = 0',
       whereArgs: [id],
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return Bill.fromJson(rows.first);
+  }
+
+  /// Tagihan satu kemunculan tagihan rutin ([planId] + [period]).
+  /// Dipakai detail target sisihan untuk bayar langsung.
+  Future<Bill?> getBillByPlanAndPeriod(int planId, String period) async {
+    final db = await _dbService.database;
+    final rows = await db.query(
+      billTable,
+      where:
+          '${BillKey.billPlanId} = ? AND ${BillKey.billPeriod} = ? AND ${BillKey.isDeleted} = 0',
+      whereArgs: [planId, period],
       limit: 1,
     );
     if (rows.isEmpty) return null;
@@ -170,6 +189,213 @@ class BillRepository {
         ''',
         [
           now.secondsSinceEpoch,
+          JournalSource.billPayment.value,
+          billId,
+          'Pembayaran ${planName ?? 'tagihan'} • ${bill.billPeriod}',
+          JournalStatus.draft.name,
+        ],
+      );
+
+      await txn.rawInsert(
+        '''
+          INSERT INTO $journalLineTable (
+            ${JournalLineKey.journalEntryId},
+            ${JournalLineKey.accountId},
+            ${JournalLineKey.debitAmount},
+            ${JournalLineKey.creditAmount},
+            ${JournalLineKey.lineOrder},
+            ${JournalLineKey.note}
+          ) VALUES (?,?,?,?,?,?), (?,?,?,?,?,?)
+        ''',
+        [
+          journalEntryId,
+          payableId,
+          bill.amount,
+          0,
+          0,
+          null,
+          journalEntryId,
+          assetId,
+          0,
+          bill.amount,
+          1,
+          null,
+        ],
+      );
+
+      await txn.update(
+        journalEntryTable,
+        {JournalEntryKey.status: JournalStatus.posted.name},
+        where: '${JournalEntryKey.id} = ?',
+        whereArgs: [journalEntryId],
+      );
+
+      await txn.update(
+        billTable,
+        {BillKey.status: BillStatus.paid.value},
+        where: '${BillKey.id} = ?',
+        whereArgs: [billId],
+      );
+    });
+  }
+
+  /// Bayar lunas dari pocket target ([pocketId]) via dompet perantara
+  /// ([assetId]) dalam satu transaksi atomik.
+  ///
+  /// - Jurnal 1 withdraw: debit dompet, credit pocket (`source=saving`,
+  ///   metadata WITHDRAW). Masuk histori pocket seperti withdraw biasa.
+  /// - Jurnal 2 bill_payment: debit Tagihan Tertunda, credit dompet —
+  ///   sama persis seperti [payBill], tapi TANPA penyesuaian shortfall:
+  ///   Jurnal 1 mengisi dompet dulu sehingga neto dompet 0
+  ///   (pola yang sama dipakai `SavingRepository.spend`).
+  /// - Kecukupan dana dicek di pocket, bukan dompet.
+  /// Gagal di jurnal mana pun = rollback total.
+  Future<void> payBillFromPocket({
+    required int billId,
+    required int pocketId,
+    required int assetId,
+  }) async {
+    final db = await _dbService.database;
+    final now = DateTime.now();
+
+    await db.transaction((txn) async {
+      final billRows = await txn.query(
+        billTable,
+        where: '${BillKey.id} = ? AND ${BillKey.isDeleted} = 0',
+        whereArgs: [billId],
+        limit: 1,
+      );
+      if (billRows.isEmpty) {
+        throw Exception('Tagihan tidak ditemukan');
+      }
+      final bill = Bill.fromJson(billRows.first);
+      if (!bill.canPay) {
+        throw Exception('Tagihan ini tidak bisa dibayar');
+      }
+
+      final planRows = await txn.query(
+        billPlanTable,
+        where: '${BillPlanKey.id} = ?',
+        whereArgs: [bill.billPlanId],
+        limit: 1,
+      );
+      if (planRows.isEmpty) {
+        throw Exception('Terjadi kesalahan data pada aplikasi');
+      }
+      final planName = planRows.first[BillPlanKey.name] as String?;
+
+      final pocketRows = await txn.query(
+        savingPlanTable,
+        where:
+            '${SavingPlanKey.accountId} = ? AND ${SavingPlanKey.isDeleted} = 0 AND ${SavingPlanKey.status} = ?',
+        whereArgs: [pocketId, SavingStatus.active.value],
+        limit: 1,
+      );
+      if (pocketRows.isEmpty) {
+        throw Exception('Target tidak ditemukan atau sudah ditutup');
+      }
+
+      final assetRows = await txn.query(
+        accountTable,
+        where: '${AccountKey.id} = ? AND ${AccountKey.isDeleted} = 0',
+        whereArgs: [assetId],
+        limit: 1,
+      );
+      if (assetRows.isEmpty) {
+        throw Exception('Dompet tidak ditemukan');
+      }
+
+      final balances = await txn.rawQuery(
+        '''
+        SELECT ${AccountKey.balance}
+        FROM $accountBalanceView
+        WHERE ${AccountKey.id} = ?
+        LIMIT 1
+      ''',
+        [pocketId],
+      );
+      if (balances.isEmpty) {
+        throw Exception('Terjadi kesalahan data pada aplikasi');
+      }
+      final pocketBalance =
+          (balances.first[AccountKey.balance] as num?)?.toInt() ?? 0;
+      if (pocketBalance < bill.amount) {
+        throw Exception('Saldo target tidak mencukupi');
+      }
+
+      final payableId = await _payableAccountId(txn);
+      final entryDate = now.secondsSinceEpoch;
+
+      // Jurnal 1: tarik pocket -> dompet.
+      final withdrawId = await txn.rawInsert(
+        '''
+          INSERT INTO $journalEntryTable (
+            ${JournalEntryKey.description},
+            ${JournalEntryKey.entryDate},
+            ${JournalEntryKey.source},
+            ${JournalEntryKey.status},
+            ${JournalEntryKey.metadata}
+          ) VALUES (?,?,?,?,?)
+        ''',
+        [
+          'Bayar ${planName ?? 'tagihan'} • ${bill.billPeriod} dari target',
+          entryDate,
+          JournalSource.saving.value,
+          JournalStatus.draft.name,
+          jsonEncode({
+            'saving_tx': SavingTxType.withdraw.value,
+            'pocket_id': pocketId,
+          }),
+        ],
+      );
+
+      await txn.rawInsert(
+        '''
+          INSERT INTO $journalLineTable (
+            ${JournalLineKey.journalEntryId},
+            ${JournalLineKey.accountId},
+            ${JournalLineKey.debitAmount},
+            ${JournalLineKey.creditAmount},
+            ${JournalLineKey.lineOrder},
+            ${JournalLineKey.note}
+          ) VALUES (?,?,?,?,?,?), (?,?,?,?,?,?)
+        ''',
+        [
+          withdrawId,
+          pocketId,
+          0,
+          bill.amount,
+          0,
+          null,
+          withdrawId,
+          assetId,
+          bill.amount,
+          0,
+          1,
+          null,
+        ],
+      );
+
+      await txn.update(
+        journalEntryTable,
+        {JournalEntryKey.status: JournalStatus.posted.name},
+        where: '${JournalEntryKey.id} = ?',
+        whereArgs: [withdrawId],
+      );
+
+      // Jurnal 2: lunasi tagihan dari dompet.
+      final journalEntryId = await txn.rawInsert(
+        '''
+          INSERT INTO $journalEntryTable (
+            ${JournalEntryKey.entryDate},
+            ${JournalEntryKey.source},
+            ${JournalEntryKey.sourceId},
+            ${JournalEntryKey.description},
+            ${JournalEntryKey.status}
+          ) VALUES (?,?,?,?,?)
+        ''',
+        [
+          entryDate,
           JournalSource.billPayment.value,
           billId,
           'Pembayaran ${planName ?? 'tagihan'} • ${bill.billPeriod}',

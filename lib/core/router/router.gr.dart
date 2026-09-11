@@ -1114,10 +1114,25 @@ class SavingFormRoute extends _i37.PageRouteInfo<SavingFormRouteArgs> {
   SavingFormRoute({
     _i38.Key? key,
     _i45.SavingPlan? plan,
+    String? prefillName,
+    int? prefillAmount,
+    DateTime? prefillDate,
+    String? prefillNote,
+    int? linkBillPlanId,
+    String? linkBillPeriod,
     List<_i37.PageRouteInfo>? children,
   }) : super(
          SavingFormRoute.name,
-         args: SavingFormRouteArgs(key: key, plan: plan),
+         args: SavingFormRouteArgs(
+           key: key,
+           plan: plan,
+           prefillName: prefillName,
+           prefillAmount: prefillAmount,
+           prefillDate: prefillDate,
+           prefillNote: prefillNote,
+           linkBillPlanId: linkBillPlanId,
+           linkBillPeriod: linkBillPeriod,
+         ),
          initialChildren: children,
        );
 
@@ -1129,32 +1144,77 @@ class SavingFormRoute extends _i37.PageRouteInfo<SavingFormRouteArgs> {
       final args = data.argsAs<SavingFormRouteArgs>(
         orElse: () => const SavingFormRouteArgs(),
       );
-      return _i28.SavingFormPage(key: args.key, plan: args.plan);
+      return _i28.SavingFormPage(
+        key: args.key,
+        plan: args.plan,
+        prefillName: args.prefillName,
+        prefillAmount: args.prefillAmount,
+        prefillDate: args.prefillDate,
+        prefillNote: args.prefillNote,
+        linkBillPlanId: args.linkBillPlanId,
+        linkBillPeriod: args.linkBillPeriod,
+      );
     },
   );
 }
 
 class SavingFormRouteArgs {
-  const SavingFormRouteArgs({this.key, this.plan});
+  const SavingFormRouteArgs({
+    this.key,
+    this.plan,
+    this.prefillName,
+    this.prefillAmount,
+    this.prefillDate,
+    this.prefillNote,
+    this.linkBillPlanId,
+    this.linkBillPeriod,
+  });
 
   final _i38.Key? key;
 
   final _i45.SavingPlan? plan;
 
+  final String? prefillName;
+
+  final int? prefillAmount;
+
+  final DateTime? prefillDate;
+
+  final String? prefillNote;
+
+  final int? linkBillPlanId;
+
+  final String? linkBillPeriod;
+
   @override
   String toString() {
-    return 'SavingFormRouteArgs{key: $key, plan: $plan}';
+    return 'SavingFormRouteArgs{key: $key, plan: $plan, prefillName: $prefillName, prefillAmount: $prefillAmount, prefillDate: $prefillDate, prefillNote: $prefillNote, linkBillPlanId: $linkBillPlanId, linkBillPeriod: $linkBillPeriod}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! SavingFormRouteArgs) return false;
-    return key == other.key && plan == other.plan;
+    return key == other.key &&
+        plan == other.plan &&
+        prefillName == other.prefillName &&
+        prefillAmount == other.prefillAmount &&
+        prefillDate == other.prefillDate &&
+        prefillNote == other.prefillNote &&
+        linkBillPlanId == other.linkBillPlanId &&
+        linkBillPeriod == other.linkBillPeriod;
   }
 
   @override
-  int get hashCode => key.hashCode ^ plan.hashCode;
+  int get hashCode =>
+      key.hashCode ^
+      plan.hashCode ^
+      prefillName.hashCode ^
+      prefillAmount.hashCode ^
+      prefillDate.hashCode ^
+      prefillNote.hashCode ^
+      linkBillPlanId.hashCode ^
+      linkBillPeriod.hashCode;
 }
 
 /// generated route for

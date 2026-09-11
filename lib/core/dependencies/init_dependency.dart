@@ -159,10 +159,10 @@ Future<void> initDependency({String? dbTestPath}) async {
     () => BillPlanListCubit(getIt()),
   );
   getIt.registerFactory<BillPlanDetailCubit>(
-    () => BillPlanDetailCubit(getIt(), getIt(), getIt()),
+    () => BillPlanDetailCubit(getIt(), getIt(), getIt(), getIt()),
   );
   getIt.registerFactory<BillDetailCubit>(
-    () => BillDetailCubit(getIt(), getIt(), getIt()),
+    () => BillDetailCubit(getIt(), getIt(), getIt(), getIt()),
   );
   getIt.registerFactory<BillCubit>(() => BillCubit(getIt()));
 
@@ -184,7 +184,9 @@ Future<void> initDependency({String? dbTestPath}) async {
 
   getIt.registerFactory<SavingActionCubit>(() => SavingActionCubit(getIt()));
 
-  getIt.registerFactory<SavingDetailCubit>(() => SavingDetailCubit(getIt()));
+  getIt.registerFactory<SavingDetailCubit>(
+    () => SavingDetailCubit(getIt(), getIt()),
+  );
 
   getIt.registerLazySingleton<AppConfigurationCubit>(
     () => AppConfigurationCubit(getIt()),

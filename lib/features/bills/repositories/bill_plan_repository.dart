@@ -155,6 +155,8 @@ class BillPlanRepository {
 
   /// Hapus lemas plan + draft-draftnya dalam satu transaksi.
   /// Tagihan yang sudah aktif (unpaid ke atas) tidak disentuh.
+  /// Target sisihan yang ter-link dipertahankan sebagai target biasa
+  /// (link di-null-kan, dana simpanan aman).
   Future<void> deletePlan(int id) async {
     final db = await _dbService.database;
     await db.transaction((txn) async {
@@ -170,6 +172,12 @@ class BillPlanRepository {
         where:
             '${BillKey.billPlanId} = ? AND ${BillKey.status} = ? AND ${BillKey.isDeleted} = 0',
         whereArgs: [id, BillStatus.drafted.value],
+      );
+      await txn.update(
+        savingPlanTable,
+        {SavingPlanKey.billPlanId: null, SavingPlanKey.billPeriod: null},
+        where: '${SavingPlanKey.billPlanId} = ?',
+        whereArgs: [id],
       );
     });
   }

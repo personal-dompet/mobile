@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SavingPlan {
 
-@JsonKey(name: SavingPlanKey.id) int get id;@JsonKey(name: SavingPlanKey.accountId) int get accountId;@JsonKey(name: SavingPlanKey.accountCode) String get accountCode;@JsonKey(name: SavingPlanKey.accountName) String get accountName;@JsonKey(name: SavingPlanKey.iconCode) int? get iconCode;@JsonKey(name: SavingPlanKey.targetAmount) int? get targetAmount;@JsonKey(name: SavingPlanKey.targetDate) int? get targetDate;@JsonKey(name: SavingPlanKey.note) String? get note;@JsonKey(name: SavingPlanKey.status) String get status;@JsonKey(name: SavingPlanKey.balance) int get balance;@JsonKey(name: SavingPlanKey.progress) double? get progress;@JsonKey(name: SavingPlanKey.createdAt) int get createdAt;
+@JsonKey(name: SavingPlanKey.id) int get id;@JsonKey(name: SavingPlanKey.accountId) int get accountId;@JsonKey(name: SavingPlanKey.accountCode) String get accountCode;@JsonKey(name: SavingPlanKey.accountName) String get accountName;@JsonKey(name: SavingPlanKey.iconCode) int? get iconCode;@JsonKey(name: SavingPlanKey.targetAmount) int? get targetAmount;@JsonKey(name: SavingPlanKey.targetDate) int? get targetDate;@JsonKey(name: SavingPlanKey.billPlanId) int? get billPlanId;@JsonKey(name: SavingPlanKey.billPeriod) String? get billPeriod;@JsonKey(name: SavingPlanKey.note) String? get note;@JsonKey(name: SavingPlanKey.status) String get status;@JsonKey(name: SavingPlanKey.balance) int get balance;@JsonKey(name: SavingPlanKey.progress) double? get progress;@JsonKey(name: SavingPlanKey.createdAt) int get createdAt;
 /// Create a copy of SavingPlan
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SavingPlanCopyWith<SavingPlan> get copyWith => _$SavingPlanCopyWithImpl<SavingP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SavingPlan&&(identical(other.id, id) || other.id == id)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.accountCode, accountCode) || other.accountCode == accountCode)&&(identical(other.accountName, accountName) || other.accountName == accountName)&&(identical(other.iconCode, iconCode) || other.iconCode == iconCode)&&(identical(other.targetAmount, targetAmount) || other.targetAmount == targetAmount)&&(identical(other.targetDate, targetDate) || other.targetDate == targetDate)&&(identical(other.note, note) || other.note == note)&&(identical(other.status, status) || other.status == status)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SavingPlan&&(identical(other.id, id) || other.id == id)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.accountCode, accountCode) || other.accountCode == accountCode)&&(identical(other.accountName, accountName) || other.accountName == accountName)&&(identical(other.iconCode, iconCode) || other.iconCode == iconCode)&&(identical(other.targetAmount, targetAmount) || other.targetAmount == targetAmount)&&(identical(other.targetDate, targetDate) || other.targetDate == targetDate)&&(identical(other.billPlanId, billPlanId) || other.billPlanId == billPlanId)&&(identical(other.billPeriod, billPeriod) || other.billPeriod == billPeriod)&&(identical(other.note, note) || other.note == note)&&(identical(other.status, status) || other.status == status)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,accountId,accountCode,accountName,iconCode,targetAmount,targetDate,note,status,balance,progress,createdAt);
+int get hashCode => Object.hash(runtimeType,id,accountId,accountCode,accountName,iconCode,targetAmount,targetDate,billPlanId,billPeriod,note,status,balance,progress,createdAt);
 
 @override
 String toString() {
-  return 'SavingPlan(id: $id, accountId: $accountId, accountCode: $accountCode, accountName: $accountName, iconCode: $iconCode, targetAmount: $targetAmount, targetDate: $targetDate, note: $note, status: $status, balance: $balance, progress: $progress, createdAt: $createdAt)';
+  return 'SavingPlan(id: $id, accountId: $accountId, accountCode: $accountCode, accountName: $accountName, iconCode: $iconCode, targetAmount: $targetAmount, targetDate: $targetDate, billPlanId: $billPlanId, billPeriod: $billPeriod, note: $note, status: $status, balance: $balance, progress: $progress, createdAt: $createdAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $SavingPlanCopyWith<$Res>  {
   factory $SavingPlanCopyWith(SavingPlan value, $Res Function(SavingPlan) _then) = _$SavingPlanCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: SavingPlanKey.id) int id,@JsonKey(name: SavingPlanKey.accountId) int accountId,@JsonKey(name: SavingPlanKey.accountCode) String accountCode,@JsonKey(name: SavingPlanKey.accountName) String accountName,@JsonKey(name: SavingPlanKey.iconCode) int? iconCode,@JsonKey(name: SavingPlanKey.targetAmount) int? targetAmount,@JsonKey(name: SavingPlanKey.targetDate) int? targetDate,@JsonKey(name: SavingPlanKey.note) String? note,@JsonKey(name: SavingPlanKey.status) String status,@JsonKey(name: SavingPlanKey.balance) int balance,@JsonKey(name: SavingPlanKey.progress) double? progress,@JsonKey(name: SavingPlanKey.createdAt) int createdAt
+@JsonKey(name: SavingPlanKey.id) int id,@JsonKey(name: SavingPlanKey.accountId) int accountId,@JsonKey(name: SavingPlanKey.accountCode) String accountCode,@JsonKey(name: SavingPlanKey.accountName) String accountName,@JsonKey(name: SavingPlanKey.iconCode) int? iconCode,@JsonKey(name: SavingPlanKey.targetAmount) int? targetAmount,@JsonKey(name: SavingPlanKey.targetDate) int? targetDate,@JsonKey(name: SavingPlanKey.billPlanId) int? billPlanId,@JsonKey(name: SavingPlanKey.billPeriod) String? billPeriod,@JsonKey(name: SavingPlanKey.note) String? note,@JsonKey(name: SavingPlanKey.status) String status,@JsonKey(name: SavingPlanKey.balance) int balance,@JsonKey(name: SavingPlanKey.progress) double? progress,@JsonKey(name: SavingPlanKey.createdAt) int createdAt
 });
 
 
@@ -65,7 +65,7 @@ class _$SavingPlanCopyWithImpl<$Res>
 
 /// Create a copy of SavingPlan
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? accountId = null,Object? accountCode = null,Object? accountName = null,Object? iconCode = freezed,Object? targetAmount = freezed,Object? targetDate = freezed,Object? note = freezed,Object? status = null,Object? balance = null,Object? progress = freezed,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? accountId = null,Object? accountCode = null,Object? accountName = null,Object? iconCode = freezed,Object? targetAmount = freezed,Object? targetDate = freezed,Object? billPlanId = freezed,Object? billPeriod = freezed,Object? note = freezed,Object? status = null,Object? balance = null,Object? progress = freezed,Object? createdAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,accountId: null == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,9 @@ as String,accountName: null == accountName ? _self.accountName : accountName // 
 as String,iconCode: freezed == iconCode ? _self.iconCode : iconCode // ignore: cast_nullable_to_non_nullable
 as int?,targetAmount: freezed == targetAmount ? _self.targetAmount : targetAmount // ignore: cast_nullable_to_non_nullable
 as int?,targetDate: freezed == targetDate ? _self.targetDate : targetDate // ignore: cast_nullable_to_non_nullable
-as int?,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
+as int?,billPlanId: freezed == billPlanId ? _self.billPlanId : billPlanId // ignore: cast_nullable_to_non_nullable
+as int?,billPeriod: freezed == billPeriod ? _self.billPeriod : billPeriod // ignore: cast_nullable_to_non_nullable
+as String?,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
 as int,progress: freezed == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
@@ -164,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: SavingPlanKey.id)  int id, @JsonKey(name: SavingPlanKey.accountId)  int accountId, @JsonKey(name: SavingPlanKey.accountCode)  String accountCode, @JsonKey(name: SavingPlanKey.accountName)  String accountName, @JsonKey(name: SavingPlanKey.iconCode)  int? iconCode, @JsonKey(name: SavingPlanKey.targetAmount)  int? targetAmount, @JsonKey(name: SavingPlanKey.targetDate)  int? targetDate, @JsonKey(name: SavingPlanKey.note)  String? note, @JsonKey(name: SavingPlanKey.status)  String status, @JsonKey(name: SavingPlanKey.balance)  int balance, @JsonKey(name: SavingPlanKey.progress)  double? progress, @JsonKey(name: SavingPlanKey.createdAt)  int createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: SavingPlanKey.id)  int id, @JsonKey(name: SavingPlanKey.accountId)  int accountId, @JsonKey(name: SavingPlanKey.accountCode)  String accountCode, @JsonKey(name: SavingPlanKey.accountName)  String accountName, @JsonKey(name: SavingPlanKey.iconCode)  int? iconCode, @JsonKey(name: SavingPlanKey.targetAmount)  int? targetAmount, @JsonKey(name: SavingPlanKey.targetDate)  int? targetDate, @JsonKey(name: SavingPlanKey.billPlanId)  int? billPlanId, @JsonKey(name: SavingPlanKey.billPeriod)  String? billPeriod, @JsonKey(name: SavingPlanKey.note)  String? note, @JsonKey(name: SavingPlanKey.status)  String status, @JsonKey(name: SavingPlanKey.balance)  int balance, @JsonKey(name: SavingPlanKey.progress)  double? progress, @JsonKey(name: SavingPlanKey.createdAt)  int createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SavingPlan() when $default != null:
-return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_that.iconCode,_that.targetAmount,_that.targetDate,_that.note,_that.status,_that.balance,_that.progress,_that.createdAt);case _:
+return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_that.iconCode,_that.targetAmount,_that.targetDate,_that.billPlanId,_that.billPeriod,_that.note,_that.status,_that.balance,_that.progress,_that.createdAt);case _:
   return orElse();
 
 }
@@ -185,10 +187,10 @@ return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: SavingPlanKey.id)  int id, @JsonKey(name: SavingPlanKey.accountId)  int accountId, @JsonKey(name: SavingPlanKey.accountCode)  String accountCode, @JsonKey(name: SavingPlanKey.accountName)  String accountName, @JsonKey(name: SavingPlanKey.iconCode)  int? iconCode, @JsonKey(name: SavingPlanKey.targetAmount)  int? targetAmount, @JsonKey(name: SavingPlanKey.targetDate)  int? targetDate, @JsonKey(name: SavingPlanKey.note)  String? note, @JsonKey(name: SavingPlanKey.status)  String status, @JsonKey(name: SavingPlanKey.balance)  int balance, @JsonKey(name: SavingPlanKey.progress)  double? progress, @JsonKey(name: SavingPlanKey.createdAt)  int createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: SavingPlanKey.id)  int id, @JsonKey(name: SavingPlanKey.accountId)  int accountId, @JsonKey(name: SavingPlanKey.accountCode)  String accountCode, @JsonKey(name: SavingPlanKey.accountName)  String accountName, @JsonKey(name: SavingPlanKey.iconCode)  int? iconCode, @JsonKey(name: SavingPlanKey.targetAmount)  int? targetAmount, @JsonKey(name: SavingPlanKey.targetDate)  int? targetDate, @JsonKey(name: SavingPlanKey.billPlanId)  int? billPlanId, @JsonKey(name: SavingPlanKey.billPeriod)  String? billPeriod, @JsonKey(name: SavingPlanKey.note)  String? note, @JsonKey(name: SavingPlanKey.status)  String status, @JsonKey(name: SavingPlanKey.balance)  int balance, @JsonKey(name: SavingPlanKey.progress)  double? progress, @JsonKey(name: SavingPlanKey.createdAt)  int createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _SavingPlan():
-return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_that.iconCode,_that.targetAmount,_that.targetDate,_that.note,_that.status,_that.balance,_that.progress,_that.createdAt);case _:
+return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_that.iconCode,_that.targetAmount,_that.targetDate,_that.billPlanId,_that.billPeriod,_that.note,_that.status,_that.balance,_that.progress,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +207,10 @@ return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: SavingPlanKey.id)  int id, @JsonKey(name: SavingPlanKey.accountId)  int accountId, @JsonKey(name: SavingPlanKey.accountCode)  String accountCode, @JsonKey(name: SavingPlanKey.accountName)  String accountName, @JsonKey(name: SavingPlanKey.iconCode)  int? iconCode, @JsonKey(name: SavingPlanKey.targetAmount)  int? targetAmount, @JsonKey(name: SavingPlanKey.targetDate)  int? targetDate, @JsonKey(name: SavingPlanKey.note)  String? note, @JsonKey(name: SavingPlanKey.status)  String status, @JsonKey(name: SavingPlanKey.balance)  int balance, @JsonKey(name: SavingPlanKey.progress)  double? progress, @JsonKey(name: SavingPlanKey.createdAt)  int createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: SavingPlanKey.id)  int id, @JsonKey(name: SavingPlanKey.accountId)  int accountId, @JsonKey(name: SavingPlanKey.accountCode)  String accountCode, @JsonKey(name: SavingPlanKey.accountName)  String accountName, @JsonKey(name: SavingPlanKey.iconCode)  int? iconCode, @JsonKey(name: SavingPlanKey.targetAmount)  int? targetAmount, @JsonKey(name: SavingPlanKey.targetDate)  int? targetDate, @JsonKey(name: SavingPlanKey.billPlanId)  int? billPlanId, @JsonKey(name: SavingPlanKey.billPeriod)  String? billPeriod, @JsonKey(name: SavingPlanKey.note)  String? note, @JsonKey(name: SavingPlanKey.status)  String status, @JsonKey(name: SavingPlanKey.balance)  int balance, @JsonKey(name: SavingPlanKey.progress)  double? progress, @JsonKey(name: SavingPlanKey.createdAt)  int createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _SavingPlan() when $default != null:
-return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_that.iconCode,_that.targetAmount,_that.targetDate,_that.note,_that.status,_that.balance,_that.progress,_that.createdAt);case _:
+return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_that.iconCode,_that.targetAmount,_that.targetDate,_that.billPlanId,_that.billPeriod,_that.note,_that.status,_that.balance,_that.progress,_that.createdAt);case _:
   return null;
 
 }
@@ -220,7 +222,7 @@ return $default(_that.id,_that.accountId,_that.accountCode,_that.accountName,_th
 @JsonSerializable()
 
 class _SavingPlan extends SavingPlan {
-  const _SavingPlan({@JsonKey(name: SavingPlanKey.id) required this.id, @JsonKey(name: SavingPlanKey.accountId) required this.accountId, @JsonKey(name: SavingPlanKey.accountCode) required this.accountCode, @JsonKey(name: SavingPlanKey.accountName) required this.accountName, @JsonKey(name: SavingPlanKey.iconCode) this.iconCode, @JsonKey(name: SavingPlanKey.targetAmount) this.targetAmount, @JsonKey(name: SavingPlanKey.targetDate) this.targetDate, @JsonKey(name: SavingPlanKey.note) this.note, @JsonKey(name: SavingPlanKey.status) this.status = 'active', @JsonKey(name: SavingPlanKey.balance) this.balance = 0, @JsonKey(name: SavingPlanKey.progress) this.progress, @JsonKey(name: SavingPlanKey.createdAt) this.createdAt = 0}): super._();
+  const _SavingPlan({@JsonKey(name: SavingPlanKey.id) required this.id, @JsonKey(name: SavingPlanKey.accountId) required this.accountId, @JsonKey(name: SavingPlanKey.accountCode) required this.accountCode, @JsonKey(name: SavingPlanKey.accountName) required this.accountName, @JsonKey(name: SavingPlanKey.iconCode) this.iconCode, @JsonKey(name: SavingPlanKey.targetAmount) this.targetAmount, @JsonKey(name: SavingPlanKey.targetDate) this.targetDate, @JsonKey(name: SavingPlanKey.billPlanId) this.billPlanId, @JsonKey(name: SavingPlanKey.billPeriod) this.billPeriod, @JsonKey(name: SavingPlanKey.note) this.note, @JsonKey(name: SavingPlanKey.status) this.status = 'active', @JsonKey(name: SavingPlanKey.balance) this.balance = 0, @JsonKey(name: SavingPlanKey.progress) this.progress, @JsonKey(name: SavingPlanKey.createdAt) this.createdAt = 0}): super._();
   factory _SavingPlan.fromJson(Map<String, dynamic> json) => _$SavingPlanFromJson(json);
 
 @override@JsonKey(name: SavingPlanKey.id) final  int id;
@@ -230,6 +232,8 @@ class _SavingPlan extends SavingPlan {
 @override@JsonKey(name: SavingPlanKey.iconCode) final  int? iconCode;
 @override@JsonKey(name: SavingPlanKey.targetAmount) final  int? targetAmount;
 @override@JsonKey(name: SavingPlanKey.targetDate) final  int? targetDate;
+@override@JsonKey(name: SavingPlanKey.billPlanId) final  int? billPlanId;
+@override@JsonKey(name: SavingPlanKey.billPeriod) final  String? billPeriod;
 @override@JsonKey(name: SavingPlanKey.note) final  String? note;
 @override@JsonKey(name: SavingPlanKey.status) final  String status;
 @override@JsonKey(name: SavingPlanKey.balance) final  int balance;
@@ -249,16 +253,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SavingPlan&&(identical(other.id, id) || other.id == id)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.accountCode, accountCode) || other.accountCode == accountCode)&&(identical(other.accountName, accountName) || other.accountName == accountName)&&(identical(other.iconCode, iconCode) || other.iconCode == iconCode)&&(identical(other.targetAmount, targetAmount) || other.targetAmount == targetAmount)&&(identical(other.targetDate, targetDate) || other.targetDate == targetDate)&&(identical(other.note, note) || other.note == note)&&(identical(other.status, status) || other.status == status)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SavingPlan&&(identical(other.id, id) || other.id == id)&&(identical(other.accountId, accountId) || other.accountId == accountId)&&(identical(other.accountCode, accountCode) || other.accountCode == accountCode)&&(identical(other.accountName, accountName) || other.accountName == accountName)&&(identical(other.iconCode, iconCode) || other.iconCode == iconCode)&&(identical(other.targetAmount, targetAmount) || other.targetAmount == targetAmount)&&(identical(other.targetDate, targetDate) || other.targetDate == targetDate)&&(identical(other.billPlanId, billPlanId) || other.billPlanId == billPlanId)&&(identical(other.billPeriod, billPeriod) || other.billPeriod == billPeriod)&&(identical(other.note, note) || other.note == note)&&(identical(other.status, status) || other.status == status)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,accountId,accountCode,accountName,iconCode,targetAmount,targetDate,note,status,balance,progress,createdAt);
+int get hashCode => Object.hash(runtimeType,id,accountId,accountCode,accountName,iconCode,targetAmount,targetDate,billPlanId,billPeriod,note,status,balance,progress,createdAt);
 
 @override
 String toString() {
-  return 'SavingPlan(id: $id, accountId: $accountId, accountCode: $accountCode, accountName: $accountName, iconCode: $iconCode, targetAmount: $targetAmount, targetDate: $targetDate, note: $note, status: $status, balance: $balance, progress: $progress, createdAt: $createdAt)';
+  return 'SavingPlan(id: $id, accountId: $accountId, accountCode: $accountCode, accountName: $accountName, iconCode: $iconCode, targetAmount: $targetAmount, targetDate: $targetDate, billPlanId: $billPlanId, billPeriod: $billPeriod, note: $note, status: $status, balance: $balance, progress: $progress, createdAt: $createdAt)';
 }
 
 
@@ -269,7 +273,7 @@ abstract mixin class _$SavingPlanCopyWith<$Res> implements $SavingPlanCopyWith<$
   factory _$SavingPlanCopyWith(_SavingPlan value, $Res Function(_SavingPlan) _then) = __$SavingPlanCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: SavingPlanKey.id) int id,@JsonKey(name: SavingPlanKey.accountId) int accountId,@JsonKey(name: SavingPlanKey.accountCode) String accountCode,@JsonKey(name: SavingPlanKey.accountName) String accountName,@JsonKey(name: SavingPlanKey.iconCode) int? iconCode,@JsonKey(name: SavingPlanKey.targetAmount) int? targetAmount,@JsonKey(name: SavingPlanKey.targetDate) int? targetDate,@JsonKey(name: SavingPlanKey.note) String? note,@JsonKey(name: SavingPlanKey.status) String status,@JsonKey(name: SavingPlanKey.balance) int balance,@JsonKey(name: SavingPlanKey.progress) double? progress,@JsonKey(name: SavingPlanKey.createdAt) int createdAt
+@JsonKey(name: SavingPlanKey.id) int id,@JsonKey(name: SavingPlanKey.accountId) int accountId,@JsonKey(name: SavingPlanKey.accountCode) String accountCode,@JsonKey(name: SavingPlanKey.accountName) String accountName,@JsonKey(name: SavingPlanKey.iconCode) int? iconCode,@JsonKey(name: SavingPlanKey.targetAmount) int? targetAmount,@JsonKey(name: SavingPlanKey.targetDate) int? targetDate,@JsonKey(name: SavingPlanKey.billPlanId) int? billPlanId,@JsonKey(name: SavingPlanKey.billPeriod) String? billPeriod,@JsonKey(name: SavingPlanKey.note) String? note,@JsonKey(name: SavingPlanKey.status) String status,@JsonKey(name: SavingPlanKey.balance) int balance,@JsonKey(name: SavingPlanKey.progress) double? progress,@JsonKey(name: SavingPlanKey.createdAt) int createdAt
 });
 
 
@@ -286,7 +290,7 @@ class __$SavingPlanCopyWithImpl<$Res>
 
 /// Create a copy of SavingPlan
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? accountId = null,Object? accountCode = null,Object? accountName = null,Object? iconCode = freezed,Object? targetAmount = freezed,Object? targetDate = freezed,Object? note = freezed,Object? status = null,Object? balance = null,Object? progress = freezed,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? accountId = null,Object? accountCode = null,Object? accountName = null,Object? iconCode = freezed,Object? targetAmount = freezed,Object? targetDate = freezed,Object? billPlanId = freezed,Object? billPeriod = freezed,Object? note = freezed,Object? status = null,Object? balance = null,Object? progress = freezed,Object? createdAt = null,}) {
   return _then(_SavingPlan(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,accountId: null == accountId ? _self.accountId : accountId // ignore: cast_nullable_to_non_nullable
@@ -295,7 +299,9 @@ as String,accountName: null == accountName ? _self.accountName : accountName // 
 as String,iconCode: freezed == iconCode ? _self.iconCode : iconCode // ignore: cast_nullable_to_non_nullable
 as int?,targetAmount: freezed == targetAmount ? _self.targetAmount : targetAmount // ignore: cast_nullable_to_non_nullable
 as int?,targetDate: freezed == targetDate ? _self.targetDate : targetDate // ignore: cast_nullable_to_non_nullable
-as int?,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
+as int?,billPlanId: freezed == billPlanId ? _self.billPlanId : billPlanId // ignore: cast_nullable_to_non_nullable
+as int?,billPeriod: freezed == billPeriod ? _self.billPeriod : billPeriod // ignore: cast_nullable_to_non_nullable
+as String?,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
 as int,progress: freezed == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable

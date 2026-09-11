@@ -4,6 +4,7 @@ import 'package:dompet_app/core/states/action_state.dart';
 import 'package:dompet_app/core/widgets/calculator.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
+import 'package:dompet_app/features/bills/cubits/bill_signal_cubit.dart';
 import 'package:dompet_app/features/savings/cubits/saving_action_cubit.dart';
 import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:dompet_app/features/savings/forms/saving_plan_form.dart';
@@ -15,7 +16,27 @@ import 'package:reactive_forms/reactive_forms.dart';
 @RoutePage()
 class SavingFormPage extends StatefulWidget {
   final SavingPlan? plan;
-  const SavingFormPage({super.key, this.plan});
+
+  /// Prefill untuk target sisihan tagihan rutin (mode buat saja).
+  final String? prefillName;
+  final int? prefillAmount;
+  final DateTime? prefillDate;
+  final String? prefillNote;
+
+  /// Link ke kemunculan tagihan rutin (diteruskan saat simpan).
+  final int? linkBillPlanId;
+  final String? linkBillPeriod;
+
+  const SavingFormPage({
+    super.key,
+    this.plan,
+    this.prefillName,
+    this.prefillAmount,
+    this.prefillDate,
+    this.prefillNote,
+    this.linkBillPlanId,
+    this.linkBillPeriod,
+  });
 
   @override
   State<SavingFormPage> createState() => _SavingFormPageState();
@@ -32,11 +53,13 @@ class _SavingFormPageState extends State<SavingFormPage> {
   void initState() {
     super.initState();
     _form = SavingPlanForm();
-    _form.nameControl.value = widget.plan?.accountName;
+    _form.nameControl.value = widget.plan?.accountName ?? widget.prefillName;
     _form.iconCodeControl.value = widget.plan?.iconCode;
-    _form.targetAmountControl.value = widget.plan?.targetAmount;
-    _form.targetDateControl.value = widget.plan?.targetDateTime;
-    _form.noteControl.value = widget.plan?.note;
+    _form.targetAmountControl.value =
+        widget.plan?.targetAmount ?? widget.prefillAmount;
+    _form.targetDateControl.value =
+        widget.plan?.targetDateTime ?? widget.prefillDate;
+    _form.noteControl.value = widget.plan?.note ?? widget.prefillNote;
   }
 
   @override
@@ -74,6 +97,8 @@ class _SavingFormPageState extends State<SavingFormPage> {
           )
         : await cubit.createPocket(
             form: _form,
+            billPlanId: widget.linkBillPlanId,
+            billPeriod: widget.linkBillPeriod,
             successMessage: 'Target berhasil dibuat',
           );
 
@@ -82,6 +107,10 @@ class _SavingFormPageState extends State<SavingFormPage> {
     if (plan != null) {
       actionContext.read<SavingSignalCubit>().created();
       actionContext.read<AccountSignalCubit>().created();
+      // Segarkan halaman tagihan bila ini target sisihan ter-link.
+      if (widget.linkBillPlanId != null) {
+        actionContext.read<BillSignalCubit>().created();
+      }
       actionContext.router.maybePop(true);
     }
   }

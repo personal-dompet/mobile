@@ -12,6 +12,7 @@ import 'package:dompet_app/features/accounts/models/account_filter.dart';
 import 'package:dompet_app/features/accounts/repositories/account_repository.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/activities/extensions/list_activity.dart';
+import 'package:dompet_app/features/bills/cubits/bill_signal_cubit.dart';
 import 'package:dompet_app/features/activities/models/activity_list_item.dart';
 import 'package:dompet_app/features/activities/widgets/activity_item_tile.dart';
 import 'package:dompet_app/features/activities/widgets/empty_activities.dart';
@@ -57,6 +58,7 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
       context.read<SavingSignalCubit>().created();
       context.read<AccountSignalCubit>().created();
       context.read<ActivitySignalCubit>().created();
+      context.read<BillSignalCubit>().created();
     } catch (_) {}
   }
 
@@ -259,6 +261,105 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
     }
   }
 
+  Future<void> _payLinkedBill(SavingDetail detail) async {
+    final bill = detail.linkedBill;
+    if (bill == null) return;
+    final assetId = await _pickTransitAsset(amount: bill.amount);
+    if (assetId == null || !mounted) return;
+
+    await _runAction(
+      action: () => _cubit.payLinkedBill(assetId: assetId),
+      loadingText: 'Membayar tagihan dari target...',
+      successMessage: 'Tagihan berhasil dibayar dari target',
+    );
+  }
+
+  /// Dialog pilih dompet perantara (transit) pembayaran dari target.
+  /// Mengembalikan `null` jika user batal.
+  Future<int?> _pickTransitAsset({required int amount}) async {
+    final assetsFuture = getIt<AccountRepository>().getAccounts(
+      filter: AccountFilter(
+        isSystem: false,
+        isLiqid: true,
+        type: AccountType.asset,
+      ),
+    );
+
+    return showDialog<int>(
+      context: context,
+      builder: (dialogContext) {
+        int? selectedId;
+        return StatefulBuilder(
+          builder: (dialogContext, setState) {
+            return AlertDialog(
+              title: const Text('Bayar tagihan'),
+              content: Column(
+                mainAxisSize: .min,
+                crossAxisAlignment: .stretch,
+                spacing: 12,
+                children: [
+                  Text('Bayar ${amount.currency} dari target lewat dompet:'),
+                  FutureBuilder<List<Account>>(
+                    future: assetsFuture,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: SpinnerLoading(),
+                          ),
+                        );
+                      }
+                      final assets = snapshot.data!;
+                      if (assets.isEmpty) {
+                        return Text(
+                          'Tidak ada dompet cair. Buat dompet dulu.',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        );
+                      }
+                      return DropdownButtonFormField<int>(
+                        initialValue: selectedId,
+                        decoration: InputDecoration(
+                          labelText: 'Lewat Dompet',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: assets.map((asset) {
+                          return DropdownMenuItem(
+                            value: asset.id,
+                            child: Text(
+                              '${asset.name} (${asset.balance.currency})',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) =>
+                            setState(() => selectedId = value),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => dialogContext.router.maybePop(),
+                  child: const Text('Batal'),
+                ),
+                FilledButton(
+                  onPressed: selectedId == null
+                      ? null
+                      : () => dialogContext.router.maybePop(selectedId),
+                  child: const Text('Bayar'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SavingDetailCubit, SavingDetailState>(
@@ -311,6 +412,7 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
               onEdit: () => _edit(plan),
               onDelete: () => _delete(plan),
               onMutation: (kind) => _openMutation(plan, kind),
+              onPayBill: null,
             );
           },
           loaded: (detail) {
@@ -321,6 +423,7 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
               onEdit: () => _edit(plan),
               onDelete: () => _delete(plan),
               onMutation: (kind) => _openMutation(plan, kind),
+              onPayBill: () => _payLinkedBill(detail),
             );
           },
         );
@@ -337,12 +440,14 @@ class _DetailScaffold extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final ValueChanged<_MutationKind> onMutation;
+  final VoidCallback? onPayBill;
   const _DetailScaffold({
     required this.plan,
     required this.detail,
     required this.onEdit,
     required this.onDelete,
     required this.onMutation,
+    this.onPayBill,
   });
 
   @override
@@ -355,7 +460,12 @@ class _DetailScaffold extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: _Body(plan: plan, detail: detail, onMutation: onMutation),
+        child: _Body(
+          plan: plan,
+          detail: detail,
+          onMutation: onMutation,
+          onPayBill: onPayBill,
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
@@ -385,7 +495,13 @@ class _Body extends StatelessWidget {
   final SavingPlan plan;
   final SavingDetail? detail;
   final ValueChanged<_MutationKind> onMutation;
-  const _Body({required this.plan, required this.detail, required this.onMutation});
+  final VoidCallback? onPayBill;
+  const _Body({
+    required this.plan,
+    required this.detail,
+    required this.onMutation,
+    this.onPayBill,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -398,6 +514,8 @@ class _Body extends StatelessWidget {
         children: [
           _PlanHeader(plan: plan),
           _PlanCard(plan: plan),
+          if (detail != null)
+            _LinkedBillSection(detail: detail, onPayBill: onPayBill),
           Row(
             spacing: 8,
             children: [
@@ -408,13 +526,17 @@ class _Body extends StatelessWidget {
                   label: const Text('Alokasi'),
                 ),
               ),
-              Expanded(
-                child: FilledButton.tonalIcon(
-                  onPressed: () => onMutation(_MutationKind.spend),
-                  icon: Icon(Icons.shopping_bag_rounded),
-                  label: const Text('Belanja'),
+              // Target sisihan tagihan rutin tak boleh dibelanjakan:
+              // keluar dana hanya via Tarik atau Bayar Tagihan agar
+              // tagihan tetap terlunasi lewat jurnal bill_payment.
+              if (!plan.isBillSinkingFund)
+                Expanded(
+                  child: FilledButton.tonalIcon(
+                    onPressed: () => onMutation(_MutationKind.spend),
+                    icon: Icon(Icons.shopping_bag_rounded),
+                    label: const Text('Belanja'),
+                  ),
                 ),
-              ),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => onMutation(_MutationKind.withdraw),
@@ -542,6 +664,109 @@ class _PlanCard extends StatelessWidget {
             ],
             const Divider(),
             _MetaFooter(plan: plan),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Tagihan terkait target sisihan: status + tombol bayar langsung.
+/// Hanya tampil untuk target ter-link tagihan rutin.
+class _LinkedBillSection extends StatelessWidget {
+  final SavingDetail detail;
+  final VoidCallback? onPayBill;
+  const _LinkedBillSection({required this.detail, this.onPayBill});
+
+  @override
+  Widget build(BuildContext context) {
+    final plan = detail.plan;
+    if (!plan.isBillSinkingFund) return const SizedBox.shrink();
+
+    final themeData = Theme.of(context);
+    final bill = detail.linkedBill;
+    final onPay = onPayBill;
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 8,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Tagihan Terkait'
+                    '${plan.billPeriod == null ? '' : ' • ${plan.billPeriod}'}',
+                    style: themeData.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                if (bill != null)
+                  GestureDetector(
+                    onTap: () => context.router.push(
+                      BillDetailRoute(billId: bill.id),
+                    ),
+                    child: Row(
+                      spacing: 2,
+                      children: [
+                        Text(
+                          'Lihat',
+                          style: themeData.textTheme.labelLarge?.copyWith(
+                            color: themeData.colorScheme.primary,
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: themeData.colorScheme.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            if (bill == null)
+              Text(
+                'Tagihan belum tergenerate.',
+                style: themeData.textTheme.bodySmall,
+              )
+            else ...[
+              Text(
+                bill.amount.currency,
+                style: themeData.textTheme.titleMedium?.copyWith(
+                  color: themeData.colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                bill.isPaid
+                    ? 'Sudah lunas'
+                    : bill.canPay
+                    ? 'Jatuh tempo ${DateTime.fromMillisecondsSinceEpoch(bill.dueDate * 1000).format(includeDay: true)}'
+                    : 'Terjadwal',
+                style: themeData.textTheme.bodySmall,
+              ),
+              if (bill.canPay && onPay != null) ...[
+                const SizedBox(height: 4),
+                if (plan.balance < bill.amount)
+                  Text(
+                    'Saldo target ${plan.balance.currency} belum cukup.',
+                    style: themeData.textTheme.bodySmall?.copyWith(
+                      color: themeData.colorScheme.error,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                FilledButton.icon(
+                  onPressed: plan.balance >= bill.amount ? onPay : null,
+                  icon: const Icon(Icons.receipt_long_rounded),
+                  label: Text('Bayar Tagihan • ${bill.amount.currency}'),
+                ),
+              ],
+            ],
           ],
         ),
       ),

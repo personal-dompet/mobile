@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
+import 'package:dompet_app/core/extensions/date.dart';
+import 'package:dompet_app/core/extensions/number.dart';
+import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/states/action_state.dart';
 import 'package:dompet_app/core/widgets/calculator.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
@@ -15,6 +18,7 @@ import 'package:dompet_app/features/bills/utils/bill_schedule.dart';
 import 'package:dompet_app/features/bills/widgets/bill_schedule_field.dart';
 import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
 import 'package:dompet_app/features/categories/widgets/category_field.dart';
+import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -253,9 +257,92 @@ class _BillPlanFormPageState extends State<BillPlanFormPage> {
 
     if (plan != null) {
       actionContext.read<BillSignalCubit>().created();
+      final goTarget =
+          !_isEdit &&
+          plan.period == BillPlanPeriodEnum.yearly.name &&
+          await _offerSinkingFund(plan);
+      if (!actionContext.mounted) return;
+      if (goTarget) {
+        // Ganti halaman form dengan form target terisi + ter-link.
+        // Back kembali ke list (bukan ke form basi).
+        actionContext.router.replace(
+          SavingFormRoute(
+            prefillName: 'Dana ${plan.name}',
+            prefillAmount: plan.amount,
+            prefillDate: _upcomingDueDate(plan),
+            prefillNote: 'Sisihan ${plan.name}',
+            linkBillPlanId: plan.id,
+            linkBillPeriod: _upcomingPeriodLabel(plan),
+          ),
+        );
+        return;
+      }
       // Tujuan detail plan menyusul di halaman BillPlanPage.
       actionContext.router.maybePop(true);
     }
+  }
+
+  /// Label kemunculan billed terdekat (untuk yearly: tahun "2026").
+  String _upcomingPeriodLabel(BillPlan plan) {
+    final billed = BillSchedule.nextBilled(
+      DateTime.now(),
+      plan.period,
+      plan.billedSchedule,
+    );
+    return BillSchedule.billPeriodFor(billed, plan.period);
+  }
+
+  /// Jatuh tempo kemunculan billed terdekat (prefill tanggal target).
+  DateTime _upcomingDueDate(BillPlan plan) {
+    final billed = BillSchedule.nextBilled(
+      DateTime.now(),
+      plan.period,
+      plan.billedSchedule,
+    );
+    return BillSchedule.dueDateFor(billed, plan.period, plan.dueDateSchedule);
+  }
+
+  /// Tawarkan pembuatan target sisihan. False bila sudah ada target
+  /// untuk kemunculan ini atau user menolak.
+  Future<bool> _offerSinkingFund(BillPlan plan) async {
+    final label = _upcomingPeriodLabel(plan);
+    final existing = await getIt<SavingRepository>().getLinkedTarget(
+      plan.id,
+      label,
+    );
+    if (existing != null) return false;
+    if (!mounted) return false;
+
+    final due = _upcomingDueDate(plan);
+    final now = DateTime.now();
+    final months = ((due.year - now.year) * 12 + (due.month - now.month)).clamp(
+      1,
+      120,
+    );
+    final perMonth = (plan.amount / months).ceil();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Sisihkan dana bulanan?'),
+        content: Text(
+          '"${plan.name}" ${plan.amount.currency} jatuh tempo '
+          '${due.format(includeDay: true)}. Buat target sisihan '
+          'sekitar ${perMonth.currency}/bulan dan pantau di fitur Target?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => dialogContext.router.maybePop(false),
+            child: const Text('Nanti'),
+          ),
+          FilledButton(
+            onPressed: () => dialogContext.router.maybePop(true),
+            child: const Text('Buat Target'),
+          ),
+        ],
+      ),
+    );
+    return confirmed == true;
   }
 
   @override

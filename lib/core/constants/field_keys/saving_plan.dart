@@ -3,6 +3,8 @@ abstract class SavingPlanKey {
   static const accountId = 'account_id';
   static const targetAmount = 'target_amount';
   static const targetDate = 'target_date';
+  static const billPlanId = 'bill_plan_id';
+  static const billPeriod = 'bill_period';
   static const note = 'note';
   static const status = 'status';
   static const isDeleted = 'is_deleted';

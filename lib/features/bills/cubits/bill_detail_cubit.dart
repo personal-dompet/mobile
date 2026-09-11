@@ -3,6 +3,7 @@ import 'package:dompet_app/features/accounts/repositories/account_repository.dar
 import 'package:dompet_app/features/bills/models/bill_detail.dart';
 import 'package:dompet_app/features/bills/repositories/bill_plan_repository.dart';
 import 'package:dompet_app/features/bills/repositories/bill_repository.dart';
+import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'bill_detail_cubit.freezed.dart';
@@ -23,11 +24,13 @@ class BillDetailCubit extends Cubit<BillDetailState> {
     this._billRepository,
     this._planRepository,
     this._accountRepository,
+    this._savingRepository,
   ) : super(const BillDetailState.initial());
 
   final BillRepository _billRepository;
   final BillPlanRepository _planRepository;
   final AccountRepository _accountRepository;
+  final SavingRepository _savingRepository;
 
   int? _billId;
 
@@ -50,6 +53,10 @@ class BillDetailCubit extends Cubit<BillDetailState> {
           ? null
           : await _accountRepository.getAccount(plan.accountId);
       final journals = await _billRepository.getBillJournals(billId);
+      final linkedTarget = await _savingRepository.getLinkedTarget(
+        bill.billPlanId,
+        bill.billPeriod,
+      );
       if (isClosed) return;
       if (plan == null || category == null) {
         emit(
@@ -66,6 +73,7 @@ class BillDetailCubit extends Cubit<BillDetailState> {
             plan: plan,
             category: category,
             journals: journals,
+            linkedTarget: linkedTarget,
           ),
         ),
       );
@@ -85,6 +93,26 @@ class BillDetailCubit extends Cubit<BillDetailState> {
     if (billId == null) return 'Terjadi kesalahan data pada aplikasi';
     try {
       await _billRepository.payBill(billId: billId, assetId: assetId);
+      return null;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /// Bayar lunas dari pocket target via dompet perantara.
+  /// Kembalikan pesan error bila gagal.
+  Future<String?> payBillFromPocket({
+    required int pocketId,
+    required int assetId,
+  }) async {
+    final billId = _billId;
+    if (billId == null) return 'Terjadi kesalahan data pada aplikasi';
+    try {
+      await _billRepository.payBillFromPocket(
+        billId: billId,
+        pocketId: pocketId,
+        assetId: assetId,
+      );
       return null;
     } catch (e) {
       return e.toString();

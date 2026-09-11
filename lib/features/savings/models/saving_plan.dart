@@ -16,6 +16,8 @@ abstract class SavingPlan with _$SavingPlan {
     @JsonKey(name: SavingPlanKey.iconCode) int? iconCode,
     @JsonKey(name: SavingPlanKey.targetAmount) int? targetAmount,
     @JsonKey(name: SavingPlanKey.targetDate) int? targetDate,
+    @JsonKey(name: SavingPlanKey.billPlanId) int? billPlanId,
+    @JsonKey(name: SavingPlanKey.billPeriod) String? billPeriod,
     @JsonKey(name: SavingPlanKey.note) String? note,
     @JsonKey(name: SavingPlanKey.status) @Default('active') String status,
     @JsonKey(name: SavingPlanKey.balance) @Default(0) int balance,
@@ -43,6 +45,9 @@ abstract class SavingPlan with _$SavingPlan {
   }
 
   bool get isTargetReached => hasTarget && balance >= targetAmount!;
+
+  /// Target sisihan tagihan rutin tahunan (punya link bill plan).
+  bool get isBillSinkingFund => billPlanId != null;
 
   String get progressLabel {
     if (!hasTarget) return balance.currency;

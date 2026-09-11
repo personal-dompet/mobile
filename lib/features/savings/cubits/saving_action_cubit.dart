@@ -17,6 +17,8 @@ class SavingActionCubit extends Cubit<ActionState> {
     required SavingPlanForm form,
     int? initialAssetId,
     int? initialAmount,
+    int? billPlanId,
+    String? billPeriod,
     String successMessage = 'Target berhasil dibuat',
   }) async {
     emit(const ActionState.loading());
@@ -35,6 +37,8 @@ class SavingActionCubit extends Cubit<ActionState> {
         note: form.note,
         initialAssetId: initialAssetId,
         initialAmount: initialAmount,
+        billPlanId: billPlanId,
+        billPeriod: billPeriod,
       );
 
       emit(ActionState.success(message: successMessage));

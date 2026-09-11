@@ -1,3 +1,4 @@
+import 'package:dompet_app/features/bills/models/bill.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/savings/models/saving_insight.dart';
 import 'package:dompet_app/features/savings/models/saving_plan.dart';
@@ -11,11 +12,16 @@ class SavingDetail {
     required this.plan,
     required this.insight,
     this.activities = const [],
+    this.linkedBill,
   });
 
   final SavingPlan plan;
   final SavingInsight insight;
   final List<JournalEntry> activities;
+
+  /// Tagihan kemunculan ter-link (hanya untuk target sisihan).
+  /// Null bila target biasa atau tagihan belum tergenerate.
+  final Bill? linkedBill;
 
   int get transactionCount => activities.length;
 
@@ -23,6 +29,7 @@ class SavingDetail {
     required SavingPlan plan,
     required List<JournalEntry> activities,
     required DateTime now,
+    Bill? linkedBill,
   }) {
     return SavingDetail(
       plan: plan,
@@ -32,6 +39,7 @@ class SavingDetail {
         now: now,
       ),
       activities: activities,
+      linkedBill: linkedBill,
     );
   }
 }
