@@ -120,9 +120,19 @@ class _DetailContentState extends State<_DetailContent> {
             children: [
               // FIX-04: saldo awal read-only — tak ada form edit yang valid
               // (toTransactionForm tak punya baris kategori income/expense).
+              // Tagihan: nominal dikunci plan; jurnal payment hanya payable +
+              // asset sehingga toTransactionForm kosong (TC-BINT-007).
+              // Akrual ditagih (bill_generated) full read-only: di-void/diubah
+              // akan merusak simetri payable vs bill — kelola via Tagihan
+              // Rutin (TC-BINT-009).
+              // Kaki withdraw bayar-dari-Target (J1) terkunci juga: void-nya
+              // cascade di repo, edit tak punya semantik valid (TC-BINT-010).
               // FIX-03/ISSUE-8: profile tombol di bawah tidak diubah.
               if (widget.activity.type != .adjustment &&
-                  widget.activity.source != JournalSource.setup)
+                  widget.activity.type != .billPayment &&
+                  widget.activity.source != JournalSource.setup &&
+                  widget.activity.source != JournalSource.billGenerated &&
+                  !widget.activity.isBillLinkedWithdraw)
                 FilledButton(
                   onPressed: () async {
                     final batch =
@@ -132,6 +142,9 @@ class _DetailContentState extends State<_DetailContent> {
                       case .adjustment:
                       case .all:
                       case .billPayment:
+                        // Tak terjangkau: tombol disembunyikan di atas
+                        // (adjustment & setup & billPayment read-only di sini).
+                        break;
                       case .expense:
                         // FIX-03/ISSUE-8: push via context.router agar
                         // scope sama dengan replace di bawah (root).
@@ -190,51 +203,53 @@ class _DetailContentState extends State<_DetailContent> {
                     ],
                   ),
                 ),
-              OutlinedButton(
-                onPressed: () async {
-                  final isConfirmed = await showDialog<bool>(
-                    context: context,
-                    useRootNavigator: false,
-                    builder: (context) {
-                      return DompetDialog(
-                        title:
-                            'Hapus ${widget.activity.type.label.toLowerCase()} ini?',
-                        subtitle:
-                            'Saldo dan riwayat terkait akan diperbarui sesuai perubahan ini.',
-                        onCancel: () {
-                          Navigator.pop(context, false);
-                        },
-                        onConfirm: () {
-                          Navigator.pop(context, true);
-                        },
-                        confirmationText: 'Hapus',
-                      );
-                    },
-                  );
+              if (widget.activity.source != JournalSource.billGenerated &&
+                  !widget.activity.isBillLinkedWithdraw)
+                OutlinedButton(
+                  onPressed: () async {
+                    final isConfirmed = await showDialog<bool>(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (context) {
+                        return DompetDialog(
+                          title:
+                              'Hapus ${widget.activity.type.label.toLowerCase()} ini?',
+                          subtitle:
+                              'Saldo dan riwayat terkait akan diperbarui sesuai perubahan ini.',
+                          onCancel: () {
+                            Navigator.pop(context, false);
+                          },
+                          onConfirm: () {
+                            Navigator.pop(context, true);
+                          },
+                          confirmationText: 'Hapus',
+                        );
+                      },
+                    );
 
-                  if (isConfirmed != true || !context.mounted) return;
+                    if (isConfirmed != true || !context.mounted) return;
 
-                  await context.read<ActivityDetailCubit>().deleteActivity(
-                    widget.activity.id,
-                  );
-                  if (!context.mounted) return;
-                  context.read<ActivitySignalCubit>().created();
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: themeData.colorScheme.error,
+                    await context.read<ActivityDetailCubit>().deleteActivity(
+                      widget.activity.id,
+                    );
+                    if (!context.mounted) return;
+                    context.read<ActivitySignalCubit>().created();
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: themeData.colorScheme.error,
+                  ),
+                  child: Row(
+                    spacing: 4,
+                    mainAxisAlignment: .center,
+                    children: [
+                      Icon(
+                        Icons.delete_forever_rounded,
+                        color: themeData.colorScheme.error,
+                      ),
+                      Text('Hapus'),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  spacing: 4,
-                  mainAxisAlignment: .center,
-                  children: [
-                    Icon(
-                      Icons.delete_forever_rounded,
-                      color: themeData.colorScheme.error,
-                    ),
-                    Text('Hapus'),
-                  ],
-                ),
-              ),
             ],
           ),
         ),
@@ -313,8 +328,13 @@ class _DetailContentState extends State<_DetailContent> {
                   ),
                 ),
                 switch (widget.activity.type) {
+                  // Akrual ditagih tak punya baris asset → kartu generik
+                  // (cabang _) agar _TransactionLine tak crash (TC-BINT-009).
                   .income ||
-                  .expense => _TransactionLine(activity: widget.activity),
+                  .expense
+                      when widget.activity.source !=
+                          JournalSource.billGenerated =>
+                    _TransactionLine(activity: widget.activity),
                   .transfer => _TransferLine(activity: widget.activity),
                   .adjustment => _BalanceAdjustmentLine(
                     activity: widget.activity,

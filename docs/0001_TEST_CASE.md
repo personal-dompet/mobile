@@ -7,7 +7,7 @@
 > Status otomatisasi (`integration_test/`, 55 test hijau di device via `flutter test integration_test/<file>`):
 > `✅` = logika + efek samping (saldo / Total Uang / target / anggaran / laporan) terverifikasi otomatis dan lolos.
 > Tanpa tanda = masih manual. Teks snackbar, layout, dialog, dan interaksi UI murni (date-picker, bottom sheet, dsb.) tetap dicek manual meski TC bertanda ✅.
-> Pemetaan file: Onboarding + navigasi Beranda → `onboarding_test.dart`; Dompet → `wallet_flow_test.dart`; Pemasukan/Pengeluaran/Transfer/Penyesuaian/Hapus → `transaction_flow_test.dart`; Target/Anggaran/Laporan/GLB-002 → `saving_budget_flow_test.dart`; Kategori → `category_flow_test.dart`; setup awal + navigasi/dialog/widget → `navigation_setup_test.dart` + `navigation_test.dart` (memakai `TestKeys`).
+> Pemetaan file: Onboarding + navigasi Beranda → `onboarding_test.dart`; Dompet → `wallet_flow_test.dart`; Pemasukan/Pengeluaran/Transfer/Penyesuaian/Hapus → `transaction_flow_test.dart`; Target/Anggaran/Laporan/GLB-002 → `saving_budget_flow_test.dart`; Kategori → `category_flow_test.dart`; Tagihan (fase-3) → `bill_flow_test.dart`; setup awal + navigasi/dialog/widget → `navigation_setup_test.dart` + `navigation_test.dart` (memakai `TestKeys`).
 > Cakupan: 120 dari 191 TC bertanda ✅. Belum otomatis: §9 Kategori (sisa 001,002,008,009,010,011), §12 Laporan (sisa 001,002,011,012), §13 Backup/Pengaturan seluruhnya, dan TC UI-murni / Drive-asli lainnya.
 
 **Setup awal yang disarankan:**

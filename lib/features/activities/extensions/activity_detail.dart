@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:dompet_app/core/extensions/number.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
+import 'package:dompet_app/features/savings/enums/saving_tx_type.dart';
 import 'package:dompet_app/features/transactions/forms/transaction_form.dart';
 import 'package:dompet_app/features/transactions/forms/transfer_form.dart';
 
@@ -15,6 +18,22 @@ extension ActivityDetail on JournalEntry {
       .setup => 'Detail Saldo Awal',
       _ => 'Detail Aktivitas',
     };
+  }
+
+  /// Kaki withdraw dari "bayar tagihan pakai Target" (J1): void/edit-nya
+  /// harus terkunci + cascade seperti payment-nya (TC-BINT-010).
+  /// False untuk Tarik biasa & jurnal lama tanpa `bill_id`.
+  bool get isBillLinkedWithdraw {
+    final meta = metadata;
+    if (meta == null || meta.isEmpty) return false;
+    try {
+      final json = jsonDecode(meta);
+      if (json is! Map) return false;
+      if (json['saving_tx'] != SavingTxType.withdraw.value) return false;
+      return json['bill_id'] is int;
+    } catch (_) {
+      return false;
+    }
   }
 
   TransactionForm toTransactionForm() {

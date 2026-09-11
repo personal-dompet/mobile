@@ -7,7 +7,10 @@ import 'package:dompet_app/core/database/views/views.dart';
 import 'package:dompet_app/core/models/pagination.dart';
 import 'package:dompet_app/core/models/pagination_meta.dart';
 import 'package:dompet_app/core/models/pagination_result.dart';
+import 'package:dompet_app/features/bills/enums/bill_status.dart';
+import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
+import 'package:dompet_app/features/savings/enums/saving_tx_type.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/journals/models/journal_filter.dart';
 import 'package:dompet_app/features/journals/models/journal_line.dart';
@@ -231,12 +234,84 @@ class JournalRepository {
   Future<void> deleteJournal(int id) async {
     final db = await _dbService.database;
 
-    await db.update(
-      journalEntryTable,
-      {JournalEntryKey.status: JournalStatus.voided.name},
-      where: '${JournalEntryKey.id} = ?',
-      whereArgs: [id],
-    );
+    await db.transaction((txn) async {
+      final rows = await txn.query(
+        journalEntryTable,
+        columns: [
+          JournalEntryKey.source,
+          JournalEntryKey.sourceId,
+          JournalEntryKey.metadata,
+        ],
+        where: '${JournalEntryKey.id} = ?',
+        whereArgs: [id],
+        limit: 1,
+      );
+      await txn.update(
+        journalEntryTable,
+        {JournalEntryKey.status: JournalStatus.voided.name},
+        where: '${JournalEntryKey.id} = ?',
+        whereArgs: [id],
+      );
+      // Void pembayaran tagihan = batal lunas: kembalikan bill ke unpaid
+      // agar bisa dibayar ulang (TC-BINT-006). Hanya bila masih paid agar
+      // pembayaran pengganti yang lebih baru tidak ikut terbuka.
+      if (rows.isNotEmpty &&
+          rows.first[JournalEntryKey.source] ==
+              JournalSource.billPayment.value &&
+          rows.first[JournalEntryKey.sourceId] != null) {
+        await txn.update(
+          billTable,
+          {BillKey.status: BillStatus.unpaid.value},
+          where: '${BillKey.id} = ? AND ${BillKey.status} = ?',
+          whereArgs: [
+            rows.first[JournalEntryKey.sourceId],
+            BillStatus.paid.value,
+          ],
+        );
+      }
+      // Void kaki withdraw bayar-dari-Target (J1) = undo penuh: ikut void
+      // J2 payment + buka kunci bill (TC-BINT-010). Withdraw biasa
+      // (tanpa bill_id) tidak tersentuh.
+      final linkedBillId = rows.isEmpty
+          ? null
+          : _linkedWithdrawBillId(
+              rows.first[JournalEntryKey.metadata] as String?,
+            );
+      if (rows.isNotEmpty && linkedBillId != null) {
+        await txn.update(
+          journalEntryTable,
+          {JournalEntryKey.status: JournalStatus.voided.name},
+          where:
+              '${JournalEntryKey.source} = ? AND ${JournalEntryKey.sourceId} = ? AND ${JournalEntryKey.status} = ?',
+          whereArgs: [
+            JournalSource.billPayment.value,
+            linkedBillId,
+            JournalStatus.posted.name,
+          ],
+        );
+        await txn.update(
+          billTable,
+          {BillKey.status: BillStatus.unpaid.value},
+          where: '${BillKey.id} = ? AND ${BillKey.status} = ?',
+          whereArgs: [linkedBillId, BillStatus.paid.value],
+        );
+      }
+    });
     return;
+  }
+
+  /// `bill_id` dari metadata kaki withdraw bayar-dari-Target (J1).
+  /// Null untuk withdraw biasa, jurnal lama, atau metadata rusak.
+  int? _linkedWithdrawBillId(String? meta) {
+    if (meta == null || meta.isEmpty) return null;
+    try {
+      final json = jsonDecode(meta);
+      if (json is! Map) return null;
+      if (json['saving_tx'] != SavingTxType.withdraw.value) return null;
+      final id = json['bill_id'];
+      return id is int ? id : null;
+    } catch (_) {
+      return null;
+    }
   }
 }

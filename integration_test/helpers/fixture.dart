@@ -9,9 +9,11 @@ import 'package:dompet_app/features/assets/forms/asset_form.dart';
 import 'package:dompet_app/features/assets/repositories/asset_repository.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_plan_repository.dart';
 import 'package:dompet_app/features/budgets/repositories/budget_repository.dart';
+import 'package:dompet_app/features/bills/repositories/bill_repository.dart';
 import 'package:dompet_app/features/categories/forms/category_form.dart';
 import 'package:dompet_app/features/categories/repositories/category_repository.dart';
 import 'package:dompet_app/features/dashboard/repositories/dashboard_repository.dart';
+import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
 import 'package:dompet_app/features/journals/repositories/journal_repository.dart';
 import 'package:dompet_app/features/savings/models/saving_plan.dart';
@@ -215,6 +217,37 @@ Future<BaseData> seedBaseData() async {
 /// Total Uang = jumlah saldo dompet cair aktif (TC-DSH-002).
 Future<int> totalUang() =>
     getIt<DashboardRepository>().getTotalLiquidBalance();
+
+/// Total nominal tagihan aktif (unpaid) untuk banner Beranda (TC-BINT-001).
+Future<int> pendingBillsTotal() =>
+    getIt<BillRepository>().getPendingTotal();
+
+/// Danai dompet via jurnal setup (dikecualikan ringkasan/laporan/anggaran).
+Future<void> fundAsset(int assetId, int amount) async {
+  final db = await getIt<DbService>().database;
+  final initialId = await systemAccountId(AccountPreset.intialBalance.code);
+  final nowSec = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  final entryId = await db.insert(journalEntryTable, {
+    JournalEntryKey.entryDate: nowSec,
+    JournalEntryKey.source: JournalSource.setup.value,
+    JournalEntryKey.description: 'fund fixture asset',
+    JournalEntryKey.status: JournalStatus.posted.name,
+  });
+  await db.insert(journalLineTable, {
+    JournalLineKey.journalEntryId: entryId,
+    JournalLineKey.accountId: assetId,
+    JournalLineKey.debitAmount: amount,
+    JournalLineKey.creditAmount: 0,
+    JournalLineKey.lineOrder: 0,
+  });
+  await db.insert(journalLineTable, {
+    JournalLineKey.journalEntryId: entryId,
+    JournalLineKey.accountId: initialId,
+    JournalLineKey.debitAmount: 0,
+    JournalLineKey.creditAmount: amount,
+    JournalLineKey.lineOrder: 1,
+  });
+}
 
 Future<int> balanceOf(int accountId) async {
   final account = await getIt<AccountRepository>().getAccount(accountId);

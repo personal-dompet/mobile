@@ -345,6 +345,9 @@ class BillRepository {
           jsonEncode({
             'saving_tx': SavingTxType.withdraw.value,
             'pocket_id': pocketId,
+            // Tautan balik ke bill (TC-BINT-010): tanpa ini J1 tak bisa
+            // dibedakan dari Tarik biasa sehingga void-nya tak bisa cascade.
+            'bill_id': bill.id,
           }),
         ],
       );
