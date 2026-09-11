@@ -7,7 +7,6 @@ import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart
 import 'package:dompet_app/features/savings/cubits/saving_action_cubit.dart';
 import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:dompet_app/features/savings/forms/saving_allocation_form.dart';
-import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
 import 'package:dompet_app/features/savings/widgets/pocket_balance_hint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -151,7 +150,7 @@ class _SavingAllocationPageState extends State<SavingAllocationPage> {
                 // penarikan (batas = saldo pocket); alokasi dibatasi dompet.
                 if (_isWithdraw)
                   FutureBuilder(
-                    future: getIt<SavingRepository>().getByAccountId(
+                    future: getIt<SavingActionCubit>().getPocket(
                       widget.accountId,
                     ),
                     builder: (context, snapshot) {

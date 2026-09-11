@@ -89,7 +89,7 @@ class _AssetFormPageState extends State<AssetFormPage> {
                   builder: (context, state) {
                     final List<Account> presetAccounts = state.maybeWhen(
                       orElse: () => [],
-                      loaded: (assets) => assets,
+                      loaded: (assets, _) => assets,
                     );
                     return Column(
                       mainAxisSize: MainAxisSize.min,

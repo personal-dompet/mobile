@@ -122,7 +122,7 @@ class _AssetArchivedBodyState extends State<_AssetArchivedBody> {
                         ),
                       ),
                     ),
-                    loaded: (assets) => assets.isEmpty
+                    loaded: (assets, _) => assets.isEmpty
                         ? SliverFillRemaining(
                             child: Center(
                               child: Text(

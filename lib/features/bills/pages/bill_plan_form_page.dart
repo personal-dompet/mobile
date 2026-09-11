@@ -18,7 +18,7 @@ import 'package:dompet_app/features/bills/utils/bill_schedule.dart';
 import 'package:dompet_app/features/bills/widgets/bill_schedule_field.dart';
 import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
 import 'package:dompet_app/features/categories/widgets/category_field.dart';
-import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
+import 'package:dompet_app/features/savings/cubits/saving_action_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -306,7 +306,7 @@ class _BillPlanFormPageState extends State<BillPlanFormPage> {
   /// untuk kemunculan ini atau user menolak.
   Future<bool> _offerSinkingFund(BillPlan plan) async {
     final label = _upcomingPeriodLabel(plan);
-    final existing = await getIt<SavingRepository>().getLinkedTarget(
+    final existing = await getIt<SavingActionCubit>().getLinkedTarget(
       plan.id,
       label,
     );

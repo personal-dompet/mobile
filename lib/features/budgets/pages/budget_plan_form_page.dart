@@ -11,7 +11,6 @@ import 'package:dompet_app/features/budgets/cubits/budget_action_cubit.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/budgets/forms/budget_plan_form.dart';
 import 'package:dompet_app/features/budgets/models/budget_plan.dart';
-import 'package:dompet_app/features/budgets/repositories/budget_plan_repository.dart';
 import 'package:dompet_app/features/categories/cubits/category_cubit.dart';
 import 'package:dompet_app/features/categories/widgets/category_field.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +49,7 @@ class _BudgetPlanFormPageState extends State<BudgetPlanFormPage> {
     ) async {
       if (categoryId == null || categoryId == widget.category.id) return;
       final requestedId = categoryId;
-      final plan = await getIt<BudgetPlanRepository>().getByAccountId(
+      final plan = await getIt<BudgetActionCubit>().startAddBudget(
         requestedId,
       );
       if (!mounted) return;

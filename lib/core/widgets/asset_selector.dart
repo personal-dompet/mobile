@@ -42,7 +42,7 @@ class AssetSelector extends StatelessWidget {
                 listener: (context, state) {
                   state.maybeWhen(
                     orElse: () {},
-                    loaded: (assets) {
+                    loaded: (assets, _) {
                       if (assets.length == 1) {
                         accountSelectorForm.idControl.value = assets.first.id;
                         accountSelectorForm.nameControl.value =
@@ -64,7 +64,7 @@ class AssetSelector extends StatelessWidget {
                       message,
                       style: TextStyle(color: themeData.colorScheme.error),
                     ),
-                    loaded: (assets) {
+                    loaded: (assets, _) {
                       return SizedBox(
                         height: 80,
                         child: ListView.separated(

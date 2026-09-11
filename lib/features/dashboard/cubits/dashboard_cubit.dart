@@ -1,12 +1,16 @@
 import 'package:bloc/bloc.dart';
+import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/core/models/pagination.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/accounts/models/account_filter.dart';
 import 'package:dompet_app/features/accounts/repositories/account_repository.dart';
+import 'package:dompet_app/features/bills/repositories/bill_repository.dart';
 import 'package:dompet_app/features/dashboard/models/transaction_summary.dart';
 import 'package:dompet_app/features/dashboard/repositories/dashboard_repository.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/journals/repositories/journal_repository.dart';
+import 'package:dompet_app/features/reports/models/report_period.dart';
+import 'package:dompet_app/features/reports/repositories/report_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'dashboard_cubit.freezed.dart';
@@ -35,6 +39,17 @@ abstract class DashboardState with _$DashboardState {
     DashboardSectionStatus presetAssetAccountsStatus,
     @Default([]) List<Account> presetAssetAccounts,
     String? presetAssetAccountsError,
+
+    /// Total tagihan tertunda (banner). Null = belum dimuat/gagal → sembunyi.
+    int? pendingBillsTotal,
+
+    /// Jumlah dompet cair (subtitle). Null = belum dimuat/gagal → sembunyi.
+    int? liquidAssetCount,
+
+    /// Ringkasan bulan ini (subtitle + kartu laporan). Null = memuat.
+    int? monthAllocated,
+    int? monthlyIncome,
+    int? monthlyExpense,
   }) = _DashboardState;
 }
 
@@ -43,11 +58,17 @@ class DashboardCubit extends Cubit<DashboardState> {
   final AccountRepository _accountRepository;
   final JournalRepository _journalRepository;
 
+  /// Opsional (aturan 7): agar widget dashboard tetap via 1 cubit data.
+  final ReportRepository? _reportRepository;
+  final BillRepository? _billRepository;
+
   DashboardCubit(
     this._repository,
     this._accountRepository,
-    this._journalRepository,
-  ) : super(DashboardState());
+    this._journalRepository, [
+    this._reportRepository,
+    this._billRepository,
+  ]) : super(DashboardState());
 
   Future<void> init() async {
     await Future.wait([
@@ -55,6 +76,9 @@ class DashboardCubit extends Cubit<DashboardState> {
       _getRecentActivities(),
       _getSummary(),
       _getPresetAssetAccounts(),
+      _getPendingBills(),
+      _getLiquidAssetCount(),
+      _getMonthlyFigures(),
     ]);
   }
 
@@ -117,8 +141,63 @@ class DashboardCubit extends Cubit<DashboardState> {
     }
   }
 
-  Future<void> _getRecentActivities() async {
-    emit(state.copyWith(recentActivitiesStatus: .loading));
+  /// Total tagihan tertunda untuk banner (aturan 5: masuk state flow).
+  Future<void> _getPendingBills() async {
+    try {
+      final total = await _billRepository?.getPendingTotal() ?? 0;
+      if (!isClosed) emit(state.copyWith(pendingBillsTotal: total));
+    } catch (_) {
+      if (!isClosed) emit(state.copyWith(pendingBillsTotal: null));
+    }
+  }
+
+  /// Jumlah dompet cair untuk subtitle (aturan 5: masuk state flow).
+  Future<void> _getLiquidAssetCount() async {
+    try {
+      final accounts = await _accountRepository.getAccounts(
+        filter: const AccountFilter(
+          isSystem: false,
+          isLiqid: true,
+          type: AccountType.asset,
+        ),
+      );
+      if (!isClosed) emit(state.copyWith(liquidAssetCount: accounts.length));
+    } catch (_) {
+      if (!isClosed) emit(state.copyWith(liquidAssetCount: null));
+    }
+  }
+
+  /// Angka bulan ini untuk subtitle + kartu laporan (aturan 5: satu flow).
+  Future<void> _getMonthlyFigures() async {
+    try {
+      final reportRepository = _reportRepository;
+      if (reportRepository == null) return;
+      final summary = await reportRepository.getMonthlySummary(
+        ReportPeriod.currentMonth(),
+      );
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            monthAllocated: summary.netSaving,
+            monthlyIncome: summary.income,
+            monthlyExpense: summary.expense,
+          ),
+        );
+      }
+    } catch (_) {
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            monthAllocated: null,
+            monthlyIncome: null,
+            monthlyExpense: null,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _getRecentActivities() async {    emit(state.copyWith(recentActivitiesStatus: .loading));
 
     try {
       final paginatedActivities = await _journalRepository.getJournals(

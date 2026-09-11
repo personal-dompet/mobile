@@ -6,12 +6,19 @@ import 'package:dompet_app/features/savings/forms/saving_plan_form.dart';
 import 'package:dompet_app/features/savings/forms/saving_spend_form.dart';
 import 'package:dompet_app/features/savings/models/saving_plan.dart';
 import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
-import 'package:flutter/material.dart';
 
 class SavingActionCubit extends Cubit<ActionState> {
   SavingActionCubit(this._repository) : super(const ActionState.initial());
 
   final SavingRepository _repository;
+
+  /// Baca via cubit (aturan 3/4): saldo pocket untuk hint batas.
+  Future<SavingPlan?> getPocket(int accountId) =>
+      _repository.getByAccountId(accountId);
+
+  /// Baca via cubit (aturan 3/4): target sisihan satu kemunculan bill.
+  Future<SavingPlan?> getLinkedTarget(int billPlanId, String billPeriod) =>
+      _repository.getLinkedTarget(billPlanId, billPeriod);
 
   Future<SavingPlan?> createPocket({
     required SavingPlanForm form,
@@ -44,7 +51,6 @@ class SavingActionCubit extends Cubit<ActionState> {
       emit(ActionState.success(message: successMessage));
       return plan;
     } catch (e) {
-      debugPrint(e.toString());
       emit(ActionState.error(message: e.toString()));
       return null;
     }

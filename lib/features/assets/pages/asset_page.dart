@@ -145,7 +145,7 @@ class _AssetAccountPageState extends State<_AssetAccountPage> {
                     ),
                     // FIX-13 (ISSUE 4): pencarian tanpa hasil tampilkan
                     // empty state, bukan blank. Q14 A.
-                    loaded: (assets) => assets.isEmpty && _isSearching
+                    loaded: (assets, _) => assets.isEmpty && _isSearching
                         ? SliverFillRemaining(
                             child: Center(
                               child: DompetEmptySearch(

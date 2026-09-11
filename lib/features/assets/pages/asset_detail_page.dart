@@ -7,11 +7,9 @@ import 'package:dompet_app/core/widgets/dompet_dialog.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/cubits/account_action_cubit.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
-import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/activities/widgets/activity_item_tile.dart';
 import 'package:dompet_app/features/activities/widgets/empty_activities.dart';
-import 'package:dompet_app/features/assets/cubits/asset_cubit.dart';
 import 'package:dompet_app/features/assets/cubits/asset_detail_cubit.dart';
 import 'package:dompet_app/features/assets/forms/asset_form.dart';
 import 'package:dompet_app/features/assets/models/asset_detail.dart';
@@ -122,18 +120,9 @@ class _AssetDetailPageState extends State<AssetDetailPage> {
                                 );
                               },
                               onArchive: () async {
-                                final assetAccountCubit = getIt<AssetCubit>();
-                                await assetAccountCubit.fetch();
-
-                                final assets = assetAccountCubit.state
-                                    .maybeWhen(
-                                      orElse: () => <Account>[],
-                                      loaded: (assets) => assets,
-                                    );
-
                                 if (!context.mounted) return;
 
-                                if (assets.length == 1) {
+                                if (accountDetail.activeAssetCount == 1) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     DompetSnackbar(
                                       context,

@@ -5,7 +5,6 @@ import 'package:dompet_app/core/widgets/page_view.dart';
 import 'package:dompet_app/features/bills/cubits/bill_signal_cubit.dart';
 import 'package:dompet_app/features/bills/models/bill.dart';
 import 'package:dompet_app/features/bills/models/bill_filter.dart';
-import 'package:dompet_app/features/bills/repositories/bill_repository.dart';
 import 'package:dompet_app/features/bills/widgets/bill_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,9 +30,8 @@ class _BillPlanBillsPageState extends State<BillPlanBillsPage> {
   @override
   void initState() {
     super.initState();
-    _cubit = PaginationCubit<Bill, BillFilter>(
-      fetcher: getIt<BillRepository>().getBills,
-    )..fetchInitial(filter: BillFilter(billPlanId: widget.planId));
+    _cubit = getIt<PaginationCubit<Bill, BillFilter>>()
+      ..fetchInitial(filter: BillFilter(billPlanId: widget.planId));
   }
 
   @override

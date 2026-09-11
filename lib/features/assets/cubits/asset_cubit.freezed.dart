@@ -125,12 +125,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Account> assets)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Account> assets,  List<Account> presetAssets)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AssetInitial() when initial != null:
 return initial();case _AssetLoading() when loading != null:
 return loading();case _AssetLoaded() when loaded != null:
-return loaded(_that.assets);case _AssetError() when error != null:
+return loaded(_that.assets,_that.presetAssets);case _AssetError() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -149,12 +149,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Account> assets)  loaded,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Account> assets,  List<Account> presetAssets)  loaded,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case _AssetInitial():
 return initial();case _AssetLoading():
 return loading();case _AssetLoaded():
-return loaded(_that.assets);case _AssetError():
+return loaded(_that.assets,_that.presetAssets);case _AssetError():
 return error(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -169,12 +169,12 @@ return error(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Account> assets)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Account> assets,  List<Account> presetAssets)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case _AssetInitial() when initial != null:
 return initial();case _AssetLoading() when loading != null:
 return loading();case _AssetLoaded() when loaded != null:
-return loaded(_that.assets);case _AssetError() when error != null:
+return loaded(_that.assets,_that.presetAssets);case _AssetError() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -251,7 +251,7 @@ String toString() {
 
 
 class _AssetLoaded implements AssetState {
-  const _AssetLoaded({final  List<Account> assets = const []}): _assets = assets;
+  const _AssetLoaded({final  List<Account> assets = const [], final  List<Account> presetAssets = const []}): _assets = assets,_presetAssets = presetAssets;
   
 
  final  List<Account> _assets;
@@ -259,6 +259,13 @@ class _AssetLoaded implements AssetState {
   if (_assets is EqualUnmodifiableListView) return _assets;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_assets);
+}
+
+ final  List<Account> _presetAssets;
+@JsonKey() List<Account> get presetAssets {
+  if (_presetAssets is EqualUnmodifiableListView) return _presetAssets;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_presetAssets);
 }
 
 
@@ -272,16 +279,16 @@ _$AssetLoadedCopyWith<_AssetLoaded> get copyWith => __$AssetLoadedCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AssetLoaded&&const DeepCollectionEquality().equals(other._assets, _assets));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AssetLoaded&&const DeepCollectionEquality().equals(other._assets, _assets)&&const DeepCollectionEquality().equals(other._presetAssets, _presetAssets));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_assets));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_assets),const DeepCollectionEquality().hash(_presetAssets));
 
 @override
 String toString() {
-  return 'AssetState.loaded(assets: $assets)';
+  return 'AssetState.loaded(assets: $assets, presetAssets: $presetAssets)';
 }
 
 
@@ -292,7 +299,7 @@ abstract mixin class _$AssetLoadedCopyWith<$Res> implements $AssetStateCopyWith<
   factory _$AssetLoadedCopyWith(_AssetLoaded value, $Res Function(_AssetLoaded) _then) = __$AssetLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<Account> assets
+ List<Account> assets, List<Account> presetAssets
 });
 
 
@@ -309,9 +316,10 @@ class __$AssetLoadedCopyWithImpl<$Res>
 
 /// Create a copy of AssetState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? assets = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? assets = null,Object? presetAssets = null,}) {
   return _then(_AssetLoaded(
 assets: null == assets ? _self._assets : assets // ignore: cast_nullable_to_non_nullable
+as List<Account>,presetAssets: null == presetAssets ? _self._presetAssets : presetAssets // ignore: cast_nullable_to_non_nullable
 as List<Account>,
   ));
 }

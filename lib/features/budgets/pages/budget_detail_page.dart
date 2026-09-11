@@ -106,8 +106,10 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
       value: _cubit,
       child: BlocListener<ActivitySignalCubit, int>(
         listener: (_, _) => _cubit.refresh(),
-        child: BlocBuilder<BudgetDetailCubit, BudgetDetailState>(
-          builder: (context, state) {
+        child: BlocListener<BudgetSignalCubit, int>(
+          listener: (_, _) => _cubit.refresh(),
+          child: BlocBuilder<BudgetDetailCubit, BudgetDetailState>(
+            builder: (context, state) {
             return state.maybeWhen(
               orElse: () => Scaffold(
                 appBar: AppBar(title: const Text('Detail Anggaran')),
@@ -147,7 +149,8 @@ class _BudgetDetailPageState extends State<BudgetDetailPage> {
                 ),
               ),
             );
-          },
+            },
+          ),
         ),
       ),
     );

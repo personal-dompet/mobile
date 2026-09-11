@@ -5,7 +5,6 @@ import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/activities/widgets/activity_list.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/journals/models/journal_filter.dart';
-import 'package:dompet_app/features/journals/repositories/journal_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,9 +19,7 @@ class AssetActivityPage extends StatelessWidget {
       appBar: AppBar(title: Text('Aktivitas • ${account.name}')),
       body: BlocProvider(
         create: (context) =>
-            getIt<PaginationCubit<JournalEntry, JournalFilter>>(
-              param1: getIt<JournalRepository>().getJournals,
-            ),
+            getIt<PaginationCubit<JournalEntry, JournalFilter>>(),
         child: ActivityList(account: account),
       ),
     );

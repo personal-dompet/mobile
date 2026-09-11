@@ -40,25 +40,35 @@ class DashboardPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                 ).copyWith(bottom: 36),
-                child: Column(
-                  crossAxisAlignment: .stretch,
-                  spacing: 24,
-                  children: [
-                    BalanceCard(),
-
-                    PendingBillsBanner(),
-
-                    QuickActionSection(),
-
-                    MonthlyReportCard(),
-
-                    Column(
-                      mainAxisSize: .min,
-                      spacing: 16,
+                // Banner dikeluarkan dari children saat tak ada tagihan:
+                // widget shrink tetap kena spacing Column sehingga gap ganda.
+                child: BlocBuilder<DashboardCubit, DashboardState>(
+                  buildWhen: (previous, current) =>
+                      ((previous.pendingBillsTotal ?? 0) > 0) !=
+                      ((current.pendingBillsTotal ?? 0) > 0),
+                  builder: (context, state) {
+                    return Column(
                       crossAxisAlignment: .stretch,
-                      children: [TodaySummary(), RecentActivitySection()],
-                    ),
-                  ],
+                      spacing: 24,
+                      children: [
+                        BalanceCard(),
+
+                        if ((state.pendingBillsTotal ?? 0) > 0)
+                          PendingBillsBanner(),
+
+                        QuickActionSection(),
+
+                        MonthlyReportCard(),
+
+                        Column(
+                          mainAxisSize: .min,
+                          spacing: 16,
+                          crossAxisAlignment: .stretch,
+                          children: [TodaySummary(), RecentActivitySection()],
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),

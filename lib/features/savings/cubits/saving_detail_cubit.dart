@@ -1,4 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:dompet_app/core/enums/enum.dart';
+import 'package:dompet_app/features/accounts/models/account.dart';
+import 'package:dompet_app/features/accounts/models/account_filter.dart';
+import 'package:dompet_app/features/accounts/repositories/account_repository.dart';
 import 'package:dompet_app/features/bills/models/bill.dart';
 import 'package:dompet_app/features/bills/repositories/bill_repository.dart';
 import 'package:dompet_app/features/savings/models/saving_detail.dart';
@@ -20,7 +24,7 @@ sealed class SavingDetailState with _$SavingDetailState {
 }
 
 class SavingDetailCubit extends Cubit<SavingDetailState> {
-  SavingDetailCubit(this._repository, [this._billRepository])
+  SavingDetailCubit(this._repository, [this._billRepository, this._accountRepository])
     : super(const SavingDetailState.initial());
 
   final SavingRepository _repository;
@@ -28,6 +32,10 @@ class SavingDetailCubit extends Cubit<SavingDetailState> {
   /// Opsional agar konstruksi lama (termasuk test) tetap jalan;
   /// tanpa ini section tagihan ter-link disembunyikan.
   final BillRepository? _billRepository;
+
+  /// Opsional (aturan 7): daftar dompet cair untuk dialog, dimuat dalam
+  /// flow state yang sama (aturan 5).
+  final AccountRepository? _accountRepository;
 
   int? _accountId;
 
@@ -51,6 +59,8 @@ class SavingDetailCubit extends Cubit<SavingDetailState> {
       if (isClosed) return;
       final linkedBill = await _loadLinkedBill(plan);
       if (isClosed) return;
+      final liquidAssets = await _loadLiquidAssets();
+      if (isClosed) return;
       emit(
         SavingDetailState.loaded(
           detail: SavingDetail.compute(
@@ -58,6 +68,7 @@ class SavingDetailCubit extends Cubit<SavingDetailState> {
             activities: activities,
             now: DateTime.now(),
             linkedBill: linkedBill,
+            liquidAssets: liquidAssets,
           ),
         ),
       );
@@ -69,6 +80,20 @@ class SavingDetailCubit extends Cubit<SavingDetailState> {
   Future<void> refresh() async {
     final id = _accountId;
     if (id != null) await fetch(id);
+  }
+
+  /// Dompet cair untuk dialog hapus/bayar, dalam flow state (aturan 5).
+  /// Kosong bila repo tak tersedia (konstruksi lama/test).
+  Future<List<Account>> _loadLiquidAssets() {
+    final repo = _accountRepository;
+    if (repo == null) return Future.value(const []);
+    return repo.getAccounts(
+      filter: const AccountFilter(
+        isSystem: false,
+        isLiqid: true,
+        type: AccountType.asset,
+      ),
+    );
   }
 
   Future<String?> deleteWithWithdraw({required int assetId}) => _run(

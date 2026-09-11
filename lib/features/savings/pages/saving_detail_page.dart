@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dompet_app/core/dependencies/init_dependency.dart';
-import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/core/extensions/date.dart';
 import 'package:dompet_app/core/extensions/icon_data.dart';
 import 'package:dompet_app/core/extensions/number.dart';
@@ -8,8 +7,6 @@ import 'package:dompet_app/core/router/router.gr.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
-import 'package:dompet_app/features/accounts/models/account_filter.dart';
-import 'package:dompet_app/features/accounts/repositories/account_repository.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/activities/extensions/list_activity.dart';
 import 'package:dompet_app/features/bills/cubits/bill_signal_cubit.dart';
@@ -51,6 +48,12 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
   }
 
   Future<void> _refresh() => _cubit.fetch(widget.accountId);
+
+  /// Dompet cair dari state (aturan 5). Kosong bila state belum loaded.
+  List<Account> _currentLiquidAssets() => _cubit.state.maybeWhen(
+    loaded: (detail) => detail.liquidAssets,
+    orElse: () => const [],
+  );
 
   void _emitSignals() {
     if (!mounted) return;
@@ -142,6 +145,7 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
     // maupun Total Uang).
     final assetId = await _pickWithdrawDestination(
       balance: plan.balance,
+      assets: _currentLiquidAssets(),
     );
     if (assetId == null || !mounted) return;
 
@@ -154,16 +158,11 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
   }
 
   /// Dialog pilih dompet cair tujuan pengembalian sisa saat hapus.
-  /// Mengembalikan `null` jika user batal.
-  Future<int?> _pickWithdrawDestination({required int balance}) async {
-    final assetsFuture = getIt<AccountRepository>().getAccounts(
-      filter: AccountFilter(
-        isSystem: false,
-        isLiqid: true,
-        type: AccountType.asset,
-      ),
-    );
-
+  /// [assets] dari state (aturan 5). Mengembalikan `null` jika user batal.
+  Future<int?> _pickWithdrawDestination({
+    required int balance,
+    required List<Account> assets,
+  }) async {
     return showDialog<int>(
       context: context,
       builder: (dialogContext) {
@@ -180,45 +179,12 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
                   Text(
                     'Sisa ${balance.currency} akan dikembalikan ke dompet:',
                   ),
-                  FutureBuilder<List<Account>>(
-                    future: assetsFuture,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: SpinnerLoading(),
-                          ),
-                        );
-                      }
-                      final assets = snapshot.data!;
-                      if (assets.isEmpty) {
-                        return Text(
-                          'Tidak ada dompet cair. Buat dompet dulu.',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                        );
-                      }
-                      return DropdownButtonFormField<int>(
-                        initialValue: selectedId,
-                        decoration: InputDecoration(
-                          labelText: 'Ke Dompet',
-                          border: OutlineInputBorder(),
-                        ),
-                        items: assets.map((asset) {
-                          return DropdownMenuItem(
-                            value: asset.id,
-                            child: Text(
-                              '${asset.name} (${asset.balance.currency})',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) =>
-                            setState(() => selectedId = value),
-                      );
-                    },
+                  _LiquidAssetDropdown(
+                    assets: assets,
+                    selectedId: selectedId,
+                    labelText: 'Ke Dompet',
+                    onChanged: (value) =>
+                        setState(() => selectedId = value),
                   ),
                 ],
               ),
@@ -264,7 +230,10 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
   Future<void> _payLinkedBill(SavingDetail detail) async {
     final bill = detail.linkedBill;
     if (bill == null) return;
-    final assetId = await _pickTransitAsset(amount: bill.amount);
+    final assetId = await _pickTransitAsset(
+      amount: bill.amount,
+      assets: detail.liquidAssets,
+    );
     if (assetId == null || !mounted) return;
 
     await _runAction(
@@ -275,16 +244,11 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
   }
 
   /// Dialog pilih dompet perantara (transit) pembayaran dari target.
-  /// Mengembalikan `null` jika user batal.
-  Future<int?> _pickTransitAsset({required int amount}) async {
-    final assetsFuture = getIt<AccountRepository>().getAccounts(
-      filter: AccountFilter(
-        isSystem: false,
-        isLiqid: true,
-        type: AccountType.asset,
-      ),
-    );
-
+  /// [assets] dari state (aturan 5). Mengembalikan `null` jika user batal.
+  Future<int?> _pickTransitAsset({
+    required int amount,
+    required List<Account> assets,
+  }) async {
     return showDialog<int>(
       context: context,
       builder: (dialogContext) {
@@ -299,45 +263,12 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
                 spacing: 12,
                 children: [
                   Text('Bayar ${amount.currency} dari target lewat dompet:'),
-                  FutureBuilder<List<Account>>(
-                    future: assetsFuture,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: SpinnerLoading(),
-                          ),
-                        );
-                      }
-                      final assets = snapshot.data!;
-                      if (assets.isEmpty) {
-                        return Text(
-                          'Tidak ada dompet cair. Buat dompet dulu.',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                        );
-                      }
-                      return DropdownButtonFormField<int>(
-                        initialValue: selectedId,
-                        decoration: InputDecoration(
-                          labelText: 'Lewat Dompet',
-                          border: OutlineInputBorder(),
-                        ),
-                        items: assets.map((asset) {
-                          return DropdownMenuItem(
-                            value: asset.id,
-                            child: Text(
-                              '${asset.name} (${asset.balance.currency})',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) =>
-                            setState(() => selectedId = value),
-                      );
-                    },
+                  _LiquidAssetDropdown(
+                    assets: assets,
+                    selectedId: selectedId,
+                    labelText: 'Lewat Dompet',
+                    onChanged: (value) =>
+                        setState(() => selectedId = value),
                   ),
                 ],
               ),
@@ -362,7 +293,9 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SavingDetailCubit, SavingDetailState>(
+    return BlocListener<SavingSignalCubit, int>(
+      listener: (context, state) => _refresh(),
+      child: BlocConsumer<SavingDetailCubit, SavingDetailState>(
       bloc: _cubit,
       listener: (context, state) {
         state.maybeWhen(
@@ -428,11 +361,53 @@ class _SavingDetailPageState extends State<SavingDetailPage> {
           },
         );
       },
+      ),
     );
   }
 }
 
 enum _MutationKind { topup, withdraw, spend }
+
+/// Dropdown dompet cair bersama untuk dialog hapus/bayar.
+class _LiquidAssetDropdown extends StatelessWidget {
+  final List<Account> assets;
+  final int? selectedId;
+  final String labelText;
+  final ValueChanged<int?> onChanged;
+  const _LiquidAssetDropdown({
+    required this.assets,
+    required this.selectedId,
+    required this.labelText,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (assets.isEmpty) {
+      return Text(
+        'Tidak ada dompet cair. Buat dompet dulu.',
+        style: TextStyle(color: Theme.of(context).colorScheme.error),
+      );
+    }
+    return DropdownButtonFormField<int>(
+      initialValue: selectedId,
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: const OutlineInputBorder(),
+      ),
+      items: assets.map((asset) {
+        return DropdownMenuItem(
+          value: asset.id,
+          child: Text(
+            '${asset.name} (${asset.balance.currency})',
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+      }).toList(),
+      onChanged: onChanged,
+    );
+  }
+}
 
 class _DetailScaffold extends StatelessWidget {
   final SavingPlan plan;

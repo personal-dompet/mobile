@@ -171,7 +171,9 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<BudgetSignalCubit, int>(
+      listener: (context, state) => _refresh(),
+      child: Scaffold(
       appBar: AppBar(
         title: const Text(
           'Rencana Anggaran',
@@ -234,6 +236,7 @@ class _BudgetPlanPageState extends State<BudgetPlanPage> {
             );
           },
         ),
+      ),
       ),
     );
   }

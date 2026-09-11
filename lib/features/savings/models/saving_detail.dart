@@ -1,3 +1,4 @@
+import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/bills/models/bill.dart';
 import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/savings/models/saving_insight.dart';
@@ -13,6 +14,7 @@ class SavingDetail {
     required this.insight,
     this.activities = const [],
     this.linkedBill,
+    this.liquidAssets = const [],
   });
 
   final SavingPlan plan;
@@ -23,6 +25,9 @@ class SavingDetail {
   /// Null bila target biasa atau tagihan belum tergenerate.
   final Bill? linkedBill;
 
+  /// Dompet cair untuk dialog hapus/bayar (aturan 5: dalam state flow).
+  final List<Account> liquidAssets;
+
   int get transactionCount => activities.length;
 
   factory SavingDetail.compute({
@@ -30,6 +35,7 @@ class SavingDetail {
     required List<JournalEntry> activities,
     required DateTime now,
     Bill? linkedBill,
+    List<Account> liquidAssets = const [],
   }) {
     return SavingDetail(
       plan: plan,
@@ -40,6 +46,7 @@ class SavingDetail {
       ),
       activities: activities,
       linkedBill: linkedBill,
+      liquidAssets: liquidAssets,
     );
   }
 }

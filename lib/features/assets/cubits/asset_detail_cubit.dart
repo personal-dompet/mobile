@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/core/models/pagination.dart';
+import 'package:dompet_app/features/accounts/models/account_filter.dart';
 import 'package:dompet_app/features/accounts/repositories/account_repository.dart';
 import 'package:dompet_app/features/assets/models/asset_detail.dart';
 import 'package:dompet_app/features/journals/models/journal_filter.dart';
@@ -45,9 +47,19 @@ class AssetDetailCubit extends Cubit<AssetDetailState> {
       );
       final recentActivities = recentActivitiesResult.items;
 
+      final activeAssets = await _accountRepository.getAccounts(
+        filter: const AccountFilter(
+          isSystem: false,
+          isLiqid: true,
+          type: AccountType.asset,
+        ),
+      );
+      if (isClosed) return;
+
       final accountDetail = AssetDetail(
         account: account,
         recentActivities: recentActivities,
+        activeAssetCount: activeAssets.length,
       );
 
       emit(AssetDetailState.loaded(accountDetail: accountDetail));

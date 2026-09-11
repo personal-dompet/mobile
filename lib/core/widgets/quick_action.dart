@@ -31,14 +31,22 @@ class QuickAction extends StatefulWidget {
 }
 
 class _QuickActionState extends State<QuickAction> {
-  late AssetCubit _assetAccountCubit;
-  late AssetCubit _presetAssetCubit;
+  /// Satu cubit satu state (aturan 5): dompet aktif + preset dimuat bersama.
+  late final AssetCubit _cubit;
+  late final AccountActionCubit _actionCubit;
 
   @override
   void initState() {
     super.initState();
-    _assetAccountCubit = getIt<AssetCubit>()..fetch();
-    _presetAssetCubit = getIt<AssetCubit>()..getPresetAssets();
+    _cubit = getIt<AssetCubit>()..fetchTransferInfo();
+    _actionCubit = getIt<AccountActionCubit>();
+  }
+
+  @override
+  void dispose() {
+    _cubit.close();
+    _actionCubit.close();
+    super.dispose();
   }
 
   @override
@@ -102,35 +110,24 @@ class _QuickActionState extends State<QuickAction> {
         ),
         MultiBlocProvider(
           providers: [
-            BlocProvider.value(value: _assetAccountCubit),
-            BlocProvider.value(value: _presetAssetCubit),
+            BlocProvider.value(value: _cubit),
+            BlocProvider.value(value: _actionCubit),
           ],
           child: BlocListener<AccountSignalCubit, int>(
             listener: (_, _) {
-              _assetAccountCubit.fetch();
+              _cubit.fetchTransferInfo();
             },
             child: BlocBuilder<AssetCubit, AssetState>(
-              bloc: _assetAccountCubit,
+              bloc: _cubit,
               builder: (context, state) {
-                final disabled = state.maybeWhen(
-                  orElse: () => true,
-                  loaded: (assets) {
-                    return assets.length < 2;
-                  },
-                );
-                return BlocBuilder<AssetCubit, AssetState>(
-                  bloc: _presetAssetCubit,
-                  builder: (context, presetState) {
-                    final presetDisabled = presetState.maybeWhen(
-                      orElse: () => true,
-                      loaded: (_) => false,
+                final (disabled, presetDisabled, presetAccounts) =
+                    state.maybeWhen(
+                      orElse: () => (true, true, null),
+                      loaded: (assets, presets) =>
+                          (assets.length < 2, false, presets),
                     );
-                    final presetAccounts = presetState.maybeWhen(
-                      orElse: () => null,
-                      loaded: (assets) => assets,
-                    );
-                    return _QuickAction(
-                      onTap: disabled || presetDisabled
+                return _QuickAction(
+                  onTap: disabled || presetDisabled
                           ? () {
                               widget.onBeforeAction?.call();
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -156,12 +153,9 @@ class _QuickActionState extends State<QuickAction> {
                                         return;
                                       }
 
-                                      final createAccountCubit =
-                                          getIt<AccountActionCubit>();
-
                                       final loading = LoadingOverlay();
 
-                                      createAccountCubit.stream.listen((state) {
+                                      _actionCubit.stream.listen((state) {
                                         state.maybeWhen(
                                           orElse: () => loading.hide(),
                                           loading: () => loading.show(
@@ -170,8 +164,7 @@ class _QuickActionState extends State<QuickAction> {
                                         );
                                       });
 
-                                      await getIt<AccountActionCubit>()
-                                          .createAsset(result);
+                                      await _actionCubit.createAsset(result);
                                       if (!widget.parentContext.mounted) {
                                         return;
                                       }
@@ -220,8 +213,6 @@ class _QuickActionState extends State<QuickAction> {
                       color: themeData.colorScheme.primary,
                       backgroundColor: widget.backgroundColor,
                     );
-                  },
-                );
               },
             ),
           ),

@@ -1,9 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:dompet_app/core/dependencies/init_dependency.dart';
 import 'package:dompet_app/core/extensions/number.dart';
 import 'package:dompet_app/core/router/router.gr.dart';
-import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
-import 'package:dompet_app/features/reports/cubits/report_cubit.dart';
+import 'package:dompet_app/features/dashboard/cubits/dashboard_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,29 +9,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 ///
 /// Entry point laporan tanpa menambah bottom navigation:
 /// ketuk kartu / tombol untuk membuka [ReportRoute] penuh.
+/// Murni baca [DashboardState] (aturan 5: satu flow state di dashboard);
+/// segar otomatis via sinyal yang me-refresh [DashboardCubit].
 class MonthlyReportCard extends StatelessWidget {
   const MonthlyReportCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocProvider(
-      create: (_) => getIt<ReportCubit>()..loadCurrentMonth(),
-      child: Builder(
-        builder: (providedContext) {
-          return BlocListener<ActivitySignalCubit, int>(
-            listener: (_, _) {
-              providedContext.read<ReportCubit>().refresh();
-            },
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: () => context.router.push(const ReportRoute()),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: BlocBuilder<ReportCubit, ReportState>(
-                    builder: (context, state) {
-                      final summary = state.summary;
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.router.push(const ReportRoute()),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: BlocBuilder<DashboardCubit, DashboardState>(
+            builder: (context, state) {
+              final income = state.monthlyIncome;
+              final expense = state.monthlyExpense;
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 8,
@@ -56,7 +49,7 @@ class MonthlyReportCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          if (summary == null)
+                          if (income == null || expense == null)
                             Text(
                               'Memuat...',
                               style: theme.textTheme.bodyMedium,
@@ -68,7 +61,7 @@ class MonthlyReportCard extends StatelessWidget {
                                 _IconAmount(
                                   icon: Icons.trending_up_rounded,
                                   iconColor: theme.colorScheme.tertiary,
-                                  amount: summary.income,
+                                  amount: income,
                                 ),
                                 Text(
                                   '•',
@@ -79,7 +72,7 @@ class MonthlyReportCard extends StatelessWidget {
                                 _IconAmount(
                                   icon: Icons.trending_down_rounded,
                                   iconColor: theme.colorScheme.error,
-                                  amount: summary.expense,
+                                  amount: expense,
                                 ),
                               ],
                             ),
@@ -89,11 +82,7 @@ class MonthlyReportCard extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            );
   }
 }
 

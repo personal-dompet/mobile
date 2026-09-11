@@ -9,7 +9,6 @@ import 'package:dompet_app/features/categories/widgets/category_field.dart';
 import 'package:dompet_app/features/savings/cubits/saving_action_cubit.dart';
 import 'package:dompet_app/features/savings/cubits/saving_signal_cubit.dart';
 import 'package:dompet_app/features/savings/forms/saving_spend_form.dart';
-import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
 import 'package:dompet_app/features/savings/widgets/pocket_balance_hint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -151,7 +150,7 @@ class _SavingSpendPageState extends State<SavingSpendPage> {
               children: [
                 // FIX-10 (IMP-6, Q18): info terkumpul kini dari state detail.
                 FutureBuilder(
-                  future: getIt<SavingRepository>().getByAccountId(
+                  future: getIt<SavingActionCubit>().getPocket(
                     widget.accountId,
                   ),
                   builder: (context, snapshot) {

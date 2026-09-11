@@ -17,6 +17,8 @@ import 'package:dompet_app/features/bills/cubits/bill_cubit.dart';import 'packag
 import 'package:dompet_app/features/bills/cubits/bill_plan_detail_cubit.dart';
 import 'package:dompet_app/features/bills/cubits/bill_plan_list_cubit.dart';
 import 'package:dompet_app/features/bills/cubits/bill_signal_cubit.dart';
+import 'package:dompet_app/features/bills/models/bill.dart';
+import 'package:dompet_app/features/bills/models/bill_filter.dart';
 import 'package:dompet_app/features/bills/repositories/bill_plan_repository.dart';
 import 'package:dompet_app/features/bills/repositories/bill_repository.dart';
 import 'package:dompet_app/features/budgets/cubits/budget_cubit.dart';
@@ -125,12 +127,16 @@ Future<void> initDependency({String? dbTestPath}) async {
     () => PaginationCubit(fetcher: getIt<JournalRepository>().getJournals),
   );
 
+  getIt.registerFactory<PaginationCubit<Bill, BillFilter>>(
+    () => PaginationCubit(fetcher: getIt<BillRepository>().getBills),
+  );
+
   getIt.registerFactory<SplashCubit>(() => SplashCubit(getIt()));
   getIt.registerFactory<AssetSetupCubit>(
     () => AssetSetupCubit(getIt(), getIt()),
   );
   getIt.registerFactory<DashboardCubit>(
-    () => DashboardCubit(getIt(), getIt(), getIt()),
+    () => DashboardCubit(getIt(), getIt(), getIt(), getIt(), getIt()),
   );
   getIt.registerFactory<ReportCubit>(() => ReportCubit(getIt(), getIt()));
   getIt.registerFactory<CategoryCubit>(() => CategoryCubit(getIt()));
@@ -185,7 +191,7 @@ Future<void> initDependency({String? dbTestPath}) async {
   getIt.registerFactory<SavingActionCubit>(() => SavingActionCubit(getIt()));
 
   getIt.registerFactory<SavingDetailCubit>(
-    () => SavingDetailCubit(getIt(), getIt()),
+    () => SavingDetailCubit(getIt(), getIt(), getIt()),
   );
 
   getIt.registerLazySingleton<AppConfigurationCubit>(

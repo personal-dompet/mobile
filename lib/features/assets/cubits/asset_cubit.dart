@@ -10,8 +10,10 @@ part 'asset_cubit.freezed.dart';
 sealed class AssetState with _$AssetState {
   const factory AssetState.initial() = _AssetInitial;
   const factory AssetState.loading() = _AssetLoading;
-  const factory AssetState.loaded({@Default([]) List<Account> assets}) =
-      _AssetLoaded;
+  const factory AssetState.loaded({
+    @Default([]) List<Account> assets,
+    @Default([]) List<Account> presetAssets,
+  }) = _AssetLoaded;
   const factory AssetState.error({required String message}) = _AssetError;
 }
 
@@ -60,6 +62,35 @@ class AssetCubit extends Cubit<AssetState> {
       final assets = await _repository.getAccounts(filter: filter);
 
       emit(AssetState.loaded(assets: assets));
+    } catch (e) {
+      emit(AssetState.error(message: e.toString()));
+    }
+  }
+
+  /// Satu flow untuk QuickAction (aturan 5): dompet aktif + preset
+  /// dimuat bersama dalam satu state.
+  Future<void> fetchTransferInfo() async {
+    emit(AssetState.loading());
+
+    try {
+      const activeFilter = AccountFilter(
+        isSystem: false,
+        isLiqid: true,
+        type: .asset,
+      );
+      const presetFilter = AccountFilter(
+        isSystem: true,
+        isLiqid: true,
+        type: .asset,
+      );
+      final results = await Future.wait([
+        _repository.getAccounts(filter: activeFilter),
+        _repository.getAccounts(filter: presetFilter),
+      ]);
+
+      emit(
+        AssetState.loaded(assets: results[0], presetAssets: results[1]),
+      );
     } catch (e) {
       emit(AssetState.error(message: e.toString()));
     }

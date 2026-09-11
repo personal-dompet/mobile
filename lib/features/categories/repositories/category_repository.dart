@@ -3,7 +3,6 @@ import 'package:dompet_app/core/database/db_service.dart';
 import 'package:dompet_app/core/database/schemas/schemas.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/categories/forms/category_form.dart';
-import 'package:flutter/material.dart';
 
 class CategoryRepository {
   final DbService _dbService;
@@ -17,13 +16,7 @@ class CategoryRepository {
 
     final db = await _dbService.database;
 
-    int iconCode = switch (form.type) {
-      .expense =>
-        form.icon?.icon.codePoint ??
-            Icons.account_balance_wallet_rounded.codePoint,
-      .income => form.icon?.icon.codePoint ?? Icons.payment_rounded.codePoint,
-      _ => Icons.wallet_rounded.codePoint,
-    };
+    final iconCode = form.resolvedIconCode;
 
     final latestAccountResult = await db.query(
       accountTable,
