@@ -29,10 +29,13 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Tag harus sama dengan versi pubspec
+        env:
+          TAG_NAME: ${{ github.ref_name }}
         run: |
-          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
-          if [ "v$VERSION" != "${{ github.ref_name }}" ]; then
-            echo "Tag ${{ github.ref_name }} != v$VERSION di pubspec.yaml. Samakan dulu."
+          VERSION=$(grep '^version:' pubspec.yaml | head -1 | awk '{print $2}' | tr -d '[:space:]')
+          echo "pubspec=[$VERSION] tag=[$TAG_NAME]"
+          if [ "v$VERSION" != "$TAG_NAME" ]; then
+            echo "Tag $TAG_NAME != v$VERSION di pubspec.yaml. Samakan dulu."
             exit 1
           fi
 
