@@ -562,6 +562,34 @@ class BillRepository {
     return (rows.first['total'] as int?) ?? 0;
   }
 
+  /// Tagihan unpaid yang sudah masuk waktu pengingat
+  /// (`reminded_at <= now`), dipecah dua: belum jatuh tempo vs sudah lewat.
+  /// Satu query agar dashboard cukup satu roundtrip.
+  Future<({int dueSoon, int overdue})> getRemindedCounts({
+    DateTime? now,
+  }) async {
+    final db = await _dbService.database;
+    final nowSec =
+        (now ?? DateTime.now()).millisecondsSinceEpoch ~/ 1000;
+    final rows = await db.rawQuery(
+      '''
+        SELECT
+          SUM(CASE WHEN ${BillKey.dueDate} > ? THEN 1 ELSE 0 END) AS dueSoon,
+          SUM(CASE WHEN ${BillKey.dueDate} <= ? THEN 1 ELSE 0 END) AS overdue
+        FROM $billTable
+        WHERE ${BillKey.status} = ?
+          AND ${BillKey.isDeleted} = 0
+          AND ${BillKey.remindedAt} <= ?
+      ''',
+      [nowSec, nowSec, BillStatus.unpaid.value, nowSec],
+    );
+    final row = rows.first;
+    return (
+      dueSoon: (row['dueSoon'] as int?) ?? 0,
+      overdue: (row['overdue'] as int?) ?? 0,
+    );
+  }
+
   /// Semua tagihan aktif (unpaid, termasuk yang efektif terlambat),
   /// billed paling awal dulu. [planKeyword] memfilter nama tagihan rutin.
   Future<List<Bill>> getActiveBills({String? planKeyword}) async {

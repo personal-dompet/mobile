@@ -5,6 +5,7 @@ import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart
 import 'package:dompet_app/features/dashboard/cubits/dashboard_cubit.dart';
 import 'package:dompet_app/features/dashboard/widgets/balance_card.dart';
 import 'package:dompet_app/features/dashboard/widgets/pending_bills_banner.dart';
+import 'package:dompet_app/features/dashboard/widgets/reminded_bills_card.dart';
 import 'package:dompet_app/features/dashboard/widgets/quick_action_section.dart';
 import 'package:dompet_app/features/dashboard/widgets/recent_activity_section.dart';
 import 'package:dompet_app/features/dashboard/widgets/today_summary.dart';
@@ -45,7 +46,11 @@ class DashboardPage extends StatelessWidget {
                 child: BlocBuilder<DashboardCubit, DashboardState>(
                   buildWhen: (previous, current) =>
                       ((previous.pendingBillsTotal ?? 0) > 0) !=
-                      ((current.pendingBillsTotal ?? 0) > 0),
+                          ((current.pendingBillsTotal ?? 0) > 0) ||
+                      ((previous.remindedDueCount ?? 0) > 0 ||
+                              (previous.remindedOverdueCount ?? 0) > 0) !=
+                          ((current.remindedDueCount ?? 0) > 0 ||
+                              (current.remindedOverdueCount ?? 0) > 0),
                   builder: (context, state) {
                     return Column(
                       crossAxisAlignment: .stretch,
@@ -55,6 +60,10 @@ class DashboardPage extends StatelessWidget {
 
                         if ((state.pendingBillsTotal ?? 0) > 0)
                           PendingBillsBanner(),
+
+                        if ((state.remindedDueCount ?? 0) > 0 ||
+                            (state.remindedOverdueCount ?? 0) > 0)
+                          RemindedBillsCard(),
 
                         QuickActionSection(),
 

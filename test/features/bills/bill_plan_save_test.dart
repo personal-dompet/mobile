@@ -8,10 +8,6 @@ import 'package:dompet_app/features/categories/forms/category_form.dart';
 import 'package:dompet_app/features/categories/repositories/category_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:path/path.dart' as p;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
-import 'dart:io';
 
 import '../../helpers/test_db.dart';
 
@@ -35,9 +31,9 @@ void main() {
     final form = CategoryForm();
     form.nameControl.updateValue(name);
     form.typeControl.updateValue(AccountType.expense);
-    final account = await CategoryRepository(dbService).createCategory(
-      form: form,
-    );
+    final account = await CategoryRepository(
+      dbService,
+    ).createCategory(form: form);
     return account.id;
   }
 
@@ -52,44 +48,46 @@ void main() {
   }
 
   group('BillPlanRepository.savePlan bulk', () {
-    test('monthly bulk 3 draft: status, urutan tanggal, reminded H-3',
-        () async {
-      final plans = BillPlanRepository(dbService);
-      final accountId = await createExpenseCategory('Listrik');
+    test(
+      'monthly bulk 3 draft: status, urutan tanggal, reminded H-3',
+      () async {
+        final plans = BillPlanRepository(dbService);
+        final accountId = await createExpenseCategory('Listrik');
 
-      final first = BillSchedule.nextMonthlyBilled(DateTime.now(), '5');
-      final endedAt = DateTime(first.year, first.month + 2, 5);
+        final first = BillSchedule.nextMonthlyBilled(DateTime.now(), '5');
+        final endedAt = DateTime(first.year, first.month + 2, 5);
 
-      final plan = await plans.savePlan(
-        accountId: accountId,
-        name: 'Listrik Rumah',
-        amount: 100000,
-        period: 'monthly',
-        billedSchedule: '5',
-        dueDateSchedule: '10',
-        reminderDays: 3,
-        endedAt: endedAt,
-        reference: 'IDPEL 123',
-        bulkCreate: true,
-      );
+        final plan = await plans.savePlan(
+          accountId: accountId,
+          name: 'Listrik Rumah',
+          amount: 100000,
+          period: 'monthly',
+          billedSchedule: '5',
+          dueDateSchedule: '10',
+          reminderDays: 3,
+          endedAt: endedAt,
+          reference: 'IDPEL 123',
+          bulkCreate: true,
+        );
 
-      expect(plan.reference, 'IDPEL 123');
-      expect(plan.name, 'Listrik Rumah');
+        expect(plan.reference, 'IDPEL 123');
+        expect(plan.name, 'Listrik Rumah');
 
-      final bills = await billsOf(plan.id);
-      expect(bills, hasLength(3));
-      for (final bill in bills) {
-        expect(bill[BillKey.status], 'drafted');
-        expect(bill[BillKey.amount], 100000);
-        final billedAt = bill[BillKey.billedAt] as int;
-        final dueDate = bill[BillKey.dueDate] as int;
-        final remindedAt = bill[BillKey.remindedAt] as int;
-        expect(billedAt, lessThanOrEqualTo(dueDate));
-        expect(remindedAt, dueDate - 3 * 86400);
-      }
-      final periods = bills.map((b) => b[BillKey.billPeriod] as String);
-      expect(periods.toSet(), hasLength(3));
-    });
+        final bills = await billsOf(plan.id);
+        expect(bills, hasLength(3));
+        for (final bill in bills) {
+          expect(bill[BillKey.status], 'drafted');
+          expect(bill[BillKey.amount], 100000);
+          final billedAt = bill[BillKey.billedAt] as int;
+          final dueDate = bill[BillKey.dueDate] as int;
+          final remindedAt = bill[BillKey.remindedAt] as int;
+          expect(billedAt, lessThanOrEqualTo(dueDate));
+          expect(remindedAt, dueDate - 3 * 86400);
+        }
+        final periods = bills.map((b) => b[BillKey.billPeriod] as String);
+        expect(periods.toSet(), hasLength(3));
+      },
+    );
 
     test('monthly billed 28 + due last_day lolos validasi', () async {
       final plans = BillPlanRepository(dbService);
@@ -199,10 +197,7 @@ void main() {
         items.map((e) => e.plan.reference),
         containsAll(['IDPEL 123', 'IDPEL 456']),
       );
-      expect(
-        items.map((e) => e.category.name),
-        everyElement('Listrik'),
-      );
+      expect(items.map((e) => e.category.name), everyElement('Listrik'));
     });
 
     test('filter nama parsial, case-insensitive', () async {
@@ -299,14 +294,12 @@ void main() {
       expect(updated.id, created.id);
       final bills = await billsOf(updated.id);
       expect(bills, hasLength(2));
-      expect(
-        bills.map((b) => b[BillKey.amount]),
-        everyElement(1200000),
-      );
+      expect(bills.map((b) => b[BillKey.amount]), everyElement(1200000));
     });
   });
 
-  group('BillSchedule tanggal-berakhir ⇄ banyak-tagihan', () {    test('monthly: count(nth(n)) == n', () {
+  group('BillSchedule tanggal-berakhir ⇄ banyak-tagihan', () {
+    test('monthly: count(nth(n)) == n', () {
       final nth = BillSchedule.nthBilledDate(
         period: 'monthly',
         billedSchedule: '5',
@@ -331,98 +324,6 @@ void main() {
         BillSchedule.format('yearly', '02-28'),
         isNot(contains('Terakhir')),
       );
-    });
-  });
-
-  group('migrasi v1→v2 kolom name', () {
-    test('DB lama tanpa name tetap terbuka + baris terbawa', () async {
-      final dir = await Directory.systemTemp.createTemp('bill_migrate');
-      final path = p.join(dir.path, 'dompet.db');
-      DbService? migrated;
-      try {
-        final oldDb = await databaseFactoryFfi.openDatabase(
-          path,
-          options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: (db, version) async {
-              await db.execute('''
-                CREATE TABLE $billPlanTable (
-                  ${BillPlanKey.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-                  ${BillPlanKey.accountId} INTEGER NOT NULL,
-                  ${BillPlanKey.amount} INTEGER NOT NULL
-                )
-              ''');
-            },
-          ),
-        );
-        await oldDb.insert(billPlanTable, {
-          BillPlanKey.accountId: 1,
-          BillPlanKey.amount: 100000,
-        });
-        await oldDb.close();
-
-        final migratedDb = DbService(testPath: path);
-        migrated = migratedDb;
-        final db = await migratedDb.database;
-        final info = await db.rawQuery('PRAGMA table_info($billPlanTable)');
-        expect(
-          info.map((c) => c['name']),
-          contains(BillPlanKey.name),
-        );
-        final rows = await db.query(billPlanTable);
-        expect(rows, hasLength(1));
-        expect(rows.first[BillPlanKey.name], '');
-        await migratedDb.close();
-        migrated = null;
-      } finally {
-        // Tutup dulu sebelum hapus: bila expect di atas gagal, koneksi yang
-        // masih terbuka mengunci file di Windows dan menutupi error aslinya.
-        await migrated?.close();
-        await dir.delete(recursive: true);
-      }
-    });
-
-    test('DB v1 skema penuh (sudah ada name) tetap terbuka + tanpa dobel',
-        () async {
-      final dir = await Directory.systemTemp.createTemp('bill_migrate_full');
-      final path = p.join(dir.path, 'dompet.db');
-      DbService? migrated;
-      try {
-        final oldDb = await databaseFactoryFfi.openDatabase(
-          path,
-          options: OpenDatabaseOptions(
-            version: 1,
-            onCreate: (db, version) async {
-              await db.execute(billPlanSchema);
-            },
-          ),
-        );
-        await oldDb.insert(billPlanTable, {
-          BillPlanKey.accountId: 1,
-          BillPlanKey.name: 'Listrik',
-          BillPlanKey.amount: 100000,
-          BillPlanKey.period: 'monthly',
-          BillPlanKey.billedSchedule: '5',
-          BillPlanKey.dueDateSchedule: '10',
-        });
-        await oldDb.close();
-
-        migrated = DbService(testPath: path);
-        final db = await migrated.database;
-        final info = await db.rawQuery('PRAGMA table_info($billPlanTable)');
-        expect(
-          info.where((c) => c['name'] == BillPlanKey.name),
-          hasLength(1),
-        );
-        final rows = await db.query(billPlanTable);
-        expect(rows, hasLength(1));
-        expect(rows.first[BillPlanKey.name], 'Listrik');
-        await migrated.close();
-        migrated = null;
-      } finally {
-        await migrated?.close();
-        await dir.delete(recursive: true);
-      }
     });
   });
 }

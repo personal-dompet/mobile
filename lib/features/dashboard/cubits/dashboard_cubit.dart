@@ -43,6 +43,11 @@ abstract class DashboardState with _$DashboardState {
     /// Total tagihan tertunda (banner). Null = belum dimuat/gagal → sembunyi.
     int? pendingBillsTotal,
 
+    /// Tagihan unpaid yang sudah diingatkan (reminded_at <= now).
+    /// Null = belum dimuat/gagal → sembunyi.
+    int? remindedDueCount,
+    int? remindedOverdueCount,
+
     /// Jumlah dompet cair (subtitle). Null = belum dimuat/gagal → sembunyi.
     int? liquidAssetCount,
 
@@ -77,6 +82,7 @@ class DashboardCubit extends Cubit<DashboardState> {
       _getSummary(),
       _getPresetAssetAccounts(),
       _getPendingBills(),
+      _getRemindedBills(),
       _getLiquidAssetCount(),
       _getMonthlyFigures(),
     ]);
@@ -148,6 +154,28 @@ class DashboardCubit extends Cubit<DashboardState> {
       if (!isClosed) emit(state.copyWith(pendingBillsTotal: total));
     } catch (_) {
       if (!isClosed) emit(state.copyWith(pendingBillsTotal: null));
+    }
+  }
+
+  /// Jumlah tagihan yang sudah diingatkan untuk kartu dashboard.
+  Future<void> _getRemindedBills() async {
+    try {
+      final counts = await _billRepository?.getRemindedCounts() ??
+          (dueSoon: 0, overdue: 0);
+      if (!isClosed) {
+        emit(
+          state.copyWith(
+            remindedDueCount: counts.dueSoon,
+            remindedOverdueCount: counts.overdue,
+          ),
+        );
+      }
+    } catch (_) {
+      if (!isClosed) {
+        emit(
+          state.copyWith(remindedDueCount: null, remindedOverdueCount: null),
+        );
+      }
     }
   }
 
