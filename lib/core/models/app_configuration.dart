@@ -9,7 +9,7 @@ enum AppThemeMode { system, light, dark }
 abstract class AppConfiguration with _$AppConfiguration {
   factory AppConfiguration({
     required AppHint hint,
-    @Default(AppThemeMode.system) AppThemeMode themeMode,
+    @Default(AppThemeMode.dark) AppThemeMode themeMode,
   }) = _AppConfiguration;
 
   factory AppConfiguration.fromJson(Map<String, dynamic> json) =>

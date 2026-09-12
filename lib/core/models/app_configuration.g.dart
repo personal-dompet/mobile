@@ -17,7 +17,7 @@ _AppConfiguration _$AppConfigurationFromJson(Map<String, dynamic> json) =>
           'themeMode',
           (v) =>
               $enumDecodeNullable(_$AppThemeModeEnumMap, v) ??
-              AppThemeMode.system,
+              AppThemeMode.dark,
         ),
       );
       return val;

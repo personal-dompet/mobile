@@ -219,7 +219,7 @@ return $default(_that.hint,_that.themeMode);case _:
 @JsonSerializable()
 
 class _AppConfiguration implements AppConfiguration {
-   _AppConfiguration({required this.hint, this.themeMode = AppThemeMode.system});
+   _AppConfiguration({required this.hint, this.themeMode = AppThemeMode.dark});
   factory _AppConfiguration.fromJson(Map<String, dynamic> json) => _$AppConfigurationFromJson(json);
 
 @override final  AppHint hint;

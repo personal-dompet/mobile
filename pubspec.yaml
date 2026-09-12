@@ -47,7 +47,15 @@ dev_dependencies:
   flutter_gen_runner: ^5.14.1
   json_serializable: ^6.13.2
   freezed: ^3.2.5
+  flutter_launcher_icons: 0.14.4
 flutter:
 
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: false # no ios/ folder in this project; flip to true if iOS is added later
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
 

@@ -53,8 +53,8 @@ class MyApp extends StatelessWidget {
         builder: (context, appConfig) {
           final themeMode = switch (appConfig?.themeMode) {
             AppThemeMode.light => ThemeMode.light,
-            AppThemeMode.dark => ThemeMode.dark,
-            AppThemeMode.system || null => ThemeMode.system,
+            AppThemeMode.dark || null => ThemeMode.dark,
+            AppThemeMode.system => ThemeMode.system,
           };
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
