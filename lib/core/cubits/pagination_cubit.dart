@@ -2,9 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dompet_app/core/models/pagination.dart';
 import 'package:dompet_app/core/models/pagination_meta.dart';
 import 'package:dompet_app/core/models/pagination_result.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-part 'pagination_cubit.freezed.dart';
 
 typedef PageFetcher<T, P> =
     Future<PaginationResult<T>> Function({
@@ -12,30 +9,66 @@ typedef PageFetcher<T, P> =
       P? filter,
     });
 
-@freezed
-sealed class PaginationState<T> with _$PaginationState<T> {
-  const factory PaginationState.initial() = PaginationInitial;
+sealed class PaginationState<T> {
+  const PaginationState();
 
-  const factory PaginationState.loading() = PaginationLoading;
-
+  const factory PaginationState.initial() = PaginationInitial<T>;
+  const factory PaginationState.loading() = PaginationLoading<T>;
   const factory PaginationState.success({
     required List<T> items,
     required PaginationMeta meta,
-  }) = PaginationSuccess;
-
+  }) = PaginationSuccess<T>;
   const factory PaginationState.loadingMore({
     required List<T> items,
     required PaginationMeta meta,
-  }) = PaginationLoadingMore;
-
+  }) = PaginationLoadingMore<T>;
   const factory PaginationState.failure({required String message}) =
-      PaginationFailure;
-
+      PaginationFailure<T>;
   const factory PaginationState.loadingMoreFailure({
     required List<T> items,
     required PaginationMeta meta,
     required String message,
-  }) = PaginationLoadingMoreFailure;
+  }) = PaginationLoadingMoreFailure<T>;
+}
+
+final class PaginationInitial<T> extends PaginationState<T> {
+  const PaginationInitial();
+}
+
+final class PaginationLoading<T> extends PaginationState<T> {
+  const PaginationLoading();
+}
+
+final class PaginationSuccess<T> extends PaginationState<T> {
+  final List<T> items;
+  final PaginationMeta meta;
+
+  const PaginationSuccess({required this.items, required this.meta});
+}
+
+final class PaginationLoadingMore<T> extends PaginationState<T> {
+  final List<T> items;
+  final PaginationMeta meta;
+
+  const PaginationLoadingMore({required this.items, required this.meta});
+}
+
+final class PaginationFailure<T> extends PaginationState<T> {
+  final String message;
+
+  const PaginationFailure({required this.message});
+}
+
+final class PaginationLoadingMoreFailure<T> extends PaginationState<T> {
+  final List<T> items;
+  final PaginationMeta meta;
+  final String message;
+
+  const PaginationLoadingMoreFailure({
+    required this.items,
+    required this.meta,
+    required this.message,
+  });
 }
 
 class PaginationCubit<T, P> extends Cubit<PaginationState<T>> {

@@ -17,6 +17,17 @@ enum SavingTxType {
 
   const SavingTxType(this.value);
 
+  /// Parse toleran case: DB lama + test memakai 'TOPUP', kode baru
+  /// menulis lowercase. Bandingkan upper-case agar dua-duanya jalan.
+  static SavingTxType? tryParse(Object? raw) {
+    if (raw is! String) return null;
+    final v = raw.toUpperCase();
+    for (final e in values) {
+      if (e.value.toUpperCase() == v) return e;
+    }
+    return null;
+  }
+
   static List<String> get allValues {
     return SavingTxType.values.map((e) => e.value).toList();
   }

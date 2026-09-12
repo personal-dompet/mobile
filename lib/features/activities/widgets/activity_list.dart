@@ -155,10 +155,10 @@ class _ActivityListState extends State<ActivityList> {
                     child: ListView.separated(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       scrollDirection: .horizontal,
-                      itemCount: PeriodicTime.options.length,
+                      itemCount: PeriodicTime.values.length,
                       separatorBuilder: (_, _) => const SizedBox(width: 8),
                       itemBuilder: (context, index) {
-                        final type = PeriodicTime.options[index];
+                        final type = PeriodicTime.values[index];
                         return ReactiveValueListenableBuilder(
                           formControl: _filterForm.periodeControl,
                           builder: (context, control, child) {

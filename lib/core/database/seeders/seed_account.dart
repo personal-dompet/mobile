@@ -1,7 +1,7 @@
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
 import 'package:dompet_app/core/database/schemas/schemas.dart';
 import 'package:dompet_app/core/enums/enum.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 Future<void> seedAccount(Transaction txn) async {
   for (var accountPreset in AccountPreset.values) {

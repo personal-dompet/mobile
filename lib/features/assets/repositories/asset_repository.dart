@@ -7,7 +7,7 @@ import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/assets/forms/asset_form.dart';
 import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:dompet_app/core/database/account_code.dart';
 
 class AssetRepository {
   final DbService _dbService;
@@ -22,7 +22,7 @@ class AssetRepository {
     }
 
     final result = await db.transaction((txn) async {
-      final nextCode = await _generateCode(txn, code: form.code!);
+      final nextCode = await nextAccountCode(txn, code: form.code!);
 
       final presetAccountResult = await txn.query(
         accountTable,
@@ -81,7 +81,9 @@ class AssetRepository {
           [AccountPreset.intialBalance.code],
         );
 
-        final int? initialBalanceAccountId = Sqflite.firstIntValue(result);
+        final int? initialBalanceAccountId = result.isEmpty
+            ? null
+            : (result.first.values.first as num?)?.toInt();
 
         if (initialBalanceAccountId != null) {
           final newJournalEntryId = await txn.insert(journalEntryTable, {
@@ -159,7 +161,7 @@ class AssetRepository {
       };
 
       if (!currentAccount.code.startsWith(form.code!)) {
-        final newCode = await _generateCode(txn, code: form.code!);
+        final newCode = await nextAccountCode(txn, code: form.code!);
         values.putIfAbsent(AccountKey.code, () => newCode);
       }
 
@@ -172,37 +174,4 @@ class AssetRepository {
     });
   }
 
-  /// Kode child berikutnya yang deterministik: max suffix numerik + 1.
-  ///
-  /// Tidak memakai `created_at` (resolusi 1 detik — seri saat insert cepat
-  /// beruntun sehingga `latest` salah tebak → kode duplikat → UNIQUE gagal).
-  /// Baris ter-soft-delete tetap dihitung agar kode monotonik naik dan
-  /// tidak pernah dipakai ulang.
-  Future<String> _generateCode(Transaction txn, {required String code}) async {
-    final rows = await txn.query(
-      accountTable,
-      columns: [AccountKey.code],
-      where: '${AccountKey.code} LIKE ?',
-      whereArgs: ['$code.%'],
-    );
-
-    var maxIndex = 0;
-    for (final row in rows) {
-      final rowCode = row[AccountKey.code] as String?;
-      if (rowCode == null) continue;
-      final parts = rowCode.split('.');
-      if (parts.isEmpty) continue;
-      final index = int.tryParse(parts.last);
-      if (index == null) continue;
-      final prefix = rowCode.substring(
-        0,
-        rowCode.length - parts.last.length - 1,
-      );
-      if (prefix != code) continue;
-      if (index > maxIndex) maxIndex = index;
-    }
-
-    final nextIndex = (maxIndex + 1).toString().padLeft(4, '0');
-    return '$code.$nextIndex';
-  }
 }

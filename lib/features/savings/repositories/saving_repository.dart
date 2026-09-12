@@ -15,7 +15,9 @@ import 'package:dompet_app/features/journals/models/journal_entry.dart';
 import 'package:dompet_app/features/journals/models/journal_line.dart';
 import 'package:dompet_app/features/savings/models/saving_filter.dart';
 import 'package:dompet_app/features/savings/models/saving_plan.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:dompet_app/core/database/account_code.dart';
+import 'package:dompet_app/features/transactions/repositories/overspend_adjustment.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class SavingRepository {
   final DbService _dbService;
@@ -67,23 +69,6 @@ class SavingRepository {
     return SavingPlan.fromJson(rows.first);
   }
 
-  Future<SavingPlan?> getById(int id) async {
-    final db = await _dbService.database;
-
-    final rows = await db.rawQuery(
-      '''
-      SELECT *
-      FROM $savingTrackerView
-      WHERE ${SavingPlanKey.id} = ?
-      LIMIT 1
-    ''',
-      [id],
-    );
-
-    if (rows.isEmpty) return null;
-    return SavingPlan.fromJson(rows.first);
-  }
-
   /// Target sisihan untuk satu kemunculan tagihan rutin
   /// ([billPlanId] + [billPeriod], mis. tahun "2026").
   /// Null bila belum ada — pemanggil memutuskan tawar/buat baru.
@@ -103,24 +88,6 @@ class SavingRepository {
 
     if (rows.isEmpty) return null;
     return SavingPlan.fromJson(rows.first);
-  }
-
-  /// Seluruh target sisihan satu tagihan rutin lintas periode,
-  /// terbaru dulu (untuk histori di detail tagihan rutin).
-  Future<List<SavingPlan>> getTargetsForPlan(int billPlanId) async {
-    final db = await _dbService.database;
-
-    final rows = await db.rawQuery(
-      '''
-      SELECT *
-      FROM $savingTrackerView
-      WHERE ${SavingPlanKey.billPlanId} = ?
-      ORDER BY ${SavingPlanKey.billPeriod} DESC
-    ''',
-      [billPlanId],
-    );
-
-    return rows.map((row) => SavingPlan.fromJson(row)).toList();
   }
 
   /// Riwayat jurnal pocket (alokasi/tarik/belanja) untuk Detail Target.
@@ -213,7 +180,7 @@ class SavingRepository {
     final db = await _dbService.database;
 
     final accountId = await db.transaction((txn) async {
-      final nextCode = await _generateCode(
+      final nextCode = await nextAccountCode(
         txn,
         code: AccountPreset.savingPocket.code,
       );
@@ -562,6 +529,7 @@ class SavingRepository {
           jsonEncode({
             'hybrid_expense': true,
             'pocket_id': pocketId,
+            'paired_entry_id': withdrawId,
           }),
         ],
       );
@@ -598,6 +566,23 @@ class SavingRepository {
         {JournalEntryKey.status: JournalStatus.posted.name},
         where: '${JournalEntryKey.id} = ?',
         whereArgs: [expenseJournalId],
+      );
+
+      // Tautkan pasangan hybrid untuk cascade void: hapus satu kaki void
+      // keduanya agar tak ada jurnal hantu. J2 sudah menunjuk J1 saat
+      // insert; J1 di-update di sini dalam txn yang sama (atomik).
+      await txn.update(
+        journalEntryTable,
+        {
+          JournalEntryKey.metadata: jsonEncode({
+            'saving_tx': SavingTxType.spend.value,
+            'pocket_id': pocketId,
+            'hybrid': true,
+            'paired_entry_id': expenseJournalId,
+          }),
+        },
+        where: '${JournalEntryKey.id} = ?',
+        whereArgs: [withdrawId],
       );
 
       return expenseJournalId;
@@ -663,7 +648,7 @@ class SavingRepository {
       await _assertActivePocket(txn, accountId);
       await _assertLiquidAsset(txn, assetId);
 
-      final balance = await _balanceOf(txn, accountId);
+      final balance = await liveBalanceOf(txn, accountId);
 
       int? journalId;
       if (balance > 0) {
@@ -915,59 +900,11 @@ class SavingRepository {
     int accountId,
     int amount,
   ) async {
-    final balance = await _balanceOf(txn, accountId);
+    final balance = await liveBalanceOf(txn, accountId);
     if (balance < amount) {
       throw Exception('Saldo tidak mencukupi');
     }
   }
 
-  Future<int> _balanceOf(Transaction txn, int accountId) async {
-    final rows = await txn.rawQuery(
-      '''
-      SELECT ${AccountKey.balance}
-      FROM $accountBalanceView
-      WHERE ${AccountKey.id} = ?
-      LIMIT 1
-    ''',
-      [accountId],
-    );
-    if (rows.isEmpty) {
-      throw Exception('Terjadi kesalahan data pada aplikasi');
-    }
-    return (rows.first[AccountKey.balance] as num?)?.toInt() ?? 0;
-  }
 
-  /// Kode child berikutnya yang deterministik: max suffix numerik + 1.
-  ///
-  /// Tidak memakai `created_at` (resolusi 1 detik — seri saat insert cepat
-  /// beruntun sehingga `latest` salah tebak → kode duplikat → UNIQUE gagal).
-  /// Baris ter-soft-delete tetap dihitung agar kode monotonik naik dan
-  /// tidak pernah dipakai ulang.
-  Future<String> _generateCode(Transaction txn, {required String code}) async {
-    final rows = await txn.query(
-      accountTable,
-      columns: [AccountKey.code],
-      where: '${AccountKey.code} LIKE ?',
-      whereArgs: ['$code.%'],
-    );
-
-    var maxIndex = 0;
-    for (final row in rows) {
-      final rowCode = row[AccountKey.code] as String?;
-      if (rowCode == null) continue;
-      final parts = rowCode.split('.');
-      if (parts.isEmpty) continue;
-      final index = int.tryParse(parts.last);
-      if (index == null) continue;
-      final prefix = rowCode.substring(
-        0,
-        rowCode.length - parts.last.length - 1,
-      );
-      if (prefix != code) continue;
-      if (index > maxIndex) maxIndex = index;
-    }
-
-    final nextIndex = (maxIndex + 1).toString().padLeft(4, '0');
-    return '$code.$nextIndex';
-  }
 }

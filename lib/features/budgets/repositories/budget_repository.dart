@@ -7,7 +7,7 @@ import 'package:dompet_app/features/budgets/models/account_budget_status.dart';
 import 'package:dompet_app/features/budgets/models/budget.dart';
 import 'package:dompet_app/features/budgets/models/budget_filter.dart';
 import 'package:dompet_app/features/reports/models/report_period.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class BudgetRepository {
   final DbService _dbService;
@@ -151,25 +151,6 @@ class BudgetRepository {
       ORDER BY ${BudgetKey.accountName} ASC
     ''',
       [period.startEpoch, period.endEpoch],
-    );
-
-    return _withArchivedFlags(
-      db,
-      rows.map((row) => Budget.fromJson(row)).toList(),
-    );
-  }
-
-  Future<List<Budget>> getAccountBudgets(int accountId) async {
-    final db = await _dbService.database;
-
-    final rows = await db.rawQuery(
-      '''
-      SELECT *
-      FROM $budgetTrackerView
-      WHERE ${BudgetKey.accountId} = ? AND ${BudgetKey.closedAt} IS NULL
-      ORDER BY ${BudgetKey.periodStart} DESC
-    ''',
-      [accountId],
     );
 
     return _withArchivedFlags(

@@ -47,6 +47,7 @@ class ShellPage extends StatelessWidget {
                 builder: (context) {
                   return DompetDialog(
                     title: 'Tutup aplikasi?',
+                    cancellationText: 'Batal',
                     onCancel: () {
                       Navigator.pop(context, false);
                     },

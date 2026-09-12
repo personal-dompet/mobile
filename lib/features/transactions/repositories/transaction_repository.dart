@@ -7,33 +7,15 @@ import 'package:dompet_app/core/extensions/date.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
-import 'package:dompet_app/features/transactions/effective_balance.dart';
+import 'package:dompet_app/features/transactions/repositories/overspend_adjustment.dart';
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
 import 'package:dompet_app/features/transactions/forms/transaction_form.dart';
-import 'package:dompet_app/features/transactions/repositories/overspend_adjustment.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class TransactionRepository {
   final DbService _dbService;
 
   const TransactionRepository(this._dbService);
-
-  Future<void> recordTransaction({
-    required TransactionForm form,
-    required TransactionType type,
-  }) async {
-    final db = await _dbService.database;
-
-    // FIX-01: min 1 global — 0/null must never reach the journal.
-    _assertPositiveAmounts(form);
-    if (form.assetId == null) {
-      throw Exception('Terjadi kesalahan data pada aplikasi');
-    }
-
-    await db.transaction((txn) async {
-      await _recordTransaction(txn, form: form, type: type);
-    });
-  }
 
   /// FIX-07 (IMP-1): catat dengan penyesuaian selisih otomatis bila
   /// pengeluaran melebihi saldo efektif. Satu `db.transaction` atomik:
@@ -126,30 +108,6 @@ class TransactionRepository {
           date: form.date ?? DateTime.now(),
         );
       }
-      return await _recordTransaction(txn, form: form, type: type);
-    });
-
-    return journalId;
-  }
-
-  Future<int> updateTransaction({
-    required int id,
-    required TransactionForm form,
-    required TransactionType type,
-  }) async {
-    final db = await _dbService.database;
-
-    // FIX-01: edit flow is guarded exactly like create (TC-IN-005/OUT-005).
-    _assertPositiveAmounts(form);
-
-    final journalId = await db.transaction((txn) async {
-      await txn.update(
-        journalEntryTable,
-        {JournalEntryKey.status: JournalStatus.voided.name},
-        where: '${JournalEntryKey.id} = ?',
-        whereArgs: [id],
-      );
-
       return await _recordTransaction(txn, form: form, type: type);
     });
 

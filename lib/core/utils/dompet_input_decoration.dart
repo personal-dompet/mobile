@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
 class DompetInputDecoration extends InputDecoration {
-  // final ThemeData themeData;
-  // final String? placeholder;
-  // final bool isRequired;
-
   DompetInputDecoration({
     required String? labelText,
     super.helperText = '',

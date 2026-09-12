@@ -37,7 +37,7 @@ void main() {
       form.categories.first.amountControl.updateValue(0);
 
       await expectLater(
-        repository.recordTransaction(
+        repository.recordTransactionAuto(
           form: form,
           type: TransactionType.income,
         ),
@@ -57,7 +57,7 @@ void main() {
       form.categories.first.amountControl.updateValue(0);
 
       await expectLater(
-        repository.updateTransaction(
+        repository.updateTransactionAuto(
           id: 1,
           form: form,
           type: TransactionType.expense,
@@ -78,7 +78,7 @@ void main() {
       form.amountControl.updateValue(0);
 
       await expectLater(
-        repository.transferBalance(form: form),
+        repository.transferBalanceAuto(form: form),
         throwsA(
           isA<Exception>().having(
             (e) => e.toString(),
@@ -88,7 +88,7 @@ void main() {
         ),
       );
       await expectLater(
-        repository.updateTransfer(form: form, id: 1),
+        repository.updateTransferAuto(form: form, id: 1),
         throwsA(
           isA<Exception>().having(
             (e) => e.toString(),

@@ -14,7 +14,6 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   path: ^1.9.1
-  sqflite: ^2.4.2+1
   get_it: ^9.2.1
   bloc: ^9.2.0
   flutter_bloc: ^9.1.1
@@ -25,18 +24,15 @@ dependencies:
   flutter_gen: ^5.14.1
   reactive_forms: ^18.2.2
   reactive_date_time_picker: ^5.0.1
-  navigation_history_observer: ^1.1.1
   sqflite_common_ffi: ^2.4.1
   path_provider: ^2.1.5
   flutter_slidable: ^4.0.3
   fl_chart: ^1.2.0
-  sqlite3: ^3.3.3
   google_sign_in: ^7.2.0
   googleapis: ^17.0.0
   extension_google_sign_in_as_googleapis_auth: ^3.0.0
   googleapis_auth: ^2.3.3
   connectivity_plus: 7.3.1
-
 dev_dependencies:
   integration_test:
     sdk: flutter

@@ -8,18 +8,6 @@ class TransferCubit extends Cubit<ActionState> {
 
   TransferCubit(this._repository) : super(const ActionState.initial());
 
-  Future<void> transferBalance({required TransferForm form}) async {
-    emit(ActionState.loading());
-
-    try {
-      await _repository.transferBalance(form: form);
-
-      emit(ActionState.success(message: 'Danamu berhasil dipindah'));
-    } catch (e) {
-      emit(ActionState.error(message: e.toString()));
-    }
-  }
-
   /// FIX-07 (IMP-1): selalu lewat jalur auto-adjustment sumber.
   /// Tanpa overspend perilakunya identik dengan [transferBalance].
   Future<void> transferBalanceAuto({
@@ -58,23 +46,6 @@ class TransferCubit extends Cubit<ActionState> {
         previousAmount: previousAmount,
         previousSourceId: previousSourceId,
       );
-
-      emit(ActionState.success(message: 'Pindah dana berhasil diperbarui'));
-      return transferId;
-    } catch (e) {
-      emit(ActionState.error(message: e.toString()));
-      return null;
-    }
-  }
-
-  Future<int?> updateTransfer({
-    required TransferForm form,
-    required int id,
-  }) async {
-    emit(ActionState.loading());
-
-    try {
-      final transferId = await _repository.updateTransfer(form: form, id: id);
 
       emit(ActionState.success(message: 'Pindah dana berhasil diperbarui'));
       return transferId;

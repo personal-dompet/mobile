@@ -127,12 +127,15 @@ class _DetailContentState extends State<_DetailContent> {
               // Rutin (TC-BINT-009).
               // Kaki withdraw bayar-dari-Target (J1) terkunci juga: void-nya
               // cascade di repo, edit tak punya semantik valid (TC-BINT-010).
+              // Kaki hybrid belanja-dari-Target (J1/J2 spend) sama: Hapus
+              // cascade di repo, Perbaiki disembunyikan.
               // FIX-03/ISSUE-8: profile tombol di bawah tidak diubah.
               if (widget.activity.type != .adjustment &&
                   widget.activity.type != .billPayment &&
                   widget.activity.source != JournalSource.setup &&
                   widget.activity.source != JournalSource.billGenerated &&
-                  !widget.activity.isBillLinkedWithdraw)
+                  !widget.activity.isBillLinkedWithdraw &&
+                  !widget.activity.isHybridSpendLeg)
                 FilledButton(
                   onPressed: () async {
                     final batch =

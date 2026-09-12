@@ -5,7 +5,6 @@ import 'package:dompet_app/core/models/app_configuration.dart';
 import 'package:dompet_app/core/network/connectivity_cubit.dart';
 import 'package:dompet_app/core/router/router.dart';
 import 'package:dompet_app/core/theme/app_theme.dart';
-import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/cubits/account_signal_cubit.dart';
 import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart';
 import 'package:dompet_app/features/app_configurations/cubits/app_configuration_cubit.dart';
@@ -17,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
@@ -61,9 +59,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             scrollBehavior: MaterialScrollBehavior(),
-            routerConfig: _appRouter.config(
-              navigatorObservers: () => [NavigationHistoryObserver()],
-            ),
+            routerConfig: _appRouter.config(),
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -75,14 +71,12 @@ class MyApp extends StatelessWidget {
             darkTheme: AppTheme.dark,
             themeMode: themeMode,
             builder: (context, child) {
-              return RouterHistoryWrapper(
-                child: GestureDetector(
-                  onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-                  child: SafeArea(
-                    top: false,
-                    maintainBottomViewPadding: true,
-                    child: child ?? const SizedBox.expand(),
-                  ),
+              return GestureDetector(
+                onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                child: SafeArea(
+                  top: false,
+                  maintainBottomViewPadding: true,
+                  child: child ?? const SizedBox.expand(),
                 ),
               );
             },

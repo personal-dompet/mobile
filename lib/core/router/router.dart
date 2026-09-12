@@ -51,7 +51,4 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SettingsRoute.page),
     AutoRoute(page: ReportRoute.page),
   ];
-
-  @override
-  List<AutoRouteGuard> get guards => [];
 }

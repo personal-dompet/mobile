@@ -7,12 +7,4 @@ enum PeriodicTime {
 
   final String label;
   const PeriodicTime(this.label);
-
-  static List<PeriodicTime> get options => [
-    .all,
-    .today,
-    .last7Days,
-    .last30Days,
-    .thisMonth,
-  ];
 }

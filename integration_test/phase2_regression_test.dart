@@ -218,7 +218,7 @@ void main() {
       );
       expect(incomeZero.categories.first.amountControl.invalid, isTrue);
       await expectLater(
-        getIt<TransactionRepository>().recordTransaction(
+        getIt<TransactionRepository>().recordTransactionAuto(
           form: incomeZero,
           type: TransactionType.income,
         ),
@@ -229,7 +229,7 @@ void main() {
         ..assetForm.nameControl.updateValue('BCA')
         ..assetForm.balanceControl.updateValue(s0);
       await expectLater(
-        getIt<TransactionRepository>().recordTransaction(
+        getIt<TransactionRepository>().recordTransactionAuto(
           form: incomeEmpty,
           type: TransactionType.income,
         ),
@@ -245,7 +245,7 @@ void main() {
       batchZero.categories.first.amountControl.updateValue(0);
       batchZero.totalAmountControl.updateValue(0);
       await expectLater(
-        getIt<TransactionRepository>().recordTransaction(
+        getIt<TransactionRepository>().recordTransactionAuto(
           form: batchZero,
           type: TransactionType.expense,
         ),
@@ -261,7 +261,7 @@ void main() {
         amount: 0,
       );
       await expectLater(
-        getIt<TransactionRepository>().recordTransaction(
+        getIt<TransactionRepository>().recordTransactionAuto(
           form: expenseZero,
           type: TransactionType.expense,
         ),
@@ -280,7 +280,7 @@ void main() {
       );
       expect(transferZero.amountControl.invalid, isTrue);
       await expectLater(
-        getIt<TransferRepository>().transferBalance(form: transferZero),
+        getIt<TransferRepository>().transferBalanceAuto(form: transferZero),
         throwsException,
       );
 
@@ -337,7 +337,7 @@ void main() {
         amount: 0,
       );
       await expectLater(
-        getIt<TransactionRepository>().updateTransaction(
+        getIt<TransactionRepository>().updateTransactionAuto(
           id: incomeId,
           form: editZero,
           type: TransactionType.income,
@@ -390,7 +390,7 @@ void main() {
         note: 'Gaji Jan rev',
       );
       await settleFormTotal(edit, 700000);
-      final newId = await getIt<TransactionRepository>().updateTransaction(
+      final newId = await getIt<TransactionRepository>().updateTransactionAuto(
         id: oldId,
         form: edit,
         type: TransactionType.income,
@@ -854,7 +854,7 @@ void main() {
       );
       expect(expenseForm.categories.first.categoryId, minum.id);
       await settleFormTotal(expenseForm, 25000);
-      await getIt<TransactionRepository>().recordTransaction(
+      await getIt<TransactionRepository>().recordTransactionAuto(
         form: expenseForm,
         type: TransactionType.expense,
       );
@@ -903,7 +903,7 @@ void main() {
       batch.categories[1].amountControl.updateValue(15000);
       batch.totalAmountControl.updateValue(25000);
       await settleFormTotal(batch, 25000);
-      await getIt<TransactionRepository>().recordTransaction(
+      await getIt<TransactionRepository>().recordTransactionAuto(
         form: batch,
         type: TransactionType.expense,
       );
@@ -978,7 +978,7 @@ void main() {
       );
       await settleFormTotal(stale, 10000);
       await expectLater(
-        getIt<TransactionRepository>().recordTransaction(
+        getIt<TransactionRepository>().recordTransactionAuto(
           form: stale,
           type: TransactionType.income,
         ),
@@ -1069,7 +1069,7 @@ void main() {
       );
       await settleFormTotal(archivedExpense, 10000);
       await expectLater(
-        getIt<TransactionRepository>().recordTransaction(
+        getIt<TransactionRepository>().recordTransactionAuto(
           form: archivedExpense,
           type: TransactionType.expense,
         ),
@@ -1086,7 +1086,7 @@ void main() {
         preset: AccountPreset.eWallet,
       );
       await expectLater(
-        getIt<TransferRepository>().transferBalance(
+        getIt<TransferRepository>().transferBalanceAuto(
           form: transferForm(
             sourceId: base.tunai.id,
             sourceName: 'Tunai',
@@ -1706,7 +1706,7 @@ void main() {
       );
       await settleFormTotal(hobiStale, 10000);
       await expectLater(
-        getIt<TransactionRepository>().recordTransaction(
+        getIt<TransactionRepository>().recordTransactionAuto(
           form: hobiStale,
           type: TransactionType.expense,
         ),
@@ -1973,17 +1973,15 @@ void main() {
           await tester.pump();
           await tester.pump(const Duration(milliseconds: 500));
 
-          // Catatan: ScaffoldMessenger menyisipkan snackbar sebagai SnackBar
-          // (finder sub-tipe tak cocok), jadi verifikasi via tipe dasar —
-          // margin/bg/icon/teks tetap milik DompetSnackbar.
+          // FIX-15: material standar fixed bawah full-width (tanpa margin)
+          // agar aman di ShellPage (floating memicu assertion off screen).
+          // Selaras dengan unit test batch6_search_snackbar_test.
           final snack = tester.widget<SnackBar>(find.byType(SnackBar));
-          expect(snack.behavior, SnackBarBehavior.floating);
-          final margin = snack.margin as EdgeInsets;
           expect(
-            margin.bottom,
-            greaterThan(margin.top),
-            reason: 'snackbar harus menempel atas di $brightness',
+            snack.behavior ?? SnackBarBehavior.fixed,
+            SnackBarBehavior.fixed,
           );
+          expect(snack.margin, isNull);
           bg ??= snack.backgroundColor;
           expect(
             snack.backgroundColor,

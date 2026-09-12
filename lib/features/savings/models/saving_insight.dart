@@ -339,7 +339,10 @@ class SavingInsight {
     try {
       final json = jsonDecode(meta);
       if (json is! Map) return null;
-      if (json['saving_tx'] != SavingTxType.topup.value) return null;
+      if (json['saving_tx'] is! String ||
+          SavingTxType.tryParse(json['saving_tx']) != SavingTxType.topup) {
+        return null;
+      }
       final id = json['pocket_id'];
       if (id is! int || id != pocketId) return null;
       return SavingTxType.topup;

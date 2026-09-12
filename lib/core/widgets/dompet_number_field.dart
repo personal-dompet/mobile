@@ -1,5 +1,6 @@
 import 'package:dompet_app/core/utils/dompet_input_decoration.dart';
 import 'package:dompet_app/core/utils/format_currency.dart';
+import 'package:intl/intl.dart';
 import 'package:dompet_app/core/widgets/calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -123,14 +124,16 @@ class _AmountInputState extends State<_AmountInput> {
 
     // Initialize with formatted value if exists
     if (widget.field.value != null) {
-      _controller.text = FormatCurrency.format(widget.field.value!);
+      _controller.text = NumberFormat.decimalPattern(
+        'id',
+      ).format(widget.field.value!);
     }
 
     // Listen to changes from the form control
     widget.field.control.valueChanges.listen((value) {
       if (mounted) {
         if (value != null) {
-          final formatted = FormatCurrency.format(value);
+          final formatted = NumberFormat.decimalPattern('id').format(value);
           if (_controller.text != formatted) {
             setState(() {
               _controller.text = formatted;

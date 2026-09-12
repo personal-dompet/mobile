@@ -374,7 +374,7 @@ void main() {
     final expenseId = await lastPostedJournalId();
     expect(await totalUang(), t0 + 60000);
 
-    await getIt<TransferRepository>().transferBalance(
+    await getIt<TransferRepository>().transferBalanceAuto(
       form: transferForm(
         sourceId: base.bca.id,
         sourceName: 'BCA',
@@ -437,6 +437,8 @@ void main() {
     );
 
     // TC-GLB-002 akhir: hapus semua satu per satu → kembali ke T0.
+    // spend() menulis 2 jurnal (J1 tarik pocket→dompet + J2 expense) yang
+    // tertaut paired_entry_id; void spendId (J2) cascade ke J1 di repo.
     for (final id in [
       adjustId,
       spendId,
@@ -640,26 +642,30 @@ void main() {
     expect(comparison.incomeLabel, isNull);
 
     // Bulan lalu ada data → label naik/turun + % benar.
-    await getIt<TransactionRepository>().recordTransaction(
-      form: singleCategoryForm(
-        assetId: base.bca.id,
-        assetName: 'BCA',
-        assetBalance: 6000000,
-        categoryId: base.gajiId,
-        amount: 500000,
-        date: prevMonth,
-      ),
+    final prevIncomeForm = singleCategoryForm(
+      assetId: base.bca.id,
+      assetName: 'BCA',
+      assetBalance: 6000000,
+      categoryId: base.gajiId,
+      amount: 500000,
+      date: prevMonth,
+    );
+    await settleFormTotal(prevIncomeForm, 500000);
+    await getIt<TransactionRepository>().recordTransactionAuto(
+      form: prevIncomeForm,
       type: TransactionType.income,
     );
-    await getIt<TransactionRepository>().recordTransaction(
-      form: singleCategoryForm(
-        assetId: base.bca.id,
-        assetName: 'BCA',
-        assetBalance: 6500000,
-        categoryId: base.makanId,
-        amount: 200000,
-        date: prevMonth,
-      ),
+    final prevExpenseForm = singleCategoryForm(
+      assetId: base.bca.id,
+      assetName: 'BCA',
+      assetBalance: 6500000,
+      categoryId: base.makanId,
+      amount: 200000,
+      date: prevMonth,
+    );
+    await settleFormTotal(prevExpenseForm, 200000);
+    await getIt<TransactionRepository>().recordTransactionAuto(
+      form: prevExpenseForm,
       type: TransactionType.expense,
     );
     await recordExpense(
@@ -674,7 +680,7 @@ void main() {
     expect(comparison.incomeLabel, 'naik 100%');
     expect(comparison.expenseChangePercent, 100);
     expect(comparison.expenseLabel, 'naik 100%');
-    expect(PeriodComparison.changeLabel(0), 'tetap');
+    expect(PeriodComparison.changeLabel(0), 'sama seperti bulan lalu');
     expect(PeriodComparison.changePercent(current: 0, previous: 0), 0);
 
     // TC-RPT-005: insight surplus + aturan bulan kosong.

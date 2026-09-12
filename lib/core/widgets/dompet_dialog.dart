@@ -47,14 +47,19 @@ class DompetDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (cancellationText != null && onCancel != null)
+                  // Default 'Batal' saat onCancel ada (perilaku lama):
+                  // refactor membuatnya opt-in tapi pemanggil tak
+                  // diperbarui sehingga tombol hilang di dialog Hapus/
+                  // Arsip/Keluar. Tanpa onCancel (info 'Mengerti') tetap
+                  // tanpa tombol batal.
+                  if (onCancel != null)
                     TextButton(
                       key: TestKeys.dialogCancel,
                       style: TextButton.styleFrom(
                         foregroundColor: Theme.of(context).dividerColor,
                       ),
                       onPressed: onCancel,
-                      child: Text(cancellationText!),
+                      child: Text(cancellationText ?? 'Batal'),
                     ),
                   const SizedBox(width: 8),
                   FilledButton(

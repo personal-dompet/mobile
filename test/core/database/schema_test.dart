@@ -1,7 +1,7 @@
 import 'package:dompet_app/core/database/db_service.dart';
 import 'package:dompet_app/core/database/views/views.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../helpers/test_db.dart';
 

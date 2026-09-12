@@ -1,5 +1,4 @@
 import 'package:dompet_app/core/utils/open_add_account_bottom_sheet.dart';
-import 'package:dompet_app/core/widgets/grid_tile_add.dart';
 import 'package:dompet_app/core/widgets/widget.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/assets/widgets/asset_card.dart';
@@ -127,19 +126,36 @@ class WalletSetupAsset extends StatelessWidget {
                     itemCount: accounts.length + 1,
                     itemBuilder: (context, index) {
                       if (index == accounts.length) {
-                        return GridTileAdd(
-                          onTap: () async {
-                            final setupCubit = context.read<AssetSetupCubit>();
-                            final result = await openAddAccountBottomSheet(
-                              context,
-                              presetAccounts: presetAccounts,
-                            );
+                        return Card(
+                          clipBehavior: Clip.antiAlias,
+                          child: InkWell(
+                            onTap: () async {
+                              final setupCubit =
+                                  context.read<AssetSetupCubit>();
+                              final result = await openAddAccountBottomSheet(
+                                context,
+                                presetAccounts: presetAccounts,
+                              );
 
-                            if (result == null) return;
+                              if (result == null) return;
 
-                            setupCubit.createNewAssetAccount(result);
-                          },
-                          label: 'Tambah dompet',
+                              setupCubit.createNewAssetAccount(result);
+                            },
+                            child: Column(
+                              mainAxisAlignment: .center,
+                              crossAxisAlignment: .center,
+                              spacing: 4,
+                              children: [
+                                Icon(Icons.add_circle_rounded),
+                                Text(
+                                  'Tambah dompet',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                          ),
                         );
                       }
                       final account = accounts[index];

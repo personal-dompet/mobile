@@ -103,7 +103,7 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 50));
 
       await expectLater(
-        transactions.recordTransaction(
+        transactions.recordTransactionAuto(
           form: form,
           type: TransactionType.expense,
         ),

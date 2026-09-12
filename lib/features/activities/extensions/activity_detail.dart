@@ -29,8 +29,29 @@ extension ActivityDetail on JournalEntry {
     try {
       final json = jsonDecode(meta);
       if (json is! Map) return false;
-      if (json['saving_tx'] != SavingTxType.withdraw.value) return false;
+      if (SavingTxType.tryParse(json['saving_tx']) != SavingTxType.withdraw) {
+        return false;
+      }
       return json['bill_id'] is int;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Kaki hybrid belanja-dari-Target (J1 tarik pocket maupun J2 expense):
+  /// edit satu kaki tak punya semantik valid karena pasangannya tak ikut
+  /// berubah, jadi Perbaiki disembunyikan seperti `isBillLinkedWithdraw`.
+  /// Hapus tetap ada — void-nya cascade di repo ke pasangannya.
+  bool get isHybridSpendLeg {
+    final meta = metadata;
+    if (meta == null || meta.isEmpty) return false;
+    try {
+      final json = jsonDecode(meta);
+      if (json is! Map) return false;
+      return (json['hybrid'] == true &&
+              SavingTxType.tryParse(json['saving_tx']) ==
+                  SavingTxType.spend) ||
+          json['hybrid_expense'] == true;
     } catch (_) {
       return false;
     }

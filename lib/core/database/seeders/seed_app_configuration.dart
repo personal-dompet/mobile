@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dompet_app/core/constants/field_keys/field_key.dart';
 import 'package:dompet_app/core/database/schemas/app_configuration.dart';
 import 'package:dompet_app/core/models/app_configuration.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 Future<void> seedAppConfiguration(Batch batch) async {
   final configuration = AppConfiguration(hint: AppHint());

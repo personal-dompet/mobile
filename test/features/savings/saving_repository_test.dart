@@ -8,7 +8,7 @@ import 'package:dompet_app/features/journals/enums/journal_status.dart';
 import 'package:dompet_app/features/savings/models/saving_filter.dart';
 import 'package:dompet_app/features/savings/repositories/saving_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../helpers/test_db.dart';
 
@@ -398,7 +398,7 @@ void main() {
     final plan = await repository.createPocket(name: 'VGA');
 
     final journalsBefore =
-        Sqflite.firstIntValue(
+        _firstIntValue(
           await db.rawQuery('SELECT COUNT(*) FROM $journalEntryTable'),
         ) ??
         0;
@@ -410,7 +410,7 @@ void main() {
     expect(journalId, isNull);
 
     final journalsAfter =
-        Sqflite.firstIntValue(
+        _firstIntValue(
           await db.rawQuery('SELECT COUNT(*) FROM $journalEntryTable'),
         ) ??
         0;
@@ -483,4 +483,9 @@ void main() {
       throwsException,
     );
   });
+}
+
+int? _firstIntValue(List<Map<String, Object?>> rows) {
+  if (rows.isEmpty) return null;
+  return (rows.first.values.first as num?)?.toInt();
 }

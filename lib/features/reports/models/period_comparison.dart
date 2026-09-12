@@ -31,7 +31,7 @@ class PeriodComparison {
   /// Null jika persen tidak terdefinisi (periode lalu kosong).
   static String? changeLabel(double? percent) {
     if (percent == null) return null;
-    if (percent == 0) return 'tetap';
+    if (percent == 0) return 'sama seperti bulan lalu';
     final rounded = percent.abs().round();
     return '${percent < 0 ? 'turun' : 'naik'} $rounded%';
   }

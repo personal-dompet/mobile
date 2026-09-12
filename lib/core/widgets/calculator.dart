@@ -1,5 +1,6 @@
-import 'package:dompet_app/core/utils/format_currency.dart';
+import 'package:dompet_app/core/extensions/number.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl;
 
 class Calculator {
   String display = '0';
@@ -69,25 +70,13 @@ class Calculator {
 
   /// Tambahkan separator titik setiap 3 digit dari kanan
   String _addThousandsSeparator(String numberStr) {
-    // Handle negative numbers
+    // ponytail: intl one-liner replaces hand-rolled reverse/regex; keep if locale changes
     final isNegative = numberStr.startsWith('-');
-    String workingStr = isNegative ? numberStr.substring(1) : numberStr;
-
-    // Reverse string untuk lebih mudah menambah separator
-    final reversed = workingStr.split('').reversed.join('');
-    final withSeparator = reversed.replaceAllMapped(
-      RegExp(r'.{1,3}'),
-      (match) => '${match.group(0)!}.',
-    );
-
-    // Reverse kembali dan hapus separator terakhir
-    String result = withSeparator
-        .split('')
-        .reversed
-        .join('')
-        .replaceFirst('.', ''); // Hapus titik paling depan
-
-    return isNegative ? '-$result' : result;
+    final abs = isNegative ? numberStr.substring(1) : numberStr;
+    final formatted = intl.NumberFormat.decimalPattern(
+      'id',
+    ).format(int.tryParse(abs) ?? 0);
+    return isNegative ? '-$formatted' : formatted;
   }
 
   static bool _isOperator(String token) => '+-×÷'.contains(token);
@@ -459,7 +448,7 @@ class _CalculatorScreenState extends State<_CalculatorScreen> {
     final textTheme = Theme.of(context).textTheme;
     final canApply = _calculator.canApply;
     final previewValue = canApply
-        ? FormatCurrency.formatRupiah(_calculator.intValue)
+        ? _calculator.intValue.currency
         : '—';
 
     return Padding(

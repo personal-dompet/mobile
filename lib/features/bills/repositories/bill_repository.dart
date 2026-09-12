@@ -65,16 +65,6 @@ class BillRepository {
     );
   }
 
-  Future<int> countBills(BillFilter filter) async {
-    final db = await _dbService.database;
-    final where = filter.whereClauses.join(' AND ');
-    final totalRow = await db.rawQuery(
-      'SELECT COUNT(*) AS total FROM $billTable WHERE $where',
-      filter.arguments,
-    );
-    return (totalRow.first['total'] as int?) ?? 0;
-  }
-
   Future<Bill?> getBillById(int id) async {    final db = await _dbService.database;
     final rows = await db.query(
       billTable,

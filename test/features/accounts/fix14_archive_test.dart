@@ -106,7 +106,7 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 50));
 
       await expectLater(
-        transactions.recordTransaction(
+        transactions.recordTransactionAuto(
           form: form,
           type: TransactionType.expense,
         ),
@@ -136,7 +136,7 @@ void main() {
       form.amountControl.updateValue(10000);
 
       await expectLater(
-        transfers.transferBalance(form: form),
+        transfers.transferBalanceAuto(form: form),
         throwsA(
           isA<Exception>().having(
             (e) => e.toString(),

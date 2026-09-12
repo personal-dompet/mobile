@@ -51,16 +51,6 @@ class ConnectivityCubit extends Cubit<bool> {
     }
   }
 
-  /// Re-checks connectivity on demand (e.g. pull-to-refresh).
-  Future<void> refresh() async {
-    try {
-      final results = await _connectivity.checkConnectivity();
-      if (!isClosed) emit(isOnlineFromResults(results));
-    } catch (e) {
-      debugPrint('[ConnectivityCubit] refresh failed: $e');
-    }
-  }
-
   @override
   Future<void> close() async {
     await _subscription?.cancel();

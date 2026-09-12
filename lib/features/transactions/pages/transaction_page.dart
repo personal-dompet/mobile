@@ -11,7 +11,7 @@ import 'package:dompet_app/features/activities/cubits/activity_signal_cubit.dart
 import 'package:dompet_app/features/budgets/cubits/budget_signal_cubit.dart';
 import 'package:dompet_app/features/categories/widgets/category_field.dart';
 import 'package:dompet_app/features/transactions/cubits/transaction_cubit.dart';
-import 'package:dompet_app/features/transactions/effective_balance.dart';
+import 'package:dompet_app/features/transactions/repositories/overspend_adjustment.dart';
 import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
 import 'package:dompet_app/features/transactions/forms/transaction_form.dart';
 import 'package:flutter/material.dart';

@@ -134,9 +134,7 @@ class ActivityItemTile extends StatelessWidget {
     try {
       final json = jsonDecode(meta);
       if (json is! Map) return null;
-      tx = SavingTxType.values
-          .where((e) => e.value == json['saving_tx'])
-          .firstOrNull;
+      tx = SavingTxType.tryParse(json['saving_tx']);
     } catch (_) {
       return null;
     }

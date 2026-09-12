@@ -83,7 +83,8 @@ void main() {
     batch.categories[1].categoryIdControl.updateValue(bonusId);
     batch.categories[1].amountControl.updateValue(100000);
     batch.totalAmountControl.updateValue(500000);
-    await getIt<TransactionRepository>().recordTransaction(
+    await settleFormTotal(batch, 500000);
+    await getIt<TransactionRepository>().recordTransactionAuto(
       form: batch,
       type: TransactionType.income,
     );
@@ -107,7 +108,8 @@ void main() {
       amount: 700000,
       note: 'Gaji Jan',
     );
-    final editedId = await getIt<TransactionRepository>().updateTransaction(
+    await settleFormTotal(editSame, 700000);
+    final editedId = await getIt<TransactionRepository>().updateTransactionAuto(
       id: incomeId,
       form: editSame,
       type: TransactionType.income,
@@ -123,7 +125,8 @@ void main() {
       amount: 700000,
       note: 'Gaji Jan',
     );
-    final movedId = await getIt<TransactionRepository>().updateTransaction(
+    await settleFormTotal(moveToTunai, 700000);
+    final movedId = await getIt<TransactionRepository>().updateTransactionAuto(
       id: editedId,
       form: moveToTunai,
       type: TransactionType.income,
@@ -147,7 +150,7 @@ void main() {
     noAmount.assetForm.nameControl.updateValue('BCA');
     noAmount.assetForm.balanceControl.updateValue(5000000);
     expect(
-      () => getIt<TransactionRepository>().recordTransaction(
+      () => getIt<TransactionRepository>().recordTransactionAuto(
         form: noAmount,
         type: TransactionType.income,
       ),
@@ -160,7 +163,7 @@ void main() {
     noAsset.categories.first.amountControl.updateValue(100000);
     noAsset.totalAmountControl.updateValue(100000);
     expect(
-      () => getIt<TransactionRepository>().recordTransaction(
+      () => getIt<TransactionRepository>().recordTransactionAuto(
         form: noAsset,
         type: TransactionType.income,
       ),
@@ -200,7 +203,8 @@ void main() {
     batch.categories[1].categoryIdControl.updateValue(base.transportId);
     batch.categories[1].amountControl.updateValue(20000);
     batch.totalAmountControl.updateValue(50000);
-    await getIt<TransactionRepository>().recordTransaction(
+    await settleFormTotal(batch, 50000);
+    await getIt<TransactionRepository>().recordTransactionAuto(
       form: batch,
       type: TransactionType.expense,
     );
@@ -216,7 +220,8 @@ void main() {
       categoryId: base.makanId,
       amount: 80000,
     );
-    final editedId = await getIt<TransactionRepository>().updateTransaction(
+    await settleFormTotal(editUp, 80000);
+    final editedId = await getIt<TransactionRepository>().updateTransactionAuto(
       id: expenseId,
       form: editUp,
       type: TransactionType.expense,
@@ -233,7 +238,8 @@ void main() {
       categoryId: base.makanId,
       amount: 80000,
     );
-    final movedId = await getIt<TransactionRepository>().updateTransaction(
+    await settleFormTotal(moveToTunai, 80000);
+    final movedId = await getIt<TransactionRepository>().updateTransactionAuto(
       id: editedId,
       form: moveToTunai,
       type: TransactionType.expense,
@@ -263,7 +269,7 @@ void main() {
     final t0 = await totalUang();
 
     // TC-TRF-001: BCA -> GoPay Rp200.000, Total Uang tetap.
-    await getIt<TransferRepository>().transferBalance(
+    await getIt<TransferRepository>().transferBalanceAuto(
       form: transferForm(
         sourceId: base.bca.id,
         sourceName: 'BCA',
@@ -289,7 +295,7 @@ void main() {
       destinationBalance: 200000,
       amount: 250000,
     );
-    await getIt<TransferRepository>().updateTransfer(form: edit, id: transferId);
+    await getIt<TransferRepository>().updateTransferAuto(form: edit, id: transferId);
     final editedId = await lastPostedJournalId();
     expect(await balanceOf(base.bca.id), 4750000);
     expect(await balanceOf(gopay.id), 250000);
@@ -310,7 +316,7 @@ void main() {
     noAmount.destinationForm.nameControl.updateValue('GoPay');
     noAmount.destinationForm.balanceControl.updateValue(0);
     expect(
-      () => getIt<TransferRepository>().transferBalance(form: noAmount),
+      () => getIt<TransferRepository>().transferBalanceAuto(form: noAmount),
       throwsException,
     );
     expect(await totalUang(), t0);
@@ -392,15 +398,17 @@ void main() {
     final past = DateTime(now.year, now.month, now.day)
         .subtract(const Duration(days: 3));
 
-    await getIt<TransactionRepository>().recordTransaction(
-      form: singleCategoryForm(
-        assetId: base.bca.id,
-        assetName: 'BCA',
-        assetBalance: 5000000,
-        categoryId: base.gajiId,
-        amount: 250000,
-        date: past.add(const Duration(hours: 10)),
-      ),
+    final pastForm = singleCategoryForm(
+      assetId: base.bca.id,
+      assetName: 'BCA',
+      assetBalance: 5000000,
+      categoryId: base.gajiId,
+      amount: 250000,
+      date: past.add(const Duration(hours: 10)),
+    );
+    await settleFormTotal(pastForm, 250000);
+    await getIt<TransactionRepository>().recordTransactionAuto(
+      form: pastForm,
       type: TransactionType.income,
     );
     final id = await lastPostedJournalId();
@@ -441,7 +449,7 @@ void main() {
       categoryId: base.makanId,
       amount: 50000,
     );
-    await getIt<TransferRepository>().transferBalance(
+    await getIt<TransferRepository>().transferBalanceAuto(
       form: transferForm(
         sourceId: base.bca.id,
         sourceName: 'BCA',
@@ -453,21 +461,23 @@ void main() {
       ),
     );
     var bca = await getIt<AccountRepository>().getAccount(base.bca.id);
+    // FIX-08: selisih 0 = no-op (throw), jadi buat penyesuaian nyata +1000
+    // agar 1 jurnal adjustment tetap tercatat untuk filter.
+    final liveBal = await balanceOf(base.bca.id);
     await getIt<BalanceAdjustmentRepository>().adjustBalance(
-      form: adjustmentForm(
-        account: bca!,
-        actualBalance: await balanceOf(base.bca.id),
-      ),
+      form: adjustmentForm(account: bca!, actualBalance: liveBal + 1000),
     );
-    await getIt<TransactionRepository>().recordTransaction(
-      form: singleCategoryForm(
-        assetId: base.bca.id,
-        assetName: 'BCA',
-        assetBalance: 5440000,
-        categoryId: base.makanId,
-        amount: 20000,
-        date: now.subtract(const Duration(days: 10)),
-      ),
+    final oldExpenseForm = singleCategoryForm(
+      assetId: base.bca.id,
+      assetName: 'BCA',
+      assetBalance: 5440000 + 1000,
+      categoryId: base.makanId,
+      amount: 20000,
+      date: now.subtract(const Duration(days: 10)),
+    );
+    await settleFormTotal(oldExpenseForm, 20000);
+    await getIt<TransactionRepository>().recordTransactionAuto(
+      form: oldExpenseForm,
       type: TransactionType.expense,
     );
 
@@ -495,6 +505,8 @@ void main() {
     );
 
     // TC-ACT-004: periode hari ini mengecualikan transaksi 10 hari lalu.
+    // FIX-04: jurnal setup (2 dompet seed) ikut terhitung karena entryDate-nya
+    // hari ini — 4 aktivitas + 2 setup = 6.
     expect(
       await count(
         JournalFilter(
@@ -504,16 +516,17 @@ void main() {
           ),
         ),
       ),
-      4,
+      6,
     );
 
     // TC-ACT-002 (logika): search deskripsi case-insensitive.
     expect(await count(const JournalFilter(description: 'gaji')), 1);
     expect(await count(const JournalFilter(description: 'xyz-tidak-ada')), 0);
 
-    // TC-ACT-005 (logika): filter per dompet — semua 5 menyentuh BCA.
-    expect(await count(JournalFilter(accountId: base.bca.id)), 5);
-    expect(await count(JournalFilter(accountId: base.tunai.id)), 1);
+    // TC-ACT-005 (logika): filter per dompet — 6 menyentuh BCA
+    // (5 aktivitas + 1 setup BCA), 2 menyentuh Tunai (transfer + setup Tunai).
+    expect(await count(JournalFilter(accountId: base.bca.id)), 6);
+    expect(await count(JournalFilter(accountId: base.tunai.id)), 2);
   });
 
   test('TC-DSH-009 ringkasan hari ini: aturan ikut/tidak ikut', () async {

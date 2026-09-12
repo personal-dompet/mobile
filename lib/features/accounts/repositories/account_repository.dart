@@ -5,7 +5,6 @@ import 'package:dompet_app/core/database/views/views.dart';
 import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/features/accounts/models/account.dart';
 import 'package:dompet_app/features/accounts/models/account_filter.dart';
-import 'package:sqflite/sqflite.dart';
 
 class AccountRepository {
   final DbService _dbService;
@@ -100,7 +99,7 @@ class AccountRepository {
           AND ${AccountKey.isDeleted} = 0
     ''');
 
-    final int? count = Sqflite.firstIntValue(result);
+    final int? count = (result.isEmpty ? null : (result.first.values.first as num?)?.toInt());
 
     return count is int && count > 0;
   }

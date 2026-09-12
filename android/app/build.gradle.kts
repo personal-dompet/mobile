@@ -24,7 +24,9 @@ android {
         applicationId = "com.lutfi.dompet.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // Floor: Android 8.0 (API 26). Bundled SQLite via
+        // sqlite3_flutter_libs needs API 21+; 26 is our support floor.
+        minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

@@ -1,10 +1,8 @@
-import 'package:dompet_app/core/utils/dompet_input_decoration.dart';
+import 'package:dompet_app/core/widgets/dompet_date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:reactive_date_time_picker/reactive_date_time_picker.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-/// Date picker tanggal saja (tanpa jam), mirror [DompetDateTimePicker].
+/// Date picker tanggal saja (tanpa jam). Thin alias over [DompetDateTimePicker].
 class DompetDatePicker extends StatelessWidget {
   final FormControl<DateTime> formControl;
   final String label;
@@ -27,37 +25,15 @@ class DompetDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ReactiveValueListenableBuilder(
+    return DompetDateTimePicker(
       formControl: formControl,
-      builder: (context, control, child) {
-        final dateControl = control as FormControl<DateTime>;
-        return ReactiveDateTimePicker(
-          formControl: dateControl,
-          type: .date,
-          showErrors: (control) {
-            return control.invalid && (control.touched || control.dirty);
-          },
-          dateFormat: DateFormat('d MMMM yyyy', 'id'),
-          showClearIcon: showClearIcon,
-          confirmText: 'Simpan',
-          cancelText: 'Batal',
-          datePickerEntryMode: .calendarOnly,
-          locale: Locale('id', ''),
-          firstDate: firstDate,
-          lastDate: lastDate,
-          validationMessages: {
-            ValidationMessage.required: (error) {
-              return 'Pilih ${label.toLowerCase()} dahulu';
-            },
-          },
-          decoration: DompetInputDecoration(
-            labelText: label,
-            themeData: Theme.of(context),
-            placeholder: placeholder,
-            helperText: helper,
-          ),
-        );
-      },
+      label: label,
+      placeholder: placeholder,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      helper: helper,
+      showClearIcon: showClearIcon,
+      withTime: false,
     );
   }
 }

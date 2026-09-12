@@ -6,7 +6,7 @@ import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../helpers/test_db.dart';
 
@@ -71,9 +71,10 @@ void main() {
   }
 
   test('seeded presets exist and all balances start at zero', () async {
-    final count = Sqflite.firstIntValue(
-      await db.rawQuery('SELECT COUNT(*) FROM $accountTable'),
-    );
+    final countRows = await db.rawQuery('SELECT COUNT(*) FROM $accountTable');
+    final count = countRows.isEmpty
+        ? null
+        : (countRows.first.values.first as num?)?.toInt();
     expect(count, greaterThan(0));
 
     final rows = await db.query(accountBalanceView);

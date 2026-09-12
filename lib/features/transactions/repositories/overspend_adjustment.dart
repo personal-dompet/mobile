@@ -7,8 +7,9 @@ import 'package:dompet_app/core/enums/enum.dart';
 import 'package:dompet_app/core/extensions/date.dart';
 import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
+import 'package:dompet_app/features/transactions/enums/transaction_type.dart';
 import 'package:dompet_app/features/transactions/models/balance_adjustment.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 /// Helper bersama FIX-07 (IMP-1): sisip jurnal penyesuaian selisih ke dalam
 /// transaksi DB yang sedang berjalan (jangan buka `db.transaction` baru).
@@ -99,4 +100,27 @@ Future<int> liveBalanceOf(Transaction txn, int accountId) async {
     throw Exception('Terjadi kesalahan data pada aplikasi');
   }
   return (rows.first[AccountKey.balance] as num?)?.toInt() ?? 0;
+}
+
+/// Effective Balance untuk validasi edit: saldo setelah efek transaksi
+/// lama dibalik terlebih dahulu. Bukan edit (previous null) atau dompet
+/// berganti = saldo saat ini.
+int computeEffectiveBalance({
+  required int currentBalance,
+  required TransactionType type,
+  int? previousAmount,
+  int? previousAssetId,
+  int? currentAssetId,
+}) {
+  final isEdit = previousAmount != null && previousAssetId != null;
+
+  if (!isEdit ||
+      currentAssetId == null ||
+      previousAssetId != currentAssetId) {
+    return currentBalance;
+  }
+
+  return type == .expense
+      ? currentBalance + previousAmount
+      : currentBalance - previousAmount;
 }

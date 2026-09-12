@@ -364,7 +364,7 @@ Future<void> recordIncome({
     note: note,
   );
   await settleFormTotal(form, amount);
-  await getIt<TransactionRepository>().recordTransaction(
+  await getIt<TransactionRepository>().recordTransactionAuto(
     form: form,
     type: TransactionType.income,
   );
@@ -387,7 +387,7 @@ Future<void> recordExpense({
     note: note,
   );
   await settleFormTotal(form, amount);
-  await getIt<TransactionRepository>().recordTransaction(
+  await getIt<TransactionRepository>().recordTransactionAuto(
     form: form,
     type: TransactionType.expense,
   );

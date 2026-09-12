@@ -1,12 +1,8 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class Pagination {
+  final int page;
+  final int limit;
 
-part 'pagination.freezed.dart';
-
-@freezed
-abstract class Pagination with _$Pagination {
-  const Pagination._();
-  const factory Pagination({@Default(1) int page, @Default(20) int limit}) =
-      _Pagination;
+  const Pagination({this.page = 1, this.limit = 20});
 
   int get offset => (page - 1) * limit;
 }

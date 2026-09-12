@@ -1,4 +1,4 @@
-import 'package:dompet_app/features/transactions/effective_balance.dart';
+import 'package:dompet_app/features/transactions/repositories/overspend_adjustment.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -6,28 +6,12 @@ import 'package:dompet_app/features/journals/enums/journal_source.dart';
 import 'package:dompet_app/features/journals/enums/journal_status.dart';
 import 'package:dompet_app/features/transactions/forms/transfer_form.dart';
 import 'package:dompet_app/features/transactions/repositories/overspend_adjustment.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class TransferRepository {
   final DbService _dbService;
 
   const TransferRepository(this._dbService);
-
-  Future<void> transferBalance({required TransferForm form}) async {
-    final db = await _dbService.database;
-
-    // FIX-01: min 1 global (TC-TRF-004) — checked before account presence
-    // so a zero nominal always fails with the amount message.
-    _assertPositiveAmount(form);
-    if (form.accountSourceId == null ||
-        form.accountDestinationId == null) {
-      throw Exception('Terjadi kesalahan data pada aplikasi');
-    }
-
-    await db.transaction((txn) async {
-      await _recordTransfer(txn, form: form);
-    });
-  }
 
   /// FIX-07 (IMP-1): pindah dana dengan penyesuaian selisih otomatis bila
   /// nominal melebihi saldo efektif aset sumber. Satu `db.transaction`:
@@ -132,33 +116,6 @@ class TransferRepository {
       return live + previousAmount;
     }
     return live;
-  }
-
-  Future<int> updateTransfer({
-    required TransferForm form,
-    required int id,
-  }) async {
-    final db = await _dbService.database;
-
-    // FIX-01: edit flow is guarded exactly like create (TC-TRF-004).
-    _assertPositiveAmount(form);
-    if (form.accountSourceId == null ||
-        form.accountDestinationId == null) {
-      throw Exception('Terjadi kesalahan data pada aplikasi');
-    }
-
-    final journalId = await db.transaction((txn) async {
-      await txn.update(
-        journalEntryTable,
-        {JournalEntryKey.status: JournalStatus.voided.name},
-        where: '${JournalEntryKey.id} = ?',
-        whereArgs: [id],
-      );
-
-      return await _recordTransfer(txn, form: form);
-    });
-
-    return journalId;
   }
 
   /// FIX-14: sumber/tujuan arsip ditolak. Null = validasi presence.

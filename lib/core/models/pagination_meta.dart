@@ -1,19 +1,17 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class PaginationMeta {
+  final int total;
+  final int page;
+  final int limit;
 
-part 'pagination_meta.freezed.dart';
-part 'pagination_meta.g.dart';
+  const PaginationMeta({this.total = 0, this.page = 0, this.limit = 0});
 
-@freezed
-abstract class PaginationMeta with _$PaginationMeta {
-  const PaginationMeta._();
-  const factory PaginationMeta({
-    @Default(0) int total,
-    @Default(0) int page,
-    @Default(0) int limit,
-  }) = _PaginationMeta;
-
-  factory PaginationMeta.fromJson(Map<String, dynamic> json) =>
-      _$PaginationMetaFromJson(json);
+  factory PaginationMeta.fromJson(Map<String, dynamic> json) {
+    return PaginationMeta(
+      total: (json['total'] as num?)?.toInt() ?? 0,
+      page: (json['page'] as num?)?.toInt() ?? 0,
+      limit: (json['limit'] as num?)?.toInt() ?? 0,
+    );
+  }
 
   bool get hasMore => page * limit < total;
 }

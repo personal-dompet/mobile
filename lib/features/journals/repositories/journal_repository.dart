@@ -296,8 +296,44 @@ class JournalRepository {
           whereArgs: [linkedBillId, BillStatus.paid.value],
         );
       }
+      // Void pasangan hybrid spend (belanja dari Target J1<->J2): hapus
+      // satu kaki void keduanya agar tak ada jurnal hantu (+liquid hantu).
+      // Hanya bila pasangan masih posted (idempoten, tanpa rekursi).
+      final pairId = rows.isEmpty
+          ? null
+          : _linkedSpendPairId(
+              rows.first[JournalEntryKey.metadata] as String?,
+            );
+      if (pairId != null) {
+        await txn.update(
+          journalEntryTable,
+          {JournalEntryKey.status: JournalStatus.voided.name},
+          where: '${JournalEntryKey.id} = ? AND ${JournalEntryKey.status} = ?',
+          whereArgs: [pairId, JournalStatus.posted.name],
+        );
+      }
     });
     return;
+  }
+
+  /// `paired_entry_id` dari metadata pasangan hybrid spend (J1/J2
+  /// belanja dari Target). Null untuk jurnal biasa atau metadata rusak.
+  int? _linkedSpendPairId(String? meta) {
+    if (meta == null || meta.isEmpty) return null;
+    try {
+      final json = jsonDecode(meta);
+      if (json is! Map) return null;
+      final isSpendLeg =
+          (json['hybrid'] == true &&
+              SavingTxType.tryParse(json['saving_tx']) ==
+                  SavingTxType.spend) ||
+          json['hybrid_expense'] == true;
+      if (!isSpendLeg) return null;
+      final id = json['paired_entry_id'];
+      return id is int ? id : null;
+    } catch (_) {
+      return null;
+    }
   }
 
   /// `bill_id` dari metadata kaki withdraw bayar-dari-Target (J1).
@@ -307,7 +343,10 @@ class JournalRepository {
     try {
       final json = jsonDecode(meta);
       if (json is! Map) return null;
-      if (json['saving_tx'] != SavingTxType.withdraw.value) return null;
+      if (SavingTxType.tryParse(json['saving_tx']) !=
+          SavingTxType.withdraw) {
+        return null;
+      }
       final id = json['bill_id'];
       return id is int ? id : null;
     } catch (_) {

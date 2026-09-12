@@ -12,6 +12,7 @@ class DompetDateTimePicker extends StatelessWidget {
   final DateTime? firstDate;
   final DateTime? lastDate;
   final bool showClearIcon;
+  final bool withTime;
 
   const DompetDateTimePicker({
     super.key,
@@ -22,6 +23,7 @@ class DompetDateTimePicker extends StatelessWidget {
     this.lastDate,
     this.helper = '',
     this.showClearIcon = false,
+    this.withTime = true,
   });
 
   @override
@@ -32,11 +34,13 @@ class DompetDateTimePicker extends StatelessWidget {
         final dateControl = control as FormControl<DateTime>;
         return ReactiveDateTimePicker(
           formControl: dateControl,
-          type: .dateTime,
+          type: withTime ? .dateTime : .date,
           showErrors: (control) {
             return control.invalid && (control.touched || control.dirty);
           },
-          dateFormat: DateFormat('d MMMM yyyy • HH:mm', 'id'),
+          dateFormat: withTime
+              ? DateFormat('d MMMM yyyy • HH:mm', 'id')
+              : DateFormat('d MMMM yyyy', 'id'),
           showClearIcon: showClearIcon,
           confirmText: 'Simpan',
           cancelText: 'Batal',
