@@ -1,0 +1,85 @@
+# Rilis APK signed ke GitHub Releases.
+#
+# SOP rilis (manual, ~2 menit):
+#   1. Naikkan versi di pubspec.yaml, mis. 1.0.0+1 -> 1.0.1+2
+#      (versionCode = angka setelah +, WAJIB naik tiap rilis).
+#   2. Commit + push ke main.
+#   3. Tag persis sama dengan versi:  git tag v1.0.1+2 && git push origin v1.0.1+2
+#   4. Workflow ini build APK signed (split-per-abi) lalu membuat
+#      GitHub Release berisi APK + instructions. Edit body rilis bila perlu.
+#
+# Prasyarat sekali saja (sudah dikerjakan saat setup):
+#   Secrets repo: KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS,
+#   KEY_PASSWORD, GOOGLE_SERVER_CLIENT_ID.
+name: Release APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Tag harus sama dengan versi pubspec
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}')
+          if [ "v$VERSION" != "${{ github.ref_name }}" ]; then
+            echo "Tag ${{ github.ref_name }} != v$VERSION di pubspec.yaml. Samakan dulu."
+            exit 1
+          fi
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Tulis keystore + key.properties dari Secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/upload-keystore.jks"
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=$RUNNER_TEMP/upload-keystore.jks
+          EOF
+          # NOTE: keyPassword = storePassword karena keystore PKCS12
+          # mengabaikan keypass terpisah. Isi secret KEY_PASSWORD boleh
+          # dikosongkan/tidak dipakai; jangan hapus namanya.
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: .
+
+      # --no-tree-shake-icons: ikon dibuat dinamis dari codePoint database
+      # (MaterialIconData.fromCode), jadi subset font MaterialIcons tidak bisa
+      # dipakai. Tanpa flag ini build release selalu gagal.
+      - name: Build APK rilis
+        run: >
+          flutter build apk --release --split-per-abi --no-tree-shake-icons
+          --dart-define=GOOGLE_SERVER_CLIENT_ID=${{ secrets.GOOGLE_SERVER_CLIENT_ID }}
+        working-directory: .
+
+      - name: Buat GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/app/outputs/flutter-apk/app-*-release.apk
+          generate_release_notes: true
+          body: |
+            Unduh APK sesuai arsitektur HP (kebanyakan: `arm64-v8a`).
+            Cara pasang & update: https://personal-dompet.github.io/doc/panduan/instalasi.html

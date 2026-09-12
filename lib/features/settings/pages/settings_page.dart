@@ -9,9 +9,11 @@ import 'package:dompet_app/core/widgets/loading_overlay.dart';
 import 'package:dompet_app/features/app_configurations/cubits/app_configuration_cubit.dart';
 import 'package:dompet_app/features/backup/cubits/backup_cubit.dart';
 import 'package:dompet_app/features/backup/cubits/backup_state.dart';
+import 'package:dompet_app/features/settings/services/app_update_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class SettingsPage extends StatelessWidget {
@@ -35,6 +37,8 @@ class _SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<_SettingsView> {
   final _loadingOverlay = LoadingOverlay();
+  final _updateService = AppUpdateService();
+  bool _checkingUpdate = false;
 
   String _formatBackupTime(DateTime? dt) {
     if (dt == null) return 'Belum ada cadangan';
@@ -69,6 +73,47 @@ class _SettingsViewState extends State<_SettingsView> {
       ),
     );
     return result == true;
+  }
+
+  Future<void> _checkForUpdate(bool isOnline) async {
+    if (_checkingUpdate) return;
+    if (!isOnline) {
+      _showSnack(
+        'Perlu koneksi internet untuk memeriksa pembaruan.',
+        SnackBarType.info,
+      );
+      return;
+    }
+    setState(() => _checkingUpdate = true);
+    final info = await _updateService.checkForUpdate();
+    if (!mounted) return;
+    setState(() => _checkingUpdate = false);
+    if (info == null) {
+      _showSnack('Sudah versi terbaru.', SnackBarType.success);
+      return;
+    }
+    if (!info.hasUpdate) {
+      _showSnack('Sudah versi terbaru.', SnackBarType.success);
+      return;
+    }
+    final open = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => DompetDialog(
+        title: 'Update tersedia',
+        subtitle:
+            'Versi ${info.latestVersion}+${info.latestBuild} sudah ada (kamu memakai ${info.currentVersion}+${info.currentBuild}). Unduh APK terbaru dari GitHub Releases.',
+        confirmationText: 'Unduh',
+        cancellationText: 'Nanti',
+        onCancel: () => Navigator.of(ctx).pop(false),
+        onConfirm: () => Navigator.of(ctx).pop(true),
+      ),
+    );
+    if (open == true && mounted) {
+      await launchUrl(
+        Uri.parse(info.releaseUrl),
+        mode: LaunchMode.externalApplication,
+      );
+    }
   }
 
   Future<bool> _confirmOverwrite(String backupInfo) async {
@@ -373,6 +418,54 @@ class _SettingsViewState extends State<_SettingsView> {
                           ],
                         );
                       },
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                // APLIKASI
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Text(
+                    'Aplikasi',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                FutureBuilder<String>(
+                  future: _updateService.installedVersion(),
+                  builder: (context, snapshot) {
+                    return ListTile(
+                      leading: const Icon(Icons.smartphone_rounded),
+                      title: const Text('Versi'),
+                      subtitle: Text(snapshot.data ?? '…'),
+                    );
+                  },
+                ),
+                BlocBuilder<ConnectivityCubit, bool>(
+                  builder: (context, isOnline) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: OutlinedButton.icon(
+                        onPressed: _checkingUpdate
+                            ? null
+                            : () => _checkForUpdate(isOnline),
+                        icon: _checkingUpdate
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.system_update_rounded),
+                        label: Text(
+                          _checkingUpdate
+                              ? 'Memeriksa…'
+                              : 'Periksa pembaruan',
+                        ),
+                      ),
                     );
                   },
                 ),

@@ -5,6 +5,14 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+import java.util.Properties
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(keystorePropertiesFile.inputStream())
+}
+
 android {
     namespace = "com.lutfi.dompet.app"
     compileSdk = flutter.compileSdkVersion
@@ -18,6 +26,24 @@ android {
     // kotlinOptions {
     //    jvmTarget = JavaVersion.VERSION_17.toString()
     // }
+
+    signingConfigs {
+        // Dipakai bila android/key.properties ada (mesin dev + CI rilis).
+        // Kalau tidak ada, build release jatuh ke debug agar
+        // `flutter run --release` tetap jalan di mesin lain.
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                // Relatif ke folder android/ (tempat key.properties berada).
+                storeFile =
+                    rootProject.file(
+                        keystoreProperties["storeFile"] as String,
+                    )
+                storePassword = keystoreProperties["storePassword"] as String
+            }
+        }
+    }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -34,9 +60,12 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig =
+                if (keystorePropertiesFile.exists()) {
+                    signingConfigs.getByName("release")
+                } else {
+                    signingConfigs.getByName("debug")
+                }
         }
     }
 }
